@@ -128,7 +128,7 @@ T1 runs in parallel with Phase 1.
 | --- | --- | --- | --- |
 | A1 | Write the L0 requirements from OBJECTIVES.md and the modelling boundaries in AIRCRAFT_CHARACTERISTICS.md §7. Cover objectives (L0-OBJ), constraints as Constraint-type requirements (L0-CON: no lift or control surfaces, fixed CG, no electrical system, fictional effectors), success criteria (L0-SUC), and an assumptions register with owners (perfect state knowledge, for example). | Draft `L0` section → `requirements/L0.md` | Opus / high |
 | A2 | Identify stakeholders and needs (METHODOLOGY 4.1) and write the Aeronef-relevant ConOps scenarios. They cover the catalogue in D3, for example: climb on angle to an altitude capture, then hold; descend on vertical speed; fly a constant heading at a set horizontal speed; intercept and track a VOR radial; hold a position; hover at an altitude; and a reference mission to fuel exhaustion. No failure scenarios. | `specs/CONOPS.md` | Opus / high |
-| A3 | Propose the conventions per AIAA R-004: body frame, local reference frame, Euler-angle sequence, altitude datum, north reference for heading, track and VOR radials, and the time base. Define SI units for requirements and the crew-facing units (Q1), with conversions. Seed the glossary, including the distinct definitions of heading (where the nose points) and track (the direction of horizontal motion), which are independent on the Aeronef. Present the alternatives that matter (for example NED versus ENU) with a recommendation. | `specs/CONVENTIONS.md`, `specs/GLOSSARY.md` | Opus / high |
+| A3 | Propose the conventions per AIAA R-004: body frame, local reference frame, Euler-angle sequence, altitude datum, north reference for heading, track and VOR radials, and the time base. Define SI units for requirements and the crew-facing units (D7), with conversions. Seed the glossary, including the distinct definitions of heading (where the nose points) and track (the direction of horizontal motion), which are independent on the Aeronef. Present the alternatives that matter (for example NED versus ENU) with a recommendation. | `specs/CONVENTIONS.md`, `specs/GLOSSARY.md` | Opus / high |
 
 **Gate G0 — L0 mission and concept review**
 
@@ -283,12 +283,12 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D4 | Depth | No fixed depth. Each branch is decomposed until the next layer would be the implementation. |
 | D5 | Scripting language for tools | Python |
 | D6 | Owner attribute | Martin for all requirements in this cycle |
+| D7 | Crew-facing units | North American aviation units for everything the crew selects or sees: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track, flight path angle, radials). Requirements and the model stay in SI; conversions are fixed in CONVENTIONS. |
 
 ### Open questions
 
 | ID | Question | When | Proposal |
 | --- | --- | --- | --- |
-| Q1 | **Crew-facing units.** Vertical speed is selected in ft/min. Should altitude be in feet, horizontal speed in knots, and angles in degrees? | G0 | Requirements and the model in SI; crew selections and annunciations in aviation units (ft, ft/min, kt, degrees), with conversions fixed in CONVENTIONS |
 | Q2 | **Attitude during the guidance modes.** The modes set heading and the flight path, but the Aeronef's pitch and roll are independent of its motion. What do pitch and roll do while these modes are active? | G1 | Pitch and roll are held level by default in every mode, with heading set by the lateral mode or held |
 | Q3 | **Hover at altitude versus position hold.** How do they differ? | G1 | Position hold keeps a 3-D position. Hover at altitude keeps altitude and zero horizontal velocity, without holding a horizontal position, so the vehicle may drift. |
 | Q4 | **VOR model.** What fidelity is wanted? | G1 | Ground stations at fixed positions in the local frame, radials referenced to true north, no magnetic variation, an ideal signal within a reception range, and no noise in v1 |
