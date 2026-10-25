@@ -22,7 +22,7 @@ Verification:  Inspection — TBD; success criteria: the model specification is 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -48,7 +48,7 @@ Verification:  Inspection — TBD; success criteria: the Aeronef system requirem
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -74,7 +74,7 @@ Verification:  Inspection — TBD; success criteria: each mode in the baselined 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -86,9 +86,12 @@ Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall develop at least [P-SYS-010] flight-control-law designs for
   the Aeronef.
-Rationale:     The project develops and compares different flight-control laws (OBJECTIVES §2, §6).
-  A comparison needs at least two designs; the count is a parameter so that the project owner can
-  raise it without rewording the requirement.
+Rationale:     G0 owner review (2026-10-25): deleted. The number of flight-control-law designs is
+  not a project objective. One design is needed and will be developed (L0-OBJ-020);
+  more may follow, but how many is not even a secondary objective. Original rationale:
+  The project develops and compares different flight-control laws (OBJECTIVES §2, §6).
+  A comparison needs at least two designs; the count is a parameter so that the project
+  owner can raise it without rewording the requirement.
 Parent(s):     —
 Source:        OBJECTIVES.md §2, §6; AIRCRAFT_CHARACTERISTICS.md §5
 Allocated to:  AER
@@ -99,8 +102,8 @@ Verification:  Inspection — TBD; success criteria: the design descriptions rec
 Parameters:    P-SYS-010
 TBD/TBR:       P-SYS-010 value TBR (proposed 2), Martin, 2026-11-30
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Deleted
+Version:       2
 ```
 
 ### L0-OBJ-050
@@ -111,8 +114,11 @@ Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall develop at least [P-SYS-020] autoflight implementations for
   the Aeronef.
-Rationale:     The project develops and compares different autoflight implementations (OBJECTIVES
-  §2, §6). As for control laws, the count is a parameter.
+Rationale:     G0 owner review (2026-10-25): deleted. At least one autoflight implementation is
+  developed (L0-OBJ-030); there is no guarantee of more than one, and the number is not
+  an objective (D24). Original rationale: The project develops and compares different
+  autoflight implementations (OBJECTIVES §2, §6). As for control laws, the count is a
+  parameter.
 Parent(s):     —
 Source:        OBJECTIVES.md §2, §6
 Allocated to:  AER
@@ -123,8 +129,8 @@ Verification:  Inspection — TBD; success criteria: the design descriptions rec
 Parameters:    P-SYS-020
 TBD/TBR:       P-SYS-020 value TBR (proposed 2), Martin, 2026-11-30
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Deleted
+Version:       2
 ```
 
 ### L0-OBJ-060
@@ -147,7 +153,7 @@ Verification:  Demonstration — TBD; success criteria: the STP executes a run o
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -173,7 +179,7 @@ Verification:  Demonstration — TBD; success criteria: an operator changes an a
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -185,9 +191,11 @@ Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall provide unattended execution of automated test procedures.
 Rationale:     OBJECTIVES §3 names automated testing as the second use of the environment. An
-  automated test procedure (glossary) sets the initial conditions, applies stimuli, records the
-  results and assesses the observed outcomes against the expected outcomes; unattended execution is
-  what makes requirement-based verification scale.
+  automated test procedure (glossary) sets the initial conditions, applies stimuli,
+  records the results and assesses the observed outcomes against the expected outcomes;
+  unattended execution is what makes requirement-based verification scale. G0 owner
+  review (2026-10-25): accepted. Unattended automated testing is likely to come first,
+  with interactive testing (L0-OBJ-070) alongside.
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §4
 Allocated to:  STP
@@ -197,8 +205,8 @@ Verification:  Demonstration — TBD; success criteria: an automated test proced
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-OBJ-090
@@ -210,9 +218,11 @@ Type:          Functional
 Statement:     The Aeronef project shall provide parallel execution of each automated test procedure
   in independent simulation instances across the CPU cores of the execution host.
 Rationale:     OBJECTIVES §3 requires that any test procedure, not only Monte Carlo experiments, can
-  run in independent parallel simulation instances. Parallelism is therefore a property of the
-  platform, not of one kind of test (TESTING_ENVIRONMENT, core principle). The execution host is
-  described in L0-ASM-130.
+  run in independent parallel simulation instances. Parallelism is therefore a property
+  of the platform, not of one kind of test (TESTING_ENVIRONMENT, core principle). The
+  execution host is described in L0-ASM-130. G0 owner review (2026-10-25): deferred
+  with the campaign sizing (#68) and scalability (#86) questions; the owner expects it
+  to be done. Stays Draft.
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §5, §6
 Allocated to:  STP
@@ -224,7 +234,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
-Version:       1
+Version:       2
 ```
 
 ### L0-OBJ-100
@@ -235,10 +245,13 @@ Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall provide comparison of alternative Aeronef configurations
   under identical test procedures and initial conditions.
-Rationale:     Comparing control laws and autoflight versions is a stated objective (OBJECTIVES §2,
-  §3, §6; TESTING_ENVIRONMENT §7). An Aeronef configuration (glossary) is one flight-control-law
-  design and one autoflight implementation on the same vehicle model; a comparison is meaningful
-  only when both configurations see the same procedures and conditions.
+Rationale:     G0 owner review (2026-10-25): deleted for now. Comparing alternative Aeronef
+  configurations is not an objective in this cycle. Original rationale: Comparing
+  control laws and autoflight versions is a stated objective (OBJECTIVES §2, §3, §6;
+  TESTING_ENVIRONMENT §7). An Aeronef configuration (glossary) is one
+  flight-control-law design and one autoflight implementation on the same vehicle
+  model; a comparison is meaningful only when both configurations see the same
+  procedures and conditions.
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §7
 Allocated to:  STP, AER
@@ -249,8 +262,8 @@ Verification:  Demonstration — TBD; success criteria: two Aeronef configuratio
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Deleted
+Version:       2
 ```
 
 ### L0-OBJ-110
@@ -273,7 +286,7 @@ Verification:  Test — TBD; success criteria: L0-SUC-040 is met.
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -297,7 +310,7 @@ Verification:  Inspection — TBD; success criteria: the recorded results of run
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -322,7 +335,7 @@ Verification:  Inspection — TBD; success criteria: the report of a campaign li
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -335,9 +348,11 @@ Type:          Functional
 Statement:     The Aeronef project shall equip the Aeronef with an operational data output that
   relates crew inputs, autoflight mode changes, control activity and vehicle responses in time.
 Rationale:     Objective 3 depends on operational data that let the reverse-engineering agents
-  correlate inputs, actions, mode changes and vehicle responses (OBJECTIVES §4; REVERSE_ENGINEERING
-  §3C, §5). The same data support requirement-based verification (TESTING_ENVIRONMENT §8). What the
-  output may contain is constrained by L0-CON-240.
+  correlate inputs, actions, mode changes and vehicle responses (OBJECTIVES §4;
+  REVERSE_ENGINEERING §3C, §5). The same data support requirement-based verification
+  (TESTING_ENVIRONMENT §8). What the output may contain is constrained by L0-CON-240.
+  G0 owner review (2026-10-25): accepted. The operational data output is needed for the
+  reverse-engineering effort; its details are defined at L2.
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §3C, §5; TESTING_ENVIRONMENT.md §8
 Allocated to:  AER, STP
@@ -347,8 +362,8 @@ Verification:  Inspection — TBD; success criteria: the operational data record
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-OBJ-150
@@ -360,10 +375,12 @@ Type:          Documentation
 Statement:     The Aeronef project shall produce human-oriented operational manuals and procedures
   for the Aeronef.
 Rationale:     OBJECTIVES §4 and §5 require operational documents written for a human audience; they
-  are the main documentary evidence for the reverse-engineering effort (REVERSE_ENGINEERING §3A).
-  METHODOLOGY §11.2 lists the set: Vehicle Operating Manual, normal procedures, quick reference
-  checklists and the STP user guide. Abnormal and emergency procedures are deferred with the hazard
-  analysis. The manuals are written after the requirements baseline.
+  are the main documentary evidence for the reverse-engineering effort
+  (REVERSE_ENGINEERING §3A). METHODOLOGY §11.2 lists the set: Vehicle Operating Manual,
+  normal procedures, quick reference checklists and the STP user guide. Abnormal and
+  emergency procedures are deferred with the hazard analysis. The manuals are written
+  after the requirements baseline. G0 owner review (2026-10-25): accepted. The manuals
+  and procedures are an output, produced once the whole system has been designed.
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §5; REVERSE_ENGINEERING.md §3A; METHODOLOGY.md §11.2
 Allocated to:  AER, STP
@@ -374,8 +391,8 @@ Verification:  Inspection — TBD; success criteria: the Vehicle Operating Manua
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-OBJ-160
@@ -399,7 +416,7 @@ Verification:  Inspection — TBD; success criteria: the reverse-engineering eff
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -424,7 +441,7 @@ Verification:  Inspection — TBD; success criteria: an assessment report scores
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -450,7 +467,7 @@ Verification:  Inspection — TBD; success criteria: each L1 element has one req
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -474,7 +491,7 @@ Verification:  Inspection — TBD; success criteria: L0-SUC-150 is met.
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -497,7 +514,7 @@ Verification:  Inspection — TBD; success criteria: each baselined artifact has
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -510,8 +527,12 @@ Type:          Documentation
 Statement:     The Aeronef project shall produce a documented assessment of the AI-assisted methods
   used for system design, automated verification and evidence-based reverse engineering.
 Rationale:     The purpose of the project is to evaluate AI-assisted engineering methods across the
-  lifecycle, and its intended outcome is a practical assessment of those methods as well as a
-  functioning model (OBJECTIVES §1, §6; REVERSE_ENGINEERING §8). L0-SUC-170 is the closing report.
+  lifecycle, and its intended outcome is a practical assessment of those methods as
+  well as a functioning model (OBJECTIVES §1, §6; REVERSE_ENGINEERING §8). L0-SUC-170
+  is the closing report. G0 owner review (2026-10-25): accepted, and important to the
+  owner. The project as a whole is also an exercise in how AI can do the bulk of the
+  engineering work, so the assessment of the AI-assisted methods is an objective in its
+  own right, not only a by-product.
 Parent(s):     —
 Source:        OBJECTIVES.md §1, §6; REVERSE_ENGINEERING.md §8
 Allocated to:  AER, STP, REE
@@ -522,6 +543,6 @@ Verification:  Inspection — TBD; success criteria: the final assessment report
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
