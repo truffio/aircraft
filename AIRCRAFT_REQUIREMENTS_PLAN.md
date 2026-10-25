@@ -297,7 +297,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 | ID | Question | When | Proposal |
 | --- | --- | --- | --- |
-| Q5 | **Mode combinations.** Which modes can be active together? | G1 | Airliner-style groups: one vertical mode, one lateral mode and one speed mode at a time. Position hold and hover replace the vertical and lateral groups while active. |
+| Q5 (#6) | **Mode combinations.** Which modes can be active together? | G1 | Airliner-style groups: one vertical mode, one lateral mode and one speed mode at a time. Position hold and hover replace the vertical and lateral groups while active. |
 
 ## 10. Summary of agents
 
