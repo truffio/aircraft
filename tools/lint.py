@@ -49,11 +49,11 @@ SUBSYSTEMS = "DYN|FU|EF|FC|AF|NAV|TM"
 
 ID_PATTERNS = {   # level -> pattern of valid IDs
     "L0": re.compile(r"^L0-(OBJ|CON|SUC)-\d{3}$"),
-    "L1": re.compile(r"^AER-\d{3}$"),
-    "other": re.compile(rf"^AER-({SUBSYSTEMS})(-[A-Z0-9]+)*-\d{{3}}$"),
+    "L1": re.compile(r"^L1-AER-\d{3}$"),
+    "other": re.compile(rf"^(L\d+)-AER-({SUBSYSTEMS})(-[A-Z0-9]+)*-\d{{3}}$"),
 }
 
-ID_TOKEN_RE = re.compile(r"\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\b")  # AER-AF-010, P-FC-004
+ID_TOKEN_RE = re.compile(r"\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\b")  # L2-AER-AF-010, P-FC-004
 LEVEL_TOKEN_RE = re.compile(r"\bL\d+\b")
 
 
@@ -87,9 +87,9 @@ def lint_record(rec):
     level = rec.get("Level")
     if rid:
         pat = ID_PATTERNS.get(level, ID_PATTERNS["other"])
-        if level and not pat.match(rid):
+        if level and (not pat.match(rid) or not rid.startswith(level + "-")):
             add("error", "ID-FORMAT", f"ID does not match the format for level {level} "
-                "(L0-OBJ|CON|SUC-nnn, AER-nnn, AER-<SUB>[-<ITEM>]-<NNN>)", "ID")
+                "(L0-OBJ|CON|SUC-nnn, L1-AER-nnn, L<n>-AER-<SUB>[-<ITEM>]-<NNN>)", "ID")
         else:
             if not re.search(r"-\d{3}$", rid):
                 add("error", "ID-FORMAT", "ID must end in a three-digit number", "ID")

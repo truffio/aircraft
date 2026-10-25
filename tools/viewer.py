@@ -20,7 +20,7 @@ import reqlib
 import trace_check
 
 DEFAULT_OUT = Path("build") / "requirements_viewer.html"
-ID_RE = re.compile(r"(?<![\w-])(?:L0-(?:OBJ|CON|SUC|ASM)-\d+|AER(?:-[A-Z0-9]+)*-\d+|N-\d{3}|SC-\d{3}"
+ID_RE = re.compile(r"(?<![\w-])(?:L0-(?:OBJ|CON|SUC|ASM)-\d+|L\d+-AER(?:-[A-Z0-9]+)*-\d+|N-\d{3}|SC-\d{3}"
                    r"|SH-\d{2}|P-[A-Z]+-\d+|DD-\d+)\b")
 TEXT_FIELDS = ["Statement", "Rationale", "Verification", "TBD/TBR", "Source"]
 

@@ -6,12 +6,12 @@ Every requirement in a level file is one record: a `###` heading with its ID, th
 - Field names and order are fixed as below. Every field is present; use `—` when a field does not apply.
 - Tailoring for this cycle: `Criticality: Not assessed`; the Safety type is not used.
 - Numbers never appear in the Statement; reference parameters as `[P-<SUB>-<NNN>]` and list them under Parameters.
-- IDs follow METHODOLOGY 9.1: `L0-OBJ-nnn`, `L0-CON-nnn`, `L0-SUC-nnn`, `AER-nnn` (L1), `AER-<SUB>[-<ITEM>]-<NNN>` below. Steps of 10; never reuse an ID.
+- IDs follow METHODOLOGY 9.1: `L0-OBJ-nnn`, `L0-CON-nnn`, `L0-SUC-nnn` (L0), `L1-AER-nnn` (L1), `L<n>-AER-<SUB>[-<ITEM>]-<NNN>` below (D31: the level prefix matches the Level field). Steps of 10; never reuse an ID.
 
-### AER-AF-PH-010
+### L2-AER-AF-PH-010
 
 ```req
-ID:            AER-AF-PH-010
+ID:            L2-AER-AF-PH-010
 Level:         L3
 Type:          Functional | Performance | Interface | Constraint | Model fidelity | Documentation
 Statement:     [While <state>,] [when <trigger>,] the <element> shall <response> <performance>.

@@ -34,7 +34,7 @@ class ParserTests(unittest.TestCase):
         repo = reqlib.load_repo(GOOD)
         self.assertEqual(repo.problems, [])
         ids = [r.id for r in repo.records]
-        self.assertEqual(ids, ["L0-OBJ-010", "AER-010", "AER-AF-010", "AER-AF-020"])
+        self.assertEqual(ids, ["L0-OBJ-010", "L1-AER-010", "L2-AER-AF-010", "L2-AER-AF-020"])
         self.assertEqual([a.id for a in repo.assumptions], ["L0-ASM-010"])
         rec = repo.records[2]
         self.assertEqual(rec.section, "AF")
@@ -72,23 +72,34 @@ class LintTests(unittest.TestCase):
 
     def test_bad_statement(self):
         f = lint.run(BAD)
-        c = codes(f, "AER-AF-010")
+        c = codes(f, "L2-AER-AF-010")
         self.assertTrue({"SHALL", "VAGUE", "ABSOLUTE", "OPEN-LIST", "NUMBER", "COMPOUND"} <= c, c)
 
     def test_bad_attributes(self):
         f = lint.run(BAD)
-        c = codes([x for x in f if x.item == "AER-AF-020"])
+        c = codes([x for x in f if x.item == "L2-AER-AF-020"])
         self.assertTrue({"TYPE", "CRITICALITY", "STATUS", "VERIFICATION", "LEVEL"} <= c, c)
 
     def test_id_and_missing_field(self):
         f = lint.run(BAD)
         self.assertIn("ID-FORMAT", codes(f, "WRONG-ID"))
-        self.assertIn("MISSING", codes(f, "AER-AF-030"))
-        self.assertIn("ID-STEP", codes(f, "AER-AF-025"))
+        self.assertIn("MISSING", codes(f, "L2-AER-AF-030"))
+        self.assertIn("ID-STEP", codes(f, "L2-AER-AF-025"))
+
+    def test_id_carries_level(self):
+        # D31: the level prefix must match the Level field; old unprefixed IDs fail
+        def id_codes(rid, level):
+            rec = reqlib.Record("req", Path("L2.md"), 1, "AF", level, {"ID": rid, "Level": level})
+            return {x.code for x in lint.lint_record(rec)}
+        self.assertNotIn("ID-FORMAT", id_codes("L2-AER-AF-010", "L2"))
+        self.assertNotIn("ID-FORMAT", id_codes("L1-AER-010", "L1"))
+        self.assertIn("ID-FORMAT", id_codes("L3-AER-AF-010", "L2"))
+        self.assertIn("ID-FORMAT", id_codes("AER-AF-010", "L2"))
+        self.assertIn("ID-FORMAT", id_codes("AER-010", "L1"))
 
     def test_parameter_digits_not_flagged(self):
-        # AER-AF-025 only has a parameter ref, ID-like tokens and no other digits
-        self.assertNotIn("NUMBER", codes(lint.run(BAD), "AER-AF-025"))
+        # L2-AER-AF-025 only has a parameter ref, ID-like tokens and no other digits
+        self.assertNotIn("NUMBER", codes(lint.run(BAD), "L2-AER-AF-025"))
 
     def test_filters(self):
         self.assertEqual(lint.run(BAD, file="requirements/L1.md"), [])
@@ -109,12 +120,12 @@ class TraceTests(unittest.TestCase):
 
     def test_bad(self):
         f = trace_check.run(BAD)
-        self.assertIn("NO-PARENT", codes(f, "AER-AF-010"))
-        self.assertIn("ORPHAN", codes(f, "AER-AF-020"))
-        self.assertIn("NO-VERIFICATION", codes(f, "AER-AF-020"))
-        self.assertIn("DUPLICATE", codes(f, "AER-AF-020"))
-        self.assertIn("DERIVED", codes(f, "AER-AF-025"))
-        self.assertIn("CHILDLESS", codes(f, "AER-AF-025"))
+        self.assertIn("NO-PARENT", codes(f, "L2-AER-AF-010"))
+        self.assertIn("ORPHAN", codes(f, "L2-AER-AF-020"))
+        self.assertIn("NO-VERIFICATION", codes(f, "L2-AER-AF-020"))
+        self.assertIn("DUPLICATE", codes(f, "L2-AER-AF-020"))
+        self.assertIn("DERIVED", codes(f, "L2-AER-AF-025"))
+        self.assertIn("CHILDLESS", codes(f, "L2-AER-AF-025"))
 
     def test_leaf_is_not_childless(self):
         self.assertNotIn("CHILDLESS", codes(trace_check.run(GOOD)))
@@ -139,7 +150,7 @@ class ParamTests(unittest.TestCase):
 class VcrmTests(unittest.TestCase):
     def test_render_good(self):
         text = vcrm.render(reqlib.load_repo(GOOD))
-        self.assertIn("| AER-AF-010 | L2 | Performance | Test | TP-020 |", text)
+        self.assertIn("| L2-AER-AF-010 | L2 | Performance | Test | TP-020 |", text)
         self.assertIn("| ID | Level | Type | Method | Procedure | Success criteria | Status |", text)
 
     def test_check_mode(self):
@@ -154,7 +165,7 @@ class VcrmTests(unittest.TestCase):
             out = Path(d) / "VCRM.md"
             rc, _ = run_main(vcrm, ["--root", str(GOOD), "--out", str(out)])
             self.assertEqual(rc, 0)
-            self.assertIn("AER-010", out.read_text(encoding="utf-8"))
+            self.assertIn("L1-AER-010", out.read_text(encoding="utf-8"))
 
 
 class AssembleTests(unittest.TestCase):
@@ -179,8 +190,8 @@ class AssembleTests(unittest.TestCase):
         rc, _ = run_main(assemble, ["L2", "--root", str(self.root)])
         self.assertEqual(rc, 0)
         after = self.l2.read_text(encoding="utf-8")
-        self.assertIn("AER-AF-030", after)
-        self.assertNotIn("AER-AF-020", after)           # old AF content replaced
+        self.assertIn("L2-AER-AF-030", after)
+        self.assertNotIn("L2-AER-AF-020", after)           # old AF content replaced
         self.assertIn("Draft FC text.", after)
         # text outside the markers is untouched
         self.assertTrue(after.startswith("# L2 fixture\n\n<!-- BEGIN SECTION AF -->"))
@@ -227,15 +238,15 @@ class ViewerTests(unittest.TestCase):
     def test_graph_from_good_fixture(self):
         data = viewer.build(GOOD)
         kinds = {n["id"]: n["kind"] for n in data["nodes"]}
-        self.assertEqual(kinds["AER-010"], "req")
+        self.assertEqual(kinds["L1-AER-010"], "req")
         self.assertEqual(kinds["L0-ASM-010"], "asm")
         edges = {(e["from"], e["to"], e["kind"]) for e in data["edges"]}
-        self.assertIn(("L0-OBJ-010", "AER-010", "parent"), edges)
-        self.assertIn(("AER-010", "AER-AF-010", "parent"), edges)
+        self.assertIn(("L0-OBJ-010", "L1-AER-010", "parent"), edges)
+        self.assertIn(("L1-AER-010", "L2-AER-AF-010", "parent"), edges)
         self.assertTrue(any(k == "uses" for _, _, k in edges))
 
     def test_function_ids_are_not_requirement_refs(self):
-        self.assertEqual(viewer.ID_RE.findall("see F-AER-04 and AER-AF-010"), ["AER-AF-010"])
+        self.assertEqual(viewer.ID_RE.findall("see F-AER-04 and L2-AER-AF-010"), ["L2-AER-AF-010"])
 
     def test_render_embeds_data_safely(self):
         html = viewer.render({"nodes": [{"id": "X", "title": "</script><b>"}], "edges": [],
@@ -248,7 +259,7 @@ class ViewerTests(unittest.TestCase):
             out = Path(tmp) / "v.html"
             rc, _ = run_main(viewer, ["--root", str(GOOD), "--out", str(out)])
             self.assertEqual(rc, 0)
-            self.assertIn("AER-AF-010", out.read_text(encoding="utf-8"))
+            self.assertIn("L2-AER-AF-010", out.read_text(encoding="utf-8"))
 
 
 class CliTests(unittest.TestCase):

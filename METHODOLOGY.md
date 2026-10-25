@@ -227,7 +227,7 @@ EARS is weak for requirements with many conditions; express those as a decision 
 
 A requirement is the statement plus its attributes; without rationale, trace and verification method it cannot be reviewed, verified or reverse-engineered. The minimum set below follows the INCOSE starred attributes, trimmed for a small team.
 
-**9.1 Identifiers.** Because depth varies by branch, the identifier encodes the **element path**, not the level: `<ELEMENT>-<SUBSYSTEM>[-<ITEM>]-<NNN>`, for example `AER-AF-PH-010` (Aeronef, autoflight, Position Hold, number 010). L0 uses `L0-OBJ-nnn`, `L0-CON-nnn` and `L0-SUC-nnn`. Number in steps of 10 to leave room; never reuse a deleted identifier. The level is a separate attribute.
+**9.1 Identifiers.** One identifier syntax is used at every level, and the identifier starts with the level, so the level of a requirement can be read from its ID alone (decision D31): `L<n>-<ELEMENT>[-<SUBSYSTEM>[-<ITEM>]]-<NNN>`. For example, `L1-AER-010` is the Aeronef at L1, and `L2-AER-AF-PH-010` is Aeronef, autoflight, Position Hold, number 010, at L2. L0 uses `L0-OBJ-nnn`, `L0-CON-nnn`, `L0-SUC-nnn` and `L0-ASM-nnn`. Because depth varies by branch, the element path after the level prefix shows where the requirement sits in the architecture. Number in steps of 10 to leave room, and never reuse a deleted identifier. A requirement that moves to another level gets a new identifier, and the old one is deleted with a pointer to the new one. The Level attribute must match the prefix.
 
 **9.2 Minimum attributes.**
 
@@ -277,12 +277,12 @@ Validation asks "are these the right requirements?" and happens before a baselin
 - requirement → verification procedure → verification result;
 - operational manual section or procedure → requirements it describes (Section 11).
 
-Run automated checks on each build: requirements without a parent, parents without children, requirements without a verification procedure, procedures without a requirement, and requirements whose last result is failed or missing. Tagging each automated test with the IDs it verifies (for example `@verifies AER-AF-PH-010`) lets a script regenerate the requirements verification matrix every night.
+Run automated checks on each build: requirements without a parent, parents without children, requirements without a verification procedure, procedures without a requirement, and requirements whose last result is failed or missing. Tagging each automated test with the IDs it verifies (for example `@verifies L2-AER-AF-PH-010`) lets a script regenerate the requirements verification matrix every night.
 
 | Req ID | Statement (short) | Method | Procedure | Level verified | Result | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| AER-AF-PH-010 | Hold position within \[P-AF-012\] m | Test | TP-AF-PH-010 | Aeronef in STP | Pass (example) | Verified |
-| AER-DYN-020 | Mass equals dry mass plus fuel | Analysis | AN-DYN-020 | Dynamics model | Pending | Baselined |
+| L2-AER-AF-PH-010 | Hold position within \[P-AF-012\] m | Test | TP-AF-PH-010 | Aeronef in STP | Pass (example) | Verified |
+| L2-AER-DYN-020 | Mass equals dry mass plus fuel | Analysis | AN-DYN-020 | Dynamics model | Pending | Baselined |
 
 **10.5 Baseline and control changes.** Hold a review at each level before baselining: an L0 mission and concept review, a System Requirements Review per L1 element, then design and test-readiness reviews as branches mature. After a baseline, changes go through a change request that lists the affected requirements (found through trace links), tests, parameters and manuals, and is approved by a small change board.
 
@@ -340,19 +340,19 @@ The example follows the autoflight Position Hold mode from a project objective d
 | ID | Level | Statement | Parent | Verification |
 | --- | --- | --- | --- | --- |
 | L0-OBJ-002 | L0 | The Aeronef project shall develop autoflight functions, derived from airliner autoflight concepts, as the primary method of operating the vehicle. | — | Inspection of L1 coverage |
-| AER-AF-001 | L1 | The Aeronef shall provide a Position Hold autoflight mode. | L0-OBJ-002 | Demonstration |
-| AER-AF-PH-010 | L2 | When Position Hold is engaged, the autoflight system shall capture the current vehicle position as the reference position. | AER-AF-001 | Test TP-AF-PH-010 |
-| AER-AF-PH-020 | L2 | While Position Hold is active, the autoflight system shall hold the vehicle position within \[P-AF-012\] m of the reference position. | AER-AF-001 | Test TP-AF-PH-020 |
-| AER-AF-PH-030 | L2 | While Position Hold is active, the autoflight system shall annunciate POS HOLD. | AER-AF-001 | Test TP-AF-PH-030 |
-| AER-FC-TR-040 | L3 | The translational controller shall track each commanded velocity component with a steady-state error of at most \[P-FC-021\] m/s at maximum and minimum vehicle mass. | AER-AF-PH-020 | Test TP-FC-TR-040 |
-| AER-EF-010 | L3 | The effector system shall deliver a force of at least \[P-EF-001\] N along each body axis. | AER-AF-PH-020 | Analysis AN-EF-010 |
-| AER-FC-AL-050 | L4 | If a commanded body force exceeds the effector limit on any axis, then the control allocation shall scale all translational force commands by the same factor. | Derived (design decision DD-012: preserve direction of translation) | Test TP-FC-AL-050 |
-| ICD-AER-STP-005 | L2 | The Aeronef model shall output the vehicle position in the local reference frame defined in model specification MS-DYN, in metres, at each simulation step. | AER-AF-PH-020 | Inspection |
+| L1-AER-001 | L1 | The Aeronef shall provide a Position Hold autoflight mode. | L0-OBJ-002 | Demonstration |
+| L2-AER-AF-PH-010 | L2 | When Position Hold is engaged, the autoflight system shall capture the current vehicle position as the reference position. | L1-AER-001 | Test TP-AF-PH-010 |
+| L2-AER-AF-PH-020 | L2 | While Position Hold is active, the autoflight system shall hold the vehicle position within \[P-AF-012\] m of the reference position. | L1-AER-001 | Test TP-AF-PH-020 |
+| L2-AER-AF-PH-030 | L2 | While Position Hold is active, the autoflight system shall annunciate POS HOLD. | L1-AER-001 | Test TP-AF-PH-030 |
+| L3-AER-FC-TR-040 | L3 | The translational controller shall track each commanded velocity component with a steady-state error of at most \[P-FC-021\] m/s at maximum and minimum vehicle mass. | L2-AER-AF-PH-020 | Test TP-FC-TR-040 |
+| L3-AER-EF-010 | L3 | The effector system shall deliver a force of at least \[P-EF-001\] N along each body axis. | L2-AER-AF-PH-020 | Analysis AN-EF-010 |
+| L4-AER-FC-AL-050 | L4 | If a commanded body force exceeds the effector limit on any axis, then the control allocation shall scale all translational force commands by the same factor. | Derived (design decision DD-012: preserve direction of translation) | Test TP-FC-AL-050 |
+| ICD-AER-STP-005 | L2 | The Aeronef model shall output the vehicle position in the local reference frame defined in model specification MS-DYN, in metres, at each simulation step. | L2-AER-AF-PH-020 | Inspection |
 | STP-TA-030 | L2 | The STP shall execute each test procedure tagged with a requirement ID without operator action and record pass or fail against its success criteria. | L0-OBJ-003 | Demonstration |
 
-**Reading the thread.** L0-OBJ-002 is satisfied when the autoflight modes, including Position Hold, are delivered; AER-AF-001 is satisfied when capture (PH-010), hold accuracy (PH-020) and annunciation (PH-030) are all met; PH-020 is in turn satisfied by translational tracking accuracy and enough effector authority, which is a budget split recorded in its rationale. AER-FC-AL-050 has no parent: it comes from a design decision, so it is marked Derived and reviewed against the hazard analysis (saturation, Section 6).
+**Reading the thread.** L0-OBJ-002 is satisfied when the autoflight modes, including Position Hold, are delivered; L1-AER-001 is satisfied when capture (PH-010), hold accuracy (PH-020) and annunciation (PH-030) are all met; PH-020 is in turn satisfied by translational tracking accuracy and enough effector authority, which is a budget split recorded in its rationale. L4-AER-FC-AL-050 has no parent: it comes from a design decision, so it is marked Derived and reviewed against the hazard analysis (saturation, Section 6).
 
-**Downstream links.** TP-AF-PH-020 lives in the STP test suite, tagged with AER-AF-PH-020, and runs every night. The Vehicle Operating Manual section on Position Hold tells the crew what the mode holds, what POS HOLD looks like and how to disengage it; the manual trace register links that section to PH-010, PH-020 and PH-030, so a reconstruction by the REE can be scored against them.
+**Downstream links.** TP-AF-PH-020 lives in the STP test suite, tagged with L2-AER-AF-PH-020, and runs every night. The Vehicle Operating Manual section on Position Hold tells the crew what the mode holds, what POS HOLD looks like and how to disengage it; the manual trace register links that section to PH-010, PH-020 and PH-030, so a reconstruction by the REE can be scored against them.
 
 ## 13. Checklists and templates
 
@@ -385,7 +385,7 @@ Authors run the single-requirement checklist before submitting; reviewers use bo
 **13.3 Requirement record template.**
 
 ```markdown
-ID:            AER-<SUBSYSTEM>-<ITEM>-<NNN>
+ID:            L<n>-AER-<SUBSYSTEM>[-<ITEM>]-<NNN>
 Level:         L2
 Type:          Functional | Performance | Interface | Constraint | Safety | Model fidelity | Documentation
 Statement:     [While <state>,] [when <trigger>,] the <element> shall <response> <performance>.

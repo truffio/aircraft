@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24; D8–D23 on 2026-10-25)
+### Decided (2026-10-24; D8–D32 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -303,8 +303,19 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D21 | Local frame (#46) | North-east-down (NED) |
 | D22 | Attitude representation (#47) | The quaternion is the authoritative attitude; Euler angles are derived from it. |
 | D23 | Angle units (#48) | Radians in calculations, requirements and parameters; degrees only at the crew interface. |
+| D24 | Number of designs compared (#65) | One autoflight definition and implementation; two or three control-law designs (TBR). |
+| D25 | Reproducibility (#66) | Runs are not checked for bit-identical results, which is out of scope and too costly. A repeated run must give the same expected result. |
+| D26 | Pass fraction, reference configuration (#67) | 100%. A failed test means either a badly written procedure or software that doesn't meet its intended function. |
+| D27 | L0 size (#74) | Start with the 66 L0 requirements. The owner audits them during review and decides which ones are too detailed for L0. |
+| D28 | Method assessment and final report (#75) | Each element contributes its section and the orchestrator compiles them; the human owner audits all of it. |
+| D29 | Assumption review (#76) | The owner reviews every assumption before the gate (G0), not at G1, so that a broken assumption is found before work is built on it. |
+| D30 | "and" / "or" in statements (#44) | Allowed, provided the requirement meets the quality criteria (clear, complete, testable, implementable). If the conjunctions form a tree of possibilities, split the requirement. The lint reports COMPOUND as a warning only. |
+| D31 | Requirement identifiers (#45) | One syntax at every level, starting with the level: `L0-OBJ\|CON\|SUC\|ASM-nnn`, `L1-AER-nnn`, `L<n>-AER-<SUB>[-<ITEM>]-<NNN>`. The prefix must match the Level field, and the lint enforces it. A requirement that moves to another level gets a new ID. |
+| D32 | Scenario values (#62) | Test procedures set the defaults and constants for test scenarios. They are not design parameters and stay out of `PARAMETERS.yaml`. |
 
 ### Open questions
+
+All open and deferred questions are tracked as GitHub issues labelled `questions` (`deferred` marks those the owner has parked). The issue number is the permanent ID.
 
 | ID | Question | When | Proposal |
 | --- | --- | --- | --- |

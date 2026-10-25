@@ -157,7 +157,7 @@ table.flist th, table.flist td { text-align: left; border-bottom: 1px solid var(
 </main>
 <script>
 const DATA = /*DATA*/null;
-const ID_RE = /(?<![\w-])(?:L0-(?:OBJ|CON|SUC|ASM)-\d+|AER(?:-[A-Z0-9]+)*-\d+|N-\d{3}|SC-\d{3}|SH-\d{2}|P-[A-Z]+-\d+|DD-\d+)\b/g;
+const ID_RE = /(?<![\w-])(?:L0-(?:OBJ|CON|SUC|ASM)-\d+|L\d+-AER(?:-[A-Z0-9]+)*-\d+|N-\d{3}|SC-\d{3}|SH-\d{2}|P-[A-Z]+-\d+|DD-\d+)\b/g;
 const KIND_LABEL = { req: "Requirement", asm: "Assumption", param: "Parameter", need: "Need", scenario: "Scenario",
   stakeholder: "Stakeholder", decision: "Design decision", missing: "Unresolved reference" };
 const EDGE_LABEL = { parent: "decomposes", derived: "derived from", uses: "uses parameter", source: "source",
