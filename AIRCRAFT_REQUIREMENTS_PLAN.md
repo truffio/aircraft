@@ -146,7 +146,7 @@ This phase is one agent, because L1 coherence matters more than speed here.
 
 | ID | Task | Outputs | Model / effort |
 | --- | --- | --- | --- |
-| B1 | Refine the Aeronef function list (F-AER-01 to 08, plus functions for navigation and for producing operational data). Build the N² interface matrix and the control-loop flow. Write the L1 Aeronef SRS: functional, performance, interface, constraint, model-fidelity and documentation types. Choose the logical architecture and allocate every L1 requirement to an L2 subsystem (DYN, FU, EF, FC, AF, NAV, TM). Set the top-level budgets (fuel, effector authority, position error, timing). Take the D3 catalogue as given: write one L1 requirement per mode, and organise the modes into groups (vertical, lateral, speed, hold) that can be active together. Propose an answer to Q5 for the project owner. | `specs/FUNCTIONAL_ANALYSIS.md`, draft `L1` section → `requirements/L1.md`, staging files | Opus / xhigh |
+| B1 | Refine the Aeronef function list (F-AER-01 to 08, plus functions for navigation and for producing operational data). Build the N² interface matrix and the control-loop flow. Write the L1 Aeronef SRS: functional, performance, interface, constraint, model-fidelity and documentation types. Choose the logical architecture and allocate every L1 requirement to an L2 subsystem (DYN, FU, EF, FC, AF, NAV, TM). Set the top-level budgets (fuel, effector authority, position error, timing). Take the D3 catalogue as given. At L1, state only the aircraft-level guidance capability, treating the aircraft as a whole. Leave the mode definitions, groups, combinations and logic to C5 at L2 (D33). Propose an answer to Q5 for the project owner. | `specs/FUNCTIONAL_ANALYSIS.md`, draft `L1` section → `requirements/L1.md`, staging files | Opus / xhigh |
 | B2 | Runs after B1. Seed the parameter database from B1's proposals: assign P-xx-nnn IDs, units and TBD/TBR status. Open the TBD/TBR register entries. | `parameters/PARAMETERS.yaml`, `registers/TBD_TBR.md` | Sonnet / medium |
 
 **Gate G1 — System Requirements Review (Aeronef)**
@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24; D8–D32 on 2026-10-25)
+### Decided (2026-10-24; D8–D33 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -312,6 +312,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D30 | "and" / "or" in statements (#44) | Allowed, provided the requirement meets the quality criteria (clear, complete, testable, implementable). If the conjunctions form a tree of possibilities, split the requirement. The lint reports COMPOUND as a warning only. |
 | D31 | Requirement identifiers (#45) | One syntax at every level, starting with the level: `L0-OBJ\|CON\|SUC\|ASM-nnn`, `L1-AER-nnn`, `L<n>-AER-<SUB>[-<ITEM>]-<NNN>`. The prefix must match the Level field, and the lint enforces it. A requirement that moves to another level gets a new ID. |
 | D32 | Scenario values (#62) | Test procedures set the defaults and constants for test scenarios. They are not design parameters and stay out of `PARAMETERS.yaml`. |
+| D33 | Levels and where modes are defined (#80) | L0 is the project, and the aircraft is a black box at L0. L1 is the project's components: the aircraft (AER), the test environment (STP) and the reverse-engineering effort (REE). This plan writes only the AER branch of L1. L2 divides a component into its subsystems. Modes, guidance, mode logic and control-law implementation are defined at L2 (AF, FC), not at L0 or L1. |
 
 ### Open questions
 
