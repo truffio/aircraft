@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24; D8–D36 on 2026-10-25)
+### Decided (2026-10-24; D8–D37 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -287,7 +287,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D5 | Scripting language for tools | Python |
 | D6 | Owner attribute | Martin for all requirements in this cycle |
 | D7 | Crew-facing units | North American aviation units for everything the crew selects or sees: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track, flight path angle, radials). Requirements and the model stay in SI; conversions are fixed in CONVENTIONS. |
-| D8 | Ground (#50) | The Earth is flat with no terrain. Altitude zero is ground level. Contact with the ground is a crash. |
+| D8 | Ground (#50; refined by D37) | The Earth is flat with no terrain, and altitude zero is ground level. Contact with the ground outside the landing envelope is a crash (D37). |
 | D9 | Crew-facing fuel unit (#51) | Pounds (lb) |
 | D10 | Attitude during guidance modes (#3, Q2) | Pitch and roll stay level. The Aeronef doesn't need to pitch or roll to move. Those manoeuvres are possible but serve no purpose, because the axes are uncoupled. |
 | D11 | Hover versus position hold (#4, Q3) | Position hold is a lateral mode. The vehicle stops moving on all axes (zero velocity, zero acceleration) and holds its position at any altitude, compensating for wind. Hover is a vertical mode. When it engages, the vehicle descends from its current altitude to the altitude set on the flight control panel, then holds position. Hover therefore needs position hold. Whether position is held from the moment hover engages, or only after the velocity has come down to zero, is still open (#78). |
@@ -316,6 +316,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D34 | Crew units (#52, refines D7) | What the crew sees and sets is in crew units: feet, knots and degrees. Time is in whatever unit makes sense, so vertical rates are in ft/min and flight duration in hours or minutes. Internal calculations use SI or whatever is most convenient. Crew-facing parameters are stored in their crew unit and flagged in the schema. |
 | D35 | Remaining G0 conventions (#58) | Approved as recommended in CONVENTIONS §11: G0-02, -04, -07, -08, -11, -13, -14, -15. |
 | D36 | R-004 basis (#57) | No copy of the R-004 text is held. The conventions were checked against public sources (Wikipedia; NASA NESC simulation output spec citing R-004 §1.1.7) and match. CONVENTIONS describes them as "consistent with R-004 practice". |
+| D37 | Landing (G0 review of L0-ASM-110) | Landing is modelled as an ideal landing. Contact with the ground within a velocity and acceleration envelope is a successful landing; contact outside it is a crash. There is no gear, bounce or friction model. |
 
 ### Open questions
 
