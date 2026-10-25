@@ -795,22 +795,26 @@ Version:       1
 ID:            L0-CON-310
 Level:         L0
 Type:          Constraint
-Statement:     The Aeronef project shall limit the magnitude of the resultant effector force on the
-  Aeronef to [P-SYS-120].
-Rationale:     G0 owner review (2026-10-25): the vector sum of all effector forces must stay within
-  a maximum magnitude, to protect the crew. The limit applies to the whole project and lives in
-  the system constants. How the controls handle it when an effector is at its own limit (L0-CON-300)
-  and a manoeuvre is needed is a detailed-design matter. Whether the limit is on force or on crew
-  acceleration is open (#87).
+Statement:     The Aeronef project shall limit the magnitude of the acceleration sensed by the crew
+  to [P-SYS-120].
+Rationale:     G0 owner review (2026-10-25): the crew must be protected from excessive g load. The
+  limiting factor is the acceleration the crew senses and experiences, not the force
+  itself (D38, #87). The sensed acceleration is the specific force: the sum of the
+  non-gravitational forces on the Aeronef divided by its current mass. Because the mass
+  falls as fuel is consumed (L0-CON-110, L0-ASM-090), the allowed resultant effector
+  force falls with it, and the force has to be compensated for the fuel used. The limit
+  applies to the whole project and lives in the system constants. How the controls
+  handle it when an effector is at its own limit (L0-CON-300) and a manoeuvre is needed
+  is a detailed-design matter.
 Parent(s):     —
 Source:        Owner review at G0, 2026-10-25
 Allocated to:  AER
 Criticality:   Not assessed
-Verification:  Test — TBD; success criteria: in every automated test run, the magnitude of the
-  resultant effector force never exceeds [P-SYS-120].
+Verification:  Test — TBD; success criteria: in every automated test run, at every fuel state, the
+  magnitude of the sensed acceleration (specific force) never exceeds [P-SYS-120].
 Parameters:    P-SYS-120
-TBD/TBR:       P-SYS-120 value TBD; force or acceleration limit TBR (#87), Martin
+TBD/TBR:       P-SYS-120 value TBD, Martin
 Owner:         Martin
 Status:        Reviewed
-Version:       1
+Version:       2
 ```

@@ -114,9 +114,9 @@ New system-level parameters referenced by the L0 requirements. Field layout foll
   owner: Martin
 
 - id: P-SYS-120
-  name: Maximum resultant effector force magnitude
-  description: Maximum magnitude of the vector sum of all effector forces on the Aeronef, set to protect the crew. Force or acceleration limit TBR (#87).
-  unit: N
+  name: Maximum crew-sensed acceleration magnitude
+  description: Maximum magnitude of the acceleration sensed by the crew (specific force; non-gravitational forces divided by current mass), set to protect the crew from excessive g load (D38).
+  unit: m/s^2
   value: null
   tolerance: null
   status: TBD
