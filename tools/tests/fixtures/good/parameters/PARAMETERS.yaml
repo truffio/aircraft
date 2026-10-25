@@ -1,0 +1,10 @@
+parameters:
+  - id: P-AF-010
+    name: Altitude hold error
+    description: Maximum altitude error in hold
+    unit: m
+    value: 1.0
+    tolerance: null
+    status: Set
+    source: test
+    owner: Martin

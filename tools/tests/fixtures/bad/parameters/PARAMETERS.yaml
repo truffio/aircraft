@@ -1,0 +1,5 @@
+parameters:
+  - {id: P-AF-010, name: a, description: d, unit: ft, value: 1, tolerance: null, status: Set, source: s, owner: Martin}
+  - {id: P-AF-010, name: dup, description: d, unit: m, value: 1, tolerance: null, status: Set, source: s, owner: Martin}
+  - {id: X-1, name: bad, description: d, unit: m, value: 1, tolerance: null, status: Set, source: s, owner: Martin}
+  - {id: P-FC-020, name: tbd, description: d, unit: rad, value: null, tolerance: null, status: TBD, source: s, owner: Martin}
