@@ -65,7 +65,7 @@ Type:          Functional
 Statement:     The Aeronef project shall verify each Aeronef requirement whose verification method
   is Test with an automated test procedure.
 Rationale:     Success criterion 2 of OBJECTIVES §6: behaviour and performance verified through
-  repeatable, automatically assessed tests (METHODOLOGY example L0-OBJ-003).
+  repeatable, automatically assessed tests (METHODOLOGY §4.3 example).
 Parent(s):     —
 Source:        OBJECTIVES.md §6; METHODOLOGY.md §4.3
 Allocated to:  STP, AER

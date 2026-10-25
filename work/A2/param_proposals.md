@@ -13,7 +13,7 @@ Notes for the orchestrator:
 ```yaml
 parameters:
   # --- System envelope and operating volume ---
-  - id: P-SYS-010
+  - id: P-SYS-200
     name: Maximum operating altitude
     description: Highest altitude above the ground plane for nominal operation. Upper limit of the selected altitude (crew-facing ft).
     unit: m
@@ -22,7 +22,7 @@ parameters:
     status: TBD
     source: CONOPS §4.2, SC-010
     owner: Martin
-  - id: P-SYS-020
+  - id: P-SYS-210
     name: Minimum operating altitude
     description: Lowest altitude above the ground plane for nominal operation. Lower limit of the selected altitude and of scenario initial altitudes (crew-facing ft).
     unit: m
@@ -31,7 +31,7 @@ parameters:
     status: TBD
     source: CONOPS §4.2, §5, SC-020
     owner: Martin
-  - id: P-SYS-030
+  - id: P-SYS-220
     name: Horizontal operating radius
     description: Radius, around the local frame origin, of the horizontal region of nominal operation (crew-facing NM).
     unit: m
@@ -40,7 +40,7 @@ parameters:
     status: TBD
     source: CONOPS §4.2
     owner: Martin
-  - id: P-SYS-040
+  - id: P-SYS-230
     name: Maximum horizontal speed
     description: Highest horizontal speed reached in autoflight. Upper limit of the selected horizontal speed (crew-facing kt).
     unit: m/s
@@ -49,7 +49,7 @@ parameters:
     status: TBD
     source: CONOPS §5, N-170
     owner: Martin
-  - id: P-SYS-050
+  - id: P-SYS-240
     name: Maximum climb vertical speed
     description: Highest upward vertical speed reached in autoflight. Upper limit of a positive selected vertical speed (crew-facing ft/min).
     unit: m/s
@@ -58,7 +58,7 @@ parameters:
     status: TBD
     source: CONOPS §5, SC-040, N-170
     owner: Martin
-  - id: P-SYS-060
+  - id: P-SYS-250
     name: Maximum descent vertical speed
     description: Highest downward vertical speed (magnitude) reached in autoflight. Limit of a negative selected vertical speed (crew-facing ft/min).
     unit: m/s
@@ -67,7 +67,7 @@ parameters:
     status: TBD
     source: CONOPS §5, SC-020, SC-030, N-170
     owner: Martin
-  - id: P-SYS-070
+  - id: P-SYS-260
     name: Maximum flight path angle magnitude
     description: Largest magnitude of selectable flight path angle, climb or descent (crew-facing degrees).
     unit: rad
@@ -76,7 +76,7 @@ parameters:
     status: TBD
     source: CONOPS §5, SC-010, N-170
     owner: Martin
-  - id: P-SYS-080
+  - id: P-SYS-270
     name: Maximum heading rate in autoflight
     description: Highest rate of change of heading during an autoflight heading change.
     unit: rad/s
@@ -85,7 +85,7 @@ parameters:
     status: TBD
     source: CONOPS §5, SC-050, SC-060, N-170
     owner: Martin
-  - id: P-SYS-090
+  - id: P-SYS-280
     name: Minimum hover endurance at full fuel
     description: Shortest time from engagement of Hover at Altitude with full fuel at maximum mass to fuel exhaustion.
     unit: s
@@ -293,7 +293,7 @@ parameters:
     owner: Martin
 
   # --- Navigation ---
-  - id: P-NAV-010
+  - id: P-NAV-050
     name: VOR reception range
     description: Distance from a VOR station within which its signal is received (Q4). Crew-facing NM where shown.
     unit: m

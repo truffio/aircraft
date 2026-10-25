@@ -31,7 +31,7 @@ CONOPS §4.2 assumes the following. If CONVENTIONS chooses differently, the affe
 ## To B1 — Functional analysis and L1
 
 - Mode groups, armed versus active, capture and the attitude rules in CONOPS §4.4 are the operational view of Q2 and Q5. B1 proposes the final answers; CONOPS will be updated.
-- Performance envelope parameters P-SYS-010 to P-SYS-090 are proposed for L1 budgets.
+- Performance envelope parameters P-SYS-200 to P-SYS-280 are proposed for L1 budgets.
 - The crew interface (CONOPS §4.3) is a logical interface of the Aeronef. B1 to decide whether it is an L1 interface (Aeronef ↔ STP, carrying crew selections) or an Aeronef-internal function.
 
 ## To C2 — Fuel and mass properties
@@ -40,7 +40,7 @@ CONOPS §4.2 assumes the following. If CONVENTIONS chooses differently, the affe
 - LOW FUEL at P-FU-020; FUEL EXHAUSTED at zero usable fuel.
 - At exhaustion, the effectors produce zero force and zero moment.
 - Fuel is consumed in every flight condition, including hover (gravity must be countered).
-- Hover endurance at full fuel and maximum mass, P-SYS-090.
+- Hover endurance at full fuel and maximum mass, P-SYS-280.
 
 ## To C1 — Dynamics model
 
@@ -73,7 +73,7 @@ CONOPS §4.2 assumes the following. If CONVENTIONS chooses differently, the affe
 
 - VOR stations defined per run by the STP, fixed in the local frame, identified by an identifier.
 - Indications: course deviation, distance to station in NM (TBR Q4).
-- Reception range P-NAV-010. CONOPS scenarios start within range and end before station passage (A2-Q08).
+- Reception range P-NAV-050. CONOPS scenarios start within range and end before station passage (A2-Q08).
 - Navigation quantities CONOPS uses: position, altitude, heading, track, horizontal speed, vertical speed, flight path angle.
 
 ## To C7 — Operational data output

@@ -11,10 +11,10 @@ The mode names below (for example *Position Hold*) are the names of functions in
 
 | Term | Definition | Ref. |
 | --- | --- | --- |
-| Active (mode) | State of a *mode* in which it is producing the references for the axes of its *mode group*. At most one mode per mode group is active at a time (TBR Q5). In requirements, "active" is used for this state; "engaged" is not used for modes. TBR (C5). | — |
+| Active (mode) | State of a *mode* in which it is producing the references for the axes of its *mode group*. At most one mode per mode group is active at a time (TBR, #6, deferred to L2). In requirements, "active" is used for this state; "engaged" is not used for modes. TBR (C5). | — |
 | AER | Identifier of the Aeronef element in requirement IDs (`AER-…`). | METHODOLOGY 9.1 |
 | Aeronef | The fictional six-degree-of-freedom flying vehicle that is the subject of the project, including its dynamics, effectors, fuel and mass properties, flight control, autoflight, navigation and operational data output. One of the three L1 elements, with the *STP* and the *REE*. | — |
-| Air-relative velocity | Vehicle velocity minus the velocity of the air mass at the body origin. Equal to the vehicle velocity in version 1 (still air, TBR). | CV-470 |
+| Air-relative velocity | Vehicle velocity minus the velocity of the air mass at the body origin. In version 1 the air mass moves with a uniform *wind* (D17). | CV-470 |
 | Airspeed | Magnitude of the *air-relative velocity*, in m/s. | CV-470 |
 | Altitude | Vertical distance of the body origin (the CG) above the *datum plane*, positive up, in m (crew-facing: ft). Geometric, not pressure altitude. | CV-430 |
 | Altitude capture | Autoflight function that, from an *armed* state during a climb or descent, takes over the vertical axis when its capture condition is met and brings the vehicle onto the *target* altitude, then hands over to *Altitude Hold*. TBR (C5). | — |
@@ -34,10 +34,11 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | Constraint | Requirement type that limits the design or the model, for example "no aerodynamic lift". | METHODOLOGY 4.4 |
 | Control frame | One execution of the flight-control or autoflight functions. Its period is a parameter. | CV-830 |
 | Course deviation | Signed angle between the *selected course* line and the line from the *VOR station* to the vehicle, positive when the vehicle is to the right of the course looking along the course direction, in rad (crew-facing: deg). | CV-650 |
+| Crash | *Ground contact* outside the *landing envelope*. It ends the run (D37). | L0-CON-290 |
 | Crew | The person or simulated operator who selects modes and targets and reads annunciations. Never the subject of a requirement. | METHODOLOGY 8.1 |
 | Crew-facing unit | Unit used for a value the crew selects or sees: ft, ft/min, kt, NM, deg (decision D7). Used only where CV-760 allows. | CV-740, CV-760 |
 | Cross-track deviation | Signed horizontal distance from the vehicle to the *selected course* line through the *VOR station*, positive to the right of the course, in m. | CV-660 |
-| Datum plane | The horizontal reference plane of the flat Aeronef world, `z_L = 0`, from which *altitude* is measured. | CV-110, CV-420 |
+| Datum plane | The horizontal reference plane of the flat Aeronef world, `z_L = 0`, from which *altitude* is measured. It is also the ground: altitude zero is ground level, with no terrain (D8). | CV-110, CV-420 |
 | Demonstration | Verification method: operating the system to show a qualitative capability, without detailed measurement. | METHODOLOGY 9.3 |
 | Derived requirement | Requirement that does not trace to a parent requirement but arises from a design decision. It is marked "Derived", cites its design decision (DD-nnn) and is reviewed at the parent level. | METHODOLOGY 12 |
 | Design decision (DD) | Recorded choice behind one or more *derived requirements*, held in `registers/DECISIONS.md` with the alternatives considered and the rationale. | — |
@@ -51,34 +52,38 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | Engagement | Transition of the autoflight system to *engaged*, or of a mode to *active*. TBR (C5). | — |
 | Euler angles | *Heading* (yaw angle) ψ, *pitch angle* θ and *roll angle* φ, applied in the yaw-pitch-roll (3-2-1) order from the vehicle-carried local frame to the body frame. | CV-210 to CV-230 |
 | Flight control | The Aeronef subsystem (FC) that regulates each translational and rotational axis independently and allocates axis demands to the *effectors*. | — |
+| Flight control panel | The panel the *crew* uses to select *modes* and *targets* and to control the *autoflight* system. The crew's manual inputs go through it; there is no stick or yoke. Defined at lower levels (#79). | L0-CON-170, L0-CON-180 |
 | Flight path angle | Angle between the vehicle velocity and the horizontal plane, positive when climbing, in rad (crew-facing: deg). Independent of the *pitch angle* on the Aeronef. | CV-560 |
 | Fuel exhaustion | State in which the remaining fuel mass is zero. Nominal behaviour, not a failure. | — |
 | Gate | Review point between plan phases (G0 to G4) at which the project owner approves a baseline. | Plan §6 |
+| Ground contact | Contact of the vehicle with the *datum plane*. Modelled as an ideal landing: within the *landing envelope* it is a *landing*, outside it a *crash*. There is no landing gear, bounce or friction model (D37). | L0-CON-290 |
 | Heading | The direction in which the nose points: the *direction angle* of the horizontal projection of the body x axis; equal to the Euler yaw angle. Independent of *track* on the Aeronef. In rad (crew-facing: deg). | CV-530, CV-550 |
 | Heading Hold | Autoflight *mode* that keeps the *heading* at its *target*. It constrains where the nose points, not the direction of motion. | CV-530 |
 | Height | Vertical distance of the body origin above a stated reference other than the datum plane, positive up, in m. Always used with its reference. | CV-440 |
 | Horizontal distance | Distance between the projections of two points on the datum plane, in m (crew-facing: NM). | CV-450 |
 | Horizontal speed | Magnitude of the horizontal component of the vehicle velocity relative to the ground, in m/s (crew-facing: kt). Independent of attitude. Also the name of the speed *mode* that keeps horizontal speed at its *target*. | CV-480 |
-| Hover at altitude | Autoflight *mode* that keeps the *altitude* at its *target* and the *horizontal speed* at zero, without holding a horizontal position, so the horizontal position may drift. Distinct from *Position Hold*. TBR (Q3). | — |
+| Hover at altitude | Autoflight vertical *mode* (D11). When it engages, the vehicle descends from its current *altitude* to the hover altitude set on the *flight control panel*, then holds position as in *Position Hold*. The reference position and the deceleration are TBR (#78). | Plan D11 |
 | ICD | Interface control document: data, units, rates and frames exchanged between two elements or subsystems. | METHODOLOGY 11.1 |
 | Inspection | Verification method: examination of an artifact, code or data against the requirement, without running it. | METHODOLOGY 9.3 |
+| Landing | *Ground contact* within the *landing envelope*: a successful outcome, not a crash (D37). | L0-CON-290 |
+| Landing envelope | The limits on velocity and acceleration at *ground contact* within which contact is a *landing*. Parameters, set at a lower level. | L0-CON-290 |
 | Level attitude | *Attitude* with zero *pitch angle* and zero *roll angle*, at any *heading*. | CV-270 |
 | Level flight | Motion with zero *vertical speed*. Unrelated to *level attitude*. | CV-570 |
-| Local reference frame | Frame L fixed to the datum plane: x north, y east, z down (NED, proposed), origin a fixed point on the datum plane. Treated as inertial. | CV-120 to CV-140 |
+| Local reference frame | Frame L fixed to the datum plane: x north, y east, z down (NED, D21), origin a fixed point on the datum plane. Treated as inertial. | CV-120 to CV-140 |
 | Mode | One autoflight function that, while *active*, sets the references for a defined set of axes from a *target*, for example *Altitude Hold* or *Track Hold*. The mode catalogue is decision D3. | Plan D3 |
-| Mode group | Set of *modes* that act on the same axes and of which at most one is *active* at a time. Proposed groups: vertical, lateral, speed, and hold (*Position Hold*, *Hover at altitude*), which replaces the vertical and lateral groups while active. TBR (Q5). | — |
+| Mode group | Set of *modes* that act on the same axes and of which at most one is *active* at a time. Groups: vertical, lateral and speed. *Position Hold* is a lateral mode and *Hover at altitude* a vertical mode (D11). Which modes can be combined is designed at L2 (#6, D13). | — |
 | Navigation | The Aeronef subsystem (NAV) that provides *position*, *altitude*, *heading*, *track*, *horizontal speed*, *vertical speed*, *flight path angle* and the simulated VOR quantities to autoflight. | — |
 | Operational data | Signals the Aeronef outputs, at each output sample, describing its externally observable activity: crew selections, *targets*, *armed* and *active* modes, *annunciations*, control activity and vehicle states. Each signal is classified *releasable* or *protected*. | CV-830, CV-840 |
 | Output sample | One record of *operational data*. Its period is a parameter. | CV-830 |
 | Parameter | A named value used by requirements, the model or the design, held in `parameters/PARAMETERS.yaml` with an ID `P-<SUB>-<NNN>`, a unit, a value or TBD, a status and a source. Requirements cite parameters by ID instead of writing numbers. | CV-790 |
 | Pitch angle | Euler angle θ: rotation about the body y axis, positive nose up, in [−π/2, +π/2] rad. | CV-220, CV-230 |
 | Position (vehicle position) | Position of the body origin (the CG) in the local reference frame, in m. *Horizontal position* is its north and east components. | CV-410 |
-| Position Hold | Autoflight *mode* that keeps the vehicle *position*, horizontal position and *altitude*, at a reference position (on engagement, the position at that instant, per METHODOLOGY §12). Distinct from *Hover at altitude*. TBR (Q3). | — |
+| Position Hold | Autoflight lateral *mode* (D11) in which the vehicle stops moving on all axes (zero velocity, zero acceleration) and holds its position at any *altitude*, compensating for *wind*. Whether the reference position is the position at engagement or where the vehicle stops is TBR (#78). | Plan D11 |
 | Project owner | The person who decides open questions and approves each gate (Martin). | Plan §5 |
 | Protected | Classification of information that must not reach the *REE*: requirements, design artifacts (including this glossary and the conventions), source code, ground-truth test expectations, assessment answers and *operational data* signals classified protected. | REVERSE_ENGINEERING §2, §7 |
 | Quaternion (attitude) | Unit quaternion (q0, q1, q2, q3), scalar first, that represents the attitude without the Euler-angle singularity. | CV-250 |
-| Radial | The *direction angle* of the horizontal line from a *VOR station* to the vehicle (the bearing from the station); also the half-line of positions with that bearing. Referenced to true north (TBR Q4). | CV-620 |
-| Reception range | Distance from a *VOR station* within which its signal is received. A parameter. TBR (Q4). | CV-670 |
+| Radial | The *direction angle* of the horizontal line from a *VOR station* to the vehicle (the bearing from the station); also the half-line of positions with that bearing. Referenced to true north (D12). | CV-620 |
+| Reception range | Distance from a *VOR station* within which its signal is received. A parameter. Ideal VOR (D12). | CV-670 |
 | REE | Reverse-Engineering Effort: the L1 element that reconstructs the Aeronef's functions and logic from *releasable* material only. | OBJECTIVES §4 |
 | Relative track | wrap180(*track* − *heading*): the direction of horizontal motion relative to the nose. | CV-550 |
 | Releasable | Classification of information that may be given to the *REE*: operational manuals and procedures, the executable simulation as released, and *operational data* signals classified releasable. | REVERSE_ENGINEERING §3 |
@@ -86,6 +91,7 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | Roll angle | Euler angle φ: rotation about the body x axis, positive right side down, in (−π, +π] rad. "Bank angle" is not used. | CV-220, CV-230 |
 | Selected course | The *direction angle* of the path along a radial line through a *VOR station* that the vehicle is to follow, flown outbound on radial C or inbound on its reciprocal. Whether the crew selects a course or a radial is open (issue A3-Q09). | CV-630 |
 | Selected value | A value the crew chooses for a *target*, in a crew-facing unit (for example a selected altitude in ft). It becomes the SI *target* by exact conversion. | CV-770 |
+| Sensed acceleration | The acceleration the *crew* feels: the sum of the non-gravitational forces on the vehicle divided by its current mass (specific force), gravity included in the load felt. 1 g in a hover, 0 g in free fall. Limited to `[P-SYS-120]`, 3 g for now (D38). | L0-CON-310 |
 | Shall, will, should | "Shall" states a verified requirement, "will" a fact or declaration of purpose, "should" a goal (not verified). | METHODOLOGY 8.2 |
 | Simulation step | The fixed time increment `Δt` by which the vehicle model advances; step k is at simulation time `k·Δt`. | CV-820 |
 | Simulation time | Independent time variable of the vehicle model, in s, zero at the instant the initial conditions apply; independent of wall-clock time. | CV-810 |
@@ -106,3 +112,4 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | VOR | VHF omnidirectional range: in the Aeronef world, a simulated navigation function that gives the vehicle's *radial* from a *VOR station*, its *TO/FROM sense* and its *course deviation* relative to a *selected course*. Version 1: ideal signal within the *reception range*, no noise, no magnetic variation. TBR (Q4). | CV-6xx |
 | VOR radial tracking | Autoflight lateral *mode* that, after *arming*, intercepts and *captures* the *selected course* of a *VOR station* and then keeps the *course deviation* at zero. TBR (C5). | CV-650 |
 | VOR station | Fixed point in the local reference frame, with an identifier, from which radials are defined. | CV-610 |
+| Wind | Motion of the air mass relative to the *local reference frame*. In version 1 it is uniform, the same everywhere, and set by the test environment for each run (D17). | L0-ASM-050, CV-470 |

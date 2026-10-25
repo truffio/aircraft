@@ -11,4 +11,11 @@
 #   status:      TBD | TBR | Set
 #   source:      where the value comes from (requirement, trade study, DD-nnn)
 #   owner:       Martin
+#
+# P-SYS number blocks (fixed at the G0 owner review, 2026-10-25, after A1, A2 and A3 had
+# each started at P-SYS-010):
+#   P-SYS-010..190  L0 requirements (A1). Withdrawn and never reused: 010-050, 080-110.
+#   P-SYS-200..290  ConOps operating envelope (A2; was P-SYS-010..090).
+#   P-SYS-300..390  Conventions time base (A3; was P-SYS-010, -020).
+# The VOR reception range is P-NAV-050 (A3); the ConOps used P-NAV-010 for it.
 parameters: []

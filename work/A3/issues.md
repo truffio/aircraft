@@ -30,4 +30,4 @@ Each question has a proposed answer. The G0 reference points to the "Decisions f
 | A3-N03 | METHODOLOGY §8.5, LOW FUEL example | It states a fuel threshold in %. CV-720 stores dimensionless ratios as fractions. | FU (C2) writes the threshold parameter as a fraction; a percentage may still be shown to the crew. |
 | A3-N04 | Plan §5, staging files | The plan lists `glossary_proposals.md` for each agent. A3 owns GLOSSARY.md directly, so it has no glossary proposals file. | None. |
 | A3-N05 | Plan Q2 | Pitch and roll behaviour during guidance modes is still open. CV-550 and CV-970 require attitude to be stated separately in each mode. | B1 proposes the answer at G1; mode agents write attitude requirements explicitly. |
-| A3-N06 | Parameter IDs | CONVENTIONS cites the proposed IDs `P-SYS-010`, `P-SYS-020`, `P-DYN-010`, `P-NAV-010` to `-050` and `P-TM-010` to `-070`. | If B2 renumbers, update the citations in CONVENTIONS. |
+| A3-N06 | Parameter IDs | CONVENTIONS cites the proposed IDs `P-SYS-300`, `P-SYS-310`, `P-DYN-010`, `P-NAV-010` to `-050` and `P-TM-010` to `-070`. | If B2 renumbers, update the citations in CONVENTIONS. |
