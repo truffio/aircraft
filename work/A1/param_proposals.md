@@ -2,6 +2,9 @@
 
 New system-level parameters referenced by the L0 requirements. Field layout follows `parameters/PARAMETERS.yaml`. Proposed values are marked TBR; `value: null` where no proposal is made (TBD). Closure dates are proposals (see issues.md, Q-A1-10).
 
+
+**Withdrawn at the G0 owner review (2026-10-25)**, because no live requirement uses them any more: P-SYS-010, -020 (design counts; OBJ-040/-050 and SUC-080/-090 deleted), P-SYS-030 (pass fraction; every requirement must pass), P-SYS-040 (reproduction tolerance; D25), P-SYS-050 (campaign size; #68), P-SYS-080, -090, -100 (replaced by 100% coverage). B2 must not seed them.
+
 ```yaml
 - id: P-SYS-010
   name: Minimum number of flight-control-law designs
