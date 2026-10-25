@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24, D8–D12 on 2026-10-25)
+### Decided (2026-10-24; D8–D23 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -292,6 +292,17 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D10 | Attitude during guidance modes (#3, Q2) | Pitch and roll stay level. The Aeronef doesn't need to pitch or roll to move. Those manoeuvres are possible but serve no purpose, because the axes are uncoupled. |
 | D11 | Hover versus position hold (#4, Q3) | Position hold is a lateral mode. The vehicle stops moving on all axes (zero velocity, zero acceleration) and holds its position at any altitude, compensating for wind. Hover is a vertical mode. When it engages, the vehicle descends from its current altitude to the altitude set on the flight control panel, then holds position. Hover therefore needs position hold. Whether position is held from the moment hover engages, or only after the velocity has come down to zero, is still open (#78). |
 | D12 | VOR model (#5, Q4) | Ideal VOR: the simplest model. Ground stations are at fixed positions in the local frame, radials refer to true north, there is no magnetic variation or noise, and the signal is ideal within the reception range. |
+| D13 | Mode compatibility (#61) | A flight-path-angle vertical mode needs horizontal velocity, so it can't be combined with position hold. Detailed design (#6) will produce a compatibility matrix of lateral modes, vertical modes and speed selection. |
+| D14 | VOR tracking (#53) | The crew flies a course. Tracking a radial is a track over the ground, and flying TO or FROM the station changes the course flown. |
+| D15 | Mode logic versus controllers (#72) | The modes say how the aircraft flies; the controllers implement them, so the two are decoupled. Every control-law version and autoflight implementation must meet the same mode logic, so any implementation pairs with any law. |
+| D16 | Mode engagement rule (#78) | When the crew selects a mode, it normally arms first and engages once its engagement conditions are met. While the mode is armed, the active mode manoeuvres the craft into those conditions. Manoeuvres are g-limited: maximum acceleration and deceleration are design parameters. This covers, for example, climb or descent sequencing to altitude hold, and motion sequencing to position hold. |
+| D17 | Wind (#49) | Wind exists and can be configured in the test environment. Position hold compensates for wind. |
+| D18 | No coupling between axes (#63) | A motion along one of the six degrees of freedom does not induce acceleration on another axis, seen from the aircraft's body frame. A translation along one axis does not cause translation along another. This is unlike winged aircraft, where roll and yaw are coupled. How this treats the rigid-body kinematic terms is open (#81). |
+| D19 | Effectors (#64) | Effectors are fixed in the body frame and nothing swivels. There are enough of them to give control in all 6 degrees of freedom. |
+| D20 | Air density (#70) | Standard atmosphere |
+| D21 | Local frame (#46) | North-east-down (NED) |
+| D22 | Attitude representation (#47) | The quaternion is the authoritative attitude; Euler angles are derived from it. |
+| D23 | Angle units (#48) | Radians in calculations, requirements and parameters; degrees only at the crew interface. |
 
 ### Open questions
 
