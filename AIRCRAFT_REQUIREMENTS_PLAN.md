@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24; D8–D33 on 2026-10-25)
+### Decided (2026-10-24; D8–D35 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -313,6 +313,8 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D31 | Requirement identifiers (#45) | One syntax at every level, starting with the level: `L0-OBJ\|CON\|SUC\|ASM-nnn`, `L1-AER-nnn`, `L<n>-AER-<SUB>[-<ITEM>]-<NNN>`. The prefix must match the Level field, and the lint enforces it. A requirement that moves to another level gets a new ID. |
 | D32 | Scenario values (#62) | Test procedures set the defaults and constants for test scenarios. They are not design parameters and stay out of `PARAMETERS.yaml`. |
 | D33 | Levels and where modes are defined (#80) | L0 is the project, and the aircraft is a black box at L0. L1 is the project's components: the aircraft (AER), the test environment (STP) and the reverse-engineering effort (REE). This plan writes only the AER branch of L1. L2 divides a component into its subsystems. Modes, guidance, mode logic and control-law implementation are defined at L2 (AF, FC), not at L0 or L1. |
+| D34 | Crew units (#52, refines D7) | What the crew sees and sets is in crew units: feet, knots and degrees. Time is in whatever unit makes sense, so vertical rates are in ft/min and flight duration in hours or minutes. Internal calculations use SI or whatever is most convenient. Crew-facing parameters are stored in their crew unit and flagged in the schema. |
+| D35 | Remaining G0 conventions (#58) | Approved as recommended in CONVENTIONS §11: G0-02, -04, -07, -08, -11, -13, -14, -15. |
 
 ### Open questions
 
