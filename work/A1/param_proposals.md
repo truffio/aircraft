@@ -112,6 +112,16 @@ New system-level parameters referenced by the L0 requirements. Field layout foll
   status: TBD
   source: L0-SUC-130 (REVERSE_ENGINEERING.md §6; METHODOLOGY.md §11.2)
   owner: Martin
+
+- id: P-SYS-120
+  name: Maximum resultant effector force magnitude
+  description: Maximum magnitude of the vector sum of all effector forces on the Aeronef, set to protect the crew. Force or acceleration limit TBR (#87).
+  unit: N
+  value: null
+  tolerance: null
+  status: TBD
+  source: L0-CON-310 (owner review at G0, 2026-10-25)
+  owner: Martin
 ```
 
 ## TBD/TBR register entries to open (for B2 / orchestrator)

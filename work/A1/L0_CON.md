@@ -20,7 +20,7 @@ Verification:  Inspection — TBD; success criteria: the model specification sta
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -46,7 +46,7 @@ Verification:  Analysis — TBD; success criteria: the force effector set can pr
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -56,23 +56,31 @@ Version:       1
 ID:            L0-CON-030
 Level:         L0
 Type:          Constraint
-Statement:     The Aeronef project shall exclude aerodynamic coupling between degrees of freedom
-  from the Aeronef model.
+Statement:     The Aeronef project shall exclude from the Aeronef model any coupling by which motion
+  along one degree of freedom induces an acceleration along another degree of freedom
+  in the body frame.
 Rationale:     The initial design avoids coupling between axes (OBJECTIVES §2), and the concept
-  excludes aerodynamic coupling (AIRCRAFT_CHARACTERISTICS §2). Whether rigid-body inertial coupling
-  and the attitude-dependent direction of body-fixed effector forces are also to be excluded is an
-  open question (issues.md, Q-A1-01); this constraint covers aerodynamic coupling only.
+  excludes aerodynamic coupling (AIRCRAFT_CHARACTERISTICS §2). Whether rigid-body
+  inertial coupling and the attitude-dependent direction of body-fixed effector forces
+  are also to be excluded is an open question (issues.md, Q-A1-01); this constraint
+  covers aerodynamic coupling only. G0 owner review (2026-10-25): accepted with the
+  owner's definition (D18): a motion along one degree of freedom does not induce an
+  acceleration on another axis, seen from the body frame. This is unlike winged
+  aircraft, where roll and yaw are coupled. How the rigid-body kinematic and gyroscopic
+  terms are treated is decided in the model specification (#81, deferred to L2).
 Parent(s):     —
 Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §2
 Allocated to:  AER
 Criticality:   Not assessed
-Verification:  Inspection — TBD; success criteria: the model specification defines no aerodynamic
-  term that links motion in one degree of freedom to a force or moment in another degree of freedom.
+Verification:  Inspection — TBD; success criteria: the model specification defines no term by which
+  motion along one degree of freedom produces a force, moment or acceleration along
+  another degree of freedom in the body frame, or it records each kinematic term
+  retained under the decision on #81.
 Parameters:    —
-TBD/TBR:       Scope of excluded coupling TBR (Q-A1-01), Martin, 2026-11-30
+TBD/TBR:       Treatment of rigid-body kinematic terms (#81, deferred to L2), Martin
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-040
@@ -94,7 +102,7 @@ Verification:  Inspection — TBD; success criteria: the model specification def
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -116,7 +124,7 @@ Verification:  Inspection — TBD; success criteria: the Aeronef requirements an
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -140,7 +148,7 @@ Verification:  Inspection — TBD; success criteria: the model specification ide
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -153,9 +161,12 @@ Type:          Constraint
 Statement:     The Aeronef project shall fix the direction of action of each force effector relative
   to the Aeronef body.
 Rationale:     AIRCRAFT_CHARACTERISTICS §3 states that each emitter acts in a fixed direction. This
-  record reads 'fixed' as fixed in the body frame (no gimballing), which is the reading under which
-  the effector set provides authority along and about body axes; the reading is TBR (issues.md,
-  Q-A1-02). The layout of the effectors is a design decision, not an L0 constraint.
+  record reads 'fixed' as fixed in the body frame (no gimballing), which is the reading
+  under which the effector set provides authority along and about body axes; the
+  reading is TBR (issues.md, Q-A1-02). The layout of the effectors is a design
+  decision, not an L0 constraint. G0 owner review (2026-10-25): accepted (D19). Nothing
+  swivels, so there must be enough effectors to give control in all six degrees of
+  freedom (L0-CON-020). The TBR is closed.
 Parent(s):     —
 Source:        AIRCRAFT_CHARACTERISTICS.md §3, §7
 Allocated to:  AER
@@ -163,10 +174,10 @@ Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: the effector requirements and the model
   specification define a constant body-frame direction of action for each force effector.
 Parameters:    —
-TBD/TBR:       Body-fixed reading of 'fixed direction' TBR (Q-A1-02), Martin, 2026-11-30
+TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-080
@@ -189,7 +200,7 @@ Verification:  Inspection — TBD; success criteria: the effector model is defin
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -199,22 +210,26 @@ Version:       1
 ID:            L0-CON-090
 Level:         L0
 Type:          Constraint
-Statement:     The Aeronef project shall limit the external effects on the Aeronef model to gravity
-  and aerodynamic drag.
+Statement:     The Aeronef project shall limit the external effects on the Aeronef model to gravity,
+  aerodynamic drag on the air-relative velocity and ground contact.
 Rationale:     The concept lists gravity and air resistance as the only external effects to be
-  modelled (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §2, §7). Wind is excluded by L0-ASM-050; the
-  gravity and drag models are defined in the model specification.
+  modelled (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §2, §7). Wind is excluded by
+  L0-ASM-050; the gravity and drag models are defined in the model specification. G0
+  owner review (2026-10-25): accepted with wind and ground contact. Drag acts on the
+  velocity relative to the air, which includes the wind (L0-ASM-050, D17). Ground
+  contact is the ideal landing of L0-CON-290 (D37).
 Parent(s):     —
 Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §2, §7
 Allocated to:  AER
 Criticality:   Not assessed
-Verification:  Inspection — TBD; success criteria: the model specification defines gravity and
-  aerodynamic drag as the only external forces and moments on the Aeronef.
+Verification:  Inspection — TBD; success criteria: the model specification defines gravity,
+  aerodynamic drag on the vehicle velocity relative to the air mass including wind, and
+  ground contact as the only external forces and moments on the Aeronef.
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-100
@@ -238,7 +253,7 @@ Verification:  Inspection — TBD; success criteria: the Aeronef requirements de
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -262,7 +277,7 @@ Verification:  Analysis — TBD; success criteria: over a simulated run, the veh
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -287,7 +302,7 @@ Verification:  Inspection — TBD; success criteria: the parameter database hold
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -311,7 +326,7 @@ Verification:  Inspection — TBD; success criteria: the model specification def
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -336,7 +351,7 @@ Verification:  Inspection — TBD; success criteria: the model specification der
 Parameters:    —
 TBD/TBR:       Elongated body shape provisional, TBR, Martin, 2026-11-30
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -361,7 +376,7 @@ Verification:  Inspection — TBD; success criteria: the conventions define the 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -385,7 +400,7 @@ Verification:  Inspection — TBD; success criteria: the Aeronef requirements an
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -398,8 +413,13 @@ Type:          Constraint
 Statement:     The Aeronef project shall represent the crew interface of the Aeronef as data
   exchanged with the Aeronef, without a model of physical cockpit controls or display formats.
 Rationale:     Detailed pilot controls and displays are excluded (AIRCRAFT_CHARACTERISTICS §7). The
-  crew still selects modes and targets and receives annunciations; these are data items exchanged
-  with the Aeronef, which also lets test procedures act as the crew (L0-ASM-120).
+  crew still selects modes and targets and receives annunciations; these are data items
+  exchanged with the Aeronef, which also lets test procedures act as the crew
+  (L0-ASM-120). G0 owner review (2026-10-25): accepted for now. For manual testing, the
+  owner will fly the craft through a flight control panel. The panel is defined in the
+  detailed design and in the requirements of the craft and its subsystems (#79, #80.3).
+  A graphical interface for it belongs to the STP and does not change the data boundary
+  set here.
 Parent(s):     —
 Source:        AIRCRAFT_CHARACTERISTICS.md §5, §7
 Allocated to:  AER, STP
@@ -410,8 +430,8 @@ Verification:  Inspection — TBD; success criteria: the Aeronef requirements de
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-180
@@ -420,21 +440,27 @@ Version:       1
 ID:            L0-CON-180
 Level:         L0
 Type:          Constraint
-Statement:     The Aeronef project shall treat manual control of the Aeronef as an optional feature.
+Statement:     The Aeronef project shall exclude direct manual flight controls from the Aeronef.
 Rationale:     Autoflight is the primary operating method and manual control may be introduced later
-  (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §6). The plan records manual control with the EARS
-  'Where' pattern and does not develop it in this cycle (AIRCRAFT_REQUIREMENTS_PLAN §1).
+  (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §6). The plan records manual control with
+  the EARS 'Where' pattern and does not develop it in this cycle
+  (AIRCRAFT_REQUIREMENTS_PLAN §1). G0 owner review (2026-10-25): manual control with a
+  stick or yoke is not in scope. The crew's manual inputs are made through the flight
+  control panel, which is as manual as flying the Aeronef gets; the system generates
+  the effector forces from those inputs. A direct manual flight control is a control,
+  such as a stick or a yoke, with which the pilot commands the effectors without the
+  autoflight system.
 Parent(s):     —
 Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §6; AIRCRAFT_REQUIREMENTS_PLAN.md §1
 Allocated to:  AER
 Criticality:   Not assessed
-Verification:  Inspection — TBD; success criteria: each Aeronef requirement on manual control uses
-  the EARS optional-feature pattern.
+Verification:  Inspection — TBD; success criteria: no Aeronef requirement defines a direct manual
+  flight control; each crew input is made through the flight control panel.
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-190
@@ -446,7 +472,11 @@ Type:          Constraint
 Statement:     The Aeronef project shall make the simulation core executable without a graphical
   display.
 Rationale:     A graphical interface is optional; the core simulator must work without graphics so
-  that large automated campaigns run efficiently (OBJECTIVES §3; TESTING_ENVIRONMENT §2).
+  that large automated campaigns run efficiently (OBJECTIVES §3; TESTING_ENVIRONMENT
+  §2). G0 owner review (2026-10-25): accepted for batch runs and automated testing.
+  Manual testing needs a graphical user interface, which may be minimal; it may be
+  needed from the start, so that the owner can try the craft before automated runs.
+  This is an STP capability (L0-OBJ-070); the headless core required here is unchanged.
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §2
 Allocated to:  STP
@@ -456,8 +486,8 @@ Verification:  Demonstration — TBD; success criteria: an automated test campai
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-200
@@ -481,7 +511,7 @@ Verification:  Demonstration — TBD; success criteria: the flight-control-law d
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -505,7 +535,7 @@ Verification:  Demonstration — TBD; success criteria: the autoflight implement
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -517,11 +547,16 @@ Level:         L0
 Type:          Constraint
 Statement:     The Aeronef project shall withhold the protected design material from the
   reverse-engineering effort.
-Rationale:     Separation between the original design and the material available to the
-  reverse-engineering agents is essential to the experiment (OBJECTIVES §4; REVERSE_ENGINEERING §2,
-  §7). Protected design material (glossary) is a closed set: requirements, design specifications,
-  the model specification, the parameter database, the interface control documents, implementation
-  and source code, ground-truth test expectations, assessment answers and the manual trace register.
+Rationale:     G0 owner review (2026-10-25): deleted. The owner will select the documents given to
+  the reverse-engineering functions when that part of the project starts; the system
+  itself does not have to protect anything, so this constraint is irrelevant here. The
+  reverse-engineering objective (L0-OBJ-160) stays. Original rationale: Separation
+  between the original design and the material available to the reverse-engineering
+  agents is essential to the experiment (OBJECTIVES §4; REVERSE_ENGINEERING §2, §7).
+  Protected design material (glossary) is a closed set: requirements, design
+  specifications, the model specification, the parameter database, the interface
+  control documents, implementation and source code, ground-truth test expectations,
+  assessment answers and the manual trace register.
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §2, §7
 Allocated to:  REE, AER, STP
@@ -531,8 +566,8 @@ Verification:  Inspection — TBD; success criteria: the release record of each 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Deleted
+Version:       2
 ```
 
 ### L0-CON-230
@@ -543,11 +578,16 @@ Level:         L0
 Type:          Constraint
 Statement:     The Aeronef project shall limit the released evidence to operational manuals and
   procedures, black-box access to the executable simulation and released operational data.
-Rationale:     REVERSE_ENGINEERING §3 defines the three kinds of information available to the
-  agents: human-oriented operational documents, observable behaviour in simulation, and recorded
-  operational data. Black-box access (glossary) means running and stimulating the simulation through
-  its operator interface without access to source code or internal state. The exact items released
-  are fixed in the reverse-engineering effort requirements (METHODOLOGY §11.2, rule 4).
+Rationale:     G0 owner review (2026-10-25): deleted. The owner will select the documents given to
+  the reverse-engineering functions when that part of the project starts; the system
+  itself does not have to protect anything, so this constraint is irrelevant here. The
+  reverse-engineering objective (L0-OBJ-160) stays. Original rationale:
+  REVERSE_ENGINEERING §3 defines the three kinds of information available to the
+  agents: human-oriented operational documents, observable behaviour in simulation, and
+  recorded operational data. Black-box access (glossary) means running and stimulating
+  the simulation through its operator interface without access to source code or
+  internal state. The exact items released are fixed in the reverse-engineering effort
+  requirements (METHODOLOGY §11.2, rule 4).
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §3; METHODOLOGY.md §11.2
 Allocated to:  REE, AER, STP
@@ -557,8 +597,8 @@ Verification:  Inspection — TBD; success criteria: each item in the release re
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Deleted
+Version:       2
 ```
 
 ### L0-CON-240
@@ -569,10 +609,14 @@ Level:         L0
 Type:          Constraint
 Statement:     The Aeronef project shall restrict the content of each released evidence item to
   externally observable behaviour and operator actions.
-Rationale:     Manuals must describe observable behaviour and operator actions without pasting
-  requirement text (METHODOLOGY §11.2, rule 1), and operational data must not inadvertently expose
-  protected requirements or implementation details (REVERSE_ENGINEERING §3C, §7). This is why each
-  operational data signal is classified releasable or protected.
+Rationale:     G0 owner review (2026-10-25): deleted. The owner will select the documents given to
+  the reverse-engineering functions when that part of the project starts; the system
+  itself does not have to protect anything, so this constraint is irrelevant here. The
+  reverse-engineering objective (L0-OBJ-160) stays. Original rationale: Manuals must
+  describe observable behaviour and operator actions without pasting requirement text
+  (METHODOLOGY §11.2, rule 1), and operational data must not inadvertently expose
+  protected requirements or implementation details (REVERSE_ENGINEERING §3C, §7). This
+  is why each operational data signal is classified releasable or protected.
 Parent(s):     —
 Source:        REVERSE_ENGINEERING.md §3, §7; METHODOLOGY.md §11.2
 Allocated to:  AER, STP, REE
@@ -583,8 +627,8 @@ Verification:  Inspection — TBD; success criteria: a review of each released e
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Deleted
+Version:       2
 ```
 
 ### L0-CON-250
@@ -596,8 +640,11 @@ Type:          Constraint
 Statement:     The Aeronef project shall perform the reverse-engineering effort with agents that
   have had no access to the protected design material.
 Rationale:     The reconstruction must be made by independent agents (OBJECTIVES §4;
-  REVERSE_ENGINEERING §1, §7). An AI agent that authored or reviewed the design carries that
-  knowledge in its context, so withholding the material (L0-CON-220) is not enough on its own.
+  REVERSE_ENGINEERING §1, §7). An AI agent that authored or reviewed the design carries
+  that knowledge in its context, so withholding the material (L0-CON-220) is not enough
+  on its own. G0 owner review (2026-10-25): deferred. Nothing is implemented for
+  reverse engineering now; this is revisited once the other elements of the project are
+  done (#69). Stays Draft.
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §1, §7
 Allocated to:  REE
@@ -608,7 +655,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
-Version:       1
+Version:       2
 ```
 
 ### L0-CON-260
@@ -632,7 +679,7 @@ Verification:  Inspection — TBD; success criteria: each parameter in the param
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
 Version:       1
 ```
 
@@ -643,11 +690,14 @@ ID:            L0-CON-270
 Level:         L0
 Type:          Constraint
 Statement:     The Aeronef project shall state each crew-facing quantity in the crew-facing unit
-  assigned to its quantity: ft for altitude, ft/min for vertical speed, kt for speed, NM for
-  distance, and degrees for heading, track, flight path angle and radial.
+  assigned to its quantity: ft for altitude, ft/min for vertical speed, kt for speed,
+  NM for distance, degrees for heading, track, flight path angle and radial, and hours
+  or minutes for durations.
 Rationale:     The units are those of plan decision D7, which adopts North American aviation units
-  for everything the crew selects or sees, to keep the operating concept airliner-like. The
-  conversions to SI are fixed in the conventions document.
+  for everything the crew selects or sees, to keep the operating concept airliner-like.
+  The conversions to SI are fixed in the conventions document. G0 owner review
+  (2026-10-25): accepted. Time is in whatever unit makes sense: vertical rates in
+  ft/min, flight duration in hours or minutes (D34).
 Parent(s):     —
 Source:        AIRCRAFT_REQUIREMENTS_PLAN.md §9 D7
 Allocated to:  AER, STP
@@ -658,8 +708,8 @@ Verification:  Inspection — TBD; success criteria: each crew selection and eac
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
-Version:       1
+Status:        Reviewed
+Version:       2
 ```
 
 ### L0-CON-280
@@ -669,10 +719,12 @@ ID:            L0-CON-280
 Level:         L0
 Type:          Constraint
 Statement:     The Aeronef project shall define the reference frames, axes and sign conventions of
-  the Aeronef in accordance with AIAA R-004-1992.
+  the Aeronef consistently with AIAA R-004-1992 practice.
 Rationale:     Axis and sign conventions must be fixed before any dynamics requirement is written,
-  and every axis must follow the coordinate-system standard (METHODOLOGY §2; §8.4, rule 12). The
-  conventions document applies the standard and records the choices it leaves open.
+  and every axis must follow the coordinate-system standard (METHODOLOGY §2; §8.4, rule
+  12). The conventions document applies the standard and records the choices it leaves
+  open. G0 owner review (2026-10-25): accepted. No copy of R-004 is held; the
+  conventions were checked against public sources (D36).
 Parent(s):     —
 Source:        METHODOLOGY.md §2, §8.4; AIRCRAFT_REQUIREMENTS_PLAN.md §6 (A3)
 Allocated to:  AER, STP
@@ -683,6 +735,82 @@ Verification:  Inspection — TBD; success criteria: the conventions document de
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Reviewed
+Version:       2
+```
+
+### L0-CON-290
+
+```req
+ID:            L0-CON-290
+Level:         L0
+Type:          Constraint
+Statement:     The Aeronef project shall model ground contact of the Aeronef as an ideal landing.
+Rationale:     G0 owner review (2026-10-25), decision D37: landing has to be modelled. Contact with
+  the ground within a landing envelope of velocity and acceleration is a successful landing;
+  contact outside it is a crash. There is no landing gear, bounce or friction model (L0-ASM-110).
+  The envelope limits are parameters set at a lower level.
+Parent(s):     —
+Source:        Owner review at G0, 2026-10-25 (D8, D37)
+Allocated to:  AER, STP
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: the model specification defines ground contact
+  at altitude zero, a landing envelope of velocity and acceleration limits, and the landed and
+  crashed outcomes.
+Parameters:    —
+TBD/TBR:       Landing envelope limits TBD (lower level), Martin
+Owner:         Martin
+Status:        Reviewed
+Version:       1
+```
+
+### L0-CON-300
+
+```req
+ID:            L0-CON-300
+Level:         L0
+Type:          Constraint
+Statement:     The Aeronef project shall limit the force of each force effector to a maximum
+  magnitude.
+Rationale:     G0 owner review (2026-10-25): each effector has a maximum force. How the controls
+  manoeuvre when an effector is at its limit is a detailed-design matter. The per-effector maxima
+  are effector parameters, set at a lower level.
+Parent(s):     —
+Source:        Owner review at G0, 2026-10-25
+Allocated to:  AER
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: the effector requirements and the model
+  specification define a maximum force magnitude for each force effector, and the model never
+  produces an effector force above it.
+Parameters:    —
+TBD/TBR:       Per-effector maximum force values TBD (EF level), Martin
+Owner:         Martin
+Status:        Reviewed
+Version:       1
+```
+
+### L0-CON-310
+
+```req
+ID:            L0-CON-310
+Level:         L0
+Type:          Constraint
+Statement:     The Aeronef project shall limit the magnitude of the resultant effector force on the
+  Aeronef to [P-SYS-120].
+Rationale:     G0 owner review (2026-10-25): the vector sum of all effector forces must stay within
+  a maximum magnitude, to protect the crew. The limit applies to the whole project and lives in
+  the system constants. How the controls handle it when an effector is at its own limit (L0-CON-300)
+  and a manoeuvre is needed is a detailed-design matter. Whether the limit is on force or on crew
+  acceleration is open (#87).
+Parent(s):     —
+Source:        Owner review at G0, 2026-10-25
+Allocated to:  AER
+Criticality:   Not assessed
+Verification:  Test — TBD; success criteria: in every automated test run, the magnitude of the
+  resultant effector force never exceeds [P-SYS-120].
+Parameters:    P-SYS-120
+TBD/TBR:       P-SYS-120 value TBD; force or acceleration limit TBR (#87), Martin
+Owner:         Martin
+Status:        Reviewed
 Version:       1
 ```
