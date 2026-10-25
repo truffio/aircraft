@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24; D8–D39 on 2026-10-25)
+### Decided (2026-10-24; D8–D40 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -318,7 +318,8 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D36 | R-004 basis (#57) | No copy of the R-004 text is held. The conventions were checked against public sources (Wikipedia; NASA NESC simulation output spec citing R-004 §1.1.7) and match. CONVENTIONS describes them as "consistent with R-004 practice". |
 | D37 | Landing (G0 review of L0-ASM-110) | Landing is modelled as an ideal landing. Contact with the ground within a velocity and acceleration envelope is a successful landing; contact outside it is a crash. There is no gear, bounce or friction model. |
 | D38 | Crew-protection limit (#87) | The limit is on the acceleration the crew senses (g load), not on force. As fuel is used up and the mass falls, the resultant effector force is reduced to keep within the limit (L0-CON-310, P-SYS-120). The limit is ±3 g for now: the magnitude of the sensed acceleration is at most 3 g in any direction. |
-| D39 | Coverage is 100% (G0 review of SUC) | Every success criterion on coverage requires full coverage, never a fraction. Every requirement is verified, through testing, and every test passes (L0-SUC-020, -100 to -130). |
+| D39 | Coverage is 100% (G0 review of SUC) | Every coverage criterion is 100%, never a fraction. Every requirement is verified by the method chosen for it (test, demonstration, analysis or inspection), and every verification passes (L0-SUC-020, -100 to -130). |
+| D40 | Verification roll-up (G0 review of SUC) | The lowest-level requirements are verified directly by their method, by test wherever a test applies. A higher-level requirement (L0, L1, …) is verified when all its children have passed and the decomposition has been reviewed. |
 
 ### Open questions
 
