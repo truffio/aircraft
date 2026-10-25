@@ -1,0 +1,14 @@
+# Aeronef parameter database. Requirements reference parameters by ID only.
+# Owned by the orchestrator; agents propose entries in work/<agent-id>/param_proposals.md.
+#
+# Fields:
+#   id:          P-<SUB>-<NNN>  (SUB = SYS, DYN, FU, EF, FC, AF, NAV, TM; steps of 10, never reused)
+#   name:        short name
+#   description: what it is
+#   unit:        SI unit (use "1" for dimensionless)
+#   value:       number, or null while TBD
+#   tolerance:   number or null
+#   status:      TBD | TBR | Set
+#   source:      where the value comes from (requirement, trade study, DD-nnn)
+#   owner:       Martin
+parameters: []

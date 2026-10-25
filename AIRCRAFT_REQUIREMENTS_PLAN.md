@@ -70,6 +70,9 @@ verification/
   VCRM.md                          Generated verification matrix
 reviews/
   <artifact>_<gate>.md             Peer-review records (METHODOLOGY 13.4)
+templates/
+  REQUIREMENT.md                   Requirement and assumption record format (parsed by the scripts)
+  REVIEW_RECORD.md                 Peer-review record (METHODOLOGY 13.4)
 tools/
   (lint, trace-check and matrix scripts)
 work/<agent-id>/                   Staging: draft sections, proposals, interface needs, issues (not baselined)
