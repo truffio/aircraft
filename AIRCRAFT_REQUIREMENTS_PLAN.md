@@ -146,14 +146,14 @@ This phase is one agent, because L1 coherence matters more than speed here.
 
 | ID | Task | Outputs | Model / effort |
 | --- | --- | --- | --- |
-| B1 | Refine the Aeronef function list (F-AER-01 to 08, plus functions for navigation and for producing operational data). Build the N² interface matrix and the control-loop flow. Write the L1 Aeronef SRS: functional, performance, interface, constraint, model-fidelity and documentation types. Choose the logical architecture and allocate every L1 requirement to an L2 subsystem (DYN, FU, EF, FC, AF, NAV, TM). Set the top-level budgets (fuel, effector authority, position error, timing). Take the D3 catalogue as given: write one L1 requirement per mode, and organise the modes into groups (vertical, lateral, speed, hold) that can be active together. Propose answers to questions Q2–Q5 for the project owner. | `specs/FUNCTIONAL_ANALYSIS.md`, draft `L1` section → `requirements/L1.md`, staging files | Opus / xhigh |
+| B1 | Refine the Aeronef function list (F-AER-01 to 08, plus functions for navigation and for producing operational data). Build the N² interface matrix and the control-loop flow. Write the L1 Aeronef SRS: functional, performance, interface, constraint, model-fidelity and documentation types. Choose the logical architecture and allocate every L1 requirement to an L2 subsystem (DYN, FU, EF, FC, AF, NAV, TM). Set the top-level budgets (fuel, effector authority, position error, timing). Take the D3 catalogue as given: write one L1 requirement per mode, and organise the modes into groups (vertical, lateral, speed, hold) that can be active together. Propose an answer to Q5 for the project owner. | `specs/FUNCTIONAL_ANALYSIS.md`, draft `L1` section → `requirements/L1.md`, staging files | Opus / xhigh |
 | B2 | Runs after B1. Seed the parameter database from B1's proposals: assign P-xx-nnn IDs, units and TBD/TBR status. Open the TBD/TBR register entries. | `parameters/PARAMETERS.yaml`, `registers/TBD_TBR.md` | Sonnet / medium |
 
 **Gate G1 — System Requirements Review (Aeronef)**
 
 - Haiku / low runs the lint and the trace check (every L1 requirement has an L0 parent or is flagged Derived).
 - Opus / high, as a fresh instance and not B1, inspects sufficiency against L0, the allocation, the budgets and the mode grouping.
-- The project owner answers Q2–Q5 and approves the L1 baseline.
+- The project owner answers Q5 and approves the L1 baseline.
 - Exit: L1 baselined and tagged `AER-L1-baseline-1`.
 
 ### Phase 3 — L2 subsystem requirements (main parallel fan-out)
@@ -173,8 +173,8 @@ Seven agents run in parallel. Each agent:
 | C2 | **FU** — fuel and mass properties | Fuel quantity, consumption for linear and rotational actuation (configurable), mass decrease, fixed CG, inertia assignment and how it changes with fuel. Fuel exhaustion is nominal behaviour, not a failure. | Opus / high |
 | C3 | **EF** — effectors | Fixed-direction emitters: authority per axis, limits, command response, consumption interface to FU. Stays solution-free: the emitter layout is a design decision, not a requirement. | Opus / high |
 | C4 | **FC** — flight control | L2, plus the L3 sections for translational control (TR), rotational control (RO) and control allocation (AL). Includes independent per-axis regulation, saturation handling as nominal behaviour, and the constraint that control laws are swappable without changing the vehicle model (objective: compare control laws). | Opus / xhigh |
-| C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers mode groups and compatible combinations, armed versus active states (altitude capture, VOR radial capture), engagement, automatic transitions (for example climb → altitude capture → altitude hold), disengagement, annunciation, target selection, and what the attitude axes do in each mode (Q2). Per-mode details are left to Phase 4. | Opus / xhigh |
-| C6 | **NAV** — navigation | Navigation references used by autoflight: position, altitude, heading, track, horizontal and vertical speed, flight path angle, and the simulated VOR function (station definition, radial and deviation computation, reception limits per Q4). | Opus / high |
+| C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers mode groups and compatible combinations, armed versus active states (altitude capture, VOR radial capture), engagement, automatic transitions (for example climb → altitude capture → altitude hold), disengagement, annunciation, target selection, and what the attitude axes do in each mode (D10). Per-mode details are left to Phase 4. | Opus / xhigh |
+| C6 | **NAV** — navigation | Navigation references used by autoflight: position, altitude, heading, track, horizontal and vertical speed, flight path angle, and the simulated VOR function (station definition, radial and deviation computation, reception limits per D12). | Opus / high |
 | C7 | **TM** — operational data output | Signals the Aeronef exposes so inputs, mode changes, control activity and responses can be correlated (REVERSE_ENGINEERING §3C, TESTING_ENVIRONMENT §8). Includes the selected targets, armed and active modes, and annunciations. Each signal is classified as *releasable* or *protected*, so telemetry does not leak protected design. | Opus / high |
 
 C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as are C5 and C6 (navigation data used by the modes). Coupled agents do not coordinate directly; they record needs in `interface_needs.md` and the integration step resolves them.
@@ -276,7 +276,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 
 ## 9. Decisions
 
-### Decided (2026-10-24)
+### Decided (2026-10-24, D8–D12 on 2026-10-25)
 
 | ID | Decision | Outcome |
 | --- | --- | --- |
@@ -287,14 +287,16 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D5 | Scripting language for tools | Python |
 | D6 | Owner attribute | Martin for all requirements in this cycle |
 | D7 | Crew-facing units | North American aviation units for everything the crew selects or sees: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track, flight path angle, radials). Requirements and the model stay in SI; conversions are fixed in CONVENTIONS. |
+| D8 | Ground (#50) | The Earth is flat with no terrain. Altitude zero is ground level. Contact with the ground is a crash. |
+| D9 | Crew-facing fuel unit (#51) | Pounds (lb) |
+| D10 | Attitude during guidance modes (#3, Q2) | Pitch and roll stay level. The Aeronef doesn't need to pitch or roll to move. Those manoeuvres are possible but serve no purpose, because the axes are uncoupled. |
+| D11 | Hover versus position hold (#4, Q3) | Position hold is a lateral mode. The vehicle stops moving on all axes (zero velocity, zero acceleration) and holds its position at any altitude, compensating for wind. Hover is a vertical mode. When it engages, the vehicle descends from its current altitude to the altitude set on the flight control panel, then holds position. Hover therefore needs position hold. Whether position is held from the moment hover engages, or only after the velocity has come down to zero, is still open (#78). |
+| D12 | VOR model (#5, Q4) | Ideal VOR: the simplest model. Ground stations are at fixed positions in the local frame, radials refer to true north, there is no magnetic variation or noise, and the signal is ideal within the reception range. |
 
 ### Open questions
 
 | ID | Question | When | Proposal |
 | --- | --- | --- | --- |
-| Q2 | **Attitude during the guidance modes.** The modes set heading and the flight path, but the Aeronef's pitch and roll are independent of its motion. What do pitch and roll do while these modes are active? | G1 | Pitch and roll are held level by default in every mode, with heading set by the lateral mode or held |
-| Q3 | **Hover at altitude versus position hold.** How do they differ? | G1 | Position hold keeps a 3-D position. Hover at altitude keeps altitude and zero horizontal velocity, without holding a horizontal position, so the vehicle may drift. |
-| Q4 | **VOR model.** What fidelity is wanted? | G1 | Ground stations at fixed positions in the local frame, radials referenced to true north, no magnetic variation, an ideal signal within a reception range, and no noise in v1 |
 | Q5 | **Mode combinations.** Which modes can be active together? | G1 | Airliner-style groups: one vertical mode, one lateral mode and one speed mode at a time. Position hold and hover replace the vertical and lateral groups while active. |
 
 ## 10. Summary of agents
