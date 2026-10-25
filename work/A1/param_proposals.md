@@ -117,9 +117,10 @@ New system-level parameters referenced by the L0 requirements. Field layout foll
   name: Maximum crew-sensed acceleration magnitude
   description: Maximum magnitude of the acceleration sensed by the crew (specific force; non-gravitational forces divided by current mass), set to protect the crew from excessive g load (D38).
   unit: m/s^2
-  value: null
+  value: 29.41995
   tolerance: null
-  status: TBD
+  note: 3 g (3 x 9.80665 m/s^2), owner value 'for now' (2026-10-25); applies in any direction
+  status: TBR
   source: L0-CON-310 (owner review at G0, 2026-10-25)
   owner: Martin
 ```

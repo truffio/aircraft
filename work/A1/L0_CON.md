@@ -805,7 +805,9 @@ Rationale:     G0 owner review (2026-10-25): the crew must be protected from exc
   force falls with it, and the force has to be compensated for the fuel used. The limit
   applies to the whole project and lives in the system constants. How the controls
   handle it when an effector is at its own limit (L0-CON-300) and a manoeuvre is needed
-  is a detailed-design matter.
+  is a detailed-design matter. The owner set the limit at plus or minus 3 g for now
+  (2026-10-25): a sensed-acceleration magnitude of at most 3 g in any direction, with g
+  the standard gravity 9.806 65 m/s² (P-SYS-120 = 29.419 95 m/s²).
 Parent(s):     —
 Source:        Owner review at G0, 2026-10-25
 Allocated to:  AER
@@ -813,7 +815,7 @@ Criticality:   Not assessed
 Verification:  Test — TBD; success criteria: in every automated test run, at every fuel state, the
   magnitude of the sensed acceleration (specific force) never exceeds [P-SYS-120].
 Parameters:    P-SYS-120
-TBD/TBR:       P-SYS-120 value TBD, Martin
+TBD/TBR:       P-SYS-120 = 3 g TBR (owner, 'for now'), Martin
 Owner:         Martin
 Status:        Reviewed
 Version:       2
