@@ -2,7 +2,7 @@
 
 Python 3 scripts that check and assemble the requirement files. They need only the standard library and PyYAML. Run them from the repository root. Every script takes `--root DIR` (default: the repository containing `tools/`), which the tests use to point at fixtures.
 
-Exit code is 0 when clean and 1 when there are errors. Warnings are printed but do not fail the run unless you add `--strict`. Output lines look like `file:line: severity [CODE] ID: message`.
+Exit code is 0 when clean and 1 when there are errors. Warnings are printed but do not fail the run unless you add `--strict`. Output lines look like `file:line: severity [CODE] ID: message`. For a one-page introduction to what the checks flag, see [LINT_GUIDE.md](LINT_GUIDE.md).
 
 | Script | Purpose | Run |
 | --- | --- | --- |
