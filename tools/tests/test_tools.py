@@ -12,7 +12,7 @@ HERE = Path(__file__).resolve().parent
 TOOLS = HERE.parent
 sys.path.insert(0, str(TOOLS))
 
-import assemble, lint, param_check, reqlib, trace_check, vcrm  # noqa: E402
+import assemble, lint, param_check, reqlib, trace_check, vcrm, viewer  # noqa: E402
 
 GOOD = HERE / "fixtures" / "good"
 BAD = HERE / "fixtures" / "bad"
@@ -221,6 +221,34 @@ class AssembleTests(unittest.TestCase):
     def test_assembled_output_lints(self):
         run_main(assemble, ["L2", "--root", str(self.root)])
         self.assertEqual(lint.run(self.root, file="requirements/L2.md"), [])
+
+
+class ViewerTests(unittest.TestCase):
+    def test_graph_from_good_fixture(self):
+        data = viewer.build(GOOD)
+        kinds = {n["id"]: n["kind"] for n in data["nodes"]}
+        self.assertEqual(kinds["AER-010"], "req")
+        self.assertEqual(kinds["L0-ASM-010"], "asm")
+        edges = {(e["from"], e["to"], e["kind"]) for e in data["edges"]}
+        self.assertIn(("L0-OBJ-010", "AER-010", "parent"), edges)
+        self.assertIn(("AER-010", "AER-AF-010", "parent"), edges)
+        self.assertTrue(any(k == "uses" for _, _, k in edges))
+
+    def test_function_ids_are_not_requirement_refs(self):
+        self.assertEqual(viewer.ID_RE.findall("see F-AER-04 and AER-AF-010"), ["AER-AF-010"])
+
+    def test_render_embeds_data_safely(self):
+        html = viewer.render({"nodes": [{"id": "X", "title": "</script><b>"}], "edges": [],
+                              "findings": {}, "sections": [], "problems": []})
+        self.assertNotIn("/*DATA*/null", html)
+        self.assertNotIn("</script><b>", html)
+
+    def test_writes_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "v.html"
+            rc, _ = run_main(viewer, ["--root", str(GOOD), "--out", str(out)])
+            self.assertEqual(rc, 0)
+            self.assertIn("AER-AF-010", out.read_text(encoding="utf-8"))
 
 
 class CliTests(unittest.TestCase):
