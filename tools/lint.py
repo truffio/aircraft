@@ -120,7 +120,8 @@ def lint_record(rec):
     if version and not version.isdigit():
         add("error", "VERSION", "Version must be a whole number", "Version")
 
-    lint_statement(rec, add)
+    if status != "Deleted":   # a deleted record keeps its ID and history; its wording no longer matters
+        lint_statement(rec, add)
     return out
 
 

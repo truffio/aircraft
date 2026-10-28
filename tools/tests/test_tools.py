@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
 TOOLS = HERE.parent
@@ -97,6 +98,15 @@ class LintTests(unittest.TestCase):
         self.assertIn("ID-FORMAT", id_codes("AER-AF-010", "L2"))
         self.assertIn("ID-FORMAT", id_codes("AER-010", "L1"))
 
+    def test_deleted_statement_not_linted(self):
+        def stmt_codes(status):
+            rec = reqlib.Record("req", Path("L0.md"), 1, "OBJ", "L0",
+                                {"ID": "L0-OBJ-100", "Level": "L0", "Status": status,
+                                 "Statement": "The project shall compare designs and implementations quickly."})
+            return {x.code for x in lint.lint_record(rec)}
+        self.assertTrue({"COMPOUND", "VAGUE"} <= stmt_codes("Reviewed"))
+        self.assertFalse({"COMPOUND", "VAGUE"} & stmt_codes("Deleted"))
+
     def test_parameter_digits_not_flagged(self):
         # L2-AER-AF-025 only has a parameter ref, ID-like tokens and no other digits
         self.assertNotIn("NUMBER", codes(lint.run(BAD), "L2-AER-AF-025"))
@@ -145,6 +155,16 @@ class ParamTests(unittest.TestCase):
 
     def test_unit_hint(self):
         self.assertEqual(param_check.unit_tokens("m/s^2"), ["m", "s", "2"])
+
+    def test_deleted_record_refs_ignored(self):
+        def missing(status):
+            rec = reqlib.Record("req", Path("L0.md"), 1, "SUC", "L0",
+                                {"ID": "L0-SUC-080", "Statement": "… shall reach [P-SYS-010].",
+                                 "Parameters": "P-SYS-010", "Status": status})
+            out, _ = param_check.check_references(SimpleNamespace(records=[rec]), {})
+            return {x.code for x in out}
+        self.assertIn("PARAM-MISSING", missing("Draft"))
+        self.assertNotIn("PARAM-MISSING", missing("Deleted"))
 
 
 class VcrmTests(unittest.TestCase):
