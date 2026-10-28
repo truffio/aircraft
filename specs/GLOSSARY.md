@@ -5,7 +5,7 @@
 **Owner:** Martin (maintained by the orchestrator)
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (REE).
 
-Requirements use only the terms defined here (METHODOLOGY §8.4 rule 12), with the meaning given here. A term in *italics* inside a definition is itself defined in this glossary. "CV-nnn" refers to [CONVENTIONS.md](CONVENTIONS.md). Terms marked **TBR (Qn)** depend on an open question of the plan (AIRCRAFT_REQUIREMENTS_PLAN §9). Terms marked **TBR (C5)** are seed definitions that the autoflight mode logic (`specs/AF_MODE_LOGIC.md`, task C5) refines.
+Requirements use only the terms defined here (METHODOLOGY §8.4 rule 12), with the meaning given here. A term in *italics* inside a definition is itself defined in this glossary. "CV-nnn" refers to [CONVENTIONS.md](CONVENTIONS.md). Terms marked **TBR (C5)** are seed definitions that the autoflight mode logic (`specs/AF_MODE_LOGIC.md`, task C5) refines.
 
 The mode names below (for example *Position Hold*) are the names of functions in the design. The strings the crew sees on annunciations are not defined here. They are set by the annunciation requirements.
 
@@ -44,10 +44,13 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | Course deviation | Signed angle between the *selected course* line and the line from the *VOR station* to the vehicle, positive when the vehicle is to the right of the course looking along the course direction, in rad (crew-facing: deg). | CV-650 |
 | Crash | *Ground contact* outside the *landing envelope*. It ends the run (D37). | L0-CON-290 |
 | Crew | The person or simulated operator who selects modes and targets and reads annunciations. Never the subject of a requirement. | METHODOLOGY 8.1 |
+| Crew interface | The data exchanged between the *crew* and the *Aeronef*: mode selections, *target* selections and *annunciations*. Physical controls and display formats are not modelled (L0-CON-170). | L0-CON-170 |
+| Crew station | The position of the *crew* in the *body frame*, in the cockpit toward the nose (CV-170). | L0-CON-150 |
 | Crew-facing quantity | A quantity the *crew* selects or that is annunciated to the crew. It is stated in its *crew-facing unit*; every other quantity is in SI units. | L0-CON-260, L0-CON-270 |
 | Crew-facing unit | Unit used for a value the crew selects or sees: ft, ft/min, kt, NM, deg (D7), lb for fuel (D9), and hours or minutes for durations (D34); the unit table is CV-740. Used only where CV-760 allows. | CV-740, CV-760 |
 | Cross-track deviation | Signed horizontal distance from the vehicle to the *selected course* line through the *VOR station*, positive to the right of the course, in m. | CV-660 |
 | Datum plane | The horizontal reference plane of the flat Aeronef world, `z_L = 0`, from which *altitude* is measured. It is also the ground: altitude zero is ground level, with no terrain (D8). | CV-110, CV-420 |
+| Degree of freedom | One independent coordinate of rigid-body motion: translation along, or rotation about, one of three axes. The *Aeronef* has six. | L0-CON-010, -020, -030 |
 | Demonstration | Verification method: operating the system to show a qualitative capability, without detailed measurement. | METHODOLOGY 9.3 |
 | Derived requirement | Requirement that does not trace to a parent requirement but arises from a design decision. It is marked "Derived", cites its design decision (DD-nnn) and is reviewed at the parent level. | METHODOLOGY 12 |
 | Design decision (DD) | Recorded choice behind one or more *derived requirements*, held in `registers/DECISIONS.md` with the alternatives considered and the rationale. | — |
@@ -90,6 +93,7 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | Mode | One autoflight function that, while *active*, sets the references for a defined set of axes from a *target*, for example *Altitude Hold* or *Track Hold*. The mode catalogue is decision D3. | Plan D3 |
 | Mode catalogue | The baselined list of autoflight *modes*, initially plan decision D3. Also called the autoflight mode catalogue. | Plan D3, L0-OBJ-030 |
 | Mode group | Set of *modes* that act on the same axes and of which at most one is *active* at a time. Groups: vertical, lateral and speed. *Position Hold* is a lateral mode and *Hover at altitude* a vertical mode (D11). Which modes can be combined is designed at L2 (#6, D13). | — |
+| Model specification | The specification of the Aeronef dynamics model (MS-DYN, task C1): equations of motion, external effects, *effector*, fuel and mass models. | L0-OBJ-010, L0-CON-010 to -140 |
 | Navigation | The Aeronef subsystem (NAV) that provides *position*, *altitude*, *heading*, *track*, *horizontal speed*, *vertical speed*, *flight path angle* and the simulated VOR quantities to autoflight. | — |
 | Operational data | Signals the Aeronef outputs, at each output sample, describing its externally observable activity: crew selections, *targets*, *armed* and *active* modes, *annunciations*, control activity and vehicle states. Each signal is classified *releasable* or *protected*. | CV-830, CV-840 |
 | Orphan requirement | Trace-check term (METHODOLOGY §10.4): a requirement below L0 with no parent and no Derived flag. | L0-SUC-150 |
@@ -137,6 +141,7 @@ The mode names below (for example *Position Hold*) are the names of functions in
 | Track | The direction of horizontal motion: the *direction angle* of the horizontal velocity, ground-referenced. Independent of *heading* on the Aeronef. Undefined at zero horizontal speed. In rad (crew-facing: deg). | CV-540, CV-550 |
 | Track Hold | Autoflight *mode* that keeps the *track* at its *target*. It constrains the direction of motion, not where the nose points. | CV-540 |
 | Vehicle-carried local frame | Frame V with origin at the body origin and axes parallel to the local reference frame (north, east, down). Reference for the Euler angles. | CV-150 |
+| Verification matrix | The table of each requirement with its verification method, procedure and last result (VCRM, `tools/vcrm.py`). | L0-SUC-020, -030 |
 | Vertical speed | Rate of change of *altitude*, positive when climbing, in m/s (crew-facing: ft/min). Independent of attitude. | CV-490 |
 | VOR | VHF omnidirectional range: in the Aeronef world, a simulated navigation function that gives the vehicle's *radial* from a *VOR station*, its *TO/FROM sense* and its *course deviation* relative to a *selected course*. Version 1: ideal signal within the *reception range*, no noise, no magnetic variation. (D12) | CV-6xx |
 | VOR radial tracking | Autoflight lateral *mode* that, after *arming*, intercepts and *captures* the *selected course* of a *VOR station* and then keeps the *course deviation* at zero. TBR (C5). | CV-650 |

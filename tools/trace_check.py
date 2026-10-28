@@ -4,8 +4,8 @@ Checks: duplicate IDs, missing parents, orphans, childless parents,
 requirements without a verification method, Derived without a design decision,
 and live records whose statement, verification, parents or assumption Affects
 cite a Deleted record (warning). Records with Status "Deleted" are ignored
-except for duplicate-ID checks. Records allocated only to elements outside the
-plan's scope (OUT_OF_SCOPE, decision D44) are not reported as childless.
+except for duplicate-ID checks. L0 records allocated only to elements outside
+the plan's scope (OUT_OF_SCOPE, decision D44) are not reported as childless.
 
 Usage: python tools/trace_check.py [--root DIR] [--strict]
 """
@@ -62,7 +62,7 @@ def check(repo, decisions):
 
         # leaf = nobody lists it as parent AND nothing allocated
         allocated = r.get("Allocated to").strip()
-        out_of_scope = {a.strip() for a in allocated.split(",")} <= OUT_OF_SCOPE
+        out_of_scope = is_l0 and {a.strip() for a in allocated.split(",")} <= OUT_OF_SCOPE
         if not children.get(r.id) and allocated not in ("", DASH) and not out_of_scope:
             add(r, "CHILDLESS", f"allocated to {allocated!r} but no requirement lists it as parent",
                 "Allocated to")

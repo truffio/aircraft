@@ -153,6 +153,12 @@ class TraceTests(unittest.TestCase):
         f = trace_check.check(repo, set())
         self.assertEqual(codes(f, "L0-OBJ-060") | codes(f, "L0-OBJ-170"), set())
         self.assertIn("CHILDLESS", codes(f, "L0-OBJ-140"))
+        # the exemption is for L0 only: a stray L1 record allocated to STP is still reported
+        l1 = reqlib.Record("req", Path("L1.md"), 1, "AER", "L1",
+                           {"ID": "L1-AER-010", "Level": "L1", "Allocated to": "STP", "Status": "Draft",
+                            "Parent(s)": "L0-OBJ-060", "Verification": "Test — TBD"})
+        f = trace_check.check(SimpleNamespace(records=[self._l0("L0-OBJ-060", "STP"), l1], assumptions=[]), set())
+        self.assertIn("CHILDLESS", codes(f, "L1-AER-010"))
 
     def test_deleted_ref_warned(self):
         asm = reqlib.Record("asm", Path("L0.md"), 1, "ASM", "L0", {"ID": "L0-ASM-020", "Affects": "L0-OBJ-100"})

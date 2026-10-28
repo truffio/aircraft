@@ -294,10 +294,10 @@ Statement:     The Aeronef project shall make each simulation run reproducible f
   configuration, software version and inputs.
 Rationale:     OBJECTIVES §3 asks for repeatable scenarios, and TESTING_ENVIRONMENT §5 for isolated,
   reproducible runs whose configuration, software version, inputs and results are
-  identifiable. Reproducibility is what turns a test result into evidence and makes
-  comparisons fair. It rests on L0-ASM-020; the measure is L0-SUC-040. Children must
-  show (D41): (Test) L0-SUC-040 is met. Allocated only to STP: its children come when
-  the plan is extended to that branch (D44).
+  identifiable. Reproducibility is what turns a test result into evidence. It rests on
+  L0-ASM-020; the measure is L0-SUC-040. Children must show (D41): (Test) L0-SUC-040 is
+  met. Allocated only to STP: its children come when the plan is extended to that
+  branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §5
 Allocated to:  STP
@@ -308,7 +308,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Reviewed
-Version:       2
+Version:       3
 ```
 
 ### L0-OBJ-120

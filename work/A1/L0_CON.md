@@ -540,9 +540,9 @@ Rationale:     Control-law designers need to swap controllers without touching t
   (METHODOLOGY §4.1), and the vehicle, control laws and autoflight logic need clear
   boundaries (TESTING_ENVIRONMENT §2; D15). One set of control laws is developed for
   now (D42); keeping the laws replaceable lets more designs be added later without
-  touching the vehicle model. Children must show (D41): (Demonstration) the
-  flight-control-law design is changed through configuration, and the vehicle model
-  files are unchanged, as shown by their checksums.
+  touching the vehicle model. Children must show (D41): (Demonstration) a test variant
+  of the flight-control-law design is substituted through configuration, and the
+  vehicle model files are unchanged, as shown by their checksums.
 Parent(s):     —
 Source:        TESTING_ENVIRONMENT.md §2, §7; METHODOLOGY.md §4.1
 Allocated to:  AER, STP
@@ -553,7 +553,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Reviewed
-Version:       2
+Version:       3
 ```
 
 ### L0-CON-210
@@ -567,9 +567,9 @@ Statement:     The Aeronef project shall make each autoflight implementation rep
 Rationale:     Same reason as L0-CON-200 for autoflight versions (OBJECTIVES §2; TESTING_ENVIRONMENT
   §2, §7). Modes and controllers are decoupled, so any autoflight implementation pairs
   with any control law (D15). There is one autoflight implementation (D24). Children
-  must show (D41): (Demonstration) the autoflight implementation is changed through
-  configuration, and the vehicle model files are unchanged, as shown by their
-  checksums.
+  must show (D41): (Demonstration) a test variant of the autoflight implementation is
+  substituted through configuration, and the vehicle model files are unchanged, as
+  shown by their checksums.
 Parent(s):     —
 Source:        OBJECTIVES.md §2; TESTING_ENVIRONMENT.md §2, §7
 Allocated to:  AER, STP
@@ -580,7 +580,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Reviewed
-Version:       2
+Version:       3
 ```
 
 ### L0-CON-220
@@ -743,9 +743,9 @@ Statement:     The Aeronef project shall state each crew-facing quantity in the 
 Rationale:     The units are those of plan decision D7, which adopts North American aviation units
   for everything the crew selects or sees, to keep the operating concept airliner-like.
   The unit table and the conversions to SI are fixed in the conventions document
-  (CV-740, CV-750), so the statement points to it instead of repeating it (G0-F05). G0
-  owner review (2026-10-25): accepted. Time is in whatever unit makes sense: vertical
-  rates in ft/min, flight duration in hours or minutes (D34). Children must show (D41):
+  (CV-740, CV-750), so the statement points to it instead of repeating it. G0 owner
+  review (2026-10-25): accepted. Time is in whatever unit makes sense: vertical rates
+  in ft/min, flight duration in hours or minutes (D34). Children must show (D41):
   (Inspection) each crew selection and each annunciated quantity uses the unit the
   conventions unit table (CV-740) assigns to it, including lb for fuel (D9) and hours
   or minutes for durations (D34), and the conventions give its conversion to SI.
@@ -759,7 +759,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Reviewed
-Version:       3
+Version:       4
 ```
 
 ### L0-CON-280
@@ -870,11 +870,13 @@ Rationale:     G0 owner review (2026-10-25): the crew must be protected from exc
   g, and free fall is 0 g. The limit applies while the Aeronef is airborne: the ideal
   landing has no contact dynamics (L0-CON-290), so the landing envelope's own
   acceleration limit covers ground contact. Where on the Aeronef the crew acceleration
-  is evaluated (centre of gravity or crew station) is set at a lower level. Children
+  is evaluated (centre of gravity or crew station) is set at a lower level. The g of
+  the limit is standard gravity whatever value the model gravity P-DYN-010 takes, so
+  the hover figure of 1 g is exact only if P-DYN-010 equals standard gravity. Children
   must show (D41): (Test) in every automated test run, at every fuel state, while the
   Aeronef is airborne, the magnitude of the sensed acceleration (specific force) does
   not exceed [P-SYS-120]; the acceleration limit of the landing envelope (L0-CON-290)
-  is consistent with [P-SYS-120].
+  does not exceed [P-SYS-120].
 Parent(s):     —
 Source:        Owner review at G0, 2026-10-25
 Allocated to:  AER
@@ -885,5 +887,5 @@ Parameters:    P-SYS-120
 TBD/TBR:       P-SYS-120 = 29.419 95 m/s² (3 g) TBR (owner, 'for now'), Martin, closes at G1
 Owner:         Martin
 Status:        Reviewed
-Version:       3
+Version:       4
 ```

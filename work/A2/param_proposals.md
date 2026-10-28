@@ -8,7 +8,7 @@ Notes for the orchestrator:
 - These are **system** values: envelope, tolerances, thresholds. Scenario values (initial altitude, selected targets, leg durations) are not proposed as parameters. CONOPS.md writes them as scenario variables in `CODE` font, and the test procedures set them (question A2-Q12).
 - The METHODOLOGY §12 worked example uses `P-AF-012` (position hold tolerance) and `P-AF-014`. Those IDs are illustrative and do not follow the steps-of-10 rule. This proposal uses `P-AF-160` for the position hold tolerance.
 - The tolerances P-AF-080 to P-AF-170 and the settling time P-AF-190 are placeholders, one per quantity. The Phase 4 mode agents (M0 to M8) are expected to split them per mode where needed.
-- The crew-facing unit is given in the description where the crew selects or sees the quantity (D7). The database unit is always SI.
+- The crew-facing unit is given in the description where the crew selects or sees the quantity (D7). The database unit is SI, except crew-facing parameters, which are stored in their crew unit and flagged in the schema (D34, CV-790).
 
 ```yaml
 parameters:

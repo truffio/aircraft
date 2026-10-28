@@ -53,3 +53,20 @@ Checklist Minors are closed by the moderator except: L0-CON-110 tolerance, L0-CO
 ## Checks after rework
 
 lint 0 errors, 17 COMPOUND warnings (16 accepted in the checklist; L0-CON-270 no longer compound). trace 40 CHILDLESS (no L1 yet), 0 DELETED-REF. param 3 PARAM-MISSING (seeded at B2). Tests: 38 passed.
+
+## Re-inspection findings (moderator closure)
+
+The delta re-inspection (`reinspection.md`, at d46831e) found every Major closed and recommended "Rework, moderator closes". The moderator closed its six Minors:
+
+| R-F | Disposition |
+| --- | --- |
+| R-F01 | **Fixed.** Glossary adds Crew interface, Crew station, Degree of freedom, Model specification, Verification matrix. |
+| R-F02 | **Fixed.** L0-CON-200, -210 guidance: a test variant is substituted through configuration. N-230 stays exercised only by SC-220 (out of scope this cycle); accepted. |
+| R-F03 | **Fixed.** L0-SUC-150 applies at the complete requirements baseline (G4); rationale cites D44. |
+| R-F04 | **Fixed.** trace_check applies the STP/REE exemption to L0 records only; test added. |
+| R-F05 | **Fixed.** "comparisons fair" removed (L0-OBJ-110, L0-ASM-020); L0-SUC-050 campaign-size sentence; L0-ASM-110 and -130 Affects; L0-CON-310 "does not exceed"; "3 g" removed from CONOPS §5; finding ID removed from L0-CON-270; CONVENTIONS and GLOSSARY header TBR text; CV-250 label. |
+| R-F06 | **Fixed.** `work/A2/param_proposals.md` unit note (D34, CV-790); `work/A1/interface_needs.md` deleted-record citations; L0-CON-310 rationale states that the g of the limit is standard gravity whatever P-DYN-010 is. |
+
+After closure: lint 0 errors, 17 COMPOUND warnings (all judged accept); trace 40 CHILDLESS (no L1 yet); param 3 PARAM-MISSING (B2); 38 tests pass.
+
+**Exit decision:** Baseline, subject to owner approval.

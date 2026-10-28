@@ -236,7 +236,7 @@ Common to all flight scenarios unless a scenario says otherwise:
 - Fuel is `FUEL_INIT`, more than the low-fuel threshold `[P-FU-020]` and enough to complete the scenario.
 - Pitch and roll are level; the angular rate is zero.
 - The air is still, and no disturbance is applied.
-- Every selected value is within the performance envelope: horizontal speed up to `[P-SYS-230]`, climb vertical speed up to `[P-SYS-240]`, descent vertical speed up to `[P-SYS-250]`, flight path angle magnitude up to `[P-SYS-260]`, heading rate up to `[P-SYS-270]`. The acceleration sensed by the crew stays within `[P-SYS-120]` (3 g, gravity included; L0-CON-310). Selected values are multiples of the selection resolutions `[P-AF-010]` to `[P-AF-050]`.
+- Every selected value is within the performance envelope: horizontal speed up to `[P-SYS-230]`, climb vertical speed up to `[P-SYS-240]`, descent vertical speed up to `[P-SYS-250]`, flight path angle magnitude up to `[P-SYS-260]`, heading rate up to `[P-SYS-270]`. The acceleration sensed by the crew stays within `[P-SYS-120]` (gravity included; L0-CON-310). Selected values are multiples of the selection resolutions `[P-AF-010]` to `[P-AF-050]`.
 - "Settled" means within the stated tolerance, reached within `[P-AF-190]` s of the capture onset or target change, and kept until the end of the scenario. Each tolerance is a placeholder until the per-mode requirements (Phase 4) fix it.
 - Each annunciation change in the sequence tables occurs within `[P-AF-060]` s of its trigger.
 - The scenario ends when the stated end condition holds for an observation time `T_OBS`, chosen by the test procedure.

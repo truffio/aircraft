@@ -119,13 +119,12 @@ Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall execute an automated test campaign as a single batch
   without operator action.
-Rationale:     Success criterion 2 of OBJECTIVES §6 calls for large-scale parallel campaigns;
-  TESTING_ENVIRONMENT §5 asks the platform to scale to high test volumes. The campaign
-  size makes 'large-scale' measurable. G0 owner review (2026-10-25): accepted without a
-  campaign size. A campaign is as big as it needs to be (#68). Children must show
-  (D41): (Test) a campaign is launched once, completes without operator action, and
-  records a result for each run. Allocated only to STP: its children come when the plan
-  is extended to that branch (D44).
+Rationale:     Success criterion 2 of OBJECTIVES §6 calls for automated test campaigns;
+  TESTING_ENVIRONMENT §5 asks the platform to run them without operator action. G0
+  owner review (2026-10-25): accepted without a campaign size. A campaign is as big as
+  it needs to be (#68). Children must show (D41): (Test) a campaign is launched once,
+  completes without operator action, and records a result for each run. Allocated only
+  to STP: its children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §5, §6
 Allocated to:  STP
@@ -136,7 +135,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Reviewed
-Version:       3
+Version:       4
 ```
 
 ### L0-SUC-060
@@ -412,14 +411,17 @@ Version:       3
 ID:            L0-SUC-150
 Level:         L0
 Type:          Documentation
-Statement:     The Aeronef project shall pass the automated trace check at each baseline with no
-  orphan requirements, no childless parent requirements and no requirements without a verification
-  method.
+Statement:     The Aeronef project shall pass the automated trace check at the complete Aeronef
+  requirements baseline with no orphan requirements, no childless parent requirements
+  and no requirements without a verification method.
 Rationale:     Success criterion 5 of OBJECTIVES §6: a reviewed, traceable chain from objectives
   through requirements, design artifacts and tests. METHODOLOGY §10.4 defines the
-  automated checks. Children must show (D41): (Inspection) the trace check output
-  stored with each baseline reports no orphan, no childless parent and no requirement
-  without a verification method.
+  automated checks. Intermediate baselines (L0, L1, …) have childless records by
+  construction, so the check applies to the complete baseline at G4
+  (AER-REQ-baseline-1). Records allocated only to the STP or the REE are not counted
+  until the plan covers those branches (D44). Children must show (D41): (Inspection)
+  the trace check output stored with the complete requirements baseline reports no
+  orphan, no childless parent and no requirement without a verification method.
 Parent(s):     —
 Source:        OBJECTIVES.md §5, §6; METHODOLOGY.md §10.4
 Allocated to:  AER, STP, REE
@@ -430,7 +432,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Reviewed
-Version:       2
+Version:       3
 ```
 
 ### L0-SUC-160
