@@ -1,12 +1,16 @@
 """Traceability checks over all level files.
 
 Checks: duplicate IDs, missing parents, orphans, childless parents,
-requirements without a verification method, Derived without a design decision.
-Records with Status "Deleted" are ignored except for duplicate-ID checks.
+requirements without a verification method, Derived without a design decision,
+and live records whose statement, verification, parents or assumption Affects
+cite a Deleted record (warning). Records with Status "Deleted" are ignored
+except for duplicate-ID checks. Records allocated only to elements outside the
+plan's scope (OUT_OF_SCOPE, decision D44) are not reported as childless.
 
 Usage: python tools/trace_check.py [--root DIR] [--strict]
 """
 import argparse
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -15,6 +19,9 @@ import reqlib
 from reqlib import Finding, DASH
 
 METHODS = ["Inspection", "Analysis", "Demonstration", "Test"]
+# L1 elements whose branch this plan does not write yet (D44). Editable.
+OUT_OF_SCOPE = {"STP", "REE"}
+REQ_ID_RE = re.compile(r"\bL\d+-[A-Z0-9]+(?:-[A-Z0-9]+)*-\d{3}\b")
 
 
 def check(repo, decisions):
@@ -55,7 +62,8 @@ def check(repo, decisions):
 
         # leaf = nobody lists it as parent AND nothing allocated
         allocated = r.get("Allocated to").strip()
-        if not children.get(r.id) and allocated not in ("", DASH):
+        out_of_scope = {a.strip() for a in allocated.split(",")} <= OUT_OF_SCOPE
+        if not children.get(r.id) and allocated not in ("", DASH) and not out_of_scope:
             add(r, "CHILDLESS", f"allocated to {allocated!r} but no requirement lists it as parent",
                 "Allocated to")
 
@@ -63,6 +71,13 @@ def check(repo, decisions):
         if method not in METHODS:
             add(r, "NO-VERIFICATION", "no verification method (Inspection/Analysis/Demonstration/Test)",
                 "Verification")
+
+    deleted = {r.id for r in repo.records if r.get("Status") == "Deleted"}
+    fields = {"req": ["Statement", "Verification", "Parent(s)"], "asm": ["Affects"]}
+    for r in live + repo.assumptions:
+        for f in fields[r.kind]:
+            for cited in sorted(set(REQ_ID_RE.findall(r.get(f))) & deleted):
+                add(r, "DELETED-REF", f"{f} cites {cited}, which is Deleted", f, sev="warning")
     return out
 
 

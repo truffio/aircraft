@@ -140,6 +140,30 @@ class TraceTests(unittest.TestCase):
     def test_leaf_is_not_childless(self):
         self.assertNotIn("CHILDLESS", codes(trace_check.run(GOOD)))
 
+    @staticmethod
+    def _l0(rid, alloc="AER", status="Reviewed", **extra):
+        return reqlib.Record("req", Path("L0.md"), 1, "OBJ", "L0",
+                             {"ID": rid, "Level": "L0", "Allocated to": alloc, "Status": status,
+                              "Verification": "Inspection — TBD", **extra})
+
+    def test_out_of_scope_not_childless(self):
+        # D44: L0 records allocated only to STP or REE wait for their branch
+        repo = SimpleNamespace(records=[self._l0("L0-OBJ-060", "STP"), self._l0("L0-OBJ-170", "REE"),
+                                        self._l0("L0-OBJ-140", "AER, STP")], assumptions=[])
+        f = trace_check.check(repo, set())
+        self.assertEqual(codes(f, "L0-OBJ-060") | codes(f, "L0-OBJ-170"), set())
+        self.assertIn("CHILDLESS", codes(f, "L0-OBJ-140"))
+
+    def test_deleted_ref_warned(self):
+        asm = reqlib.Record("asm", Path("L0.md"), 1, "ASM", "L0", {"ID": "L0-ASM-020", "Affects": "L0-OBJ-100"})
+        repo = SimpleNamespace(records=[self._l0("L0-OBJ-100", status="Deleted"),
+                                        self._l0("L0-OBJ-110", "STP", Statement="As L0-OBJ-100 says.")],
+                               assumptions=[asm])
+        f = trace_check.check(repo, set())
+        self.assertIn("DELETED-REF", codes(f, "L0-OBJ-110"))
+        self.assertIn("DELETED-REF", codes(f, "L0-ASM-020"))
+        self.assertEqual({x.severity for x in f if x.code == "DELETED-REF"}, {"warning"})
+
 
 class ParamTests(unittest.TestCase):
     def test_good_is_clean(self):
