@@ -22,7 +22,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -53,7 +53,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -78,7 +78,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -107,7 +107,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -134,7 +134,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       4
 ```
 
@@ -280,7 +280,7 @@ Parameters:    —
 TBD/TBR:       Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when
   the plan is extended to REE (D44)
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -310,7 +310,7 @@ Parameters:    —
 TBD/TBR:       Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when
   the plan is extended to REE (D44)
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -341,7 +341,7 @@ Parameters:    —
 TBD/TBR:       Definition of a correct prediction TBD in the reverse-engineering requirements (#69),
   Martin, closes when the plan is extended to REE (D44)
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -371,7 +371,7 @@ Parameters:    —
 TBD/TBR:       Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when
   the plan is extended to REE (D44)
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -431,7 +431,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -488,6 +488,6 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```

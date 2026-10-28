@@ -23,7 +23,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -51,7 +51,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -85,7 +85,7 @@ Parameters:    —
 TBD/TBR:       Treatment of rigid-body kinematic terms (#81, deferred to L2), Martin, closes at G2
   (C1)
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -109,7 +109,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -133,7 +133,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -160,7 +160,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -189,7 +189,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -215,7 +215,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -245,7 +245,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -272,7 +272,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -298,7 +298,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -325,7 +325,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -351,7 +351,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -379,7 +379,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Elongated body shape provisional, TBR, Martin, 2026-11-30
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -406,7 +406,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -432,7 +432,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -463,7 +463,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -494,7 +494,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -524,7 +524,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -552,7 +552,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -579,7 +579,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -728,7 +728,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -758,7 +758,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       4
 ```
 
@@ -787,7 +787,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       3
 ```
 
@@ -815,7 +815,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Landing envelope limits TBD (lower level), Martin, closes at G2
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -842,7 +842,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Per-effector maximum force values TBD (EF level), Martin, closes at G2 (C3)
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       2
 ```
 
@@ -886,6 +886,6 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-120
 TBD/TBR:       P-SYS-120 = 29.419 95 m/s² (3 g) TBR (owner, 'for now'), Martin, closes at G1
 Owner:         Martin
-Status:        Reviewed
+Status:        Baselined
 Version:       4
 ```

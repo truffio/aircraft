@@ -69,4 +69,4 @@ The delta re-inspection (`reinspection.md`, at d46831e) found every Major closed
 
 After closure: lint 0 errors, 17 COMPOUND warnings (all judged accept); trace 40 CHILDLESS (no L1 yet); param 3 PARAM-MISSING (B2); 38 tests pass.
 
-**Exit decision:** Baseline, subject to owner approval.
+**Exit decision:** Baseline. Approved by the owner on 2026-10-28; 55 records Baselined, 5 stay Draft; tagged `L0-baseline-1`.
