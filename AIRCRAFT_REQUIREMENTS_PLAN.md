@@ -244,7 +244,7 @@ Physics requirements are verified by analysis against independent solutions, and
 **Gate G4 — Verification plan inspection and requirements baseline**
 
 - Opus / high runs the inspection, which checks that the success criteria are measurable and that the procedures are written from the requirement and not from a design.
-- The trace checks must pass: no orphans, no childless parents, no requirement without a verification method.
+- The trace checks must pass: no orphans, no childless parents, no requirement without a verification method. L0 requirements allocated only to STP or REE are not counted as childless (D44).
 - The project owner approves the complete Aeronef requirements baseline, tagged `AER-REQ-baseline-1`.
 
 ## 7. Standard brief for every author agent
@@ -303,7 +303,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D21 | Local frame (#46) | North-east-down (NED) |
 | D22 | Attitude representation (#47) | The quaternion is the authoritative attitude; Euler angles are derived from it. |
 | D23 | Angle units (#48) | Radians in calculations, requirements and parameters; degrees only at the crew interface. |
-| D24 | Number of designs compared (#65) | One autoflight definition and implementation; two or three control-law designs (TBR). |
+| D24 | Number of designs compared (#65) | One autoflight definition and implementation; two or three control-law designs (TBR). Refined by D42: one control-law design for now. |
 | D25 | Reproducibility (#66) | Runs are not checked for bit-identical results, which is out of scope and too costly. A repeated run must give the same expected result. |
 | D26 | Pass fraction, reference configuration (#67) | 100%. A failed test means either a badly written procedure or software that doesn't meet its intended function. |
 | D27 | L0 size (#74) | Start with the 66 L0 requirements. The owner audits them during review and decides which ones are too detailed for L0. |
@@ -320,6 +320,10 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D38 | Crew-protection limit (#87) | The limit is on the acceleration the crew senses (g load), not on force. As fuel is used up and the mass falls, the resultant effector force is reduced to keep within the limit (L0-CON-310, P-SYS-120). The limit is ±3 g for now: the magnitude of the sensed acceleration is at most 3 g in any direction. |
 | D39 | Coverage is 100% (G0 review of SUC) | Every coverage criterion is 100%, never a fraction. Every requirement is verified by the method chosen for it (test, demonstration, analysis or inspection), and every verification passes (L0-SUC-020, -100 to -130). |
 | D40 | Verification roll-up (G0 review of SUC) | The lowest-level requirements are verified directly by their method, by test wherever a test applies. A higher-level requirement (L0, L1, …) is verified when all its children have passed and the decomposition has been reviewed. |
+| D41 | L0 verification (#90, G0-F01) | Every L0 requirement is verified by roll-up (D40): method Inspection, success criteria "each child requirement has passed its verification and the decomposition has been reviewed". What the children must show stays in the rationale as guidance. |
+| D42 | Configurations (#91, G0-F03; refines D24) | One set of flight-control laws for now, so there is one Aeronef configuration: the autoflight implementation with that control-law design. It must pass every requirement (D26). The term "reference configuration" is dropped. Control laws stay replaceable (L0-CON-200) so that more designs can be added later. |
+| D43 | Conventions fixed (#92, G0-F10) | All remaining conventions in CONVENTIONS are fixed as written, apart from the items parked for L2 (CV-650, CV-660, #54). The conventions and glossary become Fixed at the L0 baseline; later changes go through a change request. |
+| D44 | STP and REE branches (#93, G0-F12) | This plan covers the Aeronef branch only. The plan will be extended later to the simulation and testing platform (STP) and the reverse-engineering effort (REE). Until then, L0 requirements allocated only to STP or REE have no children by design: the trace check and the G1–G4 trace exits do not count them as childless, and they are verified by roll-up once their branch exists. |
 
 ### Open questions
 

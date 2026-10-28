@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
 TOOLS = HERE.parent
@@ -97,6 +98,15 @@ class LintTests(unittest.TestCase):
         self.assertIn("ID-FORMAT", id_codes("AER-AF-010", "L2"))
         self.assertIn("ID-FORMAT", id_codes("AER-010", "L1"))
 
+    def test_deleted_statement_not_linted(self):
+        def stmt_codes(status):
+            rec = reqlib.Record("req", Path("L0.md"), 1, "OBJ", "L0",
+                                {"ID": "L0-OBJ-100", "Level": "L0", "Status": status,
+                                 "Statement": "The project shall compare designs and implementations quickly."})
+            return {x.code for x in lint.lint_record(rec)}
+        self.assertTrue({"COMPOUND", "VAGUE"} <= stmt_codes("Reviewed"))
+        self.assertFalse({"COMPOUND", "VAGUE"} & stmt_codes("Deleted"))
+
     def test_parameter_digits_not_flagged(self):
         # L2-AER-AF-025 only has a parameter ref, ID-like tokens and no other digits
         self.assertNotIn("NUMBER", codes(lint.run(BAD), "L2-AER-AF-025"))
@@ -130,6 +140,36 @@ class TraceTests(unittest.TestCase):
     def test_leaf_is_not_childless(self):
         self.assertNotIn("CHILDLESS", codes(trace_check.run(GOOD)))
 
+    @staticmethod
+    def _l0(rid, alloc="AER", status="Reviewed", **extra):
+        return reqlib.Record("req", Path("L0.md"), 1, "OBJ", "L0",
+                             {"ID": rid, "Level": "L0", "Allocated to": alloc, "Status": status,
+                              "Verification": "Inspection — TBD", **extra})
+
+    def test_out_of_scope_not_childless(self):
+        # D44: L0 records allocated only to STP or REE wait for their branch
+        repo = SimpleNamespace(records=[self._l0("L0-OBJ-060", "STP"), self._l0("L0-OBJ-170", "REE"),
+                                        self._l0("L0-OBJ-140", "AER, STP")], assumptions=[])
+        f = trace_check.check(repo, set())
+        self.assertEqual(codes(f, "L0-OBJ-060") | codes(f, "L0-OBJ-170"), set())
+        self.assertIn("CHILDLESS", codes(f, "L0-OBJ-140"))
+        # the exemption is for L0 only: a stray L1 record allocated to STP is still reported
+        l1 = reqlib.Record("req", Path("L1.md"), 1, "AER", "L1",
+                           {"ID": "L1-AER-010", "Level": "L1", "Allocated to": "STP", "Status": "Draft",
+                            "Parent(s)": "L0-OBJ-060", "Verification": "Test — TBD"})
+        f = trace_check.check(SimpleNamespace(records=[self._l0("L0-OBJ-060", "STP"), l1], assumptions=[]), set())
+        self.assertIn("CHILDLESS", codes(f, "L1-AER-010"))
+
+    def test_deleted_ref_warned(self):
+        asm = reqlib.Record("asm", Path("L0.md"), 1, "ASM", "L0", {"ID": "L0-ASM-020", "Affects": "L0-OBJ-100"})
+        repo = SimpleNamespace(records=[self._l0("L0-OBJ-100", status="Deleted"),
+                                        self._l0("L0-OBJ-110", "STP", Statement="As L0-OBJ-100 says.")],
+                               assumptions=[asm])
+        f = trace_check.check(repo, set())
+        self.assertIn("DELETED-REF", codes(f, "L0-OBJ-110"))
+        self.assertIn("DELETED-REF", codes(f, "L0-ASM-020"))
+        self.assertEqual({x.severity for x in f if x.code == "DELETED-REF"}, {"warning"})
+
 
 class ParamTests(unittest.TestCase):
     def test_good_is_clean(self):
@@ -145,6 +185,16 @@ class ParamTests(unittest.TestCase):
 
     def test_unit_hint(self):
         self.assertEqual(param_check.unit_tokens("m/s^2"), ["m", "s", "2"])
+
+    def test_deleted_record_refs_ignored(self):
+        def missing(status):
+            rec = reqlib.Record("req", Path("L0.md"), 1, "SUC", "L0",
+                                {"ID": "L0-SUC-080", "Statement": "… shall reach [P-SYS-010].",
+                                 "Parameters": "P-SYS-010", "Status": status})
+            out, _ = param_check.check_references(SimpleNamespace(records=[rec]), {})
+            return {x.code for x in out}
+        self.assertIn("PARAM-MISSING", missing("Draft"))
+        self.assertNotIn("PARAM-MISSING", missing("Deleted"))
 
 
 class VcrmTests(unittest.TestCase):

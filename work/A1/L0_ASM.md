@@ -23,10 +23,9 @@ ID:            L0-ASM-020
 Assumption:    Each simulation run is deterministic: one configuration, software version, input set
   and execution host produce identical outputs, and any random variation comes from a recorded
   random seed.
-Rationale:     Determinism makes runs reproducible and comparisons fair, and it lets statistical
-  campaigns be replayed run by run (TESTING_ENVIRONMENT §5, §6).
-Affects:       L0-OBJ-100, L0-OBJ-110, L0-SUC-040, L0-SUC-080, L0-SUC-090; STP execution and
-  campaign generation
+Rationale:     Determinism makes runs reproducible, and it lets statistical campaigns be replayed
+  run by run (TESTING_ENVIRONMENT §5, §6).
+Affects:       L0-OBJ-110, L0-SUC-040; STP execution and campaign generation
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -73,7 +72,8 @@ Rationale:     Owner decision D17 (#49): there is wind in the system, configurab
   air differs from the velocity over the ground; the conventions define both. Revised by the owner
   at G0, 2026-10-25.
 Affects:       L0-CON-090; model specification (drag and wind model); navigation subsystem (track,
-  horizontal speed, airspeed); STP (wind configuration); CONVENTIONS CV-470; CONOPS §1
+  horizontal speed, airspeed); STP (wind configuration); CONVENTIONS CV-470; CONOPS
+  §4.2
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -158,8 +158,9 @@ Assumption:    Ground contact is an ideal landing. Contact with the ground withi
 Rationale:     Owner decisions D8 and D37: the ground is at altitude zero on a flat Earth, and a
   landing model is required. An ideal landing keeps it to one envelope check. The envelope limits
   are parameters, set at a lower level. Revised by the owner at G0, 2026-10-25.
-Affects:       L0-CON-090 (ground reaction); model specification (ground contact); STP run termination
-  conditions; fuel-exhaustion reference mission; CONVENTIONS CV-420
+Affects:       L0-CON-090 (ground reaction), L0-CON-290, L0-CON-310; model specification (ground
+  contact); STP run termination conditions; fuel-exhaustion reference mission;
+  CONVENTIONS CV-420
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -187,7 +188,7 @@ Rationale:     OBJECTIVES §3 speaks of the available CPU resources; a single mu
   assumption is that a campaign that runs as independent instances on one host will scale;
   running on a CPU cluster, and assessing that scalability, comes at a later stage (#86).
   Confirmed by the owner at G0, 2026-10-25.
-Affects:       L0-OBJ-090, L0-SUC-050, L0-SUC-060; STP execution architecture
+Affects:       L0-OBJ-090, L0-SUC-060; STP execution architecture
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -201,7 +202,7 @@ Assumption:    The project can enforce information separation by keeping the pro
 Rationale:     The blind experiment depends on access control that the project can apply and record
   (REVERSE_ENGINEERING §7). If workspace separation proves insufficient, the separation constraints
   need another means.
-Affects:       L0-CON-220, L0-CON-250, L0-SUC-140; reverse-engineering effort requirements
+Affects:       L0-CON-250, L0-SUC-140; reverse-engineering effort requirements
 Owner:         Martin
 Status:        Confirmed
 ```

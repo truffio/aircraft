@@ -2,7 +2,8 @@
 
 Checks: [P-..] references in statements and the Parameters field exist, duplicate
 or badly formed parameter IDs, unused parameters, non-SI unit hints, and TBD/TBR
-parameters without an entry in registers/TBD_TBR.md (warning).
+parameters without an entry in registers/TBD_TBR.md (warning). References from
+records with Status "Deleted" are ignored.
 
 Usage: python tools/param_check.py [--root DIR] [--strict]
 """
@@ -63,6 +64,9 @@ def check_references(repo, known):
     out = []
     used = set()
     for r in repo.records:
+        if r.get("Status") == "Deleted":   # its parameters are withdrawn with it
+            continue
+
         def add(sev, code, msg, field):
             out.append(Finding(str(r.file), r.where(field), sev, code, r.id, msg))
 

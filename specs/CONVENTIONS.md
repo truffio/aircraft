@@ -1,10 +1,10 @@
 # Aeronef — Conventions
 
-**Status:** Proposed (Phase 1, task A3). Every convention is Proposed until the project owner fixes it at Gate G0.
-**Date:** 2026-10-24
+**Status:** Fixed at Gate G0 (D43), 2026-10-27, except CV-650 and CV-660, which are deferred to L2 (#54). Changes go through a change request (`registers/CHANGE_REQUESTS.md`).
+**Date:** 2026-10-27
 **Owner:** Martin
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (REE).
-**Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7, Q2–Q5).
+**Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7–D44).
 
 ## 0. Purpose, scope and how to cite
 
@@ -13,7 +13,7 @@ This document fixes the coordinate frames, sign conventions, angle definitions, 
 - **Basis.** The frames and signs are consistent with the practice of ANSI/AIAA R-004-1992, *Recommended Practice for Atmospheric and Space Flight Vehicle Coordinate Systems*, as described in public sources (no copy of the text is held; checked against public sources, decision D36): a right-handed body frame with x forward, y right and z down, a local-level north-east-down frame, and the yaw-pitch-roll (3-2-1) Euler sequence. Mass-properties terms are compatible with SAWE STD A-6. Where this document goes beyond R-004 (crew-facing units, the time base, VOR definitions, expression rules), it says so.
 - **Citing.** A requirement cites a convention by its ID, for example "heading (CONVENTIONS CV-530)". Requirements use the defined names in this document and the [glossary](GLOSSARY.md), never a synonym.
 - **IDs.** `CV-nnn`, grouped by section in blocks of one hundred, numbered in steps of 10. An ID is never reused. A deleted convention keeps its ID with status Deleted.
-- **Status values.** Proposed → Fixed (at G0) → Changed (by an approved change request) or Deleted. Items that need an owner answer carry **TBR (Qn)** or a G0 decision reference **(G0-nn)**. Section 11 lists the G0 decisions. Items the owner has decided are **Fixed**, with the plan decision (Dnn, plan §9) that fixes them.
+- **Status values.** Proposed → Fixed (at G0) → Changed (by an approved change request) or Deleted. Items that needed an owner answer carried a G0 decision reference **(G0-nn)**. Section 11 lists the G0 decisions. Items the owner has decided are **Fixed**, with the plan decision (Dnn, plan §9) that fixes them.
 - **Section numbers and ID blocks.** Section n+1 holds the block `CV-n00`–`CV-n90` (Section 1 holds CV-0xx, Section 10 holds CV-9xx).
 - **Numbers.** Numbers in this document are exact definitions (for example 1 ft = 0.3048 m, ranges of angles). Every other number is a parameter `P-<SUB>-<NNN>`, proposed in `work/A3/param_proposals.md` and held in `parameters/PARAMETERS.yaml`.
 - **Scope.** The Aeronef element (AER) and the Aeronef side of its interfaces. The STP may use other frames internally, for example for graphics, provided it converts at its boundary as the ICD-AER-STP defines.
@@ -23,12 +23,12 @@ This document fixes the coordinate frames, sign conventions, angle definitions, 
 ### CV-010 — Applicability
 
 Each Aeronef requirement, the MS-DYN, each Aeronef ICD, the parameter database and each operational data signal shall use the conventions in this document. A departure is allowed only through a change request against this document.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-020 — Right-handed frames
 
 Every coordinate frame is orthonormal and right-handed: x × y = z.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-030 — Notation
 
@@ -43,12 +43,12 @@ Every coordinate frame is orthonormal and right-handed: x × y = z.
 | `t`, `k`, `Δt` | Simulation time, step index, simulation step (CV-8xx) |
 
 Symbols for each quantity are given with its definition. Requirements use the defined names; symbols are for the MS-DYN, the ICDs and the verification procedures.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-040 — Rotation sense
 
 Rotations between frames are passive: a rotation re-expresses a fixed vector in a rotated frame. A positive rotation about an axis follows the right-hand rule about that axis.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ## 2. Coordinate frames (CV-1xx)
 
@@ -73,7 +73,7 @@ This is the north-east-down (NED) local-level frame of R-004. The choice of NED 
 ### CV-130 — Local reference frame L: origin
 
 The origin `O_L` is a fixed point on the datum plane. Each world definition used by a scenario (vehicle initial position, VOR station positions) places objects relative to `O_L`. The location of `O_L` has no physical meaning; it is a reference point only.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-140 — Local reference frame L treated as inertial
 
@@ -83,7 +83,7 @@ Frame L is an inertial frame for the equations of motion (consequence of CV-110)
 ### CV-150 — Vehicle-carried local frame V
 
 Frame V has its origin at the body origin `O_B` (CV-160) and axes parallel to L at all times (north, east, down). It is used to express the vehicle attitude (CV-210) and the vehicle velocity in north, east and down components. On the flat world of CV-110, `C_VL` is the identity matrix.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-160 — Body frame B: origin
 
@@ -106,12 +106,12 @@ The exact body point the nose defines and the location of the cockpit relative t
 ### CV-180 — Vertical direction and gravity
 
 "Down" is `+z_L`, the direction of the gravitational acceleration. "Up" is `−z_L`. "Horizontal" means parallel to the datum plane (perpendicular to `z_L`). "Vertical" means parallel to `z_L`.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-190 — Frames not used in version 1
 
 Wind axes, stability axes, Earth-centred inertial, Earth-centred Earth-fixed and geodetic frames are not used. The Aeronef has no aerodynamic lift and no control surfaces, so angle of attack and sideslip have no role in the forces. Drag is defined by the MS-DYN on the air-relative velocity (CV-470).
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### 2.1 Trade: NED versus ENU for frame L (decision G0-01)
 
@@ -146,7 +146,7 @@ The attitude of frame B relative to frame V is described by three Euler angles a
 | Roll angle | φ | Right side down (rotation about `x_B` by the right-hand rule) |
 
 On the Aeronef the yaw angle is the **heading** (CV-530). Requirements use "heading" for ψ and "pitch angle" and "roll angle" for θ and φ. The Aeronef has no wings, so "bank angle" and "wings level" are not used.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-230 — Euler-angle ranges
 
@@ -170,7 +170,7 @@ C_BV =  | sφ·sθ·cψ − cφ·sψ    sφ·sθ·sψ + cφ·cψ    sφ·cθ  |
 ```
 
 Because `C_VL` is the identity (CV-150), `C_BL = C_BV`.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-250 — Attitude quaternion
 
@@ -187,7 +187,7 @@ C_BL =  | 2(q1q2−q0q3)       q0²−q1²+q2²−q3²    2(q2q3+q0q1)    |
 
 - `q` and `−q` describe the same attitude; a reported quaternion has `q0 ≥ 0`.
 
-**Proposed use (G0-03):** the quaternion is the authoritative attitude in the dynamics state and in the ICD state vector, and the Euler angles are derived from it by CV-260. Reason: the Aeronef's attitude is independent of its motion, so pitch angles at or near ±90° are reachable and the Euler angles become singular there; a quaternion has no singularity. Requirements still state attitude in Euler angles, because those are what the crew-facing and mode requirements need. How the model integrates attitude is an MS-DYN design matter.
+**Use (G0-03, D22):** the quaternion is the authoritative attitude in the dynamics state and in the ICD state vector, and the Euler angles are derived from it by CV-260. Reason: the Aeronef's attitude is independent of its motion, so pitch angles at or near ±90° are reachable and the Euler angles become singular there; a quaternion has no singularity. Requirements still state attitude in Euler angles, because those are what the crew-facing and mode requirements need. How the model integrates attitude is an MS-DYN design matter.
 **Status:** Fixed (G0-03: D22).
 
 ### CV-260 — Euler angles from an attitude, and the singular case
@@ -199,12 +199,12 @@ The Euler angles reported for an attitude are, with `Cij` the elements of `C_BL`
 - if |C13| = 1 (pitch angle of exactly ±90°): φ = 0 and ψ = wrap360(atan2(−C21, C22)).
 
 At and near ±90° of pitch angle, the heading and the roll angle are not separately meaningful. Requirements that use the heading or the roll angle state the pitch-angle range in which they apply (CV-580).
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-270 — Level attitude
 
 The vehicle is at **level attitude** when θ = 0 and φ = 0. Heading is not constrained by level attitude.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-280 — Angular velocity and body rates
 
@@ -217,34 +217,34 @@ The vehicle angular velocity is `ω_BL`, the angular velocity of B relative to L
 | Yaw rate | r | About `+z_B`: nose right |
 
 The pitch-rate symbol `q` is distinct from the quaternion `q` (CV-250) by context; ICD signal names use distinct names.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-290 — Euler-angle rates are not body rates
 
 The Euler-angle rates (dψ/dt, dθ/dt, dφ/dt) differ from the body rates (p, q, r) except at level attitude. **Heading rate** is dψ/dt. A requirement on a rate names which one it constrains.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ## 4. Forces, moments and mass properties (CV-3xx)
 
 ### CV-310 — Body forces
 
 A force is resolved in B as `F^B = (X, Y, Z)`, positive along `+x_B`, `+y_B`, `+z_B` (forward, right, down). Requirements name the axis in words, for example "the force along the body x axis".
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-320 — Body moments
 
 A moment about `O_B` is resolved in B as `M^B = (L, M, N)`: rolling, pitching and yawing moment, positive about `+x_B`, `+y_B`, `+z_B` by the right-hand rule. Because `L` also names frame L, ICDs and requirements use "moment about the body x axis" (or `M_x`, `M_y`, `M_z`) in place of the single letters.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-330 — Effector direction
 
 Each effector i has a fixed unit direction vector `d_i` in B (and, for a moment-producing effector, a fixed unit moment axis). A positive effector output acts along `+d_i`. Whether an effector can produce a negative output, and the layout of the `d_i`, are effector (EF) requirements or design decisions, not conventions.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-340 — Mass-properties reference
 
 Mass, moments of inertia and products of inertia are given about `O_B` (the CG) and in the body axes of B. Fuel quantity is a mass, in kilograms (CV-720). Vehicle mass is dry mass plus remaining fuel mass.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-350 — Inertia tensor sign convention
 
@@ -264,7 +264,7 @@ Parameter entries for products of inertia state this definition, because standar
 ### CV-410 — Position
 
 The **vehicle position** is the position of `O_B` in L: `(x_N, y_E, z_D)`, in metres. The **horizontal position** is `(x_N, y_E)`. Requirements state vertical position as altitude (CV-430), never as `z_D`.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-420 — Altitude datum
 
@@ -279,7 +279,7 @@ The altitude datum is the datum plane, `z_L = 0`, which contains `O_L`. It plays
 ### CV-440 — Height
 
 **Height** is the vertical distance of `O_B` above a stated reference point or surface other than the datum plane, positive up, for example "height above the VOR station". A requirement that uses "height" names its reference. "Height" alone, and "height above ground", are not used in version 1.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-450 — Distance
 
@@ -288,14 +288,14 @@ The altitude datum is the datum plane, `z_L = 0`, which contains `O_L`. It plays
 - **Vertical separation** is the difference of their altitudes.
 
 A requirement that uses a distance names which one.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-460 — Velocity and speed
 
 The **vehicle velocity** `v` is the time derivative of the vehicle position in L (velocity relative to the ground). Its components are `v^V = (v_N, v_E, v_D)` (north, east, down) and `v^B = (u, v, w)` along the body axes, with `v^B = C_BL · v^V`. The **speed** of the vehicle, called **total speed** in requirements, is `|v|`.
 
 The word "speed" alone is not used in requirements: they use *total speed*, *horizontal speed* (CV-480), *vertical speed* (CV-490) or *airspeed* (CV-470).
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-470 — Air-relative velocity and airspeed
 
@@ -305,12 +305,12 @@ The **air-relative velocity** is the vehicle velocity minus the velocity of the 
 ### CV-480 — Horizontal speed
 
 **Horizontal speed** `V_H` is the magnitude of the horizontal component of the vehicle velocity: `V_H = √(v_N² + v_E²)`, relative to the ground, always ≥ 0. It does not depend on attitude or heading. With wind (CV-470) it differs from the horizontal airspeed; with no wind applied it equals it.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-490 — Vertical speed
 
 **Vertical speed** `VS` is the rate of change of altitude: `VS = dh/dt = −v_D`, positive when climbing. It does not depend on attitude.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ## 6. Direction reference and direction angles (CV-5xx)
 
@@ -322,32 +322,32 @@ The **air-relative velocity** is the vehicle velocity minus the velocity of the 
 ### CV-520 — Direction angles in the horizontal plane
 
 A **direction angle** (heading, track, course, radial, bearing) is measured in the horizontal plane from north, positive clockwise seen from above (toward east), in the range [0°, 360°) (in radians, [0, 2π)). North is 0. How the crew-facing value of north is shown (for example "360" or "000") is a display requirement, not a convention.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-530 — Heading
 
 **Heading** ψ is the direction in which the nose points: the direction angle of the horizontal projection of `x_B`. It equals the Euler yaw angle of CV-210 for every pitch angle other than ±90°. Heading is defined by attitude only. It does not depend on the vehicle velocity.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-540 — Track
 
 **Track** χ is the direction of horizontal motion: the direction angle of the horizontal velocity `(v_N, v_E)`, so χ = wrap360(atan2(v_E, v_N)). It is ground-referenced. Track is defined by velocity only and does not depend on attitude. It is undefined when the horizontal speed is zero, and requirements that use track state the validity condition of CV-580.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-550 — Heading and track are independent
 
-On the Aeronef, translation does not require the vehicle to turn or tilt, so heading and track are independent: any heading can be combined with any track. Likewise pitch angle and flight path angle are independent, and roll angle has no effect on the direction of motion. The **relative track** wrap180(χ − ψ) is the direction of horizontal motion relative to the nose: 0 means moving nose-first, +90° means moving to the right, ±180° means moving tail-first. A requirement on the direction of motion uses track; a requirement on where the vehicle points uses heading. The behaviour of the attitude axes in each guidance mode is open question Q2 (TBR).
+On the Aeronef, translation does not require the vehicle to turn or tilt, so heading and track are independent: any heading can be combined with any track. Likewise pitch angle and flight path angle are independent, and roll angle has no effect on the direction of motion. The **relative track** wrap180(χ − ψ) is the direction of horizontal motion relative to the nose: 0 means moving nose-first, +90° means moving to the right, ±180° means moving tail-first. A requirement on the direction of motion uses track; a requirement on where the vehicle points uses heading. Pitch and roll stay level (D10); the attitude behaviour of each mode is defined at L2 (D33).
 **Status:** Fixed (D10).
 
 ### CV-560 — Flight path angle
 
 The **flight path angle** γ is the angle between the vehicle velocity and the horizontal plane, positive when climbing: γ = atan2(VS, V_H), in the range [−90°, +90°]. It depends on velocity only, not on pitch angle. It is undefined when the total speed is zero (CV-580). "Climb on flight path angle" means γ > 0; "descent on flight path angle" means γ < 0.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-570 — Climb, descent and level flight
 
 The vehicle is **climbing** when VS > 0, **descending** when VS < 0 and in **level flight** when VS = 0. Requirements that judge these states from data use the tolerance parameters of the requirement concerned (CV-930). Level flight is a property of motion. It is unrelated to level attitude (CV-270).
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-580 — Validity of direction quantities
 
@@ -361,11 +361,11 @@ Some direction quantities are undefined, or ill-conditioned, at specific states:
 | VOR radial | Horizontal distance from the station = 0 | `P-NAV-040`: minimum horizontal distance for which the radial is valid (TBD) |
 
 How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and TM. The thresholds are parameters, not conventions.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ## 7. VOR geometry (CV-6xx)
 
-The VOR fidelity is open question Q4. The definitions below follow the plan's proposal for Q4: ground stations at fixed positions in L, radials referenced to true north, an ideal signal within a reception range, and no noise in version 1.
+The VOR is ideal (D12): ground stations at fixed positions in L, radials referenced to true north, an ideal signal within a reception range, and no noise in version 1.
 
 ### CV-610 — VOR station
 
@@ -379,7 +379,7 @@ The **radial** of the vehicle from a station, `R_ac`, is the direction angle (CV
 
 ### CV-630 — Selected course
 
-The **selected course** C is the direction angle of the path the vehicle is to follow along a radial line through the station. A selected course C is flown **outbound** on radial C (away from the station) or **inbound** on radial wrap360(C + 180°) (toward the station). Whether the crew selects a course (as on an airliner course selector) or a radial is issue A3-Q09. The definitions in CV-640 to CV-660 work for both, because a selected radial R used outbound is the course C = R.
+The **selected course** C is the direction angle of the path the vehicle is to follow along a radial line through the station. A selected course C is flown **outbound** on radial C (away from the station) or **inbound** on radial wrap360(C + 180°) (toward the station). The crew selects a course, as on an airliner course selector, and flies it TO or FROM the station (D14).
 **Status:** Fixed (D14).
 
 ### CV-640 — TO/FROM sense
@@ -395,12 +395,12 @@ The **course deviation** δ is the signed angle between the selected course line
 - TO: δ = wrap180(C + 180° − R_ac).
 
 The sign follows CV-910 (actual minus desired, as a lateral offset). A course deviation indicator conventionally shows the course relative to the vehicle ("fly toward the needle"), the opposite sign. How the deviation is shown to the crew is a display requirement, not a convention.
-**Status:** Proposed (G0-12).
+**Status:** Deferred to L2 (G0-12, #54).
 
 ### CV-660 — Cross-track deviation (linear)
 
 The **cross-track deviation** `d` is the signed horizontal distance from the vehicle to the line through the station along the selected course, positive to the right of the course looking along the course direction: `d = D_H · sin(R_ac − C)`, where `D_H` is the horizontal distance from the station to the vehicle. The same formula holds in the TO and FROM senses.
-**Status:** Proposed (G0-12).
+**Status:** Deferred to L2 (G0-12, #54).
 
 ### CV-670 — Reception range
 
@@ -412,7 +412,7 @@ A station's signal is received when the vehicle is within the **reception range*
 ### CV-710 — SI for requirements, model and signals
 
 Requirements, the MS-DYN, internal signals, ICD signals and operational data use SI units. The exceptions are the crew-facing units under the rule in CV-760.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-720 — SI units by quantity
 
@@ -433,7 +433,7 @@ Requirements, the MS-DYN, internal signals, ICD signals and operational data use
 | Angular rate | rad/s |
 | Angular acceleration | rad/s² |
 | Dimensionless ratios | 1 (written as a fraction, not as a percentage, in signals and parameters) |
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-730 — Angles on the SI side are in radians
 
@@ -475,7 +475,7 @@ These factors are exact by definition and are used without rounding:
 | 1 lb (fuel, D9) | 0.453 592 37 kg |
 
 Conversion from SI to crew units uses the inverse of these factors (for example, altitude in ft = h / 0.3048).
-**Status:** Proposed. The factors themselves are exact international definitions.
+**Status:** Fixed (D43). The factors themselves are exact international definitions.
 
 ### CV-760 — Where crew-facing units may appear
 
@@ -487,17 +487,17 @@ Crew-facing units appear only in:
 4. operational data signals that record a crew-facing value as selected or as shown, in addition to the SI signal for the same quantity, with the unit stated in the signal definition.
 
 Every other requirement, and every model quantity, internal signal and ICD signal, is in SI. A requirement in group 1 or 2 that links a crew-facing value to an SI quantity cites CV-750 for the conversion.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-770 — Conversion of crew selections
 
 A **selected value** entered by the crew in a crew-facing unit becomes the corresponding SI **target** by multiplication by the exact CV-750 factor, without intermediate rounding. The selection resolution (for example the step between selectable altitudes) is a parameter of the selection requirement.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-780 — Display resolution and rounding
 
 The resolution with which a crew-facing value is shown, and the rounding rule from the SI value (for example round half away from zero), are requirement matters for AF and TM. They are parameters (proposed `P-TM-020` to `P-TM-070`, TBD), not conventions. Until those requirements exist, no rounding rule is implied.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-790 — Units in the parameter database
 
@@ -509,7 +509,7 @@ Every parameter has a unit. A parameter used by the SI-side requirements has an 
 ### CV-810 — Simulation time
 
 **Simulation time** `t` is the independent time variable of the vehicle model, in seconds. `t = 0` is the instant at which a run's initial conditions apply. Simulation time is independent of wall-clock time: a run may execute faster or slower than real time without any change to `t`.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-820 — Simulation step
 
@@ -522,7 +522,7 @@ The vehicle model advances in fixed **simulation steps** of duration `Δt = P-SY
 - An **output sample** is one record of operational data. The output sample period is `P-TM-010` (TBD).
 
 Whether these periods equal the simulation step or are integer multiples of it is an ICD-AER-STP matter.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-840 — Timestamps
 
@@ -532,17 +532,17 @@ Each output sample, crew selection and event record carries its **timestamp**: t
 ### CV-850 — Time in requirements
 
 Every duration and time limit in a requirement is in simulation time, in seconds, through a parameter. Wall-clock time appears only in STP requirements on execution speed.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-860 — Measuring a response time
 
 A requirement of the form "when <trigger>, … within T" is measured from the **trigger time**, the timestamp of the first sample at which the trigger condition is true, to the timestamp of the first sample at which the response condition is true. The response satisfies the requirement when that difference is ≤ T (CV-940). A requirement that needs a different measurement (for example "and remains true for T2") states it.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-870 — No calendar time in the model
 
 The vehicle model has no date, time of day or calendar epoch. Run identification metadata (wall-clock start time, software version) belongs to the STP.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ## 10. Rules for expressing requirements (CV-9xx)
 
@@ -557,12 +557,12 @@ An **error** or **deviation** is actual value minus target value: e = actual −
 - `wrap180(a)` returns the angle equal to `a` modulo 360° in (−180°, +180°] (in radians, (−π, +π]).
 
 Direction angles (CV-520) are reported with `wrap360`. Roll angle and angular differences are reported with `wrap180`.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-930 — Angular differences
 
 The difference between two direction angles, for example a heading error or a track error, is always wrap180(a − b), the shortest signed angle, so that 359° and 1° differ by 2°, not 358°. A requirement that intends the long way round states it explicitly.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-940 — Bounds and comparisons
 
@@ -575,12 +575,12 @@ The difference between two direction angles, for example a heading error or a tr
 ### CV-950 — Naming axes and components
 
 A requirement names a component by its frame and axis in words ("velocity along the body y axis", "north component of position", "moment about the body z axis"). Unqualified "x", "lateral" or "vertical" is not used for a component. In this document, "lateral" means along `y_B` when it refers to the body and "horizontal" means parallel to the datum plane.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-960 — Defined quantity names only
 
 Requirements use the quantity names defined here: altitude, height (with reference), horizontal distance, slant range, total speed, horizontal speed, vertical speed, airspeed, heading, track, relative track, flight path angle, pitch angle, roll angle, radial, selected course, course deviation and cross-track deviation. Airliner terms that do not apply to the Aeronef (bank angle, angle of attack, indicated airspeed, Mach number, magnetic heading) are not used.
-**Status:** Proposed.
+**Status:** Fixed (D43).
 
 ### CV-970 — Attitude stated separately from motion
 
