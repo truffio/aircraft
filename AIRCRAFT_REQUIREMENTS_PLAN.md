@@ -22,9 +22,9 @@ This plan organises the work of defining the requirements of the **Aeronef** (el
 
 - Hazard and failure analysis, which is deferred per the tailoring note in METHODOLOGY.md. Criticality is set to "Not assessed", and no Safety-type requirements or fault-injection requirements are written.
 - Implementation: design descriptions, algorithms, software low-level requirements and code structure. Decomposition stops at the layer above them.
-- Requirements for the Simulation and Testing Platform (STP) and the Reverse-Engineering Effort (REE), except the Aeronef side of shared interfaces.
+- Requirements for the Simulation and Testing Platform (TST) and the Reverse-Engineering Effort (RVS), except the Aeronef side of shared interfaces.
 - Operational manuals. They come after the requirements baseline. This plan only keeps the requirements in a state that manuals can trace to.
-- Test procedure implementation. This plan names procedures and success criteria; the STP writes and runs them later.
+- Test procedure implementation. This plan names procedures and success criteria; the TST writes and runs them later.
 - Manual control. It is recorded as an optional feature (EARS "Where" pattern) and is not developed.
 
 ## 2. Inputs
@@ -33,7 +33,7 @@ This plan organises the work of defining the requirements of the **Aeronef** (el
 | --- | --- |
 | OBJECTIVES.md | L0 objectives and success criteria |
 | AIRCRAFT_CHARACTERISTICS.md | Vehicle concept, modelling boundaries, constraints |
-| TESTING_ENVIRONMENT.md | Interface needs toward the STP, data-collection needs |
+| TESTING_ENVIRONMENT.md | Interface needs toward the TST, data-collection needs |
 | REVERSE_ENGINEERING.md | Constraints on operational data output (observable, but must not leak protected design) |
 | METHODOLOGY.md | Process, writing rules, attributes, ID scheme, checklists, templates |
 
@@ -56,7 +56,7 @@ specs/
   FUNCTIONAL_ANALYSIS.md           Function list, N² matrix, control-loop flow
   AF_MODE_LOGIC.md                 Mode groups, compatible combinations, state-transition diagram, decision tables
 icd/
-  ICD-AER-STP.md                   Aeronef ↔ STP (Aeronef side)
+  ICD-AER-TST.md                   Aeronef ↔ TST (Aeronef side)
   ICD-FC-AF.md                     Flight control ↔ autoflight
   ICD-NAV-AF.md                    Navigation ↔ autoflight
 parameters/
@@ -183,7 +183,7 @@ C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as ar
 
 | ID | Task | Model / effort |
 | --- | --- | --- |
-| I1 | Assemble `requirements/L2.md` from the drafts. Merge all staging proposals: the parameter database, glossary and DD register. Write `icd/ICD-AER-STP.md` (Aeronef side: state vector, effector commands, operational data, frame rate, units), `icd/ICD-FC-AF.md` and `icd/ICD-NAV-AF.md`. Resolve cross-subsystem conflicts, check that the budgets close, and turn unresolved conflicts into change requests at L1 or questions for the project owner. | Opus / xhigh |
+| I1 | Assemble `requirements/L2.md` from the drafts. Merge all staging proposals: the parameter database, glossary and DD register. Write `icd/ICD-AER-TST.md` (Aeronef side: state vector, effector commands, operational data, frame rate, units), `icd/ICD-FC-AF.md` and `icd/ICD-NAV-AF.md`. Resolve cross-subsystem conflicts, check that the budgets close, and turn unresolved conflicts into change requests at L1 or questions for the project owner. | Opus / xhigh |
 | I2 | Re-run the parameter-reference check and the trace check. | Orchestrator (scripts) |
 
 **Gate G2 — Subsystem requirements review**
@@ -231,7 +231,7 @@ There is one agent per group of sections, run in parallel. For every requirement
 - the procedure ID (TP-, AN-, DM- or IN-nnn);
 - success criteria stated before the work, per METHODOLOGY 9.3 and 10.2.
 
-Physics requirements are verified by analysis against independent solutions, and functional and performance requirements by automated STP tests. The agents add nominal and boundary cases; robustness cases tied to failures are deferred.
+Physics requirements are verified by analysis against independent solutions, and functional and performance requirements by automated TST tests. The agents add nominal and boundary cases; robustness cases tied to failures are deferred.
 
 | ID | Scope | Model / effort |
 | --- | --- | --- |
@@ -244,7 +244,7 @@ Physics requirements are verified by analysis against independent solutions, and
 **Gate G4 — Verification plan inspection and requirements baseline**
 
 - Opus / high runs the inspection, which checks that the success criteria are measurable and that the procedures are written from the requirement and not from a design.
-- The trace checks must pass: no orphans, no childless parents, no requirement without a verification method. L0 requirements allocated only to STP or REE are not counted as childless (D44).
+- The trace checks must pass: no orphans, no childless parents, no requirement without a verification method. L0 requirements allocated only to TST or RVS are not counted as childless (D44).
 - The project owner approves the complete Aeronef requirements baseline, tagged `AER-REQ-baseline-1`.
 
 ## 7. Standard brief for every author agent
@@ -296,7 +296,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D14 | VOR tracking (#53) | The crew flies a course. Tracking a radial is a track over the ground, and flying TO or FROM the station changes the course flown. |
 | D15 | Mode logic versus controllers (#72) | The modes say how the aircraft flies; the controllers implement them, so the two are decoupled. Every control-law version and autoflight implementation must meet the same mode logic, so any implementation pairs with any law. |
 | D16 | Mode engagement rule (#78) | When the crew selects a mode, it normally arms first and engages once its engagement conditions are met. While the mode is armed, the active mode manoeuvres the craft into those conditions. Manoeuvres are g-limited: maximum acceleration and deceleration are design parameters. This covers, for example, climb or descent sequencing to altitude hold, and motion sequencing to position hold. |
-| D17 | Wind (#49) | Wind exists and can be configured in the test environment. Position hold compensates for wind. |
+| D17 | Wind (#49) | Wind exists and can be configured in the test environment. Position hold compensates for wind. Refined by D51 (gusts). |
 | D18 | No coupling between axes (#63) | A motion along one of the six degrees of freedom does not induce acceleration on another axis, seen from the aircraft's body frame. A translation along one axis does not cause translation along another. This is unlike winged aircraft, where roll and yaw are coupled. How this treats the rigid-body kinematic terms is open (#81). |
 | D19 | Effectors (#64) | Effectors are fixed in the body frame and nothing swivels. There are enough of them to give control in all 6 degrees of freedom. |
 | D20 | Air density (#70) | Standard atmosphere |
@@ -312,7 +312,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D30 | "and" / "or" in statements (#44) | Allowed, provided the requirement meets the quality criteria (clear, complete, testable, implementable). If the conjunctions form a tree of possibilities, split the requirement. The lint reports COMPOUND as a warning only. |
 | D31 | Requirement identifiers (#45) | One syntax at every level, starting with the level: `L0-OBJ\|CON\|SUC\|ASM-nnn`, `L1-AER-nnn`, `L<n>-AER-<SUB>[-<ITEM>]-<NNN>`. The prefix must match the Level field, and the lint enforces it. A requirement that moves to another level gets a new ID. |
 | D32 | Scenario values (#62) | Test procedures set the defaults and constants for test scenarios. They are not design parameters and stay out of `PARAMETERS.yaml`. |
-| D33 | Levels and where modes are defined (#80) | L0 is the project, and the aircraft is a black box at L0. L1 is the project's components: the aircraft (AER), the test environment (STP) and the reverse-engineering effort (REE). This plan writes only the AER branch of L1. L2 divides a component into its subsystems. Modes, guidance, mode logic and control-law implementation are defined at L2 (AF, FC), not at L0 or L1. |
+| D33 | Levels and where modes are defined (#80) | L0 is the project, and the aircraft is a black box at L0. L1 is the project's components: the aircraft (AER), the test environment (TST) and the reverse-engineering effort (RVS). This plan writes only the AER branch of L1. L2 divides a component into its subsystems. Modes, guidance, mode logic and control-law implementation are defined at L2 (AF, FC), not at L0 or L1. |
 | D34 | Crew units (#52, refines D7) | What the crew sees and sets is in crew units: feet, knots and degrees. Time is in whatever unit makes sense, so vertical rates are in ft/min and flight duration in hours or minutes. Internal calculations use SI or whatever is most convenient. Crew-facing parameters are stored in their crew unit and flagged in the schema. |
 | D35 | Remaining G0 conventions (#58) | Approved as recommended in CONVENTIONS §11: G0-02, -04, -07, -08, -11, -13, -14, -15. |
 | D36 | R-004 basis (#57) | No copy of the R-004 text is held. The conventions were checked against public sources (Wikipedia; NASA NESC simulation output spec citing R-004 §1.1.7) and match. CONVENTIONS describes them as "consistent with R-004 practice". |
@@ -323,7 +323,15 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D41 | L0 verification (#90, G0-F01) | Every L0 requirement is verified by roll-up (D40): method Inspection, success criteria "each child requirement has passed its verification and the decomposition has been reviewed". What the children must show stays in the rationale as guidance. |
 | D42 | Configurations (#91, G0-F03; refines D24) | One set of flight-control laws for now, so there is one Aeronef configuration: the autoflight implementation with that control-law design. It must pass every requirement (D26). The term "reference configuration" is dropped. Control laws stay replaceable (L0-CON-200) so that more designs can be added later. |
 | D43 | Conventions fixed (#92, G0-F10) | All remaining conventions in CONVENTIONS are fixed as written, apart from the items parked for L2 (CV-650, CV-660, #54). The conventions and glossary become Fixed at the L0 baseline; later changes go through a change request. |
-| D44 | STP and REE branches (#93, G0-F12) | This plan covers the Aeronef branch only. The plan will be extended later to the simulation and testing platform (STP) and the reverse-engineering effort (REE). Until then, L0 requirements allocated only to STP or REE have no children by design: the trace check and the G1–G4 trace exits do not count them as childless, and they are verified by roll-up once their branch exists. |
+| D44 | TST and RVS branches (#93, G0-F12) | This plan covers the Aeronef branch only. The plan will be extended later to the simulation and testing platform (TST) and the reverse-engineering effort (RVS). Until then, L0 requirements allocated only to TST or RVS have no children by design: the trace check and the G1–G4 trace exits do not count them as childless, and they are verified by roll-up once their branch exists. |
+| D45 | Crew g-limit (#97, B1-Q03) | The crew acceleration limit (L0-CON-310) is evaluated at the centre of gravity, to keep it simple. The limit of 3 g ([P-SYS-120]) is confirmed. |
+| D46 | Effector authority shape (#98, B1-Q04) | The weight is carried along the negative body z axis (up at level attitude) only, with a smaller authority in the other five force directions. |
+| D47 | Performance envelope (#101, B1-Q07) | The performance envelope values (P-SYS-200 to -280) stay TBD for now. |
+| D48 | L1 budgets (#102, B1-Q08) | The B1 budget values are accepted as TBR (FUNCTIONAL_ANALYSIS §7); each closes at G2. |
+| D49 | Manual control (#103, B1-Q09) | No manual-control requirement is written at L1. Manual control is a lower-level matter. |
+| D50 | AER share of reproducibility and headless running (#104, B1-Q10) | L0-OBJ-110 and L0-CON-190 are also allocated to the Aeronef (CR-B1-01, CR-B1-02). |
+| D51 | Wind and gusts (#99, B1-Q05; revises D17) | The wind is horizontal only, with no vertical component. It is a steady wind of 0 to 100 kt ([P-SYS-430]) plus gusts and bursts of up to 50 kt ([P-SYS-560]); the two add up, so the largest instantaneous wind is 150 kt. This replaces the earlier "no gusts" assumption (L0-ASM-050, CR-B1-03). A wind that varies across the operating volume stays with the refined wind model (#84). |
+| D52 | Element codes (owner, 2026-10-28) | The test environment element is coded **TST** (was STP) and the reverse-engineering element **RVS** (was REE), in IDs, allocations and text. Review records in `reviews/` and earlier GitHub issues keep the old codes. |
 
 ### Open questions
 

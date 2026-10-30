@@ -32,7 +32,7 @@ CONOPS §4.2 assumes the following. If CONVENTIONS chooses differently, the affe
 
 - Mode groups, armed versus active, capture and the attitude rules in CONOPS §4.4 are the operational view of Q2 and Q5. B1 proposes the final answers; CONOPS will be updated.
 - Performance envelope parameters P-SYS-200 to P-SYS-280 are proposed for L1 budgets.
-- The crew interface (CONOPS §4.3) is a logical interface of the Aeronef. B1 to decide whether it is an L1 interface (Aeronef ↔ STP, carrying crew selections) or an Aeronef-internal function.
+- The crew interface (CONOPS §4.3) is a logical interface of the Aeronef. B1 to decide whether it is an L1 interface (Aeronef ↔ TST, carrying crew selections) or an Aeronef-internal function.
 
 ## To C2 — Fuel and mass properties
 
@@ -71,7 +71,7 @@ CONOPS §4.2 assumes the following. If CONVENTIONS chooses differently, the affe
 
 ## To C6 — Navigation
 
-- VOR stations defined per run by the STP, fixed in the local frame, identified by an identifier.
+- VOR stations defined per run by the TST, fixed in the local frame, identified by an identifier.
 - Indications: course deviation, distance to station in NM (TBR Q4).
 - Reception range P-NAV-050. CONOPS scenarios start within range and end before station passage (A2-Q08).
 - Navigation quantities CONOPS uses: position, altitude, heading, track, horizontal speed, vertical speed, flight path angle.
@@ -82,12 +82,12 @@ CONOPS §4.2 assumes the following. If CONVENTIONS chooses differently, the affe
 - Releasable versus protected classification for each signal (SC-240).
 - Data needed to compare versions on the reference mission: fuel used per leg, tracking errors per leg (SC-110, SC-220). The leg boundaries are crew-selection events, so they can be found from the selection log.
 
-## To the STP side of ICD-AER-STP (I1)
+## To the TST side of ICD-AER-TST (I1)
 
 - Configuration input: parameter set, control-law version, autoflight version, each identified (N-350).
 - Initial condition input: position, velocity, attitude, angular rate, fuel, active and armed modes, targets, VOR stations (N-310).
 - Crew selections applied at stated simulation times, through the same crew interface a human uses (N-320, SC-230).
 - Run end: scenario end condition, maximum run time, ground plane reached (N-370).
-- Reproducibility: same configuration, initial condition and selection script give the same data (N-330). The STP must state the criterion (bit-identical on the same build and platform is proposed).
+- Reproducibility: same configuration, initial condition and selection script give the same data (N-330). The TST must state the criterion (bit-identical on the same build and platform is proposed).
 - Instance independence for parallel runs (SC-210).
 - Faster than real time without graphics; real time for interactive runs.

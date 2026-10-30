@@ -6,8 +6,8 @@ The subsystem prefixes are proposals: `P-SYS` for timing shared across subsystem
 
 | Proposed ID | Name | Description | Unit | Value | Status | Source / cited by |
 | --- | --- | --- | --- | --- | --- | --- |
-| P-SYS-300 | Simulation step | Fixed duration `Δt` of one vehicle-model simulation step | s | null | TBD | CV-820; F-STP-01; ICD-AER-STP |
-| P-SYS-310 | Control frame period | Period of one execution of the flight-control and autoflight functions | s | null | TBD | CV-830; ICD-AER-STP, ICD-FC-AF |
+| P-SYS-300 | Simulation step | Fixed duration `Δt` of one vehicle-model simulation step | s | null | TBD | CV-820; F-TST-01; ICD-AER-TST |
+| P-SYS-310 | Control frame period | Period of one execution of the flight-control and autoflight functions | s | null | TBD | CV-830; ICD-AER-TST, ICD-FC-AF |
 | P-TM-010 | Output sample period | Period of one operational data record | s | null | TBD | CV-830; TM (C7) |
 | P-DYN-010 | Gravitational acceleration | Magnitude of the uniform gravitational acceleration along `+z_L` | m/s² | null (candidate: 9.80665, standard gravity) | TBD | CV-110; MS-DYN (C1) |
 | P-NAV-010 | Track validity speed | Minimum horizontal speed for which track is valid | m/s | null | TBD | CV-540, CV-580; NAV (C6) |

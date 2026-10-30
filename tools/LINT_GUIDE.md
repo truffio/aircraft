@@ -30,7 +30,7 @@ Each finding is an **error** or a **warning**. An error is a defect: fix it. A w
 | Code | Flags |
 | --- | --- |
 | ORPHAN, NO-PARENT | A requirement below L0 with no parent, or a parent that does not exist |
-| CHILDLESS | A requirement that nothing below it covers. Every L0 requirement shows this until L1 exists. Not reported for records allocated only to STP or REE, whose branches the plan does not write yet (D44) |
+| CHILDLESS | A requirement that nothing below it covers. Every L0 requirement shows this until L1 exists. Not reported for records allocated only to TST or RVS, whose branches the plan does not write yet (D44) |
 | DELETED-REF (warning) | A live statement, verification, parent or assumption "Affects" cites a Deleted record |
 | NO-VERIFICATION | No verification method |
 | DUPLICATE | Two records with the same ID |
@@ -45,7 +45,7 @@ It flags `[P-…]` references missing from `PARAMETERS.yaml` (PARAM-MISSING), pa
 | Check | Result | Meaning |
 | --- | --- | --- |
 | lint | 0 errors, 17 warnings | All COMPOUND, each judged at G0 (`reviews/G0/checklist_L0.md`) |
-| trace | 40 CHILDLESS | Expected: there is no L1 yet. The 20 STP/REE-only records are not counted (D44) |
+| trace | 40 CHILDLESS | Expected: there is no L1 yet. The 20 TST/RVS-only records are not counted (D44) |
 | param | 3 PARAM-MISSING | Expected: P-SYS-120, -060, -070 are seeded into `PARAMETERS.yaml` at B2 |
 
 Deleted records are not linted and their parameters are not checked: a deleted record keeps only its ID and history.

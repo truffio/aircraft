@@ -13,8 +13,8 @@ CONVENTIONS.md and GLOSSARY.md provide definitions to every subsystem. This file
 | AF (C5, Phase 4) | Definitions of altitude, vertical speed, horizontal speed, heading, track, flight path angle, course deviation; error sign; angle differencing; bound inclusivity; response-time measurement; crew-unit rule and exact conversion of selections | CV-4xx, CV-5xx, CV-6xx, CV-760, CV-770, CV-860, CV-910 to CV-940 |
 | NAV (C6) | Computation definitions for all navigation quantities and VOR geometry; validity conditions and their parameters | CV-4xx, CV-5xx, CV-6xx, CV-580 |
 | TM (C7) | Timestamps (step index authoritative); SI signals; optional crew-unit copies of selected or shown values with explicit units; display resolution parameters | CV-760, CV-780, CV-840 |
-| ICD-AER-STP (I1) | State vector in SI: position in L, velocity in V (NED) and B, attitude quaternion with derived Euler angles, body rates; step index and simulation time on every sample; latency convention (input at step k affects state at k or k+1) to be fixed there | CV-250, CV-410, CV-460, CV-280, CV-840 |
-| STP (out of scope, via ICD) | Any graphics or user-interface frame (for example y-up) is converted at the STP side of the boundary; the Aeronef side stays NED | §0 Scope, §2.1 |
+| ICD-AER-TST (I1) | State vector in SI: position in L, velocity in V (NED) and B, attitude quaternion with derived Euler angles, body rates; step index and simulation time on every sample; latency convention (input at step k affects state at k or k+1) to be fixed there | CV-250, CV-410, CV-460, CV-280, CV-840 |
+| TST (out of scope, via ICD) | Any graphics or user-interface frame (for example y-up) is converted at the TST side of the boundary; the Aeronef side stays NED | §0 Scope, §2.1 |
 | Parameter database (B2) | A field marking crew-facing parameters and their crew unit, if G0-10 is adopted | CV-790 |
 | L0 assumptions register (A1) | Assumptions to record: still air (no wind), flat world, perfect state knowledge already planned | CV-110, CV-470 |
 

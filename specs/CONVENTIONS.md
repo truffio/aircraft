@@ -3,7 +3,7 @@
 **Status:** Fixed at Gate G0 (D43), 2026-10-27, except CV-650 and CV-660, which are deferred to L2 (#54). Changes go through a change request (`registers/CHANGE_REQUESTS.md`).
 **Date:** 2026-10-27
 **Owner:** Martin
-**Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (REE).
+**Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
 **Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7–D44).
 
 ## 0. Purpose, scope and how to cite
@@ -16,7 +16,7 @@ This document fixes the coordinate frames, sign conventions, angle definitions, 
 - **Status values.** Proposed → Fixed (at G0) → Changed (by an approved change request) or Deleted. Items that needed an owner answer carried a G0 decision reference **(G0-nn)**. Section 11 lists the G0 decisions. Items the owner has decided are **Fixed**, with the plan decision (Dnn, plan §9) that fixes them.
 - **Section numbers and ID blocks.** Section n+1 holds the block `CV-n00`–`CV-n90` (Section 1 holds CV-0xx, Section 10 holds CV-9xx).
 - **Numbers.** Numbers in this document are exact definitions (for example 1 ft = 0.3048 m, ranges of angles). Every other number is a parameter `P-<SUB>-<NNN>`, proposed in `work/A3/param_proposals.md` and held in `parameters/PARAMETERS.yaml`.
-- **Scope.** The Aeronef element (AER) and the Aeronef side of its interfaces. The STP may use other frames internally, for example for graphics, provided it converts at its boundary as the ICD-AER-STP defines.
+- **Scope.** The Aeronef element (AER) and the Aeronef side of its interfaces. The TST may use other frames internally, for example for graphics, provided it converts at its boundary as the ICD-AER-TST defines.
 
 ## 1. General conventions (CV-0xx)
 
@@ -121,10 +121,10 @@ Wind axes, stability axes, Earth-centred inertial, Earth-centred Earth-fixed and
 | Pairing with the body frame | Pairs with the R-004 body frame (x forward, y right, z down): at zero Euler angles, B coincides with V, nose north, crew upright | Pairs naturally with a forward-left-up body frame; pairing with an R-004 body frame needs a fixed 180° rotation about x, a frequent source of sign errors |
 | Heading and aviation angles | Yaw angle ψ equals heading measured clockwise from north, exactly as aviation and VOR radials use it | Yaw is measured counter-clockwise from east; heading = 90° − yaw, wrapped. Every heading, track and radial requirement needs this conversion |
 | Altitude and vertical speed | Altitude is `−z`, vertical speed is `−v_D`: a sign flip | Altitude is `z`, vertical speed is `v_U`: no sign flip |
-| Graphics and visualisation | The STP display needs a conversion (most 3-D engines are y-up or z-up) | Closer to z-up tools; still needs conversion for y-up engines |
+| Graphics and visualisation | The TST display needs a conversion (most 3-D engines are y-up or z-up) | Closer to z-up tools; still needs conversion for y-up engines |
 | Reverse-engineering view | Telemetry using aviation-style angles is easier to relate to airliner-style manuals | Mixed conventions between telemetry and manuals |
 
-**Recommendation: NED.** It is the convention R-004 calls for, it keeps the body and local frames aligned at zero attitude, and it makes heading, track and radials direct readings of standard angles. The one cost, the altitude sign flip, is contained by CV-430 and CV-490: requirements never use `z_L`; they use the defined quantities *altitude* and *vertical speed*, which are positive up. Display conversions are an STP concern at the ICD boundary.
+**Recommendation: NED.** It is the convention R-004 calls for, it keeps the body and local frames aligned at zero attitude, and it makes heading, track and radials direct readings of standard angles. The one cost, the altitude sign flip, is contained by CV-430 and CV-490: requirements never use `z_L`; they use the defined quantities *altitude* and *vertical speed*, which are positive up. Display conversions are an TST concern at the ICD boundary.
 
 ## 3. Attitude and rotation (CV-2xx)
 
@@ -299,8 +299,8 @@ The word "speed" alone is not used in requirements: they use *total speed*, *hor
 
 ### CV-470 — Air-relative velocity and airspeed
 
-The **air-relative velocity** is the vehicle velocity minus the velocity of the air mass at `O_B`. **Airspeed** is its magnitude. In version 1 the air mass moves with a uniform **wind velocity** `w`, the same everywhere in the operating volume and set by the test environment for each run (D17, L0-ASM-050). The air-relative velocity is `v − w`; in a run with no wind applied it equals the vehicle velocity.
-**Status:** Fixed (G0-09: D17).
+The **air-relative velocity** is the vehicle velocity minus the velocity of the air mass at `O_B`. **Airspeed** is its magnitude. In version 1 the air mass moves with a uniform **wind velocity** `w`, the same everywhere in the operating volume at a given time, horizontal, and set by the test environment for each run; it is a steady wind plus gusts, so it may vary in time (D17, D51, L0-ASM-050). The air-relative velocity is `v − w`; in a run with no wind applied it equals the vehicle velocity.
+**Status:** Fixed (G0-09: D17). Gusts added by CR-B1-03 (D51).
 
 ### CV-480 — Horizontal speed
 
@@ -513,7 +513,7 @@ Every parameter has a unit. A parameter used by the SI-side requirements has an 
 
 ### CV-820 — Simulation step
 
-The vehicle model advances in fixed **simulation steps** of duration `Δt = P-SYS-300` (TBD), consistent with F-STP-01 (execution at a fixed step). The **step index** `k` is an integer counted from 0 at `t = 0`. The simulation time of step k is `t_k = k · Δt`, defined by that product and not by accumulating steps.
+The vehicle model advances in fixed **simulation steps** of duration `Δt = P-SYS-300` (TBD), consistent with F-TST-01 (execution at a fixed step). The **step index** `k` is an integer counted from 0 at `t = 0`. The simulation time of step k is `t_k = k · Δt`, defined by that product and not by accumulating steps.
 **Status:** Fixed (G0-11: D35).
 
 ### CV-830 — Control frame and output sample
@@ -521,17 +521,17 @@ The vehicle model advances in fixed **simulation steps** of duration `Δt = P-SY
 - A **control frame** is one execution of the flight-control or autoflight functions. The control frame period is `P-SYS-310` (TBD).
 - An **output sample** is one record of operational data. The output sample period is `P-TM-010` (TBD).
 
-Whether these periods equal the simulation step or are integer multiples of it is an ICD-AER-STP matter.
+Whether these periods equal the simulation step or are integer multiples of it is an ICD-AER-TST matter.
 **Status:** Fixed (D43).
 
 ### CV-840 — Timestamps
 
-Each output sample, crew selection and event record carries its **timestamp**: the step index k and the simulation time `t_k` of the step to which it belongs. The step index is authoritative. `t_k` is derived from it by CV-820 and is included for readability. A value timestamped k is the value at `t_k`. Whether an input timestamped k first affects the state at step k or at step k + 1 is fixed in the ICD-AER-STP.
+Each output sample, crew selection and event record carries its **timestamp**: the step index k and the simulation time `t_k` of the step to which it belongs. The step index is authoritative. `t_k` is derived from it by CV-820 and is included for readability. A value timestamped k is the value at `t_k`. Whether an input timestamped k first affects the state at step k or at step k + 1 is fixed in the ICD-AER-TST.
 **Status:** Fixed (G0-11: D35).
 
 ### CV-850 — Time in requirements
 
-Every duration and time limit in a requirement is in simulation time, in seconds, through a parameter. Wall-clock time appears only in STP requirements on execution speed.
+Every duration and time limit in a requirement is in simulation time, in seconds, through a parameter. Wall-clock time appears only in TST requirements on execution speed.
 **Status:** Fixed (D43).
 
 ### CV-860 — Measuring a response time
@@ -541,7 +541,7 @@ A requirement of the form "when <trigger>, … within T" is measured from the **
 
 ### CV-870 — No calendar time in the model
 
-The vehicle model has no date, time of day or calendar epoch. Run identification metadata (wall-clock start time, software version) belongs to the STP.
+The vehicle model has no date, time of day or calendar epoch. Run identification metadata (wall-clock start time, software version) belongs to the TST.
 **Status:** Fixed (D43).
 
 ## 10. Rules for expressing requirements (CV-9xx)

@@ -20,7 +20,7 @@ from reqlib import Finding, DASH
 
 METHODS = ["Inspection", "Analysis", "Demonstration", "Test"]
 # L1 elements whose branch this plan does not write yet (D44). Editable.
-OUT_OF_SCOPE = {"STP", "REE"}
+OUT_OF_SCOPE = {"TST", "RVS"}
 REQ_ID_RE = re.compile(r"\bL\d+-[A-Z0-9]+(?:-[A-Z0-9]+)*-\d{3}\b")
 
 

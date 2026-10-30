@@ -147,23 +147,23 @@ class TraceTests(unittest.TestCase):
                               "Verification": "Inspection — TBD", **extra})
 
     def test_out_of_scope_not_childless(self):
-        # D44: L0 records allocated only to STP or REE wait for their branch
-        repo = SimpleNamespace(records=[self._l0("L0-OBJ-060", "STP"), self._l0("L0-OBJ-170", "REE"),
-                                        self._l0("L0-OBJ-140", "AER, STP")], assumptions=[])
+        # D44: L0 records allocated only to TST or RVS wait for their branch
+        repo = SimpleNamespace(records=[self._l0("L0-OBJ-060", "TST"), self._l0("L0-OBJ-170", "RVS"),
+                                        self._l0("L0-OBJ-140", "AER, TST")], assumptions=[])
         f = trace_check.check(repo, set())
         self.assertEqual(codes(f, "L0-OBJ-060") | codes(f, "L0-OBJ-170"), set())
         self.assertIn("CHILDLESS", codes(f, "L0-OBJ-140"))
-        # the exemption is for L0 only: a stray L1 record allocated to STP is still reported
+        # the exemption is for L0 only: a stray L1 record allocated to TST is still reported
         l1 = reqlib.Record("req", Path("L1.md"), 1, "AER", "L1",
-                           {"ID": "L1-AER-010", "Level": "L1", "Allocated to": "STP", "Status": "Draft",
+                           {"ID": "L1-AER-010", "Level": "L1", "Allocated to": "TST", "Status": "Draft",
                             "Parent(s)": "L0-OBJ-060", "Verification": "Test — TBD"})
-        f = trace_check.check(SimpleNamespace(records=[self._l0("L0-OBJ-060", "STP"), l1], assumptions=[]), set())
+        f = trace_check.check(SimpleNamespace(records=[self._l0("L0-OBJ-060", "TST"), l1], assumptions=[]), set())
         self.assertIn("CHILDLESS", codes(f, "L1-AER-010"))
 
     def test_deleted_ref_warned(self):
         asm = reqlib.Record("asm", Path("L0.md"), 1, "ASM", "L0", {"ID": "L0-ASM-020", "Affects": "L0-OBJ-100"})
         repo = SimpleNamespace(records=[self._l0("L0-OBJ-100", status="Deleted"),
-                                        self._l0("L0-OBJ-110", "STP", Statement="As L0-OBJ-100 says.")],
+                                        self._l0("L0-OBJ-110", "TST", Statement="As L0-OBJ-100 says.")],
                                assumptions=[asm])
         f = trace_check.check(repo, set())
         self.assertIn("DELETED-REF", codes(f, "L0-OBJ-110"))

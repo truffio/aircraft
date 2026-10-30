@@ -103,7 +103,7 @@ Source:        OBJECTIVES.md §2, §6; AIRCRAFT_CHARACTERISTICS.md §5
 Allocated to:  AER
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: the design descriptions record at least
-  [P-SYS-010] distinct flight-control-law designs, each of which runs in the STP as part of an
+  [P-SYS-010] distinct flight-control-law designs, each of which runs in the TST as part of an
   Aeronef configuration.
 Parameters:    P-SYS-010
 TBD/TBR:       P-SYS-010 value TBR (proposed 2), Martin, 2026-11-30
@@ -130,7 +130,7 @@ Source:        OBJECTIVES.md §2, §6
 Allocated to:  AER
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: the design descriptions record at least
-  [P-SYS-020] distinct autoflight implementations, each of which runs in the STP as part of an
+  [P-SYS-020] distinct autoflight implementations, each of which runs in the TST as part of an
   Aeronef configuration.
 Parameters:    P-SYS-020
 TBD/TBR:       P-SYS-020 value TBR (proposed 2), Martin, 2026-11-30
@@ -147,16 +147,16 @@ Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall provide a simulation and testing platform that executes the
   Aeronef model.
-Rationale:     Objective 2. The Simulation and Testing Platform (STP) is the L1 element that runs
+Rationale:     Objective 2. The Simulation and Testing Platform (TST) is the L1 element that runs
   the Aeronef and evaluates it against its requirements; it is the only means of
   exercising a vehicle that does not physically fly. Children must show (D41):
-  (Demonstration) the STP executes a run of the Aeronef configuration (D42) from
+  (Demonstration) the TST executes a run of the Aeronef configuration (D42) from
   defined initial conditions and records the time histories of the vehicle state.
-  Allocated only to STP: its children come when the plan is extended to that branch
+  Allocated only to TST: its children come when the plan is extended to that branch
   (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §1 (objective 2), §3; TESTING_ENVIRONMENT.md §1, §2
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -181,11 +181,11 @@ Rationale:     OBJECTIVES §3 names interactive testing as one of the two uses o
   interface (TESTING_ENVIRONMENT §3). Children must show (D41): (Demonstration) an
   operator changes an autoflight mode selection during a running simulation, and the
   resulting change in vehicle state is presented to the operator during the same run.
-  Allocated only to STP: its children come when the plan is extended to that branch
+  Allocated only to TST: its children come when the plan is extended to that branch
   (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §3
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -210,11 +210,11 @@ Rationale:     OBJECTIVES §3 names automated testing as the second use of the e
   review (2026-10-25): accepted. Unattended automated testing is likely to come first,
   with interactive testing (L0-OBJ-070) alongside. Children must show (D41):
   (Demonstration) an automated test procedure runs from its initial conditions to a
-  recorded pass or fail verdict without operator action. Allocated only to STP: its
+  recorded pass or fail verdict without operator action. Allocated only to TST: its
   children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §4
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -241,10 +241,10 @@ Rationale:     OBJECTIVES §3 requires that any test procedure, not only Monte C
   to be done. Stays Draft. Children must show (D41): (Demonstration) procedures from
   each test category of L0-SUC-070 run concurrently in separate simulation instances,
   and each gives the same pass or fail verdict as its serial execution. Allocated only
-  to STP: its children come when the plan is extended to that branch (D44).
+  to TST: its children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §5, §6
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -272,10 +272,10 @@ Rationale:     G0 owner review (2026-10-25): deleted for now. Comparing alternat
   procedures and conditions.
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §7
-Allocated to:  STP, AER
+Allocated to:  TST, AER
 Criticality:   Not assessed
 Verification:  Demonstration — TBD; success criteria: two Aeronef configurations run through the
-  same set of procedures from identical initial conditions, and the STP reports the results of both
+  same set of procedures from identical initial conditions, and the TST reports the results of both
   configurations for each procedure.
 Parameters:    —
 TBD/TBR:       —
@@ -296,11 +296,11 @@ Rationale:     OBJECTIVES §3 asks for repeatable scenarios, and TESTING_ENVIRON
   reproducible runs whose configuration, software version, inputs and results are
   identifiable. Reproducibility is what turns a test result into evidence. It rests on
   L0-ASM-020; the measure is L0-SUC-040. Children must show (D41): (Test) L0-SUC-040 is
-  met. Allocated only to STP: its children come when the plan is extended to that
-  branch (D44).
+  met. The Aeronef runs inside every run, so its software must be deterministic too
+  (CR-B1-01, D50); the TST children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §5
-Allocated to:  STP
+Allocated to:  TST, AER
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -308,7 +308,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       3
+Version:       4
 ```
 
 ### L0-OBJ-120
@@ -318,16 +318,16 @@ ID:            L0-OBJ-120
 Level:         L0
 Type:          Functional
 Statement:     The Aeronef project shall record the results of each test run in one results format
-  defined by the STP.
+  defined by the TST.
 Rationale:     OBJECTIVES §3 requires results in a consistent format. One format lets results be
   assessed automatically and analysed later by the reverse-engineering effort. The
-  format itself is an STP design item. Children must show (D41): (Inspection) the
+  format itself is an TST design item. Children must show (D41): (Inspection) the
   recorded results of runs from each test category of L0-SUC-070 conform to the single
-  results format defined by the STP. Allocated only to STP: its children come when the
+  results format defined by the TST. Allocated only to TST: its children come when the
   plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §8
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -348,14 +348,14 @@ Statement:     The Aeronef project shall produce a human-readable report for eac
 Rationale:     OBJECTIVES §3 requires human-readable reports with enough data to understand outcomes
   and investigate deviations. TESTING_ENVIRONMENT §8 lists the content: procedures
   executed, conditions and versions used, observed outcomes and departures from
-  expectations. The report format is specified in the STP requirements. Children must
+  expectations. The report format is specified in the TST requirements. Children must
   show (D41): (Inspection) the report of a campaign lists each executed procedure, the
   Aeronef configuration and software version used, the observed outcome and each
-  departure from the expected outcome. Allocated only to STP: its children come when
+  departure from the expected outcome. Allocated only to TST: its children come when
   the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §8
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -384,7 +384,7 @@ Rationale:     Objective 3 depends on operational data that let the reverse-engi
   activity and vehicle responses.
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §3C, §5; TESTING_ENVIRONMENT.md §8
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -406,16 +406,16 @@ Statement:     The Aeronef project shall produce human-oriented operational manu
 Rationale:     OBJECTIVES §4 and §5 require operational documents written for a human audience; they
   are the main documentary evidence for the reverse-engineering effort
   (REVERSE_ENGINEERING §3A). METHODOLOGY §11.2 lists the set: Vehicle Operating Manual,
-  normal procedures, quick reference checklists and the STP user guide. Abnormal and
+  normal procedures, quick reference checklists and the TST user guide. Abnormal and
   emergency procedures are deferred with the hazard analysis. The manuals are written
   after the requirements baseline. G0 owner review (2026-10-25): accepted. The manuals
   and procedures are an output, produced once the whole system has been designed.
   Children must show (D41): (Inspection) the Vehicle Operating Manual, the normal
-  procedures, the quick reference checklists and the STP user guide exist, and each
+  procedures, the quick reference checklists and the TST user guide exist, and each
   states the requirements baseline it describes.
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §5; REVERSE_ENGINEERING.md §3A; METHODOLOGY.md §11.2
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -440,11 +440,11 @@ Rationale:     Objective 3: evaluate whether independent AI agents can reconstru
   mode transitions and control logic. The owner chooses the documents released to the
   effort (deletion of L0-CON-220 to -240). Children must show (D41): (Inspection) the
   reverse-engineering effort delivers a reconstructed model in which each element cites
-  the released evidence it rests on. Allocated only to REE: its children come when the
+  the released evidence it rests on. Allocated only to RVS: its children come when the
   plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §1 (objective 3), §4; REVERSE_ENGINEERING.md §1, §4
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -469,11 +469,11 @@ Rationale:     OBJECTIVES §4: project evaluators compare the inferred model wit
   REVERSE_ENGINEERING §6 lists the assessment dimensions; L0-SUC-100 to L0-SUC-130 make
   them measurable. Children must show (D41): (Inspection) an assessment report scores
   the reconstructed model against each of L0-SUC-100, L0-SUC-110, L0-SUC-120 and
-  L0-SUC-130. Allocated only to REE: its children come when the plan is extended to
+  L0-SUC-130. Allocated only to RVS: its children come when the plan is extended to
   that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §6
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -493,7 +493,7 @@ Type:          Documentation
 Statement:     The Aeronef project shall develop its requirements top-down in a hierarchy of levels
   rooted at the L0 requirements.
 Rationale:     OBJECTIVES §5 prescribes a hierarchical, requirements-driven process: L0 for the
-  mission, L1 for the Aeronef, the STP and the reverse-engineering effort, and as many
+  mission, L1 for the Aeronef, the TST and the reverse-engineering effort, and as many
   lower levels as each element needs. Depth is decided per branch: decomposition stops
   when the next layer would be implementation (plan decision D4). Children must show
   (D41): (Inspection) each L1 element has one requirements specification, and each
@@ -501,7 +501,7 @@ Rationale:     OBJECTIVES §5 prescribes a hierarchical, requirements-driven pro
   design decision.
 Parent(s):     —
 Source:        OBJECTIVES.md §5; METHODOLOGY.md §3; AIRCRAFT_REQUIREMENTS_PLAN.md §9 D4
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -528,7 +528,7 @@ Rationale:     OBJECTIVES §5 requires traceability between parent and child req
   each requirement links to a verification procedure with a recorded result.
 Parent(s):     —
 Source:        OBJECTIVES.md §5, §6; METHODOLOGY.md §10.4
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -553,7 +553,7 @@ Rationale:     OBJECTIVES §5 requires that engineering artifacts be subjected t
   review record in the METHODOLOGY §13.4 format whose exit decision is Baseline.
 Parent(s):     —
 Source:        OBJECTIVES.md §5, §6; METHODOLOGY.md §11.1, §11.3
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -585,7 +585,7 @@ Rationale:     The purpose of the project is to evaluate AI-assisted engineering
   verification and evidence-based reverse engineering.
 Parent(s):     —
 Source:        OBJECTIVES.md §1, §6; REVERSE_ENGINEERING.md §8
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).

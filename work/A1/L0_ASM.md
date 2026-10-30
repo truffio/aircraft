@@ -25,7 +25,7 @@ Assumption:    Each simulation run is deterministic: one configuration, software
   random seed.
 Rationale:     Determinism makes runs reproducible, and it lets statistical campaigns be replayed
   run by run (TESTING_ENVIRONMENT §5, §6).
-Affects:       L0-OBJ-110, L0-SUC-040; STP execution and campaign generation
+Affects:       L0-OBJ-110, L0-SUC-040; TST execution and campaign generation
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -63,16 +63,19 @@ Status:        Confirmed
 
 ```asm
 ID:            L0-ASM-050
-Assumption:    Wind is present and uniform: when a wind is applied, the same wind velocity exists
-  everywhere in the operating volume. The test environment sets it for each run; there are no
-  gusts or turbulence. Aerodynamic drag depends on the vehicle velocity relative to the air.
+Assumption:    Wind is present, horizontal and uniform: when a wind is applied, the same wind
+  velocity exists everywhere in the operating volume at a given time. It is a steady wind plus
+  gusts and bursts that vary it in time; it has no vertical component. The test environment
+  sets it for each run. Aerodynamic drag depends on the vehicle velocity relative to the air.
 Rationale:     Owner decision D17 (#49): there is wind in the system, configurable in the test
   environment, and position hold compensates for it. A uniform wind is the simplest model; a
   refined wind model is planned for a future release (#84). With wind, the velocity through the
   air differs from the velocity over the ground; the conventions define both. Revised by the owner
-  at G0, 2026-10-25.
+  at G0, 2026-10-25. Gusts added by the owner at G1, 2026-10-28 (#99, D51, CR-B1-03): the
+  steady wind and the gusts add up, so the largest instantaneous wind is their sum. A wind
+  that varies across the operating volume remains for the refined wind model (#84).
 Affects:       L0-CON-090; model specification (drag and wind model); navigation subsystem (track,
-  horizontal speed, airspeed); STP (wind configuration); CONVENTIONS CV-470; CONOPS
+  horizontal speed, airspeed); TST (wind configuration); CONVENTIONS CV-470; CONOPS
   §4.2
 Owner:         Martin
 Status:        Confirmed
@@ -142,7 +145,7 @@ ID:            L0-ASM-100
 Assumption:    The operating environment contains no terrain, obstacles or other vehicles.
 Rationale:     The project studies the control and mode logic of a single vehicle; the environment
   is free space above an altitude datum.
-Affects:       Concept of operations scenarios; navigation subsystem; STP scenario definition
+Affects:       Concept of operations scenarios; navigation subsystem; TST scenario definition
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -159,7 +162,7 @@ Rationale:     Owner decisions D8 and D37: the ground is at altitude zero on a f
   landing model is required. An ideal landing keeps it to one envelope check. The envelope limits
   are parameters, set at a lower level. Revised by the owner at G0, 2026-10-25.
 Affects:       L0-CON-090 (ground reaction), L0-CON-290, L0-CON-310; model specification (ground
-  contact); STP run termination conditions; fuel-exhaustion reference mission;
+  contact); TST run termination conditions; fuel-exhaustion reference mission;
   CONVENTIONS CV-420
 Owner:         Martin
 Status:        Confirmed
@@ -169,7 +172,7 @@ Status:        Confirmed
 
 ```asm
 ID:            L0-ASM-120
-Assumption:    The crew is represented by an interactive operator of the STP or by an automated test
+Assumption:    The crew is represented by an interactive operator of the TST or by an automated test
   procedure, with no model of human performance.
 Rationale:     Crew selections and annunciations are data items (L0-CON-170); test procedures play
   the crew so that autoflight can be verified unattended.
@@ -188,7 +191,7 @@ Rationale:     OBJECTIVES §3 speaks of the available CPU resources; a single mu
   assumption is that a campaign that runs as independent instances on one host will scale;
   running on a CPU cluster, and assessing that scalability, comes at a later stage (#86).
   Confirmed by the owner at G0, 2026-10-25.
-Affects:       L0-OBJ-090, L0-SUC-060; STP execution architecture
+Affects:       L0-OBJ-090, L0-SUC-060; TST execution architecture
 Owner:         Martin
 Status:        Confirmed
 ```

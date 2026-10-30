@@ -450,13 +450,13 @@ Rationale:     Detailed pilot controls and displays are excluded (AIRCRAFT_CHARA
   (L0-ASM-120). G0 owner review (2026-10-25): accepted for now. For manual testing, the
   owner will fly the craft through a flight control panel. The panel is defined in the
   detailed design and in the requirements of the craft and its subsystems (#79, #80.3).
-  A graphical interface for it belongs to the STP and does not change the data boundary
+  A graphical interface for it belongs to the TST and does not change the data boundary
   set here. Children must show (D41): (Inspection) the Aeronef requirements define each
   crew selection and each annunciation as a data item, and define no physical control
   device or display format.
 Parent(s):     —
 Source:        AIRCRAFT_CHARACTERISTICS.md §5, §7
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -511,13 +511,14 @@ Rationale:     A graphical interface is optional; the core simulator must work w
   §2). G0 owner review (2026-10-25): accepted for batch runs and automated testing.
   Manual testing needs a graphical user interface, which may be minimal; it may be
   needed from the start, so that the owner can try the craft before automated runs.
-  This is an STP capability (L0-OBJ-070); the headless core required here is unchanged.
+  This is an TST capability (L0-OBJ-070); the headless core required here is unchanged.
   Children must show (D41): (Demonstration) an automated test campaign runs to
-  completion on an execution host with no graphical display attached. Allocated only to
-  STP: its children come when the plan is extended to that branch (D44).
+  completion on an execution host with no graphical display attached. No Aeronef
+  function may need a display (CR-B1-02, D50); the TST children come when the plan is
+  extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §2
-Allocated to:  STP
+Allocated to:  TST, AER
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -525,7 +526,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       3
+Version:       4
 ```
 
 ### L0-CON-200
@@ -545,7 +546,7 @@ Rationale:     Control-law designers need to swap controllers without touching t
   vehicle model files are unchanged, as shown by their checksums.
 Parent(s):     —
 Source:        TESTING_ENVIRONMENT.md §2, §7; METHODOLOGY.md §4.1
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -572,7 +573,7 @@ Rationale:     Same reason as L0-CON-200 for autoflight versions (OBJECTIVES §2
   shown by their checksums.
 Parent(s):     —
 Source:        OBJECTIVES.md §2; TESTING_ENVIRONMENT.md §2, §7
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -603,7 +604,7 @@ Rationale:     G0 owner review (2026-10-25): deleted. The owner will select the 
   assessment answers and the manual trace register.
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §2, §7
-Allocated to:  REE, AER, STP
+Allocated to:  RVS, AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: the release record of each evidence package lists
   no item of protected design material, and L0-SUC-140 is met.
@@ -634,7 +635,7 @@ Rationale:     G0 owner review (2026-10-25): deleted. The owner will select the 
   requirements (METHODOLOGY §11.2, rule 4).
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §3; METHODOLOGY.md §11.2
-Allocated to:  REE, AER, STP
+Allocated to:  RVS, AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each item in the release record of each evidence
   package belongs to one of the three permitted kinds.
@@ -663,7 +664,7 @@ Rationale:     G0 owner review (2026-10-25): deleted. The owner will select the 
   is why each operational data signal is classified releasable or protected.
 Parent(s):     —
 Source:        REVERSE_ENGINEERING.md §3, §7; METHODOLOGY.md §11.2
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: a review of each released evidence item against
   the protected design material, recorded before release, finds no requirement text and no signal
@@ -690,11 +691,11 @@ Rationale:     The reconstruction must be made by independent agents (OBJECTIVES
   engineering now; this is revisited once the other elements of the project are done
   (#69). Stays Draft. Children must show (D41): (Inspection) the session record of each
   reverse-engineering agent shows a context limited to the released evidence from the
-  start of the session. Allocated only to REE: its children come when the plan is
+  start of the session. Allocated only to RVS: its children come when the plan is
   extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4; REVERSE_ENGINEERING.md §1, §7
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -721,7 +722,7 @@ Rationale:     Requirements, models and the parameter database use SI units (MET
   crew-facing is expressed in an SI unit.
 Parent(s):     —
 Source:        METHODOLOGY.md §8.4; AIRCRAFT_REQUIREMENTS_PLAN.md §9 D7
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -751,7 +752,7 @@ Rationale:     The units are those of plan decision D7, which adopts North Ameri
   or minutes for durations (D34), and the conventions give its conversion to SI.
 Parent(s):     —
 Source:        AIRCRAFT_REQUIREMENTS_PLAN.md §9 D7
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -780,7 +781,7 @@ Rationale:     Axis and sign conventions must be fixed before any dynamics requi
   checked against the public sources of D36, and identifies each documented departure.
 Parent(s):     —
 Source:        METHODOLOGY.md §2, §8.4; AIRCRAFT_REQUIREMENTS_PLAN.md §6 (A3)
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -808,7 +809,7 @@ Rationale:     G0 owner review (2026-10-25), decision D37: landing has to be mod
   landing and crash outcomes.
 Parent(s):     —
 Source:        Owner review at G0, 2026-10-25 (D8, D37)
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).

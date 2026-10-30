@@ -10,7 +10,7 @@
 This document describes how the Aeronef is used, from the point of view of the people and procedures that operate it. It gives:
 
 - the stakeholders and their needs, each need with an ID (`N-nnn`) that L0 and L1 requirements cite in their Source attribute;
-- the operational context: the simulated environment, the role of the crew, the autoflight operating concept, and how the Simulation and Testing Platform (STP) and the Reverse-Engineering Effort (REE) use the Aeronef's operational data;
+- the operational context: the simulated environment, the role of the crew, the autoflight operating concept, and how the Simulation and Testing Platform (TST) and the Reverse-Engineering Effort (RVS) use the Aeronef's operational data;
 - nominal scenarios (`SC-nnn`) that cover the autoflight mode catalogue (AIRCRAFT_REQUIREMENTS_PLAN.md §9, D3), a reference mission to fuel exhaustion, and the platform uses of the Aeronef;
 - the parts of the scenarios that are still open, marked **TBR** with the issue that tracks them. The owner decided the plan's questions Q2 to Q4 on 2026-10-25 (D10 to D12). Mode combinations (Q5, #6) and the detailed mode logic are deferred to L2 (D33), so the mode behaviour in the scenarios is provisional;
 - a traceability table from scenario to needs and modes.
@@ -34,8 +34,8 @@ The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the A
 | --- | --- |
 | OBJECTIVES.md | Stakeholders, project objectives, success criteria |
 | AIRCRAFT_CHARACTERISTICS.md | Vehicle concept and modelling boundaries |
-| TESTING_ENVIRONMENT.md | STP use of the Aeronef |
-| REVERSE_ENGINEERING.md | REE use of the Aeronef, information separation |
+| TESTING_ENVIRONMENT.md | TST use of the Aeronef |
+| REVERSE_ENGINEERING.md | RVS use of the Aeronef, information separation |
 | AIRCRAFT_REQUIREMENTS_PLAN.md | Decisions D1 to D44 (§9) |
 | METHODOLOGY.md | Stakeholder and ConOps method (Section 4), writing rules (Section 8), worked example (Section 12) |
 
@@ -44,14 +44,14 @@ The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the A
 | ID | Stakeholder | Interest in the Aeronef |
 | --- | --- | --- |
 | SH-01 | Project owner | Owns the experiment, decides open questions, approves baselines. Wants a vehicle that is simple enough to understand completely and rich enough to exercise the whole lifecycle. |
-| SH-02 | Crew (human operator, scripted test procedure or REE agent) | Commands the vehicle through autoflight selections and monitors it through annunciations and indications. |
+| SH-02 | Crew (human operator, scripted test procedure or RVS agent) | Commands the vehicle through autoflight selections and monitors it through annunciations and indications. |
 | SH-03 | Autoflight designers | Adapt airliner autoflight modes to a vehicle whose attitude and translation are independent; develop the autoflight implementation (one, D24). |
 | SH-04 | Control-law designers | Develop the flight-control-law design (one for now, D42); more designs may be added later. |
 | SH-05 | Vehicle model developers | Build the dynamics, effector, fuel and mass model that the simulation reproduces. |
-| SH-06 | Simulation and test engineers (STP) | Run the Aeronef unattended, in parallel and reproducibly; assess results against requirements; explore it interactively. |
-| SH-07 | Reverse-engineering team (REE) | Reconstruct the Aeronef's functions and logic from manuals, observed behaviour and operational data, without the design. |
-| SH-08 | Project evaluators | Compare the REE's reconstruction with the authoritative design and requirements. |
-| SH-09 | Operational documentation authors | Write the human-oriented manuals and procedures that become REE evidence. |
+| SH-06 | Simulation and test engineers (TST) | Run the Aeronef unattended, in parallel and reproducibly; assess results against requirements; explore it interactively. |
+| SH-07 | Reverse-engineering team (RVS) | Reconstruct the Aeronef's functions and logic from manuals, observed behaviour and operational data, without the design. |
+| SH-08 | Project evaluators | Compare the RVS's reconstruction with the authoritative design and requirements. |
+| SH-09 | Operational documentation authors | Write the human-oriented manuals and procedures that become RVS evidence. |
 | SH-10 | Peer reviewers | Judge each artifact against its inputs and the checklists. |
 
 ## 3. Needs
@@ -99,7 +99,7 @@ Each need is recorded in the stakeholder's words, then restated as what it means
 | N-370 | SH-06 | "Runs must end in a defined way." | Each run has defined end conditions (Section 4.6). |
 | N-380 | SH-07 | "We need manuals and logs written for people, not for us." | The Aeronef's behaviour is describable in operator terms, and its releasable data uses operator terms and crew-facing units where the crew sees them. |
 | N-390 | SH-07 | "We need to tie a crew action to the mode change and the vehicle's response." | Crew selections, mode changes, annunciations and vehicle state are time-stamped on one time base. |
-| N-400 | SH-07 | "We need to run our own experiments, not just read recorded runs." | The REE can operate the released Aeronef through the crew interface and record its releasable data. |
+| N-400 | SH-07 | "We need to run our own experiments, not just read recorded runs." | The RVS can operate the released Aeronef through the crew interface and record its releasable data. |
 | N-410 | SH-08 | "We need an answer key: the authoritative requirements, and which manual section describes which requirement." | The Aeronef's requirements are baselined and traceable to the manual sections (METHODOLOGY 11.2). |
 | N-420 | SH-08 | "We need scenarios the reverse-engineering team hasn't seen, to test their predictions." | The scenarios in this ConOps, and their variations, can be run as unseen test cases; this document is protected. |
 | N-430 | SH-09 | "I need to know, for each scenario, what the crew selects, what they see and what the vehicle does." | Each scenario states crew selections, annunciations and observable vehicle behaviour. |
@@ -109,13 +109,13 @@ Each need is recorded in the stakeholder's words, then restated as what it means
 
 ### 4.1 System of interest and boundary
 
-The system of interest is the **Aeronef**: the simulated vehicle (dynamics, effectors, fuel and mass properties), its flight control, its autoflight, its navigation function and its operational data output. It always runs inside the STP. The Aeronef receives an initial condition, a configuration and crew selections from the STP, and returns operational data.
+The system of interest is the **Aeronef**: the simulated vehicle (dynamics, effectors, fuel and mass properties), its flight control, its autoflight, its navigation function and its operational data output. It always runs inside the TST. The Aeronef receives an initial condition, a configuration and crew selections from the TST, and returns operational data.
 
 | Outside the Aeronef | What it exchanges with the Aeronef |
 | --- | --- |
 | Crew (SH-02) | Gives crew selections; receives annunciations and indications. |
-| STP | Provides the configuration, the initial condition, the simulated environment (VOR stations) and the time steps; receives operational data; ends the run. |
-| REE | Through a released STP package only: gives crew selections, receives releasable operational data. |
+| TST | Provides the configuration, the initial condition, the simulated environment (VOR stations) and the time steps; receives operational data; ends the run. |
+| RVS | Through a released TST package only: gives crew selections, receives releasable operational data. |
 
 ### 4.2 Operating environment
 
@@ -125,10 +125,10 @@ The Aeronef operates in a simulated world. This document assumes the following. 
 - **Altitude** is the height of the centre of gravity above the ground plane, positive up (CV-430). The ground plane is at zero altitude.
 - **North reference.** Heading, track and VOR radials are referenced to the local frame's north axis (true north). There is no magnetic variation.
 - **Gravity** acts toward the ground plane.
-- **Air.** There is wind (D17, #49). When a wind is applied, the same wind velocity exists everywhere; the STP sets it for each run, and there are no gusts or turbulence (L0-ASM-050). Drag acts against the vehicle's velocity relative to the air. With wind, the horizontal speed relative to the air differs from the horizontal speed relative to the ground. Position Hold compensates for the wind.
+- **Air.** There is wind (D17, #49). When a wind is applied, the same wind velocity exists everywhere at a given time; the TST sets it for each run. It is horizontal, a steady wind of up to 100 kt plus gusts and bursts of up to 50 kt, so up to 150 kt at an instant (L0-ASM-050, D51). Drag acts against the vehicle's velocity relative to the air. With wind, the horizontal speed relative to the air differs from the horizontal speed relative to the ground. Position Hold compensates for the wind.
 - **Ground.** The ground plane is at altitude zero, with no terrain (D8). Ground contact is an ideal landing: contact within the landing envelope (limits on velocity and acceleration) is a successful landing, and contact outside it is a crash that ends the run (D37, L0-CON-290). Each run starts with the vehicle airborne. There is no take-off.
 - **Operating volume.** Nominal operations take place between a minimum operating altitude `[P-SYS-210]` and a maximum operating altitude `[P-SYS-200]`, within a horizontal radius `[P-SYS-220]` of the local frame origin.
-- **VOR stations.** Zero or more VOR stations at fixed positions in the local frame, defined by the STP for each run. They are ideal: no noise, and a signal everywhere within a reception range `[P-NAV-050]` of the station (ideal VOR, D12).
+- **VOR stations.** Zero or more VOR stations at fixed positions in the local frame, defined by the TST for each run. They are ideal: no noise, and a signal everywhere within a reception range `[P-NAV-050]` of the station (ideal VOR, D12).
 - **Vehicle state knowledge.** The Aeronef's functions use the exact simulated state (L0-ASM-010).
 
 Definitions used in the scenarios (fixed in the conventions: CV-430, CV-480, CV-490, CV-530, CV-540, CV-560):
@@ -143,7 +143,7 @@ On the Aeronef, heading and track are independent: the vehicle can move in any h
 
 ### 4.3 Crew and operator role
 
-The **crew** is whoever makes crew selections and reads the annunciations: a human using the STP interactive interface, a scripted test procedure, or an REE agent. All three use the same **crew interface**. The crew interface is a logical set of selections, annunciations and indications, inspired by an airliner's mode control panel and flight mode annunciator. Its physical form (panels, displays, graphics) is not defined; detailed controls and displays are excluded (AIRCRAFT_CHARACTERISTICS §7).
+The **crew** is whoever makes crew selections and reads the annunciations: a human using the TST interactive interface, a scripted test procedure, or an RVS agent. All three use the same **crew interface**. The crew interface is a logical set of selections, annunciations and indications, inspired by an airliner's mode control panel and flight mode annunciator. Its physical form (panels, displays, graphics) is not defined; detailed controls and displays are excluded (AIRCRAFT_CHARACTERISTICS §7).
 
 **Crew selections** (crew-facing units):
 
@@ -209,22 +209,22 @@ Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[
 
 ### 4.6 Runs and the use of operational data
 
-**A run** is one execution of the Aeronef in the STP. It is defined by:
+**A run** is one execution of the Aeronef in the TST. It is defined by:
 
 - a **configuration**: the vehicle parameter set, the flight-control-law version and the autoflight version;
 - an **initial condition**: position, velocity, attitude, angular rate, fuel quantity, active and armed modes, selected targets, and the VOR stations;
 - a **selection script**: crew selections, each with the simulation time at which it applies (empty for an interactive run, where the selections come from a human).
 
-The run ends when the STP's end condition is met: the scenario's end condition, a maximum run time set by the STP, or ground contact (a landing within the envelope, or a crash; D37).
+The run ends when the TST's end condition is met: the scenario's end condition, a maximum run time set by the TST, or ground contact (a landing within the envelope, or a crash; D37).
 
 **Operational data.** At each simulation step the Aeronef outputs data on one time base (simulation time since the start of the run): the crew selections received, the selected targets, the active and armed modes, the annunciations and indications, the vehicle state, the fuel quantity, and the flight-control and effector activity. The operational data output (TM, task C7) classifies each signal as **releasable** or **protected**.
 
 | User | Uses the operational data to |
 | --- | --- |
-| STP (automated tests) | Assess results against requirement success criteria; report pass or fail. |
+| TST (automated tests) | Assess results against requirement success criteria; report pass or fail. |
 | Interactive operator | See cause and effect while exploring. |
-| REE | Correlate crew selections, mode changes, annunciations and vehicle response, using releasable signals only. |
-| Evaluators | Score the REE's predictions on unseen runs. |
+| RVS | Correlate crew selections, mode changes, annunciations and vehicle response, using releasable signals only. |
+| Evaluators | Score the RVS's predictions on unseen runs. |
 
 ## 5. Common scenario format
 
@@ -496,7 +496,7 @@ In the sequence tables, **Trigger** is a crew selection or a condition reached b
 | 7 | `H_HOV` below `H_3`, then HOVER | HOVER | — | Descends to `H_HOV` and holds position there (as SC-100). | `T_7` elapsed |
 | 8 | `SPD` at zero, `HDG_3`, `H_4` above `H_HOV`, V/S at `VS_4` | SPD · HDG · V/S, then ALT*, then SPD · HDG · ALT | ALT | Climbs vertically to `H_4` (as SC-040) (TBR, #6, L2: leaving HOVER). | Established on `H_4` |
 | 9 | POS HOLD | POS HOLD | — | Holds position until the fuel is exhausted. LOW FUEL is annunciated when the fuel falls below `[P-FU-020]`. | Fuel exhausted |
-| 10 | None | (TBR, #59) | — | FUEL EXHAUSTED annunciated. Effectors produce zero force and zero moment. The vehicle falls under gravity and drag, and keeps the angular rate it had at exhaustion. | Ground contact, or STP maximum run time |
+| 10 | None | (TBR, #59) | — | FUEL EXHAUSTED annunciated. Effectors produce zero force and zero moment. The vehicle falls under gravity and drag, and keeps the angular rate it had at exhaustion. | Ground contact, or TST maximum run time |
 
 **Expected vehicle behaviour.** Each leg meets the expected behaviour of the scenario it repeats: SC-010 (leg 2), SC-080 (leg 3), SC-020 (leg 4), SC-070 (leg 5), SC-030 (leg 6), SC-100 (leg 7), SC-040 (leg 8), SC-090 (leg 9). The fuel quantity decreases throughout the mission and never increases. The vehicle mass decreases by the mass of fuel consumed. LOW FUEL is annunciated within `[P-AF-060]` s of the fuel falling below `[P-FU-020]`, and FUEL EXHAUSTED within `[P-AF-060]` s of exhaustion. After exhaustion, the motion is free fall with drag, which can be compared with an independent solution (N-290). The run ends at ground contact, normally a crash, because the vehicle is outside the landing envelope (D37).
 
@@ -504,7 +504,7 @@ In the sequence tables, **Trigger** is a crew selection or a condition reached b
 
 **Recorded results.** Total fuel used per leg, mission duration to exhaustion, and the tracking errors per leg against the tolerances above.
 
-**End conditions.** Ground contact, or STP maximum run time.
+**End conditions.** Ground contact, or TST maximum run time.
 
 **Needs exercised.** N-050, N-060, N-080, N-100, N-110, N-120, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290.
 
@@ -512,7 +512,7 @@ In the sequence tables, **Trigger** is a crew selection or a condition reached b
 
 ### 6.5 Platform and evidence scenarios
 
-These scenarios describe how the STP and the REE use the Aeronef. They exercise the Aeronef's configuration, run and operational-data needs, not its flight modes.
+These scenarios describe how the TST and the RVS use the Aeronef. They exercise the Aeronef's configuration, run and operational-data needs, not its flight modes.
 
 #### SC-200 — Unattended verification run
 
@@ -520,12 +520,12 @@ These scenarios describe how the STP and the REE use the Aeronef. They exercise 
 
 **Sequence.**
 
-1. The STP creates an Aeronef instance with a configuration (parameter set, control-law version, autoflight version), each identified by a version.
-2. The STP sets the initial condition, including the active and armed modes, the targets and the VOR stations.
-3. The STP runs the simulation without graphics, faster than real time, and applies the crew selections of the selection script at their simulation times. The selections go through the crew interface.
+1. The TST creates an Aeronef instance with a configuration (parameter set, control-law version, autoflight version), each identified by a version.
+2. The TST sets the initial condition, including the active and armed modes, the targets and the VOR stations.
+3. The TST runs the simulation without graphics, faster than real time, and applies the crew selections of the selection script at their simulation times. The selections go through the crew interface.
 4. At each step, the Aeronef outputs its operational data.
 5. The run ends on the procedure's end condition, the maximum run time or ground contact.
-6. The STP assesses the data against the procedure's success criteria and reports the result with the configuration identification.
+6. The TST assesses the data against the procedure's success criteria and reports the result with the configuration identification.
 
 **Expected behaviour of the Aeronef.** The same configuration, initial condition and selection script give the same operational data on each repetition (the same verification result, D25). The Aeronef needs no input other than the configuration, the initial condition, the selection script and the time steps.
 
@@ -535,7 +535,7 @@ These scenarios describe how the STP and the REE use the Aeronef. They exercise 
 
 **Purpose.** Run many independent Aeronef instances at once, for example a regression campaign overnight or a Monte Carlo campaign over parameters and initial conditions.
 
-**Sequence.** The STP starts many instances in parallel, each with its own configuration, initial condition and selection script. Variations change parameter values (within their stated ranges), initial conditions and selected targets. Each instance runs as in SC-200.
+**Sequence.** The TST starts many instances in parallel, each with its own configuration, initial condition and selection script. Variations change parameter values (within their stated ranges), initial conditions and selected targets. Each instance runs as in SC-200.
 
 **Expected behaviour of the Aeronef.** Instances do not share state, and the results of one instance do not depend on how many others are running or in what order. Each run is reproducible on its own.
 
@@ -547,7 +547,7 @@ These scenarios describe how the STP and the REE use the Aeronef. They exercise 
 
 **Purpose.** Compare two control-law versions under the same conditions.
 
-**Sequence.** The STP runs the same set of scenarios (for example SC-010 to SC-110) once with version A and once with version B. Only the version under comparison changes; the vehicle model, the parameter set, the initial conditions and the selection scripts are the same. The STP compares tracking accuracy, mode-transition behaviour and fuel used.
+**Sequence.** The TST runs the same set of scenarios (for example SC-010 to SC-110) once with version A and once with version B. Only the version under comparison changes; the vehicle model, the parameter set, the initial conditions and the selection scripts are the same. The TST compares tracking accuracy, mode-transition behaviour and fuel used.
 
 **Expected behaviour of the Aeronef.** The swap is a configuration change. The vehicle model, the crew interface and the operational data format stay the same for both versions.
 
@@ -557,7 +557,7 @@ These scenarios describe how the STP and the REE use the Aeronef. They exercise 
 
 **Purpose.** An engineer explores cause and effect by flying the Aeronef interactively.
 
-**Sequence.** The STP runs one instance in real time. The engineer makes crew selections at any time, as in the flight scenarios, and watches the annunciations, the indications and the vehicle state. Graphics are optional.
+**Sequence.** The TST runs one instance in real time. The engineer makes crew selections at any time, as in the flight scenarios, and watches the annunciations, the indications and the vehicle state. Graphics are optional.
 
 **Expected behaviour of the Aeronef.** It accepts a selection at any simulation step and behaves as it does when the same selection comes from a script at the same time.
 
@@ -565,14 +565,14 @@ These scenarios describe how the STP and the REE use the Aeronef. They exercise 
 
 #### SC-240 — Reverse-engineering experiment
 
-**Purpose.** The REE runs its own experiments on the released Aeronef.
+**Purpose.** The RVS runs its own experiments on the released Aeronef.
 
 **Sequence.**
 
-1. The REE receives a released package: the operational manuals and an executable STP configuration that outputs releasable data only. It does not receive requirements, design, source code, this ConOps or protected signals.
-2. An REE agent, acting as the crew, chooses an initial condition from those the package allows, and applies crew selections through the crew interface.
-3. The REE records the releasable operational data and correlates its selections with the mode changes, the annunciations and the vehicle response, on the common time base.
-4. The REE predicts the response to new selections and checks the prediction with new runs.
+1. The RVS receives a released package: the operational manuals and an executable TST configuration that outputs releasable data only. It does not receive requirements, design, source code, this ConOps or protected signals.
+2. An RVS agent, acting as the crew, chooses an initial condition from those the package allows, and applies crew selections through the crew interface.
+3. The RVS records the releasable operational data and correlates its selections with the mode changes, the annunciations and the vehicle response, on the common time base.
+4. The RVS predicts the response to new selections and checks the prediction with new runs.
 
 **Expected behaviour of the Aeronef.** The released Aeronef behaves the same as the protected one. Its releasable data is enough to relate each selection to its effect, and contains nothing classified protected.
 

@@ -48,7 +48,7 @@ Taken from the TBD/TBR fields of the live L0 records after the G0 rework (2026-1
 | Per-effector maximum force | TBD | L0-CON-300 | Martin | G2 (C3) |
 | Parallel efficiency | TBR | P-SYS-060 (L0-SUC-060, Draft) | Martin | When parallel execution is picked up (#86) |
 | Parallel instance count | TBR | P-SYS-070 (L0-SUC-060, Draft) | Martin | When parallel execution is picked up (#86) |
-| REE scoring rules | TBD | L0-SUC-100 to -130 | Martin | When the plan is extended to REE (D44, #69) |
+| RVS scoring rules | TBD | L0-SUC-100 to -130 | Martin | When the plan is extended to RVS (D44, #69) |
 
 ## Withdrawn
 

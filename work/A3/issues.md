@@ -25,7 +25,7 @@ Each question has a proposed answer. The G0 reference points to the "Decisions f
 
 | ID | Artifact | Note | Proposed action |
 | --- | --- | --- | --- |
-| A3-N01 | METHODOLOGY §12, example ICD-AER-STP-005 | It says the local reference frame is "defined in model specification MS-DYN". The frame is now defined in CONVENTIONS CV-120. | MS-DYN (C1) and the ICD (I1) cite CONVENTIONS for frames; no change to METHODOLOGY (its example is illustrative). |
+| A3-N01 | METHODOLOGY §12, example ICD-AER-TST-005 | It says the local reference frame is "defined in model specification MS-DYN". The frame is now defined in CONVENTIONS CV-120. | MS-DYN (C1) and the ICD (I1) cite CONVENTIONS for frames; no change to METHODOLOGY (its example is illustrative). |
 | A3-N02 | METHODOLOGY §8.5 | It suggests "vertical position and yaw angle" as defined terms. The conventions define *altitude* and *heading* for these. | None; requirements use altitude and heading. |
 | A3-N03 | METHODOLOGY §8.5, LOW FUEL example | It states a fuel threshold in %. CV-720 stores dimensionless ratios as fractions. | FU (C2) writes the threshold parameter as a fraction; a percentage may still be shown to the crew. |
 | A3-N04 | Plan §5, staging files | The plan lists `glossary_proposals.md` for each agent. A3 owns GLOSSARY.md directly, so it has no glossary proposals file. | None. |

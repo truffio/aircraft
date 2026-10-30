@@ -10,7 +10,7 @@ Oct 24, 2026 · @Martin
 > - **Section 9.2:** the *Criticality* attribute is left as "Not assessed", and the *Safety (failure handling)* requirement type is not used.
 > - **Section 10.2:** robustness and injected-failure test cases tied to Hazardous or Catastrophic items are not required.
 > - **Section 10.4:** the requirement → hazard-analysis row trace link is not used.
-> - **Failure-related content elsewhere** (effector-failure scenarios and annunciations, failure injection in F-STP-02, fault-injection requirements, the hazard-related checklist items in 13.1 and 13.2) is deferred.
+> - **Failure-related content elsewhere** (effector-failure scenarios and annunciations, failure injection in F-TST-02, fault-injection requirements, the hazard-related checklist items in 13.1 and 13.2) is deferred.
 >
 > Embedded diagrams from the source document were not carried over; their placeholders are kept below.
 
@@ -50,11 +50,11 @@ Requirements are developed top-down through a hierarchy whose depth varies by el
 | Level | Scope | Typical artifact | Subject of the requirements |
 | --- | --- | --- | --- |
 | L0 | Mission and project objectives, constraints, success criteria | Concept of Operations; L0 Requirements Document | The Aeronef project |
-| L1 | Major system elements and their responsibilities: the **Aeronef**, the **Simulation and Testing Platform** (STP) and the **Reverse-Engineering Effort** (REE) | One System Requirements Specification per element; interface control documents between elements | Each element |
+| L1 | Major system elements and their responsibilities: the **Aeronef**, the **Simulation and Testing Platform** (TST) and the **Reverse-Engineering Effort** (RVS) | One System Requirements Specification per element; interface control documents between elements | Each element |
 | L2 | Subsystems of each element, for example the Aeronef's dynamics model, effectors, fuel and mass, flight control and autoflight | Subsystem specifications; model specification | Each subsystem |
 | L3 to Ln | Subfunctions and items: axis controllers, control allocation, mode logic, guidance laws, test harness components; software high- and low-level requirements | Item specifications; software requirements | Each item or software component |
 
-**Depth is decided per branch.** Stop decomposing a branch when a requirement can be implemented and verified by a single owner without further interpretation. Autoflight will likely need four or five levels; the REE may need only two.
+**Depth is decided per branch.** Stop decomposing a branch when a requirement can be implemented and verified by a single owner without further interpretation. Autoflight will likely need four or five levels; the RVS may need only two.
 
 &#91;embedded content: Aeronef requirement hierarchy · L0 to L4, depth varies by element\]
 
@@ -117,13 +117,13 @@ Before writing L1 and L2 requirements, list the functions each element must perf
 | F-AER-06 | Aeronef | Allocate axis demands to individual effectors | Axis demands, effector limits → effector commands |
 | F-AER-07 | Aeronef | Guide the vehicle according to the active autoflight mode | Mode, targets, state → axis references |
 | F-AER-08 | Aeronef | Manage autoflight mode engagement, transitions and annunciation | Crew selections, state, failures → active mode, annunciations |
-| F-STP-01 | Simulation and Testing Platform | Execute the simulation at a fixed step, in real time or faster | Initial conditions, parameters → time histories |
-| F-STP-02 | Simulation and Testing Platform | Inject scenarios, disturbances and failures | Test script → injected events |
-| F-STP-03 | Simulation and Testing Platform | Run requirement-tagged tests unattended and report pass or fail | Test procedures → results, coverage report |
-| F-STP-04 | Simulation and Testing Platform | Record and archive data | Simulation outputs → logs |
-| F-REE-01 | Reverse-Engineering Effort | Collect evidence: manuals, procedures, logs, observed behaviour | Released evidence package → evidence register |
-| F-REE-02 | Reverse-Engineering Effort | Reconstruct functions, requirements and models | Evidence → reconstructed specification |
-| F-REE-03 | Reverse-Engineering Effort | Compare the reconstruction with the baseline and report gaps | Reconstruction, baseline → gap report |
+| F-TST-01 | Simulation and Testing Platform | Execute the simulation at a fixed step, in real time or faster | Initial conditions, parameters → time histories |
+| F-TST-02 | Simulation and Testing Platform | Inject scenarios, disturbances and failures | Test script → injected events |
+| F-TST-03 | Simulation and Testing Platform | Run requirement-tagged tests unattended and report pass or fail | Test procedures → results, coverage report |
+| F-TST-04 | Simulation and Testing Platform | Record and archive data | Simulation outputs → logs |
+| F-RVS-01 | Reverse-Engineering Effort | Collect evidence: manuals, procedures, logs, observed behaviour | Released evidence package → evidence register |
+| F-RVS-02 | Reverse-Engineering Effort | Reconstruct functions, requirements and models | Evidence → reconstructed specification |
+| F-RVS-03 | Reverse-Engineering Effort | Compare the reconstruction with the baseline and report gaps | Reconstruction, baseline → gap report |
 
 The flight-control and autoflight functions (F-AER-05 to F-AER-08) are where most requirements will live; the diagram below shows how they close the loop around the vehicle physics.
 
@@ -144,9 +144,9 @@ Even a simulated vehicle needs a hazard analysis, because failure handling is a 
 | F-AER-02 Fuel | Fuel reaches zero | All effectors stop; vehicle falls under gravity | Catastrophic | Low-fuel alert and zero-thrust behaviour |
 | F-AER-08 Mode logic | Uncommanded mode change | Crew confusion, unexpected trajectory | Hazardous | Mode-transition requirements and annunciation |
 | F-AER-04 State | State data invalid (later versions) | Controller acts on wrong information | Catastrophic | Validity monitoring and safe-mode behaviour |
-| F-STP-01 Simulation | Numerical integration diverges | False test results | Major | Integration accuracy and divergence detection |
+| F-TST-01 Simulation | Numerical integration diverges | False test results | Major | Integration accuracy and divergence detection |
 
-**What the analysis produces.** Three kinds of requirements: unwanted-behaviour requirements in the EARS If/Then pattern; monitoring and annunciation requirements; and fault-injection requirements on the STP so each failure condition can be tested.
+**What the analysis produces.** Three kinds of requirements: unwanted-behaviour requirements in the EARS If/Then pattern; monitoring and annunciation requirements; and fault-injection requirements on the TST so each failure condition can be tested.
 
 **Rigour by criticality instead of development assurance levels.** Record a Criticality attribute on each requirement from the worst severity it protects against. Use it to scale effort: requirements linked to Catastrophic or Hazardous conditions get an independent reviewer, robustness tests at limits and out of range, and full trace to a failure scenario; Minor ones need only a nominal test.
 
@@ -166,7 +166,7 @@ Each parent requirement is satisfied by a set of child requirements allocated to
 3. Children are written at the right level: a child restates the parent's intent for its own element, with more detail, never a copy of the parent.
 4. Quantities are split with **budgets**. Allocate fuel, effector authority, position error and timing (simulation frame time, controller latency) between children, and track margins.
 
-**Interfaces.** Write interface requirements wherever two elements exchange data, and detail the data in an interface control document (ICD). Three ICDs are needed early: Aeronef model ↔ STP (state vector, effector commands, frame rate, units); flight control ↔ autoflight (axis references, mode status); and Aeronef and STP ↔ REE (the evidence package: which manuals, logs and behaviours are released).
+**Interfaces.** Write interface requirements wherever two elements exchange data, and detail the data in an interface control document (ICD). Three ICDs are needed early: Aeronef model ↔ TST (state vector, effector commands, frame rate, units); flight control ↔ autoflight (axis references, mode status); and Aeronef and TST ↔ RVS (the evidence package: which manuals, logs and behaviours are released).
 
 **Parameters belong in a controlled table, not in sentences.** The concept summary leaves inertias, drag coefficients, effector limits and fuel-consumption rates configurable. Keep them in a version-controlled parameter database with IDs, units, values and status, and let requirements reference them, for example "within \[P-AF-012\] metres". A parameter change then becomes a reviewed change, with every affected requirement found through the reference.
 
@@ -178,7 +178,7 @@ Each parent requirement is satisfied by a set of child requirements allocated to
 
 A good requirement is one sentence, with one responsible subject, one "shall", one measurable result and any condition stated explicitly; it says **what** is needed and leaves **how** to the design.
 
-**8.1 Anatomy.** `[Condition] the <subject> shall <action> <object> <performance with tolerance>.` The subject is the element at the current level (the Aeronef, the autoflight system, the STP), never a person: "the crew shall..." is an operating procedure and belongs in a manual.
+**8.1 Anatomy.** `[Condition] the <subject> shall <action> <object> <performance with tolerance>.` The subject is the element at the current level (the Aeronef, the autoflight system, the TST), never a person: "the crew shall..." is an operating procedure and belongs in a manual.
 
 **8.2 Keywords.** Following the NASA convention: **shall** states a requirement (verified); **will** states a fact or declaration of purpose (not verified); **should** states a goal (not verified). Avoid "must" and "may" in requirement statements.
 
@@ -256,9 +256,9 @@ A requirement is the statement plus its attributes; without rationale, trace and
 | Inspection | Examination of an artifact, code or data against the requirement, without running it | Check that every parameter in the model has an SI unit in the parameter table |
 | Analysis | Calculation, model or comparison with an independent solution | Compare simulated free fall with drag against the closed-form terminal velocity; check mass decrease against the integral of fuel flow |
 | Demonstration | Operating the system to show a qualitative capability, without detailed measurement | Show that a controller can be swapped through configuration without rebuilding the vehicle model |
-| Test | Operating the system under controlled conditions and measuring the result against the criteria | Automated STP scenario: engage Position Hold, inject a 0.5 m offset, measure the position error after \[P-AF-014\] seconds |
+| Test | Operating the system under controlled conditions and measuring the result against the criteria | Automated TST scenario: engage Position Hold, inject a 0.5 m offset, measure the position error after \[P-AF-014\] seconds |
 
-For the Aeronef, most functional and performance requirements are verified by **automated test** on the STP, and the physics by **analysis against independent solutions**; Inspection covers documentation and coding-standard requirements.
+For the Aeronef, most functional and performance requirements are verified by **automated test** on the TST, and the physics by **analysis against independent solutions**; Inspection covers documentation and coding-standard requirements.
 
 ## 10. Validation, verification, traceability and change control
 
@@ -268,7 +268,7 @@ Validation asks "are these the right requirements?" and happens before a baselin
 
 **10.2 Verify requirements-based, not code-based.** Write each test procedure from the requirement alone, not from the implementation, as DO-178C requires. Include nominal cases, boundaries and robustness cases (out-of-range inputs, injected failures) for Hazardous and Catastrophic items. Run the same tests with code coverage measured: code that no requirement-based test exercises means either a missing requirement or unintended behaviour.
 
-**10.3 Establish simulation credibility.** The STP's results are only evidence if the simulation itself is credible. Following NASA-STD-7009B, verify the model against independent solutions (free fall, terminal velocity, torque-free rotation conserving angular momentum, fuel-mass integral), document input pedigree for every parameter, and quantify sensitivity of key results to uncertain parameters.
+**10.3 Establish simulation credibility.** The TST's results are only evidence if the simulation itself is credible. Following NASA-STD-7009B, verify the model against independent solutions (free fall, terminal velocity, torque-free rotation conserving angular momentum, fuel-mass integral), document input pedigree for every parameter, and quantify sensitivity of key results to uncertain parameters.
 
 **10.4 Maintain bidirectional traceability.** Four link types are mandatory:
 
@@ -281,7 +281,7 @@ Run automated checks on each build: requirements without a parent, parents witho
 
 | Req ID | Statement (short) | Method | Procedure | Level verified | Result | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| L2-AER-AF-PH-010 | Hold position within \[P-AF-012\] m | Test | TP-AF-PH-010 | Aeronef in STP | Pass (example) | Verified |
+| L2-AER-AF-PH-010 | Hold position within \[P-AF-012\] m | Test | TP-AF-PH-010 | Aeronef in TST | Pass (example) | Verified |
 | L2-AER-DYN-020 | Mass equals dry mass plus fuel | Analysis | AN-DYN-020 | Dynamics model | Pending | Baselined |
 
 **10.5 Baseline and control changes.** Hold a review at each level before baselining: an L0 mission and concept review, a System Requirements Review per L1 element, then design and test-readiness reviews as branches mature. After a baseline, changes go through a change request that lists the affected requirements (found through trace links), tests, parameters and manuals, and is approved by a small change board.
@@ -299,16 +299,16 @@ Every step produces a documented artifact, every artifact is peer reviewed befor
 | Project plan (lightweight SEMP) | L0 | Organisation, levels, process tailoring, review schedule | Technical review |
 | Concept of operations | L0 | Stakeholders, scenarios, operating concept | Technical review with stakeholders |
 | L0 requirements document | L0 | Objectives, constraints, success criteria | Inspection |
-| System requirements specification, one per L1 element | L1 | Aeronef, STP and REE requirements | Inspection |
+| System requirements specification, one per L1 element | L1 | Aeronef, TST and RVS requirements | Inspection |
 | Interface control documents | L1–L2 | Data, units, rates, frames between elements | Inspection |
 | Model specification | L2 | Axis conventions, equations of motion, gravity, drag, mass and inertia model | Technical review plus inspection |
 | Parameter database | L2–Ln | Every configurable value, with unit, source and status | Inspection |
 | Hazard analysis | L1–L2 | Failure conditions, severities, resulting requirements | Technical review |
-| Subsystem and software requirements | L2–Ln | Flight control, allocation, autoflight, STP components | Inspection |
+| Subsystem and software requirements | L2–Ln | Flight control, allocation, autoflight, TST components | Inspection |
 | Design descriptions | L2–Ln | Architecture, control-law designs, trade studies | Technical review |
 | Verification plan and procedures | All | Methods, scenarios, success criteria | Inspection |
 | Verification matrix and results | All | Generated status per requirement | Audit at each milestone |
-| Simulation credibility report | STP | Model verification, validation and uncertainty | Technical review |
+| Simulation credibility report | TST | Model verification, validation and uncertainty | Technical review |
 | Operational manuals and procedures | L1 | See 11.2 | Walkthrough plus inspection |
 
 **11.2 Operational manuals as reverse-engineering evidence.** Produce manuals modelled on airline documentation, written for an operator rather than for an engineer:
@@ -316,14 +316,14 @@ Every step produces a documented artifact, every artifact is peer reviewed befor
 - **Vehicle Operating Manual:** vehicle description, limitations (fuel, effector authority, operating volume), autoflight mode descriptions with what each mode holds, captures and annunciates, and the conditions for each mode transition.
 - **Normal, abnormal and emergency procedures:** step-by-step, for example engaging Position Hold, responding to LOW FUEL, responding to an effector-failure annunciation.
 - **Quick reference checklists:** the short form of the procedures.
-- **STP user guide:** how to configure, run and read a simulation and a test campaign.
+- **TST user guide:** how to configure, run and read a simulation and a test campaign.
 
 Four rules make the manuals useful as evidence:
 
 1. Describe observable behaviour and operator actions; never paste requirement text.
 2. Trace each manual section and procedure to the requirements it describes, in a register kept outside the released manual. This register is the answer key for scoring the reconstruction.
 3. Version manuals with the requirement baseline they describe, and update them through the same change process.
-4. Decide, in the REE's L1 requirements, exactly which artifacts the reverse-engineering team receives (manuals, logs, executable simulation) and which it does not (requirements, design, source code).
+4. Decide, in the RVS's L1 requirements, exactly which artifacts the reverse-engineering team receives (manuals, logs, executable simulation) and which it does not (requirements, design, source code).
 
 **11.3 Peer-review process.** Use the IEEE 1028 review types according to the artifact (table in 11.1): a **walkthrough** led by the author to explain and gather feedback; a **technical review** focused on technical soundness and design choices; an **inspection**, the most formal, for requirement sets and procedures.
 
@@ -335,7 +335,7 @@ Four rules make the manuals useful as evidence:
 
 ## 12. Worked example: one thread from L0 to verification
 
-The example follows the autoflight Position Hold mode from a project objective down to a test procedure and a manual procedure, showing allocation, a derived requirement, an interface and the STP's supporting requirement. All values are placeholders held in the parameter table.
+The example follows the autoflight Position Hold mode from a project objective down to a test procedure and a manual procedure, showing allocation, a derived requirement, an interface and the TST's supporting requirement. All values are placeholders held in the parameter table.
 
 | ID | Level | Statement | Parent | Verification |
 | --- | --- | --- | --- | --- |
@@ -347,12 +347,12 @@ The example follows the autoflight Position Hold mode from a project objective d
 | L3-AER-FC-TR-040 | L3 | The translational controller shall track each commanded velocity component with a steady-state error of at most \[P-FC-021\] m/s at maximum and minimum vehicle mass. | L2-AER-AF-PH-020 | Test TP-FC-TR-040 |
 | L3-AER-EF-010 | L3 | The effector system shall deliver a force of at least \[P-EF-001\] N along each body axis. | L2-AER-AF-PH-020 | Analysis AN-EF-010 |
 | L4-AER-FC-AL-050 | L4 | If a commanded body force exceeds the effector limit on any axis, then the control allocation shall scale all translational force commands by the same factor. | Derived (design decision DD-012: preserve direction of translation) | Test TP-FC-AL-050 |
-| ICD-AER-STP-005 | L2 | The Aeronef model shall output the vehicle position in the local reference frame defined in model specification MS-DYN, in metres, at each simulation step. | L2-AER-AF-PH-020 | Inspection |
-| STP-TA-030 | L2 | The STP shall execute each test procedure tagged with a requirement ID without operator action and record pass or fail against its success criteria. | L0-OBJ-003 | Demonstration |
+| ICD-AER-TST-005 | L2 | The Aeronef model shall output the vehicle position in the local reference frame defined in model specification MS-DYN, in metres, at each simulation step. | L2-AER-AF-PH-020 | Inspection |
+| TST-TA-030 | L2 | The TST shall execute each test procedure tagged with a requirement ID without operator action and record pass or fail against its success criteria. | L0-OBJ-003 | Demonstration |
 
 **Reading the thread.** L0-OBJ-002 is satisfied when the autoflight modes, including Position Hold, are delivered; L1-AER-001 is satisfied when capture (PH-010), hold accuracy (PH-020) and annunciation (PH-030) are all met; PH-020 is in turn satisfied by translational tracking accuracy and enough effector authority, which is a budget split recorded in its rationale. L4-AER-FC-AL-050 has no parent: it comes from a design decision, so it is marked Derived and reviewed against the hazard analysis (saturation, Section 6).
 
-**Downstream links.** TP-AF-PH-020 lives in the STP test suite, tagged with L2-AER-AF-PH-020, and runs every night. The Vehicle Operating Manual section on Position Hold tells the crew what the mode holds, what POS HOLD looks like and how to disengage it; the manual trace register links that section to PH-010, PH-020 and PH-030, so a reconstruction by the REE can be scored against them.
+**Downstream links.** TP-AF-PH-020 lives in the TST test suite, tagged with L2-AER-AF-PH-020, and runs every night. The Vehicle Operating Manual section on Position Hold tells the crew what the mode holds, what POS HOLD looks like and how to disengage it; the manual trace register links that section to PH-010, PH-020 and PH-030, so a reconstruction by the RVS can be scored against them.
 
 ## 13. Checklists and templates
 

@@ -14,7 +14,7 @@ Terms used in `specs/CONOPS.md`. Definitions are proposals for A3, who owns `spe
 | Capture | The change of an armed mode to active when its condition is met. |
 | Capture onset | The moment an armed mode starts to capture. |
 | Course (selected course) | The direction of motion, along a VOR radial line, that VOR radial tracking flies. Outbound course equals the radial; inbound course is the radial plus 180 degrees. |
-| Crew | Whoever makes crew selections and reads annunciations: a human operator, a scripted test procedure or an REE agent. |
+| Crew | Whoever makes crew selections and reads annunciations: a human operator, a scripted test procedure or an RVS agent. |
 | Crew interface | The logical set of crew selections, annunciations and indications of the Aeronef. Not a physical panel or display design. |
 | Crew selection | A crew input: a selected target or a mode engage or arm command. |
 | Crew-facing units | The units of crew selections and annunciations (D7): ft, ft/min, kt, NM, degrees. |
@@ -38,12 +38,12 @@ Terms used in `specs/CONOPS.md`. Definitions are proposals for A3, who owns `spe
 | Operating volume | The altitude band and horizontal region within which nominal operations take place. |
 | Operational data | Data the Aeronef outputs at each step: selections, targets, modes, annunciations, state, fuel, control activity. |
 | Position hold | The hold mode that holds the three-dimensional position the vehicle had at engagement (provisional label POS HOLD). |
-| Protected (data) | Operational data or documents that must not reach the REE. |
+| Protected (data) | Operational data or documents that must not reach the RVS. |
 | Radial | A line from a VOR station, identified by its bearing from the station, measured from true north. |
 | Reception range | Distance from a VOR station within which its signal is received. |
 | Reference mission | The fixed, repeatable profile of SC-110, flown to fuel exhaustion, used to compare versions. |
-| Releasable (data) | Operational data that may be given to the REE. |
-| Run | One execution of the Aeronef in the STP, defined by a configuration, an initial condition and a selection script. |
+| Releasable (data) | Operational data that may be given to the RVS. |
+| Run | One execution of the Aeronef in the TST, defined by a configuration, an initial condition and a selection script. |
 | Scenario | A described sequence of operations in the ConOps (`SC-nnn`). |
 | Scenario variable | A named value in a scenario (for example `H_SEL`) whose number the test procedure chooses. |
 | Selected altitude, heading, track, speed, vertical speed, flight path angle | The crew-selected target of the corresponding mode. |

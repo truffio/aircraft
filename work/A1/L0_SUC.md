@@ -46,7 +46,7 @@ Rationale:     Coherence is shown by verification: the design meets its own requ
   result for every baselined Aeronef requirement.
 Parent(s):     —
 Source:        OBJECTIVES.md §6
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -71,7 +71,7 @@ Rationale:     Success criterion 2 of OBJECTIVES §6: behaviour and performance 
   method is Test to an automated test procedure that has a recorded result.
 Parent(s):     —
 Source:        OBJECTIVES.md §6; METHODOLOGY.md §4.3
-Allocated to:  STP, AER
+Allocated to:  TST, AER
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -96,11 +96,11 @@ Rationale:     Success criterion 2 of OBJECTIVES §6 requires repeatable tests; 
   checked for bit-identical outputs; a repeated run must give the same expected result
   (D25). Children must show (D41): (Test) each run of one complete recorded campaign,
   re-executed, gives the same pass or fail result against the same expected results as
-  the recorded run. Allocated only to STP: its children come when the plan is extended
+  the recorded run. Allocated only to TST: its children come when the plan is extended
   to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §5
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -124,10 +124,10 @@ Rationale:     Success criterion 2 of OBJECTIVES §6 calls for automated test ca
   owner review (2026-10-25): accepted without a campaign size. A campaign is as big as
   it needs to be (#68). Children must show (D41): (Test) a campaign is launched once,
   completes without operator action, and records a result for each run. Allocated only
-  to STP: its children come when the plan is extended to that branch (D44).
+  to TST: its children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §5, §6
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -154,11 +154,11 @@ Rationale:     Scalable parallelism across the available CPU resources is an obj
   expansion. It will be done, but not in version 1, and the project does not have to
   scale from its first instances (#86, #68). Children must show (D41): (Test) the same
   campaign is timed on one instance and on [P-SYS-070] instances on the execution host,
-  and the computed parallel efficiency is at least [P-SYS-060]. Allocated only to STP:
+  and the computed parallel efficiency is at least [P-SYS-060]. Allocated only to TST:
   its children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §5
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -187,11 +187,11 @@ Rationale:     OBJECTIVES §3 states that any test procedure, not only Monte Car
   the project does not have to scale from its first instances (#86, #68). Children must
   show (D41): (Demonstration) a batch containing procedures of each listed category
   runs in parallel simulation instances and records a result for each procedure.
-  Allocated only to STP: its children come when the plan is extended to that branch
+  Allocated only to TST: its children come when the plan is extended to that branch
   (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §3, §6; TESTING_ENVIRONMENT.md §5, §6
-Allocated to:  STP
+Allocated to:  TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -217,7 +217,7 @@ Rationale:     G0 owner review (2026-10-25): deleted. Only one flight-control de
   the one set by L0-OBJ-040.
 Parent(s):     —
 Source:        OBJECTIVES.md §6; TESTING_ENVIRONMENT.md §7
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: a comparison report shows, for at least
   [P-SYS-010] flight-control-law designs, results from the same set of procedures with identical
@@ -242,7 +242,7 @@ Rationale:     G0 owner review (2026-10-25): deleted. One autoflight implementat
   autoflight. The count is the one set by L0-OBJ-050.
 Parent(s):     —
 Source:        OBJECTIVES.md §6; TESTING_ENVIRONMENT.md §7
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: a comparison report shows, for at least
   [P-SYS-020] autoflight implementations, results from the same set of procedures with identical
@@ -268,17 +268,17 @@ Rationale:     Success criterion 4 of OBJECTIVES §6 asks for meaningful aspects
   reverse-engineering effort requirements. G0 owner review (2026-10-25): the target is
   100% coverage of the functionality: every mode is identified. Children must show
   (D41): (Analysis) the evaluators score the reconstructed model against the protected
-  mode catalogue, and every catalogue mode is identified. Allocated only to REE: its
+  mode catalogue, and every catalogue mode is identified. Allocated only to RVS: its
   children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §6; REVERSE_ENGINEERING.md §6
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
 Parameters:    —
 TBD/TBR:       Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when
-  the plan is extended to REE (D44)
+  the plan is extended to RVS (D44)
 Owner:         Martin
 Status:        Baselined
 Version:       3
@@ -298,17 +298,17 @@ Rationale:     REVERSE_ENGINEERING §6 names the accuracy of inferred logic, sta
   defined in the reverse-engineering effort requirements. G0 owner review (2026-10-25):
   100% coverage: every mode transition is reproduced. Children must show (D41):
   (Analysis) the evaluators score each transition of the protected mode logic, and
-  every transition is reproduced. Allocated only to REE: its children come when the
+  every transition is reproduced. Allocated only to RVS: its children come when the
   plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §6; REVERSE_ENGINEERING.md §6
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
 Parameters:    —
 TBD/TBR:       Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when
-  the plan is extended to REE (D44)
+  the plan is extended to RVS (D44)
 Owner:         Martin
 Status:        Baselined
 Version:       3
@@ -329,17 +329,17 @@ Rationale:     The assessment must distinguish a model that reproduces observed 
   (2026-10-25): 100% coverage: the outcome of every withheld scenario is predicted.
   Children must show (D41): (Analysis) the evaluators compare the predictions of the
   reconstructed model with the simulated outcomes of the withheld scenarios, and every
-  outcome is predicted correctly. Allocated only to REE: its children come when the
+  outcome is predicted correctly. Allocated only to RVS: its children come when the
   plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §6; REVERSE_ENGINEERING.md §6
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
 Parameters:    —
 TBD/TBR:       Definition of a correct prediction TBD in the reverse-engineering requirements (#69),
-  Martin, closes when the plan is extended to REE (D44)
+  Martin, closes when the plan is extended to RVS (D44)
 Owner:         Martin
 Status:        Baselined
 Version:       3
@@ -359,17 +359,17 @@ Rationale:     REVERSE_ENGINEERING §6 names coverage of important behaviours as
   requirements. G0 owner review (2026-10-25): full coverage. Every coverage criterion
   is 100%, not a fraction (D39). Children must show (D41): (Analysis) the evaluators
   score the reconstructed model against the manual trace register, and every baselined
-  Aeronef system (L1) requirement is covered. Allocated only to REE: its children come
+  Aeronef system (L1) requirement is covered. Allocated only to RVS: its children come
   when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §6; REVERSE_ENGINEERING.md §6; METHODOLOGY.md §11.2
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
 Parameters:    —
 TBD/TBR:       Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when
-  the plan is extended to REE (D44)
+  the plan is extended to RVS (D44)
 Owner:         Martin
 Status:        Baselined
 Version:       3
@@ -390,11 +390,11 @@ Rationale:     Success criterion 4 of OBJECTIVES §6 requires reconstruction wit
   reverse-engineering work (#69). The constraints it rested on (L0-CON-220 to -240)
   were deleted, and L0-CON-250 is deferred. Stays Draft. Children must show (D41):
   (Inspection) the access records of each reverse-engineering agent for the whole
-  effort show no read of an item of protected design material. Allocated only to REE:
+  effort show no read of an item of protected design material. Allocated only to RVS:
   its children come when the plan is extended to that branch (D44).
 Parent(s):     —
 Source:        OBJECTIVES.md §4, §6; REVERSE_ENGINEERING.md §2, §7
-Allocated to:  REE
+Allocated to:  RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -418,13 +418,13 @@ Rationale:     Success criterion 5 of OBJECTIVES §6: a reviewed, traceable chai
   through requirements, design artifacts and tests. METHODOLOGY §10.4 defines the
   automated checks. Intermediate baselines (L0, L1, …) have childless records by
   construction, so the check applies to the complete baseline at G4
-  (AER-REQ-baseline-1). Records allocated only to the STP or the REE are not counted
+  (AER-REQ-baseline-1). Records allocated only to the TST or the RVS are not counted
   until the plan covers those branches (D44). Children must show (D41): (Inspection)
   the trace check output stored with the complete requirements baseline reports no
   orphan, no childless parent and no requirement without a verification method.
 Parent(s):     —
 Source:        OBJECTIVES.md §5, §6; METHODOLOGY.md §10.4
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
@@ -452,7 +452,7 @@ Rationale:     G0 owner review (2026-10-25): deleted. Traceability is wanted and
   reconstruction.
 Parent(s):     —
 Source:        OBJECTIVES.md §5, §6; METHODOLOGY.md §10.4, §11.2
-Allocated to:  AER, STP
+Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each section of each released manual appears in
   the manual trace register with at least one baselined requirement ID.
@@ -481,7 +481,7 @@ Rationale:     Success criteria state what 'done' means for each objective so th
   requirements of each level it verifies and its last result.
 Parent(s):     —
 Source:        OBJECTIVES.md §6; METHODOLOGY.md §4.4
-Allocated to:  AER, STP, REE
+Allocated to:  AER, TST, RVS
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).

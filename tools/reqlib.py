@@ -188,8 +188,10 @@ def level_files(root):
 
 
 def resolve_file(root, name):
+    # a relative name is looked up under root first, then the working directory
     p = Path(name)
-    return p if p.exists() else Path(root) / name
+    under_root = Path(root) / p
+    return under_root if not p.is_absolute() and under_root.exists() else p
 
 
 @dataclass
