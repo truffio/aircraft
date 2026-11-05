@@ -12,7 +12,7 @@ This plan organises the work of defining the requirements of the **Aeronef** (el
 
 - The L0 statements the Aeronef traces to (objectives, constraints, success criteria), plus the ConOps scenarios and conventions the vehicle requirements need.
 - The L1 Aeronef System Requirements Specification.
-- L2 subsystem requirements: dynamics, effectors, fuel and mass properties, flight control, autoflight, navigation, and operational data output.
+- L2 subsystem requirements: dynamics, effectors, fuel and mass properties, flight control, autoflight, flight control panel (D55), navigation, and operational data output.
 - Lower levels wherever a branch needs them, down to the last layer that is still a requirement (Section 9, D4).
 - The autoflight mode catalogue in Section 9, D3.
 - The model specification (MS-DYN), the parameter database, and the Aeronef side of the interface control documents.
@@ -39,13 +39,13 @@ This plan organises the work of defining the requirements of the **Aeronef** (el
 
 ## 3. Output layout
 
-All requirements live in one folder, `requirements/`, with **one file per level**. Inside each level file, there is one section per element or subsystem, in a fixed order: DYN, FU, EF, FC, AF, NAV, TM.
+All requirements live in one folder, `requirements/`, with **one file per level**. Inside each level file, there is one section per element or subsystem, in a fixed order: DYN, FU, EF, FC, AF, FCP, NAV, TM.
 
 ```
 requirements/
   L0.md                            L0-OBJ / L0-CON / L0-SUC statements + assumptions register
   L1.md                            Aeronef system requirements
-  L2.md                            Subsystems: DYN, FU, EF, FC, AF, NAV, TM
+  L2.md                            Subsystems: DYN, FU, EF, FC, AF, FCP, NAV, TM
   L3.md                            Sub-functions: FC axis controllers and allocation, one section per autoflight mode, ...
   L4.md …                          Only if a branch still needs a requirement layer (D4)
 specs/
@@ -173,11 +173,12 @@ Seven agents run in parallel. Each agent:
 | C2 | **FU** — fuel and mass properties | Fuel quantity, consumption for linear and rotational actuation (configurable), mass decrease, fixed CG, inertia assignment and how it changes with fuel. Fuel exhaustion is nominal behaviour, not a failure. | Opus / high |
 | C3 | **EF** — effectors | Fixed-direction emitters: authority per axis, limits, command response, consumption interface to FU. Stays solution-free: the emitter layout is a design decision, not a requirement. | Opus / high |
 | C4 | **FC** — flight control | L2, plus the L3 sections for translational control (TR), rotational control (RO) and control allocation (AL). Includes independent per-axis regulation, saturation handling as nominal behaviour, and the constraint that control laws are swappable without changing the vehicle model (objective: compare control laws). | Opus / xhigh |
-| C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers mode groups and compatible combinations, armed versus active states (altitude capture, VOR radial capture), engagement, automatic transitions (for example climb → altitude capture → altitude hold), disengagement, annunciation, target selection, and what the attitude axes do in each mode (D10). Per-mode details are left to Phase 4. | Opus / xhigh |
-| C6 | **NAV** — navigation | Navigation references used by autoflight: position, altitude, heading, track, horizontal and vertical speed, flight path angle, and the simulated VOR function (station definition, radial and deviation computation, reception limits per D12). | Opus / high |
+| C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers the catalogue of D56 (one horizontal and one vertical mode, plus Go to hover and Hover), armed versus active states (Go to hover arming Hover), engagement, automatic transitions (for example Go to altitude → Altitude hold, Go to hover → Hover), disengagement, annunciation, target selection, and the heading behaviour in each mode; pitch and roll stay at zero (D57). Per-mode details are left to Phase 4. | Opus / xhigh |
+| C6 | **NAV** — navigation | Navigation references used by autoflight and the panel: position, altitude, height above the ground, heading, track, horizontal and vertical speed. No VOR and no flight path angle (D56). | Opus / high |
 | C7 | **TM** — operational data output | Signals the Aeronef exposes so inputs, mode changes, control activity and responses can be correlated (REVERSE_ENGINEERING §3C, TESTING_ENVIRONMENT §8). Includes the selected targets, armed and active modes, and annunciations. Each signal is classified as *releasable* or *protected*, so telemetry does not leak protected design. | Opus / high |
+| C8 | **FCP** — flight control panel (D55) | The crew interface as data: the mode selections and the heading, horizontal speed, target altitude and vertical speed selectors (D56), the annunciations and indications, and the conversion to and from crew units (CV-740 to CV-770). Defines the panel content (#79). No physical device or display format (L1-AER-510). | Opus / high |
 
-C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as are C5 and C6 (navigation data used by the modes). Coupled agents do not coordinate directly; they record needs in `interface_needs.md` and the integration step resolves them.
+C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as are C5, C6 and C8 (navigation data used by the modes, selections and annunciations crossing the panel). Coupled agents do not coordinate directly; they record needs in `interface_needs.md` and the integration step resolves them.
 
 ### Phase 3b — Integration (sequential)
 
@@ -199,23 +200,23 @@ There is one L3 section per autoflight mode, plus the flight-control deepening. 
 
 | ID | Mode or branch | Model / effort |
 | --- | --- | --- |
-| M0 | **Position Hold**, the reference mode and the METHODOLOGY §12 worked example: engagement and position capture, hold accuracy, annunciation, disengagement, and the flow-down to FC and EF. This sets the pattern for the other modes. | Opus / high |
+| M0 | **Stationary** (position hold over the ground, D56), the reference mode and the METHODOLOGY §12 worked example: engagement and position capture, hold accuracy, annunciation, disengagement, and the flow-down to FC and EF. This sets the pattern for the other modes. | Opus / high |
 
 These run in parallel after M0:
 
 | ID | Mode or branch | Model / effort |
 | --- | --- | --- |
-| M1 | **Climb and descent on flight path angle** | Sonnet / high |
-| M2 | **Climb and descent on vertical speed** (selected in feet per minute) | Sonnet / high |
-| M3 | **Altitude capture and altitude hold**: arming, capture onset and transition from the climb or descent modes, then hold | Opus / high |
-| M4 | **Horizontal speed** | Sonnet / high |
-| M5 | **Heading hold** (constant heading) | Sonnet / high |
-| M6 | **Track hold** (constant track) | Sonnet / high |
-| M7 | **VOR radial tracking**: arming, intercept, capture and tracking | Opus / high |
-| M8 | **Hover at altitude** | Sonnet / high |
+| M1 | Withdrawn: no flight path angle mode (D56) | — |
+| M2 | **Vertical speed**: climb or descent at the selected rate (feet per minute), then capture and hold of the selected altitude | Sonnet / high |
+| M3 | **Go to altitude and Altitude hold**: climb or descent at the standard or selected vertical speed, capture of the selected altitude, then hold | Opus / high |
+| M4 | Withdrawn: horizontal speed is a selector of Heading, not a mode (D56) | — |
+| M5 | **Heading** at the selected horizontal speed, including a heading change in place at zero speed | Sonnet / high |
+| M6 | Withdrawn: no track hold mode (D56) | — |
+| M7 | Withdrawn: no VOR (D56) | — |
+| M8 | **Go to hover and Hover**: from any mode, stop on all axes at the hover height, arm Hover, engage it when stationary, then hold height and position against the wind | Opus / high |
 | FC1 | **Flight-control deepening**: TR, RO and AL to the last requirement layer, including the allocation priority rule as a derived requirement with its DD entry | Opus / high |
 
-M3 and M7 use Opus because arming, capture and transition logic is the subtlest part of the catalogue. Any Sonnet mode that departs significantly from the M0 pattern is escalated to Opus / high. The orchestrator then assembles `requirements/L3.md`, and any lower level file.
+M3 and M8 use Opus because arming, capture and transition logic is the subtlest part of the catalogue. Any Sonnet mode that departs significantly from the M0 pattern is escalated to Opus / high. The orchestrator then assembles `requirements/L3.md`, and any lower level file.
 
 **Gate G3 — Lower-level requirements review**
 
@@ -282,18 +283,18 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | --- | --- | --- |
 | D1 | Requirement storage format | Markdown blocks per METHODOLOGY 13.3; parameter database in YAML |
 | D2 | Requirement layout | One file per requirement level, all in `requirements/` (Section 3) |
-| D3 | Autoflight mode catalogue | Climb on flight path angle; climb on vertical speed (ft/min); horizontal speed; altitude capture, then altitude hold; descent on flight path angle or vertical speed, similar to climb; heading hold; track hold; VOR radial tracking; position hold; hover at altitude |
+| D3 | Autoflight mode catalogue (**replaced by D56**) | Climb on flight path angle; climb on vertical speed (ft/min); horizontal speed; altitude capture, then altitude hold; descent on flight path angle or vertical speed, similar to climb; heading hold; track hold; VOR radial tracking; position hold; hover at altitude |
 | D4 | Depth | No fixed depth. Each branch is decomposed until the next layer would be the implementation. |
 | D5 | Scripting language for tools | Python |
 | D6 | Owner attribute | Martin for all requirements in this cycle |
 | D7 | Crew-facing units | North American aviation units for everything the crew selects or sees: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track, flight path angle, radials). Requirements and the model stay in SI; conversions are fixed in CONVENTIONS. |
 | D8 | Ground (#50; refined by D37) | The Earth is flat with no terrain, and altitude zero is ground level. Contact with the ground outside the landing envelope is a crash (D37). |
 | D9 | Crew-facing fuel unit (#51) | Pounds (lb) |
-| D10 | Attitude during guidance modes (#3, Q2) | Pitch and roll stay level. The Aeronef doesn't need to pitch or roll to move. Those manoeuvres are possible but serve no purpose, because the axes are uncoupled. |
-| D11 | Hover versus position hold (#4, Q3) | Position hold is a lateral mode. The vehicle stops moving on all axes (zero velocity, zero acceleration) and holds its position at any altitude, compensating for wind. Hover is a vertical mode. When it engages, the vehicle descends from its current altitude to the altitude set on the flight control panel, then holds position. Hover therefore needs position hold. Whether position is held from the moment hover engages, or only after the velocity has come down to zero, is still open (#78). |
-| D12 | VOR model (#5, Q4) | Ideal VOR: the simplest model. Ground stations are at fixed positions in the local frame, radials refer to true north, there is no magnetic variation or noise, and the signal is ideal within the reception range. |
-| D13 | Mode compatibility (#61) | A flight-path-angle vertical mode needs horizontal velocity, so it can't be combined with position hold. Detailed design (#6) will produce a compatibility matrix of lateral modes, vertical modes and speed selection. |
-| D14 | VOR tracking (#53) | The crew flies a course. Tracking a radial is a track over the ground, and flying TO or FROM the station changes the course flown. |
+| D10 | Attitude during guidance modes (#3, Q2; **revised by D57**) | Pitch and roll stay level. The Aeronef doesn't need to pitch or roll to move. Those manoeuvres are possible but serve no purpose, because the axes are uncoupled. |
+| D11 | Hover versus position hold (#4, Q3; **replaced by D56**) | Position hold is a lateral mode. The vehicle stops moving on all axes (zero velocity, zero acceleration) and holds its position at any altitude, compensating for wind. Hover is a vertical mode. When it engages, the vehicle descends from its current altitude to the altitude set on the flight control panel, then holds position. Hover therefore needs position hold. Whether position is held from the moment hover engages, or only after the velocity has come down to zero, is still open (#78). |
+| D12 | VOR model (#5, Q4; **withdrawn by D56**: no VOR) | Ideal VOR: the simplest model. Ground stations are at fixed positions in the local frame, radials refer to true north, there is no magnetic variation or noise, and the signal is ideal within the reception range. |
+| D13 | Mode compatibility (#61; **replaced by D56**) | A flight-path-angle vertical mode needs horizontal velocity, so it can't be combined with position hold. Detailed design (#6) will produce a compatibility matrix of lateral modes, vertical modes and speed selection. |
+| D14 | VOR tracking (#53; **withdrawn by D56**: no VOR) | The crew flies a course. Tracking a radial is a track over the ground, and flying TO or FROM the station changes the course flown. |
 | D15 | Mode logic versus controllers (#72) | The modes say how the aircraft flies; the controllers implement them, so the two are decoupled. Every control-law version and autoflight implementation must meet the same mode logic, so any implementation pairs with any law. |
 | D16 | Mode engagement rule (#78) | When the crew selects a mode, it normally arms first and engages once its engagement conditions are met. While the mode is armed, the active mode manoeuvres the craft into those conditions. Manoeuvres are g-limited: maximum acceleration and deceleration are design parameters. This covers, for example, climb or descent sequencing to altitude hold, and motion sequencing to position hold. |
 | D17 | Wind (#49) | Wind exists and can be configured in the test environment. Position hold compensates for wind. Refined by D51 (gusts). |
@@ -332,6 +333,12 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D50 | AER share of reproducibility and headless running (#104, B1-Q10) | L0-OBJ-110 and L0-CON-190 are also allocated to the Aeronef (CR-B1-01, CR-B1-02). |
 | D51 | Wind and gusts (#99, B1-Q05; revises D17) | The wind is horizontal only, with no vertical component. It is a steady wind of 0 to 100 kt ([P-SYS-430]) plus gusts and bursts of up to 50 kt ([P-SYS-560]); the two add up, so the largest instantaneous wind is 150 kt. This replaces the earlier "no gusts" assumption (L0-ASM-050, CR-B1-03). A wind that varies across the operating volume stays with the refined wind model (#84). |
 | D52 | Element codes (owner, 2026-10-28) | The test environment element is coded **TST** (was STP) and the reverse-engineering element **RVS** (was REE), in IDs, allocations and text. Review records in `reviews/` and earlier GitHub issues keep the old codes. |
+| D53 | Landing envelope (#100, B1-Q06, #100.1) | The landing envelope is two limits at the contact sample: a vertical speed magnitude of at most [P-SYS-500] = 3.458 m/s (a free fall from 2 ft) and a horizontal speed of at most [P-SYS-510] = 0.5 m/s, both TBR. There is no acceleration limit: the ideal landing (D37) has no gear model, so no touchdown shock is computed, and the vertical speed limit stands in for the impact. P-SYS-520 is withdrawn. |
+| D54 | Absent systems (owner, 2026-11-04) | No requirement is written for a system the Aeronef does not have; the design simply does not include it. L1-AER-230 (no electrical power) is deleted. L0-CON-160 stays as a scope statement, made a leaf checked directly by inspection over the Aeronef branch (CR-B1-04). |
+| D55 | Logical architecture and the flight control panel (#95, B1-Q01; answers #80.3) | The three-layer cascade of FUNCTIONAL_ANALYSIS §5 is approved: the crew sets up the manoeuvre on the flight control panel, autoflight (AF) turns the selections into axis targets (guidance), flight control (FC) turns the targets into effector commands, and the effectors (EF) produce the forces, around a vehicle model (DYN, FU, EF) behind one fixed boundary. NAV derives the guidance quantities from the true state; TM observes and feeds nothing back. The **flight control panel (FCP) is its own L2 subsystem**, the eighth: it owns the crew selections and their presentation on the panel. There is no manual control (no stick or yoke, L0-CON-180); the panel only sets up autoflight. |
+| D56 | Autoflight mode catalogue (owner, 2026-11-04; replaces D3, D11, D13; withdraws D12, D14; answers Q5 #6 and #78) | The horizontal and vertical modes are independent: one of each is active at a time. **Horizontal:** *Stationary* holds the horizontal position over the ground, the effectors fighting the wind; *Heading* flies the selected heading at the selected horizontal speed, and with no horizontal velocity a heading change turns the craft in place about the vertical axis. **Vertical:** *Altitude hold* holds the current altitude; *Go to altitude* climbs or descends to the selected altitude at a standard vertical speed, which the crew can change; *Vertical speed* climbs or descends at the selected constant rate and, like Go to altitude, arms Altitude hold, so it levels off at the selected altitude (owner, 2026-11-04). **Both axes:** *Go to hover* takes the craft from whatever it is flying, brings it to zero velocity at the hover height above the ground (a project constant) and arms *Hover*; *Hover* engages once the craft is stationary at that height, and then holds the height and the position over the ground against the wind. These two are the only modes that govern both axes. **Panel selectors:** heading, horizontal speed (from zero to the vehicle's maximum), target altitude and vertical speed. **Dropped:** flight path angle, track hold, VOR radial tracking (and the VOR function), and a separate speed mode. Whether Go to hover climbs to the hover height when engaged below it stays open (#88). Flying with the nose one way and the motion another (need N-110) is dropped (owner, 2026-11-04). |
+| D57 | Attitude (owner, 2026-11-04; revises D10) | The dynamics keep all six degrees of freedom, but pitch and roll are not used for now: they are held at zero at all times. The craft translates along three axes and rotates about the vertical axis only. |
+| D58 | How L1 is verified (#96, B1-Q02) | D40 applies to L1 as D41 does to L0: each L1 record allocated to subsystems is verified by roll-up (Inspection: each child requirement has passed its verification and the decomposition has been reviewed), and its rationale says what the children must show. The L1 leaves (`Allocated to: —`) keep their own direct method. |
 
 ### Open questions
 
@@ -339,7 +346,7 @@ All open and deferred questions are tracked as GitHub issues labelled `questions
 
 | ID | Question | When | Proposal |
 | --- | --- | --- | --- |
-| Q5 (#6) | **Mode combinations.** Which modes can be active together? | G1 | Airliner-style groups: one vertical mode, one lateral mode and one speed mode at a time. Position hold and hover replace the vertical and lateral groups while active. |
+| Q5 (#6) | **Mode combinations.** Which modes can be active together? | G1 | **Answered (D56):** one horizontal and one vertical mode at a time, independent; Go to hover and Hover govern both. |
 
 ## 10. Summary of agents
 
@@ -353,4 +360,4 @@ All open and deferred questions are tracked as GitHub issues labelled `questions
 | 4 | 1, then 9, then a gate | Opus (M0), then Opus ×3 (M3, M7, FC1) and Sonnet ×6, Haiku, Opus (review) |
 | 5 | 4, then a gate | Sonnet ×4, Opus (review) |
 
-The critical path runs G0 → B1 → G1 → C5 → I1 → G2 → M0 → M3/M7 → G3 → G4. The largest time savings come from the parallel fan-outs in Phases 3, 4 and 5.
+The critical path runs G0 → B1 → G1 → C5 → I1 → G2 → M0 → M3/M8 → G3 → G4. The largest time savings come from the parallel fan-outs in Phases 3, 4 and 5.

@@ -1,6 +1,6 @@
 # Aeronef Concept of Operations (Aeronef-relevant)
 
-**Status:** Reviewed at Gate G0 (2026-10-27). The mode material (§4.4 and the mode details of the scenarios) is provisional input for L2 (#89).
+**Status:** Reviewed at Gate G0 (2026-10-27). Mode material revised for the owner's mode catalogue D56 and attitude rule D57 (2026-11-04). The mode details (§4.4 and the scenario sequences) remain provisional input for L2 (#89).
 **Date:** 2026-10-27
 **Owner:** Martin
 **Information class:** Protected design material. This document is not released to the Reverse-Engineering Effort, and it is not operator-facing manual text.
@@ -11,8 +11,8 @@ This document describes how the Aeronef is used, from the point of view of the p
 
 - the stakeholders and their needs, each need with an ID (`N-nnn`) that L0 and L1 requirements cite in their Source attribute;
 - the operational context: the simulated environment, the role of the crew, the autoflight operating concept, and how the Simulation and Testing Platform (TST) and the Reverse-Engineering Effort (RVS) use the Aeronef's operational data;
-- nominal scenarios (`SC-nnn`) that cover the autoflight mode catalogue (AIRCRAFT_REQUIREMENTS_PLAN.md §9, D3), a reference mission to fuel exhaustion, and the platform uses of the Aeronef;
-- the parts of the scenarios that are still open, marked **TBR** with the issue that tracks them. The owner decided the plan's questions Q2 to Q4 on 2026-10-25 (D10 to D12). Mode combinations (Q5, #6) and the detailed mode logic are deferred to L2 (D33), so the mode behaviour in the scenarios is provisional;
+- nominal scenarios (`SC-nnn`) that cover the autoflight mode catalogue (AIRCRAFT_REQUIREMENTS_PLAN.md §9, D56), a reference mission to fuel exhaustion, and the platform uses of the Aeronef;
+- the parts of the scenarios that are still open, marked **TBR** with the issue that tracks them. The owner decided the plan's questions Q2 to Q4 on 2026-10-25 (D10 to D12) and replaced the mode catalogue on 2026-11-04 (D56, which also answers Q5, #6). The detailed mode logic is defined at L2 (D33), so the mode behaviour in the scenarios is provisional;
 - a traceability table from scenario to needs and modes.
 
 The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the Aeronef. It describes operations, not design. It contains no control laws, algorithms or emitter layouts.
@@ -23,10 +23,10 @@ The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the A
 
 ### 1.1 Conventions used in this document
 
-- Physical quantities in descriptions are in SI units. Crew selections and annunciations use the crew-facing units of D7, D9 and D34: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track, course, flight path angle), lb (fuel), and hours or minutes (durations). The unit table and the conversions are in `specs/CONVENTIONS.md` (CV-740, CV-750).
+- Physical quantities in descriptions are in SI units. Crew selections and annunciations use the crew-facing units of D7, D9 and D34: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track), lb (fuel), and hours or minutes (durations). The unit table and the conversions are in `specs/CONVENTIONS.md` (CV-740, CV-750).
 - System and scenario values never appear as numbers in the text; only definitional constants do (for example the 180 degrees between a radial and its reciprocal). System values are parameters `[P-<SUB>-<NNN>]`, proposed in `work/A2/param_proposals.md` with their values TBD. Scenario values (initial altitude, selected targets, durations) are **scenario variables** written in `CODE` font. The test procedures choose their values within the ranges this document states.
 - The frame, axis and angle conventions are those of `specs/CONVENTIONS.md`. Until that document is baselined, this document assumes the definitions in Section 4.2. The assumptions are recorded in `work/A2/interface_needs.md`.
-- Mode names are the D3 names. The short labels (FPA, V/S, ALT*, and so on) are **provisional annunciation labels** used to make the scenarios readable. The autoflight mode logic (`specs/AF_MODE_LOGIC.md`, task C5) owns the final labels.
+- Mode names are the D56 names. The short labels (STAT, HDG, ALT, GO ALT, V/S, GO HOVER, HOVER) are **provisional annunciation labels** used to make the scenarios readable. The autoflight mode logic (`specs/AF_MODE_LOGIC.md`, task C5) owns the final labels.
 
 ### 1.2 Reference documents
 
@@ -36,7 +36,7 @@ The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the A
 | AIRCRAFT_CHARACTERISTICS.md | Vehicle concept and modelling boundaries |
 | TESTING_ENVIRONMENT.md | TST use of the Aeronef |
 | REVERSE_ENGINEERING.md | RVS use of the Aeronef, information separation |
-| AIRCRAFT_REQUIREMENTS_PLAN.md | Decisions D1 to D44 (§9) |
+| AIRCRAFT_REQUIREMENTS_PLAN.md | Decisions D1 to D57 (§9) |
 | METHODOLOGY.md | Stakeholder and ConOps method (Section 4), writing rules (Section 8), worked example (Section 12) |
 
 ## 2. Stakeholders
@@ -67,19 +67,19 @@ Each need is recorded in the stakeholder's words, then restated as what it means
 | N-050 | SH-02 | "I fly this vehicle through autoflight. Flying six axes by hand isn't practical." | Autoflight is the primary means of controlling the vehicle; each nominal operation in this ConOps is flown in autoflight. |
 | N-060 | SH-02 | "I need to know which mode is active, which is armed, and what the vehicle will do next." | The Aeronef annunciates the active mode of each mode group, the armed modes and the selected targets. |
 | N-070 | SH-02 | "I want to enter targets in the units I'm used to: feet, feet per minute, knots, nautical miles and degrees." | Crew selections and annunciations use the D7 crew-facing units. |
-| N-080 | SH-02 | "When the climb reaches the altitude I set, I want it to level off and hold without me doing anything." | Altitude capture arms with the climb or descent mode and leads automatically to altitude hold. |
+| N-080 | SH-02 | "When the climb reaches the altitude I set, I want it to level off and hold without me doing anything." | Go to altitude and Vertical speed arm Altitude hold, which captures the selected altitude automatically (D56). |
 | N-090 | SH-02 | "I want to change a target while a mode is flying it, and see the vehicle go to the new target." | Targets of active modes can be changed at any time, and the vehicle acquires the new target. |
 | N-100 | SH-02 | "I want to choose a different mode at any time." | The crew can select another mode in any group at any time; the new mode replaces the old one. |
-| N-110 | SH-02 | "I need to point the nose one way and move another way." | The Aeronef's heading (where the nose points) and track (the direction of horizontal motion) can differ, and the modes say which one they control. |
-| N-120 | SH-02 | "I want to fly to and along a radial of a radio station." | The Aeronef provides VOR radial interception and tracking. |
-| N-130 | SH-02 | "I need to stop and stay in one place." | The Aeronef can hold a three-dimensional position. |
-| N-140 | SH-02 | "I need to stop moving horizontally and stay at my altitude." | The Aeronef can hover at an altitude. |
+| N-110 | SH-02 | "I need to point the nose one way and move another way." | **Withdrawn (D56, owner 2026-11-04):** no mode separates heading and track; in Heading the craft moves along its heading. |
+| N-120 | SH-02 | "I want to fly to and along a radial of a radio station." | **Withdrawn (D56):** there is no VOR. |
+| N-130 | SH-02 | "I need to stop and stay in one place." | The Aeronef can hold a three-dimensional position: Stationary with Altitude hold, or Hover (D56). |
+| N-140 | SH-02 | "I need to stop moving horizontally and stay at my altitude." | Stationary stops the horizontal motion at any altitude; Hover holds a fixed height above the ground (D56). |
 | N-150 | SH-02 | "I need to see how much fuel is left, get a warning before it runs out, and know what happens when it does." | The Aeronef indicates the remaining fuel, alerts at a low-fuel threshold and has a defined behaviour at fuel exhaustion. |
-| N-160 | SH-02 | "The vehicle's attitude should be predictable while the modes fly the path." | Each mode states what the pitch, roll and heading do while it is active (D10). |
+| N-160 | SH-02 | "The vehicle's attitude should be predictable while the modes fly the path." | Pitch and roll are held at zero at all times (D57); each mode states what the heading does. |
 | N-170 | SH-02 | "Climb rate, speed and turn rate should stay within known limits so I can plan." | The Aeronef has a stated performance envelope, including the crew acceleration limit (L0-CON-310), and autoflight keeps the vehicle within it. |
 | N-180 | SH-02 | "If a manual control option is ever added, I want to command the axes directly." | Manual control is an optional feature; it is recorded and not developed. |
-| N-190 | SH-03 | "We need airliner-like modes, adapted to a vehicle that can translate without turning or tilting." | The D3 modes are defined in terms of the Aeronef's independent attitude and translation. |
-| N-200 | SH-03 | "We need to know which modes can be active together." | The modes are organised in groups with defined combinations (#6, L2). |
+| N-190 | SH-03 | "We need airliner-like modes, adapted to a vehicle that can translate without turning or tilting." | The D56 modes are defined in terms of the Aeronef's independent horizontal and vertical motion. |
+| N-200 | SH-03 | "We need to know which modes can be active together." | One horizontal and one vertical mode are active at a time, independently; Go to hover and Hover govern both (D56). |
 | N-210 | SH-03 | "We need modes a crew can understand from the annunciations alone." | Each mode, arming, capture and transition is annunciated with a distinct label. |
 | N-220 | SH-03 | "We need to compare autoflight versions under the same conditions." | The autoflight implementation can be swapped without changing the vehicle model, the crew interface or the scenarios. Comparing versions is not an objective this cycle (D24, D42); the need is kept for later. |
 | N-230 | SH-04 | "We need to swap controllers without touching the vehicle model." | The flight-control law can be swapped through configuration; the vehicle model and parameter set stay the same. |
@@ -114,7 +114,7 @@ The system of interest is the **Aeronef**: the simulated vehicle (dynamics, effe
 | Outside the Aeronef | What it exchanges with the Aeronef |
 | --- | --- |
 | Crew (SH-02) | Gives crew selections; receives annunciations and indications. |
-| TST | Provides the configuration, the initial condition, the simulated environment (VOR stations) and the time steps; receives operational data; ends the run. |
+| TST | Provides the configuration, the initial condition, the simulated environment (wind) and the time steps; receives operational data; ends the run. |
 | RVS | Through a released TST package only: gives crew selections, receives releasable operational data. |
 
 ### 4.2 Operating environment
@@ -123,23 +123,21 @@ The Aeronef operates in a simulated world. This document assumes the following. 
 
 - **Local reference frame.** An Earth-fixed frame with a flat ground plane, north and east axes, and a vertical axis. Position is expressed in this frame.
 - **Altitude** is the height of the centre of gravity above the ground plane, positive up (CV-430). The ground plane is at zero altitude.
-- **North reference.** Heading, track and VOR radials are referenced to the local frame's north axis (true north). There is no magnetic variation.
+- **North reference.** Heading and track are referenced to the local frame's north axis (true north). There is no magnetic variation.
 - **Gravity** acts toward the ground plane.
-- **Air.** There is wind (D17, #49). When a wind is applied, the same wind velocity exists everywhere at a given time; the TST sets it for each run. It is horizontal, a steady wind of up to 100 kt plus gusts and bursts of up to 50 kt, so up to 150 kt at an instant (L0-ASM-050, D51). Drag acts against the vehicle's velocity relative to the air. With wind, the horizontal speed relative to the air differs from the horizontal speed relative to the ground. Position Hold compensates for the wind.
+- **Air.** There is wind (D17, #49). When a wind is applied, the same wind velocity exists everywhere at a given time; the TST sets it for each run. It is horizontal, a steady wind of up to 100 kt plus gusts and bursts of up to 50 kt, so up to 150 kt at an instant (L0-ASM-050, D51). Drag acts against the vehicle's velocity relative to the air. With wind, the horizontal speed relative to the air differs from the horizontal speed relative to the ground. Stationary and Hover compensate for the wind.
 - **Ground.** The ground plane is at altitude zero, with no terrain (D8). Ground contact is an ideal landing: contact within the landing envelope (limits on velocity and acceleration) is a successful landing, and contact outside it is a crash that ends the run (D37, L0-CON-290). Each run starts with the vehicle airborne. There is no take-off.
 - **Operating volume.** Nominal operations take place between a minimum operating altitude `[P-SYS-210]` and a maximum operating altitude `[P-SYS-200]`, within a horizontal radius `[P-SYS-220]` of the local frame origin.
-- **VOR stations.** Zero or more VOR stations at fixed positions in the local frame, defined by the TST for each run. They are ideal: no noise, and a signal everywhere within a reception range `[P-NAV-050]` of the station (ideal VOR, D12).
 - **Vehicle state knowledge.** The Aeronef's functions use the exact simulated state (L0-ASM-010).
 
-Definitions used in the scenarios (fixed in the conventions: CV-430, CV-480, CV-490, CV-530, CV-540, CV-560):
+Definitions used in the scenarios (fixed in the conventions: CV-430, CV-480, CV-490, CV-530, CV-540):
 
 - **Heading:** the direction the nose points, projected on the horizontal plane, measured clockwise from north.
 - **Track:** the direction of the horizontal velocity, measured clockwise from north. It is not defined when the horizontal speed is zero.
 - **Horizontal speed:** the magnitude of the horizontal velocity.
 - **Vertical speed:** the rate of change of altitude, positive up.
-- **Flight path angle:** the angle of the velocity vector above the horizontal plane, positive up. It is not defined when the vehicle is not moving, and it is close to ±90° when the horizontal speed is close to zero.
 
-On the Aeronef, heading and track are independent: the vehicle can move in any horizontal direction whatever its heading.
+On the Aeronef, heading and track are physically independent: the vehicle can move in any horizontal direction whatever its heading. The D56 modes do not use this: in Heading the craft moves along its heading.
 
 ### 4.3 Crew and operator role
 
@@ -149,61 +147,54 @@ The **crew** is whoever makes crew selections and reads the annunciations: a hum
 
 | Selection | Unit | Used by |
 | --- | --- | --- |
-| Selected altitude | ft | Altitude capture |
-| Selected flight path angle (signed, positive up) | degrees | FPA climb or descent |
-| Selected vertical speed (signed, positive up) | ft/min | V/S climb or descent |
-| Selected horizontal speed | kt | Horizontal speed |
-| Selected heading | degrees | Heading hold |
-| Selected track | degrees | Track hold |
-| Selected VOR station (identifier) and selected course | —, degrees | VOR radial tracking |
-| Mode engage or arm commands: FPA, V/S, ALT, SPD, HDG, TRK, VOR, POS HOLD, HOVER | — | Mode logic |
+| Selected altitude | ft | Go to altitude; Vertical speed (the level-off altitude) |
+| Selected vertical speed (signed, positive up) | ft/min | Vertical speed; Go to altitude, where it replaces the standard vertical speed `[P-AF-220]` |
+| Selected horizontal speed | kt | Heading (from zero to the maximum horizontal speed `[P-SYS-230]`) |
+| Selected heading | degrees | Heading |
+| Mode engage commands: STAT, HDG, ALT, GO ALT, V/S, GO HOVER | — | Mode logic |
 
-**Annunciations** show, for each mode group, the active mode, the armed modes and the selected targets (Section 4.4). **Indications** show the vehicle's current altitude (ft), vertical speed (ft/min), horizontal speed (kt), heading and track (degrees), flight path angle (degrees), the VOR course deviation and the distance to the selected station (NM), the remaining fuel (lb, D9), and the LOW FUEL and FUEL EXHAUSTED alerts.
+**Annunciations** show the active horizontal and vertical modes, the armed mode and the selected targets (Section 4.4). **Indications** show the vehicle's current altitude (ft), vertical speed (ft/min), horizontal speed (kt), heading and track (degrees), the remaining fuel (lb, D9), and the LOW FUEL and FUEL EXHAUSTED alerts.
 
 **Manual control** is an optional feature. Where it is installed, the crew could command the axes directly. It is not developed in this cycle, and no scenario uses it.
 
-**The crew's role** is to choose modes and targets on the flight control panel, and to monitor the annunciations. The panel is defined at lower levels (#79); there is no stick or yoke (L0-CON-180). Autoflight flies the vehicle in every scenario. The crew does not act on the effectors or on the flight control.
+**The crew's role** is to choose modes and targets on the flight control panel, and to monitor the annunciations. The panel is its own subsystem (FCP, D55) and its content is defined at L2 (#79); there is no stick or yoke (L0-CON-180). Autoflight flies the vehicle in every scenario. The crew does not act on the effectors or on the flight control.
 
 ### 4.4 Autoflight operating concept
 
-**Mode groups (TBR, #6, deferred to L2).** The modes are organised in three groups: one **vertical** mode, one **lateral** mode and one **speed** mode are active at a time. The owner placed Position Hold in the lateral group and Hover in the vertical group (D11); the compatibility matrix of lateral, vertical and speed modes is designed at L2 (D13). A flight-path-angle mode needs horizontal velocity, so it cannot be combined with Position Hold (D13).
+**Mode groups (D56).** The horizontal and vertical motions are independent. One **horizontal** mode and one **vertical** mode are active at a time, and changing one does not change the other. **Go to hover** and **Hover** are the only modes that govern both axes: while one of them is active it replaces both the horizontal and the vertical mode.
 
-**Exactly one mode per group.** While autoflight controls the vehicle, each group always has one active mode, or a hold mode covers it. A run starts with the modes and targets given in its initial condition (TBR, #60, deferred to L2).
+**Starting modes.** A run starts with the modes and targets given in its initial condition (TBR, #60, deferred to L2).
 
-**Armed and active.** As a general rule a selected mode first arms, and engages when its conditions are met; while it is armed, the active mode manoeuvres the vehicle into those conditions within g-limited accelerations (D16). The state terms are TBR (#56). A mode is **active** when it controls its group. A mode is **armed** when it waits for a condition before it becomes active. Two modes arm: altitude capture (with a climb or descent mode) and VOR radial tracking (with a heading or track mode). When the condition is met, the armed mode **captures**: it becomes active, the previous mode of its group stops, and the annunciation changes. A capture is shown by a capture label (ALT*, VOR*) until the vehicle is established on the target, and then by the tracking or hold label (ALT, VOR).
+**Armed and active.** As a general rule a selected mode first arms, and engages when its conditions are met; while it is armed, the active mode manoeuvres the vehicle into those conditions within g-limited accelerations (D16). The state terms are TBR (#56). Two modes arm: **Altitude hold** arms with Go to altitude and with Vertical speed, and captures the selected altitude; **Hover** arms with Go to hover and engages once the vehicle is stationary at the hover height `[P-AF-210]`.
 
 **Annunciation.** Each change of an active mode, an armed mode or a target is annunciated within `[P-AF-060]` s.
 
 **Targets.** Changing a target does not change the mode. The vehicle goes to the new target.
 
-**Attitude during the modes (D10).** Pitch and roll are held level, within `[P-AF-180]`, in every mode: the Aeronef does not need to pitch or roll to move. Heading (this document's reading, TBR at L2, A2-Q03):
+**Attitude (D10, D57).** Pitch and roll are held at zero, within `[P-AF-180]`, at all times. The vehicle translates along three axes and rotates about the vertical axis only. Heading:
 
-- in Heading Hold, the heading is the selected heading, and the track follows the heading;
-- in Track Hold and VOR radial tracking, the heading is held at its value when the mode became active;
-- in Position Hold and Hover at Altitude, the heading is held at its value when the mode became active.
+- in Heading, the heading is the selected heading and the vehicle moves along it; with no horizontal speed, a heading change turns the vehicle in place;
+- in Stationary, Go to hover and Hover, the heading is held at its value when the mode became active.
 
-The vertical and speed modes do not change the attitude. The heading rule for Track Hold, VOR radial tracking and the hold modes, and the rule that the track follows the heading in Heading Hold, are this document's reading of "heading set by the lateral mode or held" (A2-Q03, to confirm at L2).
+The vertical modes do not change the heading.
 
-**Mode catalogue (D3).**
+**Mode catalogue (D56).**
 
-| Mode | Group | Crew selection | What it controls | Provisional labels (armed / capture / active) | Scenarios |
+| Mode | Axes | Crew selection | What it does | Provisional labels (armed / active) | Scenarios |
 | --- | --- | --- | --- | --- | --- |
-| Climb or descent on flight path angle | Vertical | Selected flight path angle (degrees) | Flight path angle | — / — / FPA | SC-010, SC-030, SC-110 |
-| Climb or descent on vertical speed | Vertical | Selected vertical speed (ft/min) | Vertical speed | — / — / V/S | SC-020, SC-040, SC-050, SC-110 |
-| Altitude capture | Vertical (armed, then active) | Selected altitude (ft) | Transition from climb or descent to the selected altitude | ALT / ALT* / — | SC-010 to SC-040, SC-110 |
-| Altitude hold | Vertical | None (captured altitude, or altitude at engagement) | Altitude | — / — / ALT | SC-010 to SC-080, SC-110 |
-| Horizontal speed | Speed | Selected horizontal speed (kt) | Horizontal speed | — / — / SPD | SC-010 to SC-080, SC-110 |
-| Heading hold | Lateral | Selected heading (degrees) | Heading (track follows, TBR A2-Q03) | — / — / HDG | SC-010 to SC-060, SC-080, SC-110 |
-| Track hold | Lateral | Selected track (degrees) | Track | — / — / TRK | SC-070, SC-110 |
-| VOR radial tracking | Lateral (armed, then active) | Station and course (degrees) | Track along the radial | VOR / VOR* / VOR | SC-080, SC-110 |
-| Position hold | Lateral (D11) | None | Position: the vehicle stops moving on all axes and holds its position at any altitude, compensating for wind | — / — / POS HOLD | SC-090, SC-110 |
-| Hover at altitude | Vertical (D11) | Hover altitude (ft), set on the flight control panel | Descent from the current altitude to the hover altitude, then Position Hold | — / — / HOVER | SC-100, SC-110 |
+| Stationary | Horizontal | None | Stops the horizontal motion within the acceleration limits (D16) and holds the horizontal position over the ground, against the wind | — / STAT | SC-040, SC-090, SC-110 |
+| Heading | Horizontal | Selected heading (degrees), selected horizontal speed (kt) | Turns to the selected heading and moves along it at the selected horizontal speed; at zero speed, a heading change turns the vehicle in place | — / HDG | SC-050, SC-060, SC-120, SC-110 |
+| Altitude hold | Vertical | None (captured altitude, or altitude at engagement) | Holds the altitude | ALT / ALT | SC-020, SC-040, SC-050, SC-060, SC-090, SC-110 |
+| Go to altitude | Vertical | Selected altitude (ft); optionally a selected vertical speed (ft/min) | Climbs or descends toward the selected altitude at the standard vertical speed `[P-AF-220]`, or at the selected vertical speed if the crew sets one; arms Altitude hold | — / GO ALT | SC-020, SC-050, SC-110 |
+| Vertical speed | Vertical | Selected vertical speed (ft/min), selected altitude (ft) | Climbs or descends at the selected constant rate toward the selected altitude; arms Altitude hold, so it levels off there | — / V/S | SC-040, SC-050, SC-110 |
+| Go to hover | Both | None | From whatever the vehicle is flying, brings it to zero velocity on all axes at the hover height `[P-AF-210]`; arms Hover | — / GO HOVER | SC-100, SC-110 |
+| Hover | Both | None | Holds the hover height and the position over the ground, against the wind | HOVER / HOVER | SC-100, SC-110 |
 
-In the scenario tables, the active modes are written `speed · lateral · vertical`, for example `SPD · HDG · ALT`. A hold mode is still written alone, for example `POS HOLD`, until the compatibility matrix is designed at L2 (#6).
+In the scenario tables, the active modes are written `horizontal · vertical`, for example `HDG · ALT`. Go to hover and Hover are written alone.
 
 ### 4.5 Fuel concept
 
-The Aeronef carries a finite quantity of fuel, at most `[P-FU-010]`. Fuel is consumed to produce effector forces and moments, with separate configurable terms for translation and rotation. Because the effectors must counter gravity, fuel is consumed in every flight condition, including hover and position hold. Vehicle mass decreases as fuel is consumed; the centre of gravity stays fixed.
+The Aeronef carries a finite quantity of fuel, at most `[P-FU-010]`. Fuel is consumed to produce effector forces and moments, with separate configurable terms for translation and rotation. Because the effectors must counter gravity, fuel is consumed in every flight condition, including Hover and Stationary. Vehicle mass decreases as fuel is consumed; the centre of gravity stays fixed.
 
 Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[P-FU-020]` of full capacity, the Aeronef annunciates LOW FUEL. When the fuel is exhausted, the Aeronef annunciates FUEL EXHAUSTED and the effectors produce zero force and zero moment. The vehicle then moves under gravity and drag alone. Fuel exhaustion is nominal behaviour (SC-110). What the autoflight modes do after exhaustion is defined in detailed design (TBR, #59).
 
@@ -212,7 +203,7 @@ Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[
 **A run** is one execution of the Aeronef in the TST. It is defined by:
 
 - a **configuration**: the vehicle parameter set, the flight-control-law version and the autoflight version;
-- an **initial condition**: position, velocity, attitude, angular rate, fuel quantity, active and armed modes, selected targets, and the VOR stations;
+- an **initial condition**: position, velocity, attitude, angular rate, fuel quantity, active and armed modes, and selected targets;
 - a **selection script**: crew selections, each with the simulation time at which it applies (empty for an interactive run, where the selections come from a human).
 
 The run ends when the TST's end condition is met: the scenario's end condition, a maximum run time set by the TST, or ground contact (a landing within the envelope, or a crash; D37).
@@ -234,9 +225,9 @@ Common to all flight scenarios unless a scenario says otherwise:
 
 - The vehicle is airborne, inside the operating volume, at a position and altitude `H_INIT` at least `[P-SYS-210]` above the ground plane.
 - Fuel is `FUEL_INIT`, more than the low-fuel threshold `[P-FU-020]` and enough to complete the scenario.
-- Pitch and roll are level; the angular rate is zero.
+- Pitch and roll are zero (D57); the angular rate is zero.
 - The air is still, and no disturbance is applied.
-- Every selected value is within the performance envelope: horizontal speed up to `[P-SYS-230]`, climb vertical speed up to `[P-SYS-240]`, descent vertical speed up to `[P-SYS-250]`, flight path angle magnitude up to `[P-SYS-260]`, heading rate up to `[P-SYS-270]`. The acceleration sensed by the crew stays within `[P-SYS-120]` (gravity included; L0-CON-310). Selected values are multiples of the selection resolutions `[P-AF-010]` to `[P-AF-050]`.
+- Every selected value is within the performance envelope: horizontal speed up to `[P-SYS-230]`, climb vertical speed up to `[P-SYS-240]`, descent vertical speed up to `[P-SYS-250]`, heading rate up to `[P-SYS-270]`. The acceleration sensed by the crew stays within `[P-SYS-120]` (gravity included; L0-CON-310). Selected values are multiples of the selection resolutions `[P-AF-010]` to `[P-AF-040]`.
 - "Settled" means within the stated tolerance, reached within `[P-AF-190]` s of the capture onset or target change, and kept until the end of the scenario. Each tolerance is a placeholder until the per-mode requirements (Phase 4) fix it.
 - Each annunciation change in the sequence tables occurs within `[P-AF-060]` s of its trigger.
 - The scenario ends when the stated end condition holds for an observation time `T_OBS`, chosen by the test procedure.
@@ -247,233 +238,190 @@ In the sequence tables, **Trigger** is a crew selection or a condition reached b
 
 ### 6.1 Vertical scenarios
 
-#### SC-010 — Climb on flight path angle, capture and hold an altitude
+#### SC-010 — Withdrawn
 
-**Purpose.** Show a climb at a selected flight path angle, the arming and capture of the selected altitude, and the automatic transition to altitude hold, with the speed and lateral modes active at the same time.
+Climb on flight path angle. Withdrawn with the flight path angle mode (D56). The ID is not reused.
 
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT`, holding altitude `H_INIT`, horizontal speed `SPD_INIT` at least `[P-AF-070]`, heading `HDG_INIT`. Nothing armed.
+#### SC-020 — Go to an altitude and hold it
 
-**Crew selections.** Selected altitude `H_SEL` (ft), above `H_INIT` and below `[P-SYS-200]`. Selected flight path angle `FPA_SEL` (degrees), positive. Then FPA engaged.
+**Purpose.** Show Go to altitude: a climb or descent to a selected altitude at the standard vertical speed, a change of the vertical speed during the manoeuvre, and the automatic capture and hold of the selected altitude.
 
-| Step | Trigger | Active | Armed | Vehicle behaviour |
-| --- | --- | --- | --- | --- |
-| 1 | Crew sets `H_SEL` | SPD · HDG · ALT | — | No change. Altitude, speed and heading held. |
-| 2 | Crew engages FPA with `FPA_SEL` | SPD · HDG · FPA | ALT | The vehicle climbs. The flight path angle goes to `FPA_SEL`; the vertical speed follows from the flight path angle and the horizontal speed. Speed and heading held. Pitch and roll level (D10). |
-| 3 | Capture onset, as the altitude approaches `H_SEL` (onset set by the mode logic) | SPD · HDG · ALT* | — | The vertical speed decreases toward zero. The vehicle levels off at `H_SEL` without passing it by more than `[P-AF-100]`. |
-| 4 | Vehicle established on `H_SEL` (criterion set by the mode logic) | SPD · HDG · ALT | — | Altitude held at `H_SEL`. |
+**Initial conditions.** Common conditions. Active `HDG · ALT`, holding `H_INIT`, horizontal speed `SPD_INIT`, heading `HDG_INIT`.
 
-**Expected vehicle behaviour.** During the climb, the flight path angle settles within `[P-AF-080]` of `FPA_SEL`. The horizontal speed stays within `[P-AF-120]` of `SPD_INIT` and the heading within `[P-AF-130]` of `HDG_INIT` throughout. During capture, the altitude overshoot stays within `[P-AF-100]`. After capture, the altitude settles within `[P-AF-110]` of `H_SEL`.
-
-**End conditions.** `SPD · HDG · ALT` active, nothing armed, altitude within `[P-AF-110]` of `H_SEL`.
-
-**Needs exercised.** N-050, N-060, N-070, N-080, N-160, N-170, N-200, N-210.
-
-**TBR.** Concurrent speed, lateral and vertical modes (#6, L2). Attitude is level (D10).
-
-#### SC-020 — Descend on vertical speed, capture and hold an altitude
-
-**Purpose.** Show a descent at a selected vertical speed, entered in ft/min, ending in altitude capture and hold.
-
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT`, holding `H_INIT`, horizontal speed `SPD_INIT`, heading `HDG_INIT`.
-
-**Crew selections.** Selected altitude `H_SEL` (ft), below `H_INIT` and at least `[P-SYS-210]`. Selected vertical speed `VS_SEL` (ft/min), negative. Then V/S engaged.
+**Crew selections.** Selected altitude `H_SEL` (ft), below `H_INIT` and at least `[P-SYS-210]`. Then GO ALT engaged. During the descent, a selected vertical speed `VS_SEL` (ft/min), negative.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew sets `H_SEL` | SPD · HDG · ALT | — | No change. |
-| 2 | Crew engages V/S with `VS_SEL` | SPD · HDG · V/S | ALT | The vehicle descends; the vertical speed goes to `VS_SEL`. Speed and heading held. |
-| 3 | Capture onset | SPD · HDG · ALT* | — | The vertical speed decreases toward zero; the vehicle levels off at `H_SEL`. |
-| 4 | Vehicle established on `H_SEL` | SPD · HDG · ALT | — | Altitude held at `H_SEL`. |
+| 1 | Crew sets `H_SEL` | HDG · ALT | — | No change. |
+| 2 | Crew engages GO ALT | HDG · GO ALT | ALT | The vehicle descends at the standard vertical speed `[P-AF-220]`. Heading and horizontal speed held. |
+| 3 | Crew sets `VS_SEL` | HDG · GO ALT | ALT | The vertical speed goes to `VS_SEL`. |
+| 4 | Capture onset, as the altitude approaches `H_SEL` (onset set by the mode logic) | HDG · ALT | — | The vertical speed decreases toward zero; the vehicle levels off at `H_SEL` without passing it by more than `[P-AF-100]`. |
+| 5 | Vehicle established on `H_SEL` | HDG · ALT | — | Altitude held at `H_SEL`. |
 
-**Expected vehicle behaviour.** During the descent, the vertical speed settles within `[P-AF-090]` of `VS_SEL`. Speed and heading are held as in SC-010. The altitude overshoot below `H_SEL` stays within `[P-AF-100]`, and the altitude then settles within `[P-AF-110]` of `H_SEL`.
+**Expected vehicle behaviour.** Before step 3, the vertical speed settles within `[P-AF-090]` of `[P-AF-220]`; after it, within `[P-AF-090]` of `VS_SEL`. Heading and horizontal speed are held throughout, within `[P-AF-130]` and `[P-AF-120]`. The altitude overshoot stays within `[P-AF-100]`, and the altitude then settles within `[P-AF-110]` of `H_SEL`.
 
-**End conditions.** `SPD · HDG · ALT` active, altitude within `[P-AF-110]` of `H_SEL`.
+**Variation SC-020 / climb.** As SC-020 with `H_SEL` above `H_INIT` and a positive `VS_SEL`.
 
-**Needs exercised.** N-050, N-060, N-070, N-080, N-170, N-210.
+**End conditions.** `HDG · ALT` active, nothing armed, altitude within `[P-AF-110]` of `H_SEL`.
 
-**TBR.** Q2 and Q5, as in SC-010.
+**Needs exercised.** N-050, N-060, N-070, N-080, N-090, N-170, N-210.
 
-#### SC-030 — Descend on flight path angle, capture and hold an altitude
+**TBR.** The capture label, if any (C5).
 
-**Purpose.** Show that a descent on flight path angle works as the climb does (D3: "descent ... similar to climb").
+#### SC-030 — Withdrawn
 
-**Initial conditions, selections and sequence.** As SC-010, except that `H_SEL` is below `H_INIT`, at least `[P-SYS-210]`, and `FPA_SEL` is negative.
-
-**Expected vehicle behaviour.** As SC-010, with the vehicle descending. The vertical speed stays within the descent limit `[P-SYS-250]`.
-
-**End conditions.** As SC-010.
-
-**Needs exercised.** N-050, N-060, N-070, N-080, N-170.
-
-**TBR.** Q2 and Q5, as in SC-010.
+Descent on flight path angle. Withdrawn with the flight path angle mode (D56). The ID is not reused.
 
 #### SC-040 — Climb on vertical speed with zero horizontal speed
 
-**Purpose.** Show a climb on vertical speed (D3), and the Aeronef's ability to climb vertically: the vehicle climbs with no horizontal motion and without tilting.
+**Purpose.** Show Vertical speed, and the Aeronef's ability to climb vertically: the vehicle climbs with no horizontal motion and without tilting.
 
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT`, with the selected horizontal speed at zero and the vehicle stationary at `H_INIT`, heading `HDG_INIT`.
+**Initial conditions.** Common conditions. Active `STAT · ALT`, the vehicle stationary at `H_INIT`, heading `HDG_INIT`.
 
 **Crew selections.** Selected altitude `H_SEL` (ft), above `H_INIT`. Selected vertical speed `VS_SEL` (ft/min), positive. Then V/S engaged.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew sets `H_SEL` | SPD · HDG · ALT | — | No change. |
-| 2 | Crew engages V/S with `VS_SEL` | SPD · HDG · V/S | ALT | The vehicle climbs vertically. Horizontal speed stays near zero; heading held; pitch and roll level. |
-| 3 | Capture onset | SPD · HDG · ALT* | — | Vertical speed decreases toward zero. |
-| 4 | Vehicle established on `H_SEL` | SPD · HDG · ALT | — | Altitude held at `H_SEL`; the vehicle is stationary. |
+| 1 | Crew sets `H_SEL` | STAT · ALT | — | No change. |
+| 2 | Crew engages V/S with `VS_SEL` | STAT · V/S | ALT | The vehicle climbs vertically at `VS_SEL`. It holds its horizontal position; heading held; pitch and roll zero. |
+| 3 | Capture onset | STAT · ALT | — | The vertical speed decreases toward zero; the vehicle levels off at `H_SEL`. |
+| 4 | Vehicle established on `H_SEL` | STAT · ALT | — | Altitude held at `H_SEL`; the vehicle stays stationary. |
 
-**Expected vehicle behaviour.** Vertical speed settles within `[P-AF-090]` of `VS_SEL`. Horizontal speed stays within `[P-AF-120]` of zero. Heading stays within `[P-AF-130]` of `HDG_INIT`. Altitude capture and hold as in SC-020.
+**Expected vehicle behaviour.** Vertical speed settles within `[P-AF-090]` of `VS_SEL`. The horizontal position stays within `[P-SYS-450]` of its value at the start. Heading stays within `[P-AF-130]` of `HDG_INIT`. The altitude overshoot stays within `[P-AF-100]`, and the altitude then settles within `[P-AF-110]` of `H_SEL`.
 
-**Variation SC-040 / FPA not available.** With horizontal speed below `[P-AF-070]`, the crew engages FPA. Because the flight path angle is not usable near zero horizontal speed, FPA does not engage and the annunciations do not change (question A2-Q06).
+**End conditions.** `STAT · ALT` active, the vehicle stationary at `H_SEL` within `[P-AF-110]`.
 
-**End conditions.** `SPD · HDG · ALT` active, the vehicle stationary at `H_SEL` within `[P-AF-110]`.
+**Needs exercised.** N-050, N-060, N-070, N-080, N-100, N-190, N-240.
 
-**Needs exercised.** N-050, N-060, N-070, N-080, N-110, N-190, N-240.
-
-**TBR.** Q2 (attitude), Q5 (SPD at zero with a lateral mode active).
+**TBR.** What V/S does with no selected altitude, or one behind the direction of motion (C5).
 
 #### SC-050 — Change targets and modes in flight
 
-**Purpose.** Show that targets can be changed while their modes are active, that the crew can change the mode of a group at any time, and that the crew can level off by engaging altitude hold directly.
+**Purpose.** Show that targets can be changed while their modes are active, that the crew can change either mode at any time, and that the crew can level off by engaging Altitude hold directly.
 
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT` at `H_INIT`, `SPD_INIT`, `HDG_INIT`.
+**Initial conditions.** Common conditions. Active `HDG · ALT` at `H_INIT`, `SPD_INIT`, `HDG_INIT`.
 
-**Crew selections.** In order, each after the previous one has settled: a new selected speed `SPD_2`; a new selected heading `HDG_2`; `H_SEL` above `H_INIT` with V/S engaged at `VS_SEL`; a new selected vertical speed `VS_2` during the climb; ALT engaged before the capture onset.
+**Crew selections.** In order, each after the previous one has settled: a new selected speed `SPD_2`; a new selected heading `HDG_2`; `H_SEL` above `H_INIT` with GO ALT engaged; V/S engaged at `VS_2` during the climb; ALT engaged.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew sets `SPD_2` | SPD · HDG · ALT | — | Horizontal speed goes to `SPD_2`. |
-| 2 | Crew sets `HDG_2` | SPD · HDG · ALT | — | The vehicle yaws toward `HDG_2` at a heading rate up to `[P-SYS-270]`, in the shorter direction (mode logic to confirm). The track follows the heading (TBR, A2-Q03, L2). |
-| 3 | Crew sets `H_SEL` and engages V/S at `VS_SEL` | SPD · HDG · V/S | ALT | Climb at `VS_SEL`. |
-| 4 | Crew sets `VS_2` | SPD · HDG · V/S | ALT | Vertical speed goes to `VS_2`. |
-| 5 | Crew engages ALT before capture onset | SPD · HDG · ALT | — | The vehicle stops climbing and holds the altitude reached when ALT was engaged. Altitude capture is no longer armed. |
+| 1 | Crew sets `SPD_2` | HDG · ALT | — | Horizontal speed goes to `SPD_2`. |
+| 2 | Crew sets `HDG_2` | HDG · ALT | — | The vehicle yaws toward `HDG_2` at a heading rate up to `[P-SYS-270]`, in the shorter direction (mode logic to confirm), and its motion turns with it. |
+| 3 | Crew sets `H_SEL` and engages GO ALT | HDG · GO ALT | ALT | Climb at the standard vertical speed. |
+| 4 | Crew engages V/S at `VS_2` | HDG · V/S | ALT | Vertical speed goes to `VS_2`; Altitude hold stays armed on `H_SEL`. |
+| 5 | Crew engages ALT before the capture onset | HDG · ALT | — | The vehicle stops climbing and holds the altitude reached, below `H_SEL`. |
 
-**Expected vehicle behaviour.** Each new target is settled within its tolerance: `[P-AF-120]` for speed, `[P-AF-130]` for heading, `[P-AF-090]` for vertical speed, `[P-AF-110]` for the level-off altitude. Changing one group's target or mode leaves the other groups' targets held.
+**Expected vehicle behaviour.** Each new target is settled within its tolerance: `[P-AF-120]` for speed, `[P-AF-130]` for heading, `[P-AF-090]` for vertical speed, `[P-AF-110]` for the level-off altitude. Changing the horizontal mode or target leaves the vertical one held, and the reverse.
 
-**End conditions.** `SPD · HDG · ALT` active, all targets settled.
+**End conditions.** `HDG · ALT` active, all targets settled.
 
 **Needs exercised.** N-060, N-090, N-100, N-170, N-200, N-210.
 
-**TBR.** Q2 (track follows heading), Q5 (independence of the groups). The level-off altitude in step 5 (the altitude at engagement, or the altitude where the vertical speed reaches zero) is for the mode logic to define (C5).
+**TBR.** Which altitude ALT holds in step 5: the altitude at engagement, or where the vertical speed reaches zero (C5).
 
-### 6.2 Lateral and speed scenarios
+### 6.2 Horizontal scenarios
 
-#### SC-060 — Fly a constant heading at a set horizontal speed
+#### SC-060 — Fly a heading at a set horizontal speed
 
-**Purpose.** Show heading hold and horizontal speed together: the vehicle turns its nose to the selected heading and moves along it at the selected speed.
+**Purpose.** Show Heading: the vehicle turns its nose to the selected heading and moves along it at the selected speed.
 
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT` at `H_INIT`, horizontal speed `SPD_INIT`, heading and track `HDG_INIT`.
+**Initial conditions.** Common conditions. Active `STAT · ALT` at `H_INIT`, stationary, heading `HDG_INIT`.
 
-**Crew selections.** Selected heading `HDG_SEL` (degrees), different from `HDG_INIT`. Selected speed `SPD_SEL` (kt), different from `SPD_INIT`.
+**Crew selections.** Selected heading `HDG_SEL` (degrees), different from `HDG_INIT`. Selected speed `SPD_SEL` (kt). Then HDG engaged.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew sets `HDG_SEL` and `SPD_SEL` | SPD · HDG · ALT | — | The vehicle yaws toward `HDG_SEL`; the track follows the heading (TBR, A2-Q03, L2). The horizontal speed goes to `SPD_SEL`. Altitude held. |
-| 2 | Heading and speed reached | SPD · HDG · ALT | — | Straight, level flight on `HDG_SEL` at `SPD_SEL`. |
+| 1 | Crew sets `HDG_SEL`, `SPD_SEL` and engages HDG | HDG · ALT | — | The vehicle yaws toward `HDG_SEL` and accelerates along its heading toward `SPD_SEL`, within its acceleration limits (D16). Altitude held. |
+| 2 | Heading and speed reached | HDG · ALT | — | Straight, level flight on `HDG_SEL` at `SPD_SEL`. |
 
-**Expected vehicle behaviour.** Heading settles within `[P-AF-130]` of `HDG_SEL`; track settles within `[P-AF-140]` of `HDG_SEL`; horizontal speed within `[P-AF-120]` of `SPD_SEL`; altitude within `[P-AF-110]` of `H_INIT` throughout. Pitch and roll stay level within `[P-AF-180]`. The heading rate stays within `[P-SYS-270]`.
+**Expected vehicle behaviour.** Heading settles within `[P-AF-130]` of `HDG_SEL`; track settles within `[P-AF-140]` of `HDG_SEL`; horizontal speed within `[P-AF-120]` of `SPD_SEL`; altitude within `[P-AF-110]` of `H_INIT` throughout. Pitch and roll stay within `[P-AF-180]` of zero. The heading rate stays within `[P-SYS-270]`.
+
+**Variation SC-060 / wind.** With a wind applied, the vehicle still moves along its heading over the ground (this reading; C5).
 
 **End conditions.** Heading, track, speed and altitude settled.
 
 **Needs exercised.** N-050, N-060, N-070, N-090, N-160, N-170.
 
-**TBR.** Q2 (track follows heading; pitch and roll level), Q5.
+**TBR.** Whether the selected speed and the heading are over the ground or through the air when there is wind (C5).
 
-#### SC-070 — Fly a constant track
+#### SC-070 — Withdrawn
 
-**Purpose.** Show track hold, and that the direction of motion is independent of the heading: the vehicle moves along the selected track while its nose keeps its heading.
+Fly a constant track. Withdrawn with the track hold mode (D56). The ID is not reused.
 
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT` at `H_INIT`, horizontal speed `SPD_INIT` greater than zero, heading and track `HDG_INIT`.
+#### SC-080 — Withdrawn
 
-**Crew selections.** Selected track `TRK_SEL` (degrees), different from `HDG_INIT` by `TRK_OFFSET`. Then TRK engaged. Later, a second selected track `TRK_2`.
+Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID is not reused.
 
-| Step | Trigger | Active | Armed | Vehicle behaviour |
-| --- | --- | --- | --- | --- |
-| 1 | Crew engages TRK with `TRK_SEL` | SPD · TRK · ALT | — | The direction of motion turns to `TRK_SEL`. The heading stays at `HDG_INIT` (TBR, A2-Q03, L2). The vehicle moves at an angle `TRK_OFFSET` to its nose. Speed and altitude held. |
-| 2 | Crew sets `TRK_2` | SPD · TRK · ALT | — | The direction of motion turns to `TRK_2`; the heading still stays at `HDG_INIT`. |
+#### SC-120 — Turn in place
 
-**Expected vehicle behaviour.** Track settles within `[P-AF-140]` of `TRK_SEL`, then of `TRK_2`. Heading stays within `[P-AF-130]` of `HDG_INIT` throughout. Horizontal speed within `[P-AF-120]` of `SPD_INIT`; altitude within `[P-AF-110]` of `H_INIT`. `TRK_OFFSET` may take any value in the full circle, including flight sideways and backwards (TBR, A2-Q03, L2).
+**Purpose.** Show that with no horizontal speed a heading change turns the vehicle about its vertical axis without moving it (D56).
 
-**End conditions.** `SPD · TRK · ALT` active; track on `TRK_2`, heading on `HDG_INIT`.
+**Initial conditions.** Common conditions. Active `HDG · ALT` with the selected horizontal speed at zero; the vehicle stationary at `H_INIT`, heading `HDG_INIT`.
 
-**Needs exercised.** N-050, N-060, N-090, N-110, N-160, N-190, N-240.
-
-**TBR.** Q2 (the heading held while TRK is active), Q5.
-
-#### SC-080 — Intercept and track a VOR radial
-
-**Purpose.** Show VOR radial tracking: arming while another lateral mode flies an intercept, capture, and tracking of the selected radial.
-
-**Initial conditions.** Common conditions. A VOR station `STN` at a known position in the local frame. The vehicle is within the reception range `[P-NAV-050]` of `STN`, away from the radial, and at a distance from the station such that the scenario ends before the vehicle passes over it (question A2-Q08). Active `SPD · HDG · ALT` at `H_INIT`, `SPD_INIT`, on an intercept heading `HDG_INT` that crosses the selected radial at an intercept angle `ANG_INT`.
-
-**Crew selections.** Station `STN`; selected course `CRS_SEL` (degrees). Then VOR armed. In this scenario the vehicle tracks outbound, so the course equals the radial; for an inbound track the course is the radial plus 180 degrees (D14).
+**Crew selections.** Selected heading `HDG_SEL` (degrees), different from `HDG_INIT`.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew selects `STN` and `CRS_SEL` | SPD · HDG · ALT | — | No change. The course deviation and the distance to `STN` are indicated. |
-| 2 | Crew arms VOR | SPD · HDG · ALT | VOR | The vehicle continues on `HDG_INT` toward the radial. |
-| 3 | Capture onset as the vehicle nears the radial | SPD · VOR* · ALT | — | The track turns toward `CRS_SEL`. The heading is held at its value when VOR became active (TBR, A2-Q03, L2). |
-| 4 | Vehicle established on the radial | SPD · VOR · ALT | — | The vehicle tracks the radial outbound. |
+| 1 | Crew sets `HDG_SEL` | HDG · ALT | — | The vehicle yaws toward `HDG_SEL` at a heading rate up to `[P-SYS-270]`, without moving horizontally. |
+| 2 | Heading reached | HDG · ALT | — | Heading held; the vehicle stays where it is. |
 
-**Expected vehicle behaviour.** After capture, the angular deviation from the radial settles within `[P-AF-150]`. The track settles on `CRS_SEL` within `[P-AF-140]`. Speed and altitude are held throughout. Heading stays within `[P-AF-130]` of `HDG_INT` from VOR capture onwards (TBR, A2-Q03, L2).
+**Expected vehicle behaviour.** Heading settles within `[P-AF-130]` of `HDG_SEL`. Horizontal speed stays within `[P-AF-120]` of zero. Altitude within `[P-AF-110]` of `H_INIT`.
 
-**Variation SC-080 / intercept on track.** As SC-080, but the intercept is flown in TRK on `TRK_INT` before VOR is armed. The heading stays at its earlier value through the intercept and the capture.
+**End conditions.** Heading settled, the vehicle not moving.
 
-**End conditions.** `SPD · VOR · ALT` active; deviation within `[P-AF-150]`; the vehicle still within `[P-NAV-050]` and not over the station.
+**Needs exercised.** N-050, N-060, N-160, N-190, N-240.
 
-**Needs exercised.** N-050, N-060, N-070, N-110, N-120, N-200, N-210.
-
-**TBR.** Heading during VOR tracking (A2-Q03, L2). VOR replacing HDG or TRK in the lateral group (#6, L2). The VOR model is fixed: ideal VOR (D12), and the crew flies a course (D14).
+**TBR.** Whether Heading at zero speed holds the position against the wind, as Stationary does (C5).
 
 ### 6.3 Hold scenarios
 
-#### SC-090 — Hold a position
+#### SC-090 — Stop and hold a position
 
-**Purpose.** Show Position Hold (D11): the vehicle stops moving on all axes and holds its position, compensating for wind.
+**Purpose.** Show Stationary: the vehicle stops its horizontal motion and holds its position over the ground, against the wind, at its altitude.
 
-**Initial conditions.** Common conditions. Active `SPD · HDG · ALT` at `H_INIT`, horizontal speed `SPD_INIT` (which can be zero), heading `HDG_INIT`.
+**Initial conditions.** Common conditions. Active `HDG · ALT` at `H_INIT`, horizontal speed `SPD_INIT` (which can be zero), heading `HDG_INIT`.
 
-**Crew selections.** POS HOLD engaged at time `T_ENG`.
+**Crew selections.** STAT engaged at time `T_ENG`.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew engages POS HOLD | POS HOLD | — | The vehicle decelerates within its acceleration limits (D16) and holds a reference position. Whether the reference is the position at `T_ENG`, so that the vehicle comes back to it, or the point where it stops is TBR (#78); this scenario shows the first reading. Altitude held at its value at `T_ENG`. Heading held at `HDG_INIT`; pitch and roll level (D10). |
-| 2 | Vehicle at the reference position | POS HOLD | — | Position held. |
+| 1 | Crew engages STAT | STAT · ALT | — | The vehicle decelerates within its acceleration limits (D16) and holds a reference position. Altitude held; heading held at its value at `T_ENG`; pitch and roll zero. |
+| 2 | Vehicle at the reference position | STAT · ALT | — | Position held. |
 
-**Expected vehicle behaviour.** The position settles within `[P-AF-160]` of the reference position, and the heading within `[P-AF-130]` of `HDG_INIT`. With a non-zero `SPD_INIT`, the vehicle passes the reference position while it decelerates and then comes back to it.
-
-**Variation SC-090 / leave Position Hold.** The crew engages SPD, HDG and ALT. Position Hold ends and the three groups become active with their targets (A2-Q10; TBR, #6, L2).
+**Expected vehicle behaviour.** The position settles within `[P-SYS-450]` of the reference position, and the heading within `[P-AF-130]` of its value at `T_ENG`.
 
 **Variation SC-090 / wind.** As SC-090 with a wind applied: the vehicle holds the reference position against the wind.
 
-**End conditions.** POS HOLD active; position within `[P-AF-160]` of the reference position.
+**Variation SC-090 / leave Stationary.** The crew engages HDG; the vehicle accelerates to the selected speed on the selected heading, and the vertical mode is unchanged.
 
-**Needs exercised.** N-050, N-060, N-130, N-160, N-200, N-210.
+**End conditions.** `STAT · ALT` active; position within `[P-SYS-450]` of the reference position.
 
-**TBR.** Reference position and deceleration (#78); heading held (A2-Q03, L2); combination with the other groups (#6, L2).
+**Needs exercised.** N-050, N-060, N-130, N-140, N-160, N-210.
 
-#### SC-100 — Hover at an altitude
+**TBR.** The reference position: where the vehicle stops, or its position at `T_ENG` (C5).
 
-**Purpose.** Show Hover (D11): a vertical mode. When it engages, the vehicle descends from its current altitude to the hover altitude set on the flight control panel, then holds position.
+#### SC-100 — Go to hover, then hover
 
-**Initial conditions.** As SC-090, with `H_INIT` above the hover altitude.
+**Purpose.** Show Go to hover and Hover (D56): from whatever the vehicle is flying, it stops on all axes at the hover height above the ground, then Hover engages and holds height and position against the wind.
 
-**Crew selections.** Hover altitude `H_HOV` (ft), below `H_INIT`, set on the flight control panel. HOVER engaged at time `T_ENG`.
+**Initial conditions.** Common conditions. Active `HDG · ALT` at `H_INIT` above the hover height `[P-AF-210]`, horizontal speed `SPD_INIT`, heading `HDG_INIT`.
+
+**Crew selections.** GO HOVER engaged at time `T_ENG`.
 
 | Step | Trigger | Active | Armed | Vehicle behaviour |
 | --- | --- | --- | --- | --- |
-| 1 | Crew engages HOVER | HOVER | — | The vehicle decelerates within its acceleration limits (D16) and descends from `H_INIT` toward `H_HOV`. Heading held at `HDG_INIT`; pitch and roll level (D10). |
-| 2 | Vehicle at `H_HOV` | HOVER, with Position Hold | — | The vehicle holds `H_HOV` and holds its position (as SC-090). |
+| 1 | Crew engages GO HOVER | GO HOVER | HOVER | The vehicle stops its horizontal motion and descends toward `[P-AF-210]`, within its acceleration limits (D16), at its current heading. Pitch and roll zero. |
+| 2 | Vehicle stationary at `[P-AF-210]` | HOVER | — | The vehicle holds the hover height and its position over the ground. |
 
-**Expected vehicle behaviour.** Altitude settles within `[P-AF-110]` of `H_HOV`. Horizontal speed settles within `[P-AF-170]` of zero, and the position is then held within `[P-AF-160]`.
+**Expected vehicle behaviour.** The altitude settles within `[P-AF-110]` of `[P-AF-210]`. Horizontal speed settles within `[P-AF-170]` of zero, and the position is then held within `[P-SYS-450]`. The heading stays within `[P-AF-130]` of `HDG_INIT`.
 
-**Difference from SC-090.** Position Hold holds the position at the current altitude. Hover first descends to the hover altitude, then holds position there. Whether the horizontal reference is set at engagement or once the vehicle has stopped is TBR (#78).
+**Variation SC-100 / wind.** As SC-100 with a wind applied: Hover holds the position against it.
 
-**End conditions.** HOVER active at `H_HOV`; position held within `[P-AF-160]`.
+**End conditions.** HOVER active at `[P-AF-210]`; position held within `[P-SYS-450]`.
 
-**Needs exercised.** N-050, N-060, N-140, N-160, N-200, N-210.
+**Needs exercised.** N-050, N-060, N-130, N-160, N-200, N-210.
 
-**TBR.** Reference position and deceleration (#78); the hover-altitude selector (#79); combination with the other groups (#6, L2).
+**TBR.** What Go to hover does when engaged below the hover height (#88). How the crew leaves Hover (C5).
 
 ### 6.4 Reference mission
 
@@ -481,34 +429,35 @@ In the sequence tables, **Trigger** is a crew selection or a condition reached b
 
 **Purpose.** Fly a fixed, repeatable profile that uses every mode of the catalogue, with translation and rotation, until the fuel is exhausted. The mission is the common basis for measuring accuracy and fuel used (N-250), and it shows the nominal behaviour at low fuel and at fuel exhaustion.
 
-**Initial conditions.** Fuel at full capacity `[P-FU-010]`, so mass at its maximum. Vehicle at `H_INIT`, stationary, heading `HDG_INIT`. Active `POS HOLD`. One VOR station `STN`, placed so that the cruise leg crosses its radial within reception range.
+**Initial conditions.** Fuel at full capacity `[P-FU-010]`, so mass at its maximum. Vehicle at `H_INIT`, stationary, heading `HDG_INIT`. Active `STAT · ALT`.
 
-**Profile.** Each leg starts when the previous leg's end condition is met. The scenario variables (altitudes, angles, speeds, headings, courses and leg durations `T_n`) form one fixed reference set, chosen so that fuel remains at the start of leg 9.
+**Profile.** Each leg starts when the previous leg's end condition is met. The scenario variables (altitudes, speeds, headings, vertical speeds and leg durations `T_n`) form one fixed reference set, chosen so that fuel remains at the start of leg 10.
 
 | Leg | Crew selections | Active (after captures) | Armed | Vehicle behaviour | Leg ends when |
 | --- | --- | --- | --- | --- | --- |
-| 1 | None | POS HOLD | — | Holds position for `T_1`. | `T_1` elapsed |
-| 2 | `SPD_1`, `HDG_1`, `H_1` above `H_INIT`, then FPA at `FPA_1` | SPD · HDG · FPA, then ALT*, then SPD · HDG · ALT | ALT | Accelerates, turns, climbs on flight path angle, captures `H_1` (TBR, #6, L2: leaving POS HOLD). | Established on `H_1` |
-| 3 | VOR: `STN`, `CRS_1`; VOR armed | SPD · HDG · ALT, then VOR*, then SPD · VOR · ALT | VOR | Cruises on `HDG_1`, intercepts and tracks the radial outbound. | `T_3` elapsed on the radial |
-| 4 | `H_2` below `H_1`, V/S at `VS_2` | SPD · VOR · V/S, then ALT*, then SPD · VOR · ALT | ALT | Descends on vertical speed while tracking the radial; captures `H_2`. | Established on `H_2` |
-| 5 | `TRK_1`, TRK engaged; `SPD_2` | SPD · TRK · ALT | — | Leaves the radial on a track that differs from the heading. | `T_5` elapsed |
-| 6 | `HDG_2` and HDG engaged; then FPA at a negative `FPA_2` with `H_3` | SPD · HDG · FPA, then ALT*, then SPD · HDG · ALT | ALT | Turns, descends on flight path angle, captures `H_3`. | Established on `H_3` |
-| 7 | `H_HOV` below `H_3`, then HOVER | HOVER | — | Descends to `H_HOV` and holds position there (as SC-100). | `T_7` elapsed |
-| 8 | `SPD` at zero, `HDG_3`, `H_4` above `H_HOV`, V/S at `VS_4` | SPD · HDG · V/S, then ALT*, then SPD · HDG · ALT | ALT | Climbs vertically to `H_4` (as SC-040) (TBR, #6, L2: leaving HOVER). | Established on `H_4` |
-| 9 | POS HOLD | POS HOLD | — | Holds position until the fuel is exhausted. LOW FUEL is annunciated when the fuel falls below `[P-FU-020]`. | Fuel exhausted |
-| 10 | None | (TBR, #59) | — | FUEL EXHAUSTED annunciated. Effectors produce zero force and zero moment. The vehicle falls under gravity and drag, and keeps the angular rate it had at exhaustion. | Ground contact, or TST maximum run time |
+| 1 | None | STAT · ALT | — | Holds position for `T_1`. | `T_1` elapsed |
+| 2 | `HDG_1`, `SPD_1`, HDG engaged; `H_1` above `H_INIT`, GO ALT | HDG · GO ALT, then HDG · ALT | ALT | Turns, accelerates along the heading, climbs at the standard vertical speed, captures `H_1`. | Established on `H_1` |
+| 3 | None | HDG · ALT | — | Cruises on `HDG_1`. | `T_3` elapsed |
+| 4 | `H_2` below `H_1`, GO ALT, then `VS_2` | HDG · GO ALT, then HDG · ALT | ALT | Descends, first at the standard vertical speed, then at `VS_2`; captures `H_2`. | Established on `H_2` |
+| 5 | `HDG_2`, `SPD_2` | HDG · ALT | — | Turns to `HDG_2` and changes speed. | `T_5` elapsed |
+| 6 | `H_3` below `H_2`, V/S at a negative `VS_3` | HDG · V/S, then HDG · ALT | ALT | Descends at `VS_3`, captures `H_3`. | Established on `H_3` |
+| 7 | GO HOVER | GO HOVER, then HOVER | HOVER | Stops and descends to the hover height, then hovers (as SC-100). | `T_7` elapsed in HOVER |
+| 8 | STAT, `H_4` above the hover height, V/S at a positive `VS_4` | STAT · V/S, then STAT · ALT | ALT | Climbs vertically and captures `H_4` (as SC-040). | Established on `H_4` |
+| 9 | HDG engaged with `SPD` at zero, `HDG_3` | HDG · ALT | — | Turns in place to `HDG_3` (as SC-120). | Heading settled |
+| 10 | STAT | STAT · ALT | — | Holds position until the fuel is exhausted. LOW FUEL is annunciated when the fuel falls below `[P-FU-020]`. | Fuel exhausted |
+| 11 | None | (TBR, #59) | — | FUEL EXHAUSTED annunciated. Effectors produce zero force and zero moment. The vehicle falls under gravity and drag, and keeps the angular rate it had at exhaustion. | Ground contact, or TST maximum run time |
 
-**Expected vehicle behaviour.** Each leg meets the expected behaviour of the scenario it repeats: SC-010 (leg 2), SC-080 (leg 3), SC-020 (leg 4), SC-070 (leg 5), SC-030 (leg 6), SC-100 (leg 7), SC-040 (leg 8), SC-090 (leg 9). The fuel quantity decreases throughout the mission and never increases. The vehicle mass decreases by the mass of fuel consumed. LOW FUEL is annunciated within `[P-AF-060]` s of the fuel falling below `[P-FU-020]`, and FUEL EXHAUSTED within `[P-AF-060]` s of exhaustion. After exhaustion, the motion is free fall with drag, which can be compared with an independent solution (N-290). The run ends at ground contact, normally a crash, because the vehicle is outside the landing envelope (D37).
+**Expected vehicle behaviour.** Each leg meets the expected behaviour of the scenario it repeats: SC-060 and SC-020 (leg 2), SC-060 (legs 3 and 5), SC-020 (leg 4), SC-040 (legs 6 and 8, vertical part), SC-100 (leg 7), SC-040 (leg 8), SC-120 (leg 9), SC-090 (leg 10). The fuel quantity decreases throughout the mission and never increases. The vehicle mass decreases by the mass of fuel consumed. LOW FUEL is annunciated within `[P-AF-060]` s of the fuel falling below `[P-FU-020]`, and FUEL EXHAUSTED within `[P-AF-060]` s of exhaustion. After exhaustion, the motion is free fall with drag, which can be compared with an independent solution (N-290). The run ends at ground contact, normally a crash, because the vehicle is outside the landing envelope (D37).
 
-**Variation SC-110 / hover endurance.** From the same initial condition, HOVER is engaged at the start and kept until the fuel is exhausted. The time to exhaustion is at least `[P-SYS-280]`.
+**Variation SC-110 / hover endurance.** From the same initial condition, GO HOVER is engaged at the start and HOVER kept until the fuel is exhausted. The time to exhaustion is at least `[P-SYS-280]`.
 
 **Recorded results.** Total fuel used per leg, mission duration to exhaustion, and the tracking errors per leg against the tolerances above.
 
 **End conditions.** Ground contact, or TST maximum run time.
 
-**Needs exercised.** N-050, N-060, N-080, N-100, N-110, N-120, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290.
+**Needs exercised.** N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290.
 
-**TBR.** As in the scenarios each leg repeats (#6, #78, A2-Q03). Autoflight state after fuel exhaustion (#59).
+**TBR.** As in the scenarios each leg repeats. How the crew leaves Hover in leg 8 (C5). Autoflight state after fuel exhaustion (#59).
 
 ### 6.5 Platform and evidence scenarios
 
@@ -521,7 +470,7 @@ These scenarios describe how the TST and the RVS use the Aeronef. They exercise 
 **Sequence.**
 
 1. The TST creates an Aeronef instance with a configuration (parameter set, control-law version, autoflight version), each identified by a version.
-2. The TST sets the initial condition, including the active and armed modes, the targets and the VOR stations.
+2. The TST sets the initial condition, including the active and armed modes and the targets.
 3. The TST runs the simulation without graphics, faster than real time, and applies the crew selections of the selection script at their simulation times. The selections go through the crew interface.
 4. At each step, the Aeronef outputs its operational data.
 5. The run ends on the procedure's end condition, the maximum run time or ground contact.
@@ -586,10 +535,10 @@ The owner answered the plan's questions on 2026-10-25 (plan §9). Where a questi
 
 | Question | Status | Where it applies |
 | --- | --- | --- |
-| Q2 — Attitude during the guidance modes | **Decided (D10):** pitch and roll level in every mode. The heading rules are this document's reading, to confirm at L2 (A2-Q03). | Section 4.4; SC-010 to SC-110 |
-| Q3 — Hover versus Position Hold | **Decided (D11):** Position Hold is a lateral mode that stops all motion and holds position, compensating for wind. Hover is a vertical mode that descends to the panel altitude, then holds position. The reference position and the deceleration are open (#78). | SC-090, SC-100, SC-110 legs 7 and 9 |
-| Q4 — VOR model | **Decided (D12):** ideal VOR. The crew flies a course (D14). | Section 4.2; SC-080; SC-110 leg 3 |
-| Q5 — Mode combinations | **Deferred to L2 (#6).** A compatibility matrix of lateral, vertical and speed modes is designed there (D13). | Section 4.4; every sequence table |
+| Q2 — Attitude during the guidance modes | **Decided (D10, revised by D57):** pitch and roll at zero at all times. The heading rules of Section 4.4 are this document's reading, to confirm at L2 (A2-Q03). | Section 4.4; every scenario |
+| Q3 — Hover versus Position Hold | **Replaced (D56):** Stationary is a horizontal mode; Go to hover and Hover govern both axes, Hover engaging once the vehicle is stationary at the hover height. | SC-090, SC-100, SC-110 legs 7 and 10 |
+| Q4 — VOR model | **Withdrawn (D56):** there is no VOR. | — |
+| Q5 — Mode combinations | **Decided (D56):** one horizontal and one vertical mode at a time, independent; Go to hover and Hover govern both. | Section 4.4; every sequence table |
 
 ### 7.2 Questions raised by this document
 
@@ -599,41 +548,42 @@ Each question has a proposed answer, used in the scenarios. They are recorded in
 | --- | --- | --- |
 | A2-Q01 | Is the air still (no wind) in this cycle? | Yes. Drag is relative to still air; horizontal speed is the same relative to air and ground. **Owner: no.** There is wind, uniform and configurable per run (D17, #49). |
 | A2-Q02 | Are take-off, landing and ground contact in scope? | No. Runs start airborne; reaching the ground plane ends the run. **Owner:** landing is in scope as an ideal landing; contact outside the landing envelope is a crash (D8, D37). |
-| A2-Q03 | In HDG, does the track follow the heading? In TRK and VOR, what does the heading do? | HDG sets the heading, and the track follows it. TRK and VOR hold the heading at its value when the mode became active. Deferred to L2 (D33). |
+| A2-Q03 | In HDG, does the track follow the heading? In TRK and VOR, what does the heading do? | HDG sets the heading, and the track follows it. TRK and VOR hold the heading at its value when the mode became active. Deferred to L2 (D33). **Superseded in part (D56):** no TRK or VOR; in Heading the vehicle moves along its heading. |
 | A2-Q04 | After fuel exhaustion, do the autoflight modes stay engaged? | Yes. The modes stay engaged and annunciated; FUEL EXHAUSTED is annunciated; there is no automatic disengagement. **Owner:** defined in detailed design (#59, deferred). |
 | A2-Q05 | Can a mode group have no active mode? | No. Each group has one active mode, or a hold mode covers it; the run's initial condition sets the starting modes. **Owner:** deferred to L2 (#60). |
-| A2-Q06 | What happens when FPA is selected with horizontal speed near zero? | FPA does not engage below `[P-AF-070]`; the active vertical mode stays as it was. **Owner: rejected.** A flight-path-angle mode needs horizontal velocity; compatibility is designed at L2 (D13, #61). |
-| A2-Q07 | Do Position Hold and Hover also replace the speed group? | Yes, because both hold zero horizontal speed. Superseded: Position Hold is lateral and Hover vertical (D11); combinations at L2 (#6). |
-| A2-Q08 | What happens when the vehicle passes over a VOR station? | Not covered in this cycle's scenarios; the navigation and autoflight agents (C6, C5) define the behaviour, and the scenarios avoid it until then. Deferred to L2 (D33). |
+| A2-Q06 | What happens when FPA is selected with horizontal speed near zero? | FPA does not engage below `[P-AF-070]`; the active vertical mode stays as it was. **Owner: rejected** (D13, #61). **Withdrawn with the FPA mode (D56).** |
+| A2-Q07 | Do Position Hold and Hover also replace the speed group? | Yes, because both hold zero horizontal speed. **Superseded (D56):** Stationary is horizontal only; Hover governs both axes. |
+| A2-Q08 | What happens when the vehicle passes over a VOR station? | Not covered in this cycle's scenarios. **Withdrawn (D56):** there is no VOR. |
 | A2-Q09 | In what crew-facing unit is fuel shown? D7 does not cover fuel. | Percent of full fuel capacity. **Owner:** pounds (lb), not percent (D9, #51). |
-| A2-Q10 | How does the crew leave Position Hold or Hover? | By engaging a mode in any group. The groups not selected start in their hold mode at their current values: ALT, HDG, SPD. Deferred to L2 (#6). |
-| A2-Q11 | Which altitude does Hover hold? | The altitude at engagement, as Position Hold does. **Owner:** Hover descends to the altitude set on the flight control panel (D11). |
+| A2-Q10 | How does the crew leave Position Hold or Hover? | By engaging a mode in any group. **Revised (D56):** Stationary is left by engaging HDG, and the vertical mode is unchanged. How Hover is left is for C5. |
+| A2-Q11 | Which altitude does Hover hold? | The altitude at engagement, as Position Hold does. **Owner:** Hover descends to the altitude set on the flight control panel (D11). **Revised (D56):** the hover height is a project constant `[P-AF-210]`, not a panel selection. |
 | A2-Q12 | Do scenario values belong in the parameter database? | No. Scenario values are scenario variables set by the test procedures; the parameter database holds system values only. **Owner: yes.** Test procedures set scenario values; they are not design parameters (D32, #62). |
 
 ## 8. Traceability
 
-### 8.1 Scenario → needs → D3 modes
+### 8.1 Scenario → needs → D56 modes
 
-| Scenario | Needs exercised | D3 modes |
+| Scenario | Needs exercised | D56 modes |
 | --- | --- | --- |
-| SC-010 | N-050, N-060, N-070, N-080, N-160, N-170, N-200, N-210 | Climb on FPA, altitude capture, altitude hold, horizontal speed, heading hold |
-| SC-020 | N-050, N-060, N-070, N-080, N-170, N-210 | Descent on V/S, altitude capture, altitude hold, horizontal speed, heading hold |
-| SC-030 | N-050, N-060, N-070, N-080, N-170 | Descent on FPA, altitude capture, altitude hold, horizontal speed, heading hold |
-| SC-040 | N-050, N-060, N-070, N-080, N-110, N-190, N-240 | Climb on V/S, altitude capture, altitude hold, horizontal speed, heading hold |
-| SC-050 | N-060, N-090, N-100, N-170, N-200, N-210 | Climb on V/S, altitude capture (armed), altitude hold, horizontal speed, heading hold |
-| SC-060 | N-050, N-060, N-070, N-090, N-160, N-170 | Heading hold, horizontal speed, altitude hold |
-| SC-070 | N-050, N-060, N-090, N-110, N-160, N-190, N-240 | Track hold, horizontal speed, altitude hold |
-| SC-080 | N-050, N-060, N-070, N-110, N-120, N-200, N-210 | VOR radial tracking, heading hold, track hold (variation), horizontal speed, altitude hold |
-| SC-090 | N-050, N-060, N-130, N-160, N-200, N-210 | Position hold |
-| SC-100 | N-050, N-060, N-140, N-160, N-200, N-210 | Hover at altitude |
-| SC-110 | N-050, N-060, N-080, N-100, N-110, N-120, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290 | All ten modes |
+| SC-010 | — | Withdrawn (D56) |
+| SC-020 | N-050, N-060, N-070, N-080, N-090, N-170, N-210 | Go to altitude, Altitude hold, Heading |
+| SC-030 | — | Withdrawn (D56) |
+| SC-040 | N-050, N-060, N-070, N-080, N-100, N-190, N-240 | Vertical speed, Altitude hold, Stationary |
+| SC-050 | N-060, N-090, N-100, N-170, N-200, N-210 | Heading, Go to altitude, Vertical speed, Altitude hold |
+| SC-060 | N-050, N-060, N-070, N-090, N-160, N-170 | Heading, Stationary, Altitude hold |
+| SC-070 | — | Withdrawn (D56) |
+| SC-080 | — | Withdrawn (D56) |
+| SC-090 | N-050, N-060, N-130, N-140, N-160, N-210 | Stationary, Altitude hold, Heading |
+| SC-100 | N-050, N-060, N-130, N-160, N-200, N-210 | Go to hover, Hover |
+| SC-110 | N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290 | All seven modes |
+| SC-120 | N-050, N-060, N-160, N-190, N-240 | Heading (at zero speed), Altitude hold |
 | SC-200 | N-300, N-310, N-320, N-330, N-340, N-350, N-370 | — |
 | SC-210 | N-020, N-300, N-330, N-350 | — |
 | SC-220 | N-220, N-230, N-250, N-350 | — |
 | SC-230 | N-320, N-360, N-390 | — |
 | SC-240 | N-030, N-380, N-390, N-400, N-420 | — |
 
-Each of the ten D3 modes is exercised by at least one scenario of its own and by SC-110.
+Each of the seven D56 modes is exercised by at least one scenario of its own and by SC-110.
 
 ### 8.2 Needs not exercised by a scenario
 
@@ -645,6 +595,7 @@ These needs apply to the requirements, the parameter database or the documentati
 | N-040, N-410, N-440 | L0 and the traceability rules of METHODOLOGY 10.4 |
 | N-180 | An optional-feature (EARS "Where") requirement; not developed |
 | N-260 | Flight-control requirements on saturation (task C4); saturation may occur in any scenario but is not a scenario of its own |
+| N-110, N-120 | Withdrawn (D56) |
 | N-270 | MS-DYN (task C1) |
 | N-430 | The scenario format of this document (Section 5) and the operational manuals |
 
@@ -660,7 +611,6 @@ All values are TBD. Definitions, SI units and crew-facing equivalents are in `wo
 | P-SYS-230 | Maximum horizontal speed |
 | P-SYS-240 | Maximum climb vertical speed |
 | P-SYS-250 | Maximum descent vertical speed |
-| P-SYS-260 | Maximum flight path angle magnitude |
 | P-SYS-270 | Maximum heading rate in autoflight |
 | P-SYS-280 | Minimum hover endurance at full fuel |
 | P-FU-010 | Usable fuel mass at full capacity |
@@ -668,20 +618,18 @@ All values are TBD. Definitions, SI units and crew-facing equivalents are in `wo
 | P-AF-010 | Altitude selection resolution |
 | P-AF-020 | Vertical speed selection resolution |
 | P-AF-030 | Horizontal speed selection resolution |
-| P-AF-040 | Heading, track and course selection resolution |
-| P-AF-050 | Flight path angle selection resolution |
+| P-AF-040 | Heading selection resolution |
 | P-AF-060 | Annunciation latency |
-| P-AF-070 | Minimum horizontal speed for FPA mode |
-| P-AF-080 | Flight path angle tracking tolerance |
 | P-AF-090 | Vertical speed tracking tolerance |
 | P-AF-100 | Altitude capture maximum overshoot |
 | P-AF-110 | Altitude hold tolerance |
 | P-AF-120 | Horizontal speed tracking tolerance |
 | P-AF-130 | Heading hold tolerance |
-| P-AF-140 | Track hold tolerance |
-| P-AF-150 | VOR radial tracking tolerance |
-| P-AF-160 | Position hold tolerance |
+| P-AF-140 | Track tolerance in Heading |
+| P-AF-160 | Autoflight share of the position-holding budget |
 | P-AF-170 | Hover horizontal speed tolerance |
 | P-AF-180 | Level attitude tolerance |
 | P-AF-190 | Settling time |
-| P-NAV-050 | VOR reception range |
+| P-AF-210 | Hover height above the ground (D56) |
+| P-AF-220 | Standard vertical speed of Go to altitude (D56) |
+| P-SYS-450 | Position-holding accuracy (Stationary and Hover) |

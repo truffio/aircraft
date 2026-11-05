@@ -72,7 +72,7 @@ This is the north-east-down (NED) local-level frame of R-004. The choice of NED 
 
 ### CV-130 — Local reference frame L: origin
 
-The origin `O_L` is a fixed point on the datum plane. Each world definition used by a scenario (vehicle initial position, VOR station positions) places objects relative to `O_L`. The location of `O_L` has no physical meaning; it is a reference point only.
+The origin `O_L` is a fixed point on the datum plane. Each world definition used by a scenario (vehicle initial position) places objects relative to `O_L`. The location of `O_L` has no physical meaning; it is a reference point only.
 **Status:** Fixed (D43).
 
 ### CV-140 — Local reference frame L treated as inertial
@@ -278,7 +278,7 @@ The altitude datum is the datum plane, `z_L = 0`, which contains `O_L`. It plays
 
 ### CV-440 — Height
 
-**Height** is the vertical distance of `O_B` above a stated reference point or surface other than the datum plane, positive up, for example "height above the VOR station". A requirement that uses "height" names its reference. "Height" alone, and "height above ground", are not used in version 1.
+**Height** is the vertical distance of `O_B` above a stated reference point or surface other than the datum plane, positive up, for example "height above the initial position". A requirement that uses "height" names its reference. "Height" alone is not used. On the flat ground of D8, "height above the ground" equals the altitude; the hover height of D56 (`P-AF-210`) is such a height, and requirements state it as an altitude.
 **Status:** Fixed (D43).
 
 ### CV-450 — Distance
@@ -316,12 +316,12 @@ The **air-relative velocity** is the vehicle velocity minus the velocity of the 
 
 ### CV-510 — North reference
 
-**North** is the direction of `+x_L`. It is true north by definition, and on the flat world of CV-110 it is the same direction everywhere (true north and grid north coincide). Heading, track, course and VOR radials are all referenced to true north. Magnetic north and magnetic variation are not modelled in version 1. The word "magnetic" is not used in requirements.
+**North** is the direction of `+x_L`. It is true north by definition, and on the flat world of CV-110 it is the same direction everywhere (true north and grid north coincide). Heading and track are referenced to true north. Magnetic north and magnetic variation are not modelled in version 1. The word "magnetic" is not used in requirements.
 **Status:** Fixed (G0-06: D12).
 
 ### CV-520 — Direction angles in the horizontal plane
 
-A **direction angle** (heading, track, course, radial, bearing) is measured in the horizontal plane from north, positive clockwise seen from above (toward east), in the range [0°, 360°) (in radians, [0, 2π)). North is 0. How the crew-facing value of north is shown (for example "360" or "000") is a display requirement, not a convention.
+A **direction angle** (heading, track, bearing) is measured in the horizontal plane from north, positive clockwise seen from above (toward east), in the range [0°, 360°) (in radians, [0, 2π)). North is 0. How the crew-facing value of north is shown (for example "360" or "000") is a display requirement, not a convention.
 **Status:** Fixed (D43).
 
 ### CV-530 — Heading
@@ -336,13 +336,13 @@ A **direction angle** (heading, track, course, radial, bearing) is measured in t
 
 ### CV-550 — Heading and track are independent
 
-On the Aeronef, translation does not require the vehicle to turn or tilt, so heading and track are independent: any heading can be combined with any track. Likewise pitch angle and flight path angle are independent, and roll angle has no effect on the direction of motion. The **relative track** wrap180(χ − ψ) is the direction of horizontal motion relative to the nose: 0 means moving nose-first, +90° means moving to the right, ±180° means moving tail-first. A requirement on the direction of motion uses track; a requirement on where the vehicle points uses heading. Pitch and roll stay level (D10); the attitude behaviour of each mode is defined at L2 (D33).
+On the Aeronef, translation does not require the vehicle to turn or tilt, so heading and track are independent: any heading can be combined with any track. Roll angle has no effect on the direction of motion. The **relative track** wrap180(χ − ψ) is the direction of horizontal motion relative to the nose: 0 means moving nose-first, +90° means moving to the right, ±180° means moving tail-first. A requirement on the direction of motion uses track; a requirement on where the vehicle points uses heading. Pitch and roll are held at zero at all times (D10, D57); in the D56 modes the vehicle moves along its heading, and the heading behaviour of each mode is defined at L2 (D33).
 **Status:** Fixed (D10).
 
 ### CV-560 — Flight path angle
 
-The **flight path angle** γ is the angle between the vehicle velocity and the horizontal plane, positive when climbing: γ = atan2(VS, V_H), in the range [−90°, +90°]. It depends on velocity only, not on pitch angle. It is undefined when the total speed is zero (CV-580). "Climb on flight path angle" means γ > 0; "descent on flight path angle" means γ < 0.
-**Status:** Fixed (D43).
+**Deleted (D56, CR-B1-05):** there is no flight path angle mode. Original text: The **flight path angle** γ is the angle between the vehicle velocity and the horizontal plane, positive when climbing: γ = atan2(VS, V_H), in the range [−90°, +90°]. It depends on velocity only, not on pitch angle. It is undefined when the total speed is zero (CV-580). "Climb on flight path angle" means γ > 0; "descent on flight path angle" means γ < 0.
+**Status:** Deleted (D56).
 
 ### CV-570 — Climb, descent and level flight
 
@@ -357,35 +357,33 @@ Some direction quantities are undefined, or ill-conditioned, at specific states:
 | --- | --- | --- |
 | Heading, roll angle | Pitch angle = ±90° | `P-NAV-030`: maximum absolute pitch angle for which heading is valid (TBD) |
 | Track | Horizontal speed = 0 | `P-NAV-010`: minimum horizontal speed for which track is valid (TBD) |
-| Flight path angle | Total speed = 0 | `P-NAV-020`: minimum total speed for which flight path angle is valid (TBD) |
-| VOR radial | Horizontal distance from the station = 0 | `P-NAV-040`: minimum horizontal distance for which the radial is valid (TBD) |
 
-How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and TM. The thresholds are parameters, not conventions.
+The flight path angle and VOR radial rows were deleted with D56 (CR-B1-05). How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and TM. The thresholds are parameters, not conventions.
 **Status:** Fixed (D43).
 
-## 7. VOR geometry (CV-6xx)
+## 7. VOR geometry (CV-6xx) — deleted
 
-The VOR is ideal (D12): ground stations at fixed positions in L, radials referenced to true north, an ideal signal within a reception range, and no noise in version 1.
+**Deleted (D56, CR-B1-05):** there is no VOR. CV-610 to CV-670 keep their IDs with status Deleted; the original text is kept for the record. Original introduction: the VOR is ideal (D12): ground stations at fixed positions in L, radials referenced to true north, an ideal signal within a reception range, and no noise in version 1.
 
 ### CV-610 — VOR station
 
 A **VOR station** is a fixed point `S` in L, given by its north and east coordinates and its altitude, with an identifier. Station positions are part of the world definition (CV-130).
-**Status:** Fixed (D12).
+**Status:** Deleted (D56).
 
 ### CV-620 — Radial
 
 The **radial** of the vehicle from a station, `R_ac`, is the direction angle (CV-520) of the horizontal line from the station to the vehicle: the bearing *from* the station. The vehicle on the 090 radial is due east of the station. A radial is a property of position only, independent of heading and track. A radial is also a half-line on the datum plane: "radial R" means the set of horizontal positions whose bearing from the station is R.
-**Status:** Fixed (D12).
+**Status:** Deleted (D56).
 
 ### CV-630 — Selected course
 
 The **selected course** C is the direction angle of the path the vehicle is to follow along a radial line through the station. A selected course C is flown **outbound** on radial C (away from the station) or **inbound** on radial wrap360(C + 180°) (toward the station). The crew selects a course, as on an airliner course selector, and flies it TO or FROM the station (D14).
-**Status:** Fixed (D14).
+**Status:** Deleted (D56).
 
 ### CV-640 — TO/FROM sense
 
 For a selected course C and a vehicle radial `R_ac`, the sense is **FROM** when |wrap180(R_ac − C)| < 90° (the vehicle is beyond the station in the course direction) and **TO** when |wrap180(R_ac − C)| > 90°. At exactly 90° (abeam the station) the sense is undefined. Any band of ambiguity around 90° is a NAV requirement matter.
-**Status:** Fixed (D12).
+**Status:** Deleted (D56).
 
 ### CV-650 — Course deviation (angular)
 
@@ -395,17 +393,17 @@ The **course deviation** δ is the signed angle between the selected course line
 - TO: δ = wrap180(C + 180° − R_ac).
 
 The sign follows CV-910 (actual minus desired, as a lateral offset). A course deviation indicator conventionally shows the course relative to the vehicle ("fly toward the needle"), the opposite sign. How the deviation is shown to the crew is a display requirement, not a convention.
-**Status:** Deferred to L2 (G0-12, #54).
+**Status:** Deleted (D56).
 
 ### CV-660 — Cross-track deviation (linear)
 
 The **cross-track deviation** `d` is the signed horizontal distance from the vehicle to the line through the station along the selected course, positive to the right of the course looking along the course direction: `d = D_H · sin(R_ac − C)`, where `D_H` is the horizontal distance from the station to the vehicle. The same formula holds in the TO and FROM senses.
-**Status:** Deferred to L2 (G0-12, #54).
+**Status:** Deleted (D56).
 
 ### CV-670 — Reception range
 
 A station's signal is received when the vehicle is within the **reception range** `P-NAV-050` of the station (TBD). Whether reception range is measured as horizontal distance or slant range (CV-450), and whether a cone of silence above the station is modelled, are NAV requirement matters under D12 (ideal VOR). Outside reception, the radial, sense and deviations are not available.
-**Status:** Fixed (D12).
+**Status:** Deleted (D56).
 
 ## 8. Units (CV-7xx)
 
@@ -429,7 +427,7 @@ Requirements, the MS-DYN, internal signals, ICD signals and operational data use
 | Moment | N·m |
 | Moment and product of inertia | kg·m² |
 | Density | kg/m³ |
-| Angle (attitude, heading, track, flight path angle, radial, course, deviation) | rad (see CV-730) |
+| Angle (attitude, heading, track) | rad (see CV-730) |
 | Angular rate | rad/s |
 | Angular acceleration | rad/s² |
 | Dimensionless ratios | 1 (written as a fraction, not as a percentage, in signals and parameters) |
@@ -451,8 +449,8 @@ The units for everything the crew selects or sees are North American aviation un
 | Altitude (and other vertical distances shown to the crew) | foot | ft |
 | Vertical speed | foot per minute | ft/min |
 | Horizontal speed (and any other speed shown to the crew) | knot | kt |
-| Horizontal distance (for example distance to a VOR station) | nautical mile | NM |
-| Heading, track, flight path angle, radial, course | degree | ° (deg) |
+| Horizontal distance | nautical mile | NM |
+| Heading, track | degree | ° (deg) |
 | Fuel quantity | pound | lb |
 | Durations shown to the crew (for example flight time) | hour or minute | h, min |
 
@@ -579,12 +577,12 @@ A requirement names a component by its frame and axis in words ("velocity along 
 
 ### CV-960 — Defined quantity names only
 
-Requirements use the quantity names defined here: altitude, height (with reference), horizontal distance, slant range, total speed, horizontal speed, vertical speed, airspeed, heading, track, relative track, flight path angle, pitch angle, roll angle, radial, selected course, course deviation and cross-track deviation. Airliner terms that do not apply to the Aeronef (bank angle, angle of attack, indicated airspeed, Mach number, magnetic heading) are not used.
+Requirements use the quantity names defined here: altitude, height (with reference), horizontal distance, slant range, total speed, horizontal speed, vertical speed, airspeed, heading, track, relative track, pitch angle and roll angle. Airliner terms that do not apply to the Aeronef (bank angle, angle of attack, indicated airspeed, Mach number, magnetic heading) are not used.
 **Status:** Fixed (D43).
 
 ### CV-970 — Attitude stated separately from motion
 
-Because attitude is independent of motion (CV-550), a requirement that constrains the motion (position, altitude, speed, track, flight path angle) does not imply anything about the attitude, and the reverse. Pitch and roll stay level in every mode (D10); each mode's heading behaviour is stated by its own requirements.
+Because attitude is independent of motion (CV-550), a requirement that constrains the motion (position, altitude, speed, track) does not imply anything about the attitude, and the reverse. Pitch and roll are held at zero at all times (D10, D57); each mode's heading behaviour is stated by its own requirements.
 **Status:** Fixed (D10).
 
 ## 11. Decisions for G0

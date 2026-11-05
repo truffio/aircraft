@@ -129,16 +129,6 @@ parameters:
     status: TBR
     source: L1-AER-280; #100
     owner: Martin
-  - id: P-SYS-520
-    name: Landing envelope, maximum sensed acceleration
-    description: Largest sensed acceleration magnitude at the ground-contact sample for the contact to be a landing. At most P-SYS-120 (L0-CON-310 guidance).
-    unit: m/s^2
-    value: 2.451663
-    tolerance: null
-    note: 1/4 g (owner, #100). Which acceleration it limits is asked in #100.1.
-    status: TBR
-    source: L1-AER-280; L0-CON-310; #100
-    owner: Martin
 
   # --- Axis independence (L0-CON-020, -030) ---
   - id: P-SYS-540
@@ -209,6 +199,26 @@ parameters:
     source: L1-AER-250, -290; L0-CON-150
     owner: Martin
 
+  # --- Mode catalogue constants (D56) ---
+  - id: P-AF-210
+    name: Hover height above the ground
+    description: Height above the ground that Go to hover brings the vehicle to and that Hover holds. A project constant, not a crew selection (D56). The ground is flat at altitude zero (D8), so it is also an altitude.
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: D56; CONOPS SC-100; L1-AER-450
+    owner: Martin
+  - id: P-AF-220
+    name: Standard vertical speed
+    description: Vertical speed magnitude that Go to altitude uses until the crew selects another vertical speed (D56). At most P-SYS-240 in a climb and P-SYS-250 in a descent.
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: D56; CONOPS SC-020; L1-AER-450
+    owner: Martin
+
   # --- Budget shares owned by L2 subsystems ---
   - id: P-AF-200
     name: Autoflight manoeuvre acceleration limit
@@ -257,7 +267,8 @@ These come from `work/A1`, `work/A2` and `work/A3`. B2 seeds them from there; B1
 | ID | Source | Used by (L1) | B1 change |
 | --- | --- | --- | --- |
 | P-SYS-120 | A1 | L1-AER-280, -290 | None (3 g confirmed by the owner, #97, D45). |
-| P-SYS-230, -240, -250, -260, -270, -280 | A2 | L1-AER-120 to -140, -310 to -360 | None. Values TBD; the owner sets the envelope (B1-Q07). |
+| P-SYS-230, -240, -250, -270, -280 | A2 | L1-AER-120 to -140, -310 to -360 | None. Values TBD; the owner sets the envelope (B1-Q07). |
+| P-SYS-260 | A2 | — | **Withdrawn (D56):** no flight path angle mode. B2 does not seed it. |
 | P-SYS-300 | A3 | L1-AER-670, -680 | Propose value 0.01 s, TBR. |
 | P-SYS-310 | A3 | L1-AER-470, -680, -710 | Propose value 0.02 s, TBR. |
 | P-TM-010 | A3 | L1-AER-470, -600 | Propose value 0.02 s (equal to P-SYS-310), TBR. |
@@ -267,8 +278,8 @@ These come from `work/A1`, `work/A2` and `work/A3`. B2 seeds them from there; B1
 | P-AF-060 | A2 | L1-AER-470 | Description: the AF share of P-SYS-470, at most P-SYS-470 − P-TM-010. |
 | P-AF-160 | A2 | L1-AER-460 | **Changed meaning:** the AF guidance share of P-SYS-450 (reference position versus target), not the whole tolerance. Propose 0.5 m, TBR. CONOPS SC-090 then cites P-SYS-450 (issues N-B1-03). |
 | P-AF-180 | A2 | L1-AER-390 | None (TBR, value set at C5). |
-| P-NAV-050 | A3 | L1-AER-540 | None (TBR). |
-| P-AF-070 | A2 | — | Not used. The FPA minimum-speed behaviour it supports was rejected by the owner (D13, #61; #89 item b). Recommend B2 does not seed it, or seeds it marked superseded for C5 to retire. |
+| P-NAV-050 | A3 | — | **Withdrawn (D56):** no VOR. B2 does not seed it. |
+| P-AF-050, -070, -080, -150 | A2 | — | **Withdrawn (D56):** flight path angle selection, FPA minimum speed, FPA and VOR tracking tolerances. B2 does not seed them. |
 
 ## 3. TBD/TBR register entries to open (for B2)
 
@@ -281,11 +292,11 @@ These come from `work/A1`, `work/A2` and `work/A3`. B2 seeds them from there; B1
 | Position-hold settling time | TBD | P-SYS-460 | Martin | G2 (C5) |
 | Timing budget | TBR | P-SYS-300, -310, -470, -480, P-TM-010 | Martin | G2 (I1) |
 | Effector command response time | TBD | P-EF-010 | Martin | G2 (C3) |
-| Landing envelope limits (2 ft fall, 0.5 m/s, 1/4 g; acceleration meaning #100.1) | TBR | P-SYS-500, -510, -520 | Martin | G1 (#100) |
+| Landing envelope limits (2 ft fall, 0.5 m/s; no acceleration limit, D53) | TBR | P-SYS-500, -510 | Martin | G2 (#100) |
 | Cross-axis tolerances | TBD | P-SYS-540, -550 | Martin | G2 (C4) |
 | Dry mass, consumption parameters, accounting tolerance | TBD | P-FU-030 to -060 | Martin | G2 (C2) |
 | Crew station position | TBD | P-DYN-400 | Martin | G2 (C1) |
 | Gravity value | TBR | P-DYN-010 | Martin | G1 |
 | Low-fuel threshold 0.1 | TBR | P-FU-020 | Martin | G1 |
-| Mode combinations | TBR | L1-AER-450 (#6) | Martin | G1 decision, G2 (C5) |
+| Hover height and standard vertical speed | TBD | P-AF-210, P-AF-220 (D56) | Martin | G2 (C5) |
 | Allocation of L0-OBJ-110 and L0-CON-190 to AER | TBR | L1-AER-690, -700 (CR-B1-01, -02) | Martin | G1 |
