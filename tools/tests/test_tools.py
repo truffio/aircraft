@@ -124,6 +124,17 @@ class LintTests(unittest.TestCase):
         self.assertIn("error", out)
 
 
+class ParamUnitTests(unittest.TestCase):
+    def test_crew_facing_unit_allowed_and_fcp_prefix(self):
+        def unit_codes(**extra):
+            p = {"id": "P-FCP-010", "name": "n", "unit": "ft/min", "status": "Set", "value": 100, **extra}
+            out, _ = param_check.check_parameters([p], Path("PARAMETERS.yaml"), "")
+            return {f.code for f in out}
+        self.assertIn("PARAM-UNIT", unit_codes())
+        self.assertNotIn("PARAM-UNIT", unit_codes(crew_facing=True))
+        self.assertNotIn("PARAM-ID", unit_codes())
+
+
 class TraceTests(unittest.TestCase):
     def test_good_is_clean(self):
         self.assertEqual(trace_check.run(GOOD), [])
