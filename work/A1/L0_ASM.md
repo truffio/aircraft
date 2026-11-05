@@ -37,10 +37,9 @@ ID:            L0-ASM-030
 Assumption:    The Earth is flat and non-rotating, and the local reference frame is an inertial
   frame.
 Rationale:     The Aeronef is a fictional low-complexity vehicle; Earth curvature, rotation and
-  Coriolis effects add no value to the study of control laws and mode logic, and a flat Earth keeps
-  VOR radial geometry planar.
-Affects:       L0-CON-010, L0-CON-090, L0-CON-280; model specification; navigation subsystem (VOR
-  geometry); conventions document
+  Coriolis effects add no value to the study of control laws and mode logic. (The VOR geometry
+  this also simplified was withdrawn by D56, CR-B1-05.)
+Affects:       L0-CON-010, L0-CON-090, L0-CON-280; model specification; conventions document
 Owner:         Martin
 Status:        Confirmed
 ```
@@ -68,8 +67,8 @@ Assumption:    Wind is present, horizontal and uniform: when a wind is applied, 
   gusts and bursts that vary it in time; it has no vertical component. The test environment
   sets it for each run. Aerodynamic drag depends on the vehicle velocity relative to the air.
 Rationale:     Owner decision D17 (#49): there is wind in the system, configurable in the test
-  environment, and position hold compensates for it. A uniform wind is the simplest model; a
-  refined wind model is planned for a future release (#84). With wind, the velocity through the
+  environment, and Stationary and Hover compensate for it (D56, CR-B1-09). A uniform wind
+  is the simplest model; a refined wind model is planned for a future release (#84). With wind, the velocity through the
   air differs from the velocity over the ground; the conventions define both. Revised by the owner
   at G0, 2026-10-25. Gusts added by the owner at G1, 2026-10-28 (#99, D51, CR-B1-03): the
   steady wind and the gusts add up, so the largest instantaneous wind is their sum. A wind
@@ -155,12 +154,14 @@ Status:        Confirmed
 ```asm
 ID:            L0-ASM-110
 Assumption:    Ground contact is an ideal landing. Contact with the ground within the landing
-  envelope (limits on velocity and acceleration at contact) is a successful landing; contact outside
-  the envelope is a crash that ends the run. No landing gear, bounce, friction or ground handling is
-  modelled.
+  envelope (limits on the vertical and horizontal speed at the contact sample, D53) is a successful
+  landing; contact outside the envelope is a crash that ends the run. No landing gear, bounce,
+  friction or ground handling is modelled.
 Rationale:     Owner decisions D8 and D37: the ground is at altitude zero on a flat Earth, and a
   landing model is required. An ideal landing keeps it to one envelope check. The envelope limits
-  are parameters, set at a lower level. Revised by the owner at G0, 2026-10-25.
+  are parameters, set at a lower level. Revised by the owner at G0, 2026-10-25. Envelope
+  quantities set by the owner at G1 (D53, CR-B1-07): no acceleration limit, because no
+  touchdown shock is computed.
 Affects:       L0-CON-090 (ground reaction), L0-CON-290, L0-CON-310; model specification (ground
   contact); TST run termination conditions; fuel-exhaustion reference mission;
   CONVENTIONS CV-420

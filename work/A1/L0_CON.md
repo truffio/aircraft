@@ -38,10 +38,11 @@ Statement:     The Aeronef project shall give the Aeronef independent control au
 Rationale:     This is the defining property of the vehicle: translation does not require the
   vehicle to turn or tilt, and attitude can be controlled independently of translation
   (AIRCRAFT_CHARACTERISTICS §2, §7). It is why heading and track are independent on the
-  Aeronef; pitch and roll stay level (D10), and the attitude behaviour of each mode is
-  defined at L2 (D33). Children must show (D41): (Analysis) the force effector set can
-  produce a pure force along each body axis and a pure moment about each body axis,
-  each with the other five force and moment components equal to zero.
+  Aeronef; pitch and roll are held at zero (D57, which revises D10; CR-B1-09), and the
+  attitude behaviour of each mode is defined at L2 (D33). Children must show (D41):
+  (Analysis) the force effector set can produce a pure force along each body axis and a
+  pure moment about each body axis, each with the other five force and moment
+  components equal to zero.
 Parent(s):     —
 Source:        AIRCRAFT_CHARACTERISTICS.md §2, §7; OBJECTIVES.md §2
 Allocated to:  AER
@@ -52,7 +53,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       2
+Version:       3
 ```
 
 ### L0-CON-030
@@ -420,20 +421,21 @@ Statement:     The Aeronef project shall exclude electrical power generation, di
   consumption from the Aeronef model.
 Rationale:     The electrical power system and electrical consumption are outside the initial
   modelling scope (AIRCRAFT_CHARACTERISTICS §4, §7). The force effectors draw only on
-  fuel (L0-CON-100). Children must show (D41): (Inspection) the Aeronef requirements
-  and the model specification define no electrical power generation, distribution or
-  consumption.
+  fuel (L0-CON-100). This is a scope statement and a leaf: no lower-level requirement is
+  written for a system the Aeronef does not have, so it is checked directly over the whole
+  Aeronef branch (D54, CR-B1-04).
 Parent(s):     —
 Source:        AIRCRAFT_CHARACTERISTICS.md §4, §7; METHODOLOGY.md §1
-Allocated to:  AER
+Allocated to:  —
 Criticality:   Not assessed
-Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D41).
+Verification:  Inspection — TBD; success criteria: no requirement of the Aeronef branch at L1 or
+  below and no model specification defines electrical power generation, distribution or
+  consumption, checked at each gate.
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       2
+Version:       3
 ```
 
 ### L0-CON-170
@@ -801,14 +803,16 @@ Type:          Constraint
 Statement:     The Aeronef project shall model ground contact of the Aeronef as a landing within the
   landing envelope and as a crash outside it.
 Rationale:     G0 owner review (2026-10-25), decision D37: landing has to be modelled. Contact with
-  the ground within a landing envelope of velocity and acceleration is a successful
-  landing; contact outside it is a crash. There is no landing gear, bounce or friction
-  model (L0-ASM-110). The envelope limits are parameters set at a lower level. Children
-  must show (D41): (Inspection) the model specification defines ground contact at
-  altitude zero, a landing envelope of velocity and acceleration limits, and the
-  landing and crash outcomes.
+  the ground within a landing envelope is a successful landing; contact outside it is a
+  crash. There is no landing gear, bounce or friction model (L0-ASM-110). The envelope
+  is two limits at the contact sample, on the vertical speed magnitude and on the
+  horizontal speed; there is no acceleration limit, because the ideal landing computes
+  no touchdown shock (D53, CR-B1-07). The limits are parameters set at a lower level.
+  Children must show (D41): (Inspection) the model specification defines ground contact
+  at altitude zero, a landing envelope of vertical and horizontal speed limits at the
+  contact sample, and the landing and crash outcomes.
 Parent(s):     —
-Source:        Owner review at G0, 2026-10-25 (D8, D37)
+Source:        Owner review at G0, 2026-10-25 (D8, D37, D53)
 Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
@@ -817,7 +821,7 @@ Parameters:    —
 TBD/TBR:       Landing envelope limits TBD (lower level), Martin, closes at G2
 Owner:         Martin
 Status:        Baselined
-Version:       2
+Version:       3
 ```
 
 ### L0-CON-300
@@ -869,15 +873,15 @@ Rationale:     G0 owner review (2026-10-25): the crew must be protected from exc
   (2026-10-25): the limit is on the total load the crew feels, gravity included. The 1
   g needed to hold the Aeronef up against gravity counts toward the 3 g: hovering is 1
   g, and free fall is 0 g. The limit applies while the Aeronef is airborne: the ideal
-  landing has no contact dynamics (L0-CON-290), so the landing envelope's own
-  acceleration limit covers ground contact. Where on the Aeronef the crew acceleration
+  landing has no contact dynamics and computes no touchdown shock (L0-CON-290), and the
+  vertical speed limit of the landing envelope stands in for the impact (D53, CR-B1-07).
+  Where on the Aeronef the crew acceleration
   is evaluated (centre of gravity or crew station) is set at a lower level. The g of
   the limit is standard gravity whatever value the model gravity P-DYN-010 takes, so
   the hover figure of 1 g is exact only if P-DYN-010 equals standard gravity. Children
   must show (D41): (Test) in every automated test run, at every fuel state, while the
   Aeronef is airborne, the magnitude of the sensed acceleration (specific force) does
-  not exceed [P-SYS-120]; the acceleration limit of the landing envelope (L0-CON-290)
-  does not exceed [P-SYS-120].
+  not exceed [P-SYS-120].
 Parent(s):     —
 Source:        Owner review at G0, 2026-10-25
 Allocated to:  AER
@@ -885,8 +889,8 @@ Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
 Parameters:    P-SYS-120
-TBD/TBR:       P-SYS-120 = 29.419 95 m/s² (3 g) TBR (owner, 'for now'), Martin, closes at G1
+TBD/TBR:       — (3 g confirmed by the owner, D45, CR-B1-06)
 Owner:         Martin
 Status:        Baselined
-Version:       4
+Version:       6
 ```

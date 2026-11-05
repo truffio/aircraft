@@ -2,7 +2,7 @@
 
 The Aeronef system requirements (task B1). The subject of each statement is the Aeronef, treated as a whole. Modes, mode groups, combinations and mode logic are defined at L2 (AF, D33); these records state only the aircraft-level guidance capability. There is one Aeronef configuration (D42). The functions, the N² matrix, the logical architecture, the allocation to the L2 subsystems and the budgets are in [specs/FUNCTIONAL_ANALYSIS.md](../specs/FUNCTIONAL_ANALYSIS.md).
 
-**Verification.** A record allocated to L2 subsystems is verified by roll-up (D40): it passes when each of its children has passed and the decomposition has been reviewed. Its rationale says what the children must show. A record with `Allocated to: —` is a leaf at L1 and is verified directly by its own method.
+**Verification.** A record allocated to L2 subsystems is verified by roll-up (D40, D58): it passes when each of its children has passed and the decomposition has been reviewed. Its rationale says what the children must show. A record with `Allocated to: —` is a leaf at L1 and is verified directly by its own method.
 
 ### L1-AER-010
 
@@ -15,7 +15,7 @@ Statement:     The Aeronef shall compute its motion as a rigid body with six deg
 Rationale:     For a simulated vehicle the physics is the requirement (METHODOLOGY §7). The model
   specification holds the equations of motion so that this record can point to them (INCOSE
   R23). Structural flexibility and fuel slosh are excluded (L0-ASM-080). The local reference
-  frame is inertial (L0-ASM-030, CV-140). Children must show (D40): (Analysis) the simulated
+  frame is inertial (L0-ASM-030, CV-140). Children must show (D58): (Analysis) the simulated
   motion matches independent solutions for free fall, free fall with drag to terminal velocity
   and torque-free rotation (METHODOLOGY §10.3, N-290).
   Sufficiency: with L1-AER-050 to -070 (external forces) and L1-AER-180, -220 (mass and
@@ -26,7 +26,7 @@ Source:        N-270, N-290; AIRCRAFT_CHARACTERISTICS.md §2
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -41,22 +41,27 @@ ID:            L1-AER-020
 Level:         L1
 Type:          Constraint
 Statement:     The Aeronef dynamics shall contain no term by which motion along one degree of freedom
-  produces a force or moment along another degree of freedom in the body frame, other than the
+  produces an acceleration along another degree of freedom in the body frame, other than the
   rigid-body kinematic terms that MS-DYN retains.
-Rationale:     Owner definition D18 of "no coupling between axes". The rigid-body kinematic and
-  gyroscopic terms are decided in MS-DYN under #81 (C1, closes at G2); the exception is named so
-  that this record does not prejudge #81. The effector set must not couple axes either: each
-  axis demand is met with the other force and moment components at zero (L1-AER-120 to -140).
-  Children must show (D40): (Inspection) MS-DYN and the effector requirements define no
-  aerodynamic or effector cross-coupling term, and list each retained kinematic term.
-  Sufficiency: the dynamics (DYN) and effector (EF) children together exclude every coupling
-  source the model contains, which is what L0-CON-030 constrains.
+Rationale:     Owner definition D18 of "no coupling between axes", stated in acceleration terms as
+  L0-CON-030 is. The rigid-body kinematic and gyroscopic terms are decided in MS-DYN under #81
+  (C1, closes at G2); the exception is named so that this record does not prejudge #81. The body
+  axes are principal axes of inertia, so the products of inertia are zero and a moment about one
+  body axis gives no angular acceleration about another (D61, L1-AER-220). The effector set must
+  not couple axes either: FC allocates each axis demand with the other force and moment
+  components at zero, using the effector geometry that EF defines (L1-AER-120 to -140).
+  Children must show (D58): (Inspection) MS-DYN and the effector requirements define no
+  aerodynamic or effector cross-coupling term, the mass-properties requirements give zero
+  products of inertia, and MS-DYN lists each retained kinematic term.
+  Sufficiency: the dynamics (DYN), effector (EF) and mass-properties (FU) children together
+  exclude every coupling source the model contains (drag, effectors, inertia), which is what
+  L0-CON-030 constrains.
 Parent(s):     L0-CON-030
-Source:        D18; OBJECTIVES.md §2
-Allocated to:  DYN, EF
+Source:        D18, D61; OBJECTIVES.md §2
+Allocated to:  DYN, EF, FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       Treatment of rigid-body kinematic and gyroscopic terms (#81), Martin, G2 (C1)
 Owner:         Martin
@@ -74,7 +79,7 @@ Statement:     The Aeronef shall produce no aerodynamic lift force.
 Rationale:     Lift would couple attitude and translation and defeat the independent control of
   L0-CON-020 (AIRCRAFT_CHARACTERISTICS §1, §7). Drag is the only aerodynamic force (L1-AER-070).
   "Shall produce no" is a true prohibition (METHODOLOGY §8.4 rule 11). Children must show
-  (D40): (Inspection) MS-DYN defines no aerodynamic force other than drag.
+  (D58): (Inspection) MS-DYN defines no aerodynamic force other than drag.
   Sufficiency: the dynamics model is the only place an aerodynamic force could arise, so a DYN
   child that excludes lift satisfies L0-CON-040.
 Parent(s):     L0-CON-040
@@ -82,7 +87,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §1, §7
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -98,7 +103,7 @@ Level:         L1
 Type:          Constraint
 Statement:     The Aeronef shall have no aerodynamic control surface.
 Rationale:     Motion comes from the effectors, not from control surfaces (OBJECTIVES §2;
-  AIRCRAFT_CHARACTERISTICS §2, §7). Children must show (D40): (Inspection) neither MS-DYN nor
+  AIRCRAFT_CHARACTERISTICS §2, §7). Children must show (D58): (Inspection) neither MS-DYN nor
   the effector requirements define a control surface or a force that depends on a surface
   deflection.
   Sufficiency: a control surface would appear either in the dynamics (as an aerodynamic force)
@@ -108,7 +113,7 @@ Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §2, §7
 Allocated to:  DYN, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -129,7 +134,7 @@ Rationale:     L0-CON-090 limits the external effects to gravity, drag on the ai
   velocity and ground contact; L0-CON-060 makes the effectors the only source of control force
   and moment. Ground contact is not a force: it ends the run as a landing or a crash
   (L1-AER-260, -270; L0-ASM-110). Consumed fuel adds no force (L0-ASM-090). Children must show
-  (D40): (Inspection) MS-DYN lists these three contributions and no other; (Analysis) the
+  (D58): (Inspection) MS-DYN lists these three contributions and no other; (Analysis) the
   free-fall and terminal-velocity checks of L1-AER-010 pass.
   Sufficiency: with L1-AER-060 (gravity) and -070 (drag), this record closes the list of forces
   and moments, which covers the force part of L0-CON-090 and the model side of L0-CON-060.
@@ -138,7 +143,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §2, §7; D17, D37
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -156,8 +161,8 @@ Statement:     The Aeronef shall apply a uniform gravitational acceleration of m
   [P-DYN-010] along the downward vertical of the local reference frame.
 Rationale:     Uniform gravity on a flat, non-rotating world (L0-ASM-030, L0-ASM-040, CV-110,
   CV-180). It gives closed-form free-fall solutions for verification. The value is proposed as
-  standard gravity, so that the crew limit L0-CON-310 reads 1 g in a hover exactly (G0-F25,
-  R-F06). Children must show (D40): (Analysis) simulated free fall in vacuum-equivalent
+  standard gravity, so that the hover figure of the glossary entry *Sensed acceleration* is
+  exact against the crew limit L0-CON-310 (G0-F25, R-F06). Children must show (D58): (Analysis) simulated free fall in vacuum-equivalent
   conditions matches the closed-form solution.
   Sufficiency: gravity is one of the three effects L0-CON-090 allows; this record fixes its
   model, and L1-AER-050 makes it part of the total force.
@@ -166,9 +171,9 @@ Source:        L0-ASM-040; CV-110, CV-180
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-DYN-010
-TBD/TBR:       P-DYN-010 value TBR (proposed 9.806 65 m/s², D48), Martin, G2 (C1)
+TBD/TBR:       P-DYN-010 value TBR (D48, TT-150), Martin, G2 (C1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -185,7 +190,7 @@ Statement:     The Aeronef shall compute aerodynamic drag from its air-relative 
 Rationale:     Drag acts on the velocity relative to the air, which includes the wind the TST gives
   with each step, steady wind plus gusts (L0-CON-090, L0-ASM-050, D17, D51, CV-470). Density follows the standard
   atmosphere (D20) and depends on altitude only (L0-ASM-060). Whether drag depends on attitude
-  (elongated body) is an MS-DYN choice bounded by L1-AER-020. Children must show (D40):
+  (elongated body) is an MS-DYN choice bounded by L1-AER-020. Children must show (D58):
   (Analysis) simulated free fall with drag reaches the closed-form terminal velocity for the
   drag model, with and without wind.
   Sufficiency: drag is the second effect L0-CON-090 allows; this record fixes its dependence on
@@ -195,7 +200,7 @@ Source:        D17, D20; L0-ASM-050, L0-ASM-060
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -213,7 +218,7 @@ Statement:     The Aeronef shall generate each control force and each control mo
   effectors.
 Rationale:     Fictional force emitters replace engines, wings and control surfaces (OBJECTIVES
   §2; AIRCRAFT_CHARACTERISTICS §3). A control force or moment is any force or moment other than
-  gravity and drag (glossary). Children must show (D40): (Inspection) the effector
+  gravity and drag (glossary). Children must show (D58): (Inspection) the effector
   requirements and MS-DYN identify the effectors as the only source of control force and
   moment.
   Sufficiency: with L1-AER-050, which makes gravity and drag the only other contributions, this
@@ -223,7 +228,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §3
 Allocated to:  EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -241,7 +246,7 @@ Statement:     The Aeronef shall keep the direction of action of each effector c
   frame.
 Rationale:     Nothing swivels (D19). The direction vector of each effector is fixed in the body
   frame (CV-330). The layout of the directions is an EF design decision, not an L1 requirement.
-  Children must show (D40): (Inspection) the effector requirements and MS-DYN define a
+  Children must show (D58): (Inspection) the effector requirements and MS-DYN define a
   constant body-frame direction for each effector.
   Sufficiency: the effector subsystem is the only place the direction of action is defined, so
   one EF child covers L0-CON-070.
@@ -250,7 +255,7 @@ Source:        D19; AIRCRAFT_CHARACTERISTICS.md §3
 Allocated to:  EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -267,8 +272,10 @@ Type:          Constraint
 Statement:     The Aeronef shall define each effector only by its direction of action, its control
   effectiveness, its output limits, its command response and its fuel consumption parameters.
 Rationale:     No physical explanation of the emitter technology is required (L0-CON-080;
-  AIRCRAFT_CHARACTERISTICS §3, §7). The list is closed. The consumption parameters belong to FU
-  (L1-AER-160, -170). Children must show (D40): (Inspection) each effector parameter in the
+  AIRCRAFT_CHARACTERISTICS §3, §7). The list is closed. The control effectiveness is the control
+  force and control moment about the centre of gravity per unit of effector command, so it
+  carries the point of application and the moment arm (glossary). The consumption parameters
+  belong to FU (L1-AER-160, -170). Children must show (D58): (Inspection) each effector parameter in the
   parameter database belongs to one of the five listed kinds.
   Sufficiency: the EF children define the first four kinds and the FU children the fifth;
   together they are the whole effector model, which is what L0-CON-080 constrains.
@@ -277,7 +284,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §3, §7
 Allocated to:  EF, FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -296,7 +303,7 @@ Statement:     The Aeronef shall limit the force of each effector to the maximum
 Rationale:     Each effector has a maximum force (L0-CON-300). The per-effector maxima are EF
   parameters set at C3. Allocation (FC) must handle a demand beyond the limit as nominal
   behaviour; the priority rule is a derived requirement at L3/L4 (FC1). Children must show
-  (D40): (Inspection) each effector has a maximum-force parameter; (Test) no automated test run
+  (D58): (Inspection) each effector has a maximum-force parameter; (Test) no automated test run
   produces an effector force above its maximum.
   Sufficiency: EF enforces the limit at the effector, and FC never relies on output beyond it;
   together they keep every effector within its maximum, as L0-CON-300 requires.
@@ -305,7 +312,7 @@ Source:        Owner review at G0 (L0-CON-300)
 Allocated to:  EF, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       Per-effector maximum force values TBD, Martin, G2 (C3)
 Owner:         Martin
@@ -322,25 +329,25 @@ Type:          Performance
 Statement:     While fuel remains, the Aeronef shall be able to produce a control force of at least
   [P-SYS-400] along the negative body z axis with the other control force and control moment
   components at zero.
-Rationale:     Effector authority budget, weight-bearing direction. At level attitude (D10) the
-  negative body z axis points up, so this force holds the vehicle up and accelerates it
+Rationale:     Effector authority budget, weight-bearing direction. Pitch and roll are held at zero
+  (D57, which revises D10), so the negative body z axis points up, so this force holds the vehicle up and accelerates it
   vertically. Budget (FUNCTIONAL_ANALYSIS §7.1): [P-SYS-400] is at least the maximum vehicle
   mass times the sum of [P-DYN-010] and [P-SYS-440], plus the drag at the climb vertical speed
   [P-SYS-240]. The zero side components show the independent control of L0-CON-020. The usable
   force at low mass is capped by the crew limit (L1-AER-290), not by this record. Children must
-  show (D40): (Analysis) the effector set produces the pure force at maximum mass.
+  show (D58): (Analysis) the effector set produces the pure force at maximum mass.
   Sufficiency: with L1-AER-130 (the other five force directions) and L1-AER-140 (moments), this
   record gives a pure control force or moment in each of the six degrees of freedom, as
   L0-CON-020 requires.
 Parent(s):     L0-CON-020
-Source:        N-170, N-240; D10, D19
+Source:        N-170, N-240; D19, D46, D57
 Allocated to:  EF, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-400, P-DYN-010, P-SYS-440, P-SYS-240
 TBD/TBR:       P-SYS-400 value TBD (computed when the maximum vehicle mass is known), Martin, G2
-  (I1)
+  (I1); P-SYS-440 value TBR (TT-040), P-SYS-240 value TBD (TT-010)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -360,7 +367,7 @@ Rationale:     Effector authority budget, non-weight-bearing directions (FUNCTIO
   §7.1): [P-SYS-410] is at least the maximum vehicle mass times [P-SYS-440], plus the drag at
   the maximum horizontal speed [P-SYS-230] into the largest instantaneous wind, [P-SYS-430]
   plus [P-SYS-560] (D51). The list is the five body
-  directions other than the one in L1-AER-120. Children must show (D40): (Analysis) the
+  directions other than the one in L1-AER-120. Children must show (D58): (Analysis) the
   effector set produces each pure force at maximum mass.
   Sufficiency: see L1-AER-120.
 Parent(s):     L0-CON-020
@@ -368,7 +375,7 @@ Source:        N-170, N-240; D17, D19
 Allocated to:  EF, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-410, P-SYS-440, P-SYS-230, P-SYS-430, P-SYS-560
 TBD/TBR:       P-SYS-410 value TBD (computed when the maximum vehicle mass is known), Martin, G2
   (I1)
@@ -388,16 +395,18 @@ Statement:     While fuel remains, the Aeronef shall be able to produce a contro
   components at zero.
 Rationale:     Effector authority budget, rotation (FUNCTIONAL_ANALYSIS §7.1): [P-SYS-420] is at
   least the largest moment of inertia times the angular acceleration needed to reach the heading
-  rate [P-SYS-270], plus the drag moment, with a margin for holding level attitude. Pitch and
-  roll are held level (D10); yaw sets the heading. Children must show (D40): (Analysis) the
+  rate [P-SYS-270], plus the drag moment, plus the moment needed to hold pitch and roll at zero
+  against that drag moment. Each term is a named line of FUNCTIONAL_ANALYSIS §7.1, sized at I1
+  when the inertia and the drag model are known. Pitch and roll are held at zero (D57, which
+  revises D10); yaw sets the heading. Children must show (D58): (Analysis) the
   effector set produces each pure moment at maximum inertia.
   Sufficiency: see L1-AER-120.
 Parent(s):     L0-CON-020
-Source:        N-170, N-240; D10, D19
+Source:        N-170, N-240; D19, D57
 Allocated to:  EF, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-420, P-SYS-270
 TBD/TBR:       P-SYS-420 value TBD (computed when the inertia is known), Martin, G2 (I1)
 Owner:         Martin
@@ -415,7 +424,7 @@ Statement:     The Aeronef shall start each run with the fuel mass of its initia
   most [P-FU-010].
 Rationale:     A finite onboard quantity of fuel supplies the effectors (L0-CON-100). The capacity
   is a parameter; the fuel at the start of a run is part of the initial condition (N-310,
-  L1-AER-660), so that test procedures can start at any fuel state. Children must show (D40):
+  L1-AER-660), so that test procedures can start at any fuel state. Children must show (D58):
   (Inspection) the parameter database holds the capacity; (Test) a run started with a stated
   fuel mass reports that mass at its first output sample.
   Sufficiency: with L1-AER-200 (output depends on fuel), this record gives the finite supply
@@ -425,7 +434,7 @@ Source:        N-150, N-310; CONOPS §4.5
 Allocated to:  FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-FU-010
 TBD/TBR:       P-FU-010 value TBD, Martin, G2 (C2, fuel budget §7.3)
 Owner:         Martin
@@ -446,7 +455,7 @@ Rationale:     Fuel is consumed to produce the commanded forces and rotational e
   separate terms for linear and rotational actuation (L0-CON-120; AIRCRAFT_CHARACTERISTICS §4).
   The form of each relationship is a C2 decision recorded in MS-DYN. Because the effectors
   counter gravity, fuel is consumed in every flight condition, hover included (CONOPS §4.5).
-  Children must show (D40): (Analysis) the simulated fuel mass flow matches an independent
+  Children must show (D58): (Analysis) the simulated fuel mass flow matches an independent
   computation from the recorded effector outputs.
   Sufficiency: with L1-AER-170 (the parameters are configurable), this record covers both
   relationships of L0-CON-120, and it makes the fuel used depend on effector output
@@ -456,7 +465,7 @@ Source:        N-280; AIRCRAFT_CHARACTERISTICS.md §4
 Allocated to:  FU, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -474,7 +483,7 @@ Statement:     The Aeronef shall take its translational consumption parameters [
   rotational consumption parameters [P-FU-050] from the parameter database at the start of each
   run.
 Rationale:     Configurable consumption lets campaigns vary it without a software change
-  (L0-CON-120, N-020). Children must show (D40): (Demonstration) two runs with different values
+  (L0-CON-120, N-020). Children must show (D58): (Demonstration) two runs with different values
   of the consumption parameters, and no software change, give the fuel mass flows that each set
   of values predicts.
   Sufficiency: see L1-AER-160.
@@ -483,7 +492,7 @@ Source:        N-020, N-280
 Allocated to:  FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-FU-040, P-FU-050
 TBD/TBR:       P-FU-040, P-FU-050 values TBD, Martin, G2 (C2)
 Owner:         Martin
@@ -502,7 +511,7 @@ Statement:     The Aeronef shall compute its vehicle mass as its dry mass [P-FU-
 Rationale:     Fuel consumption decreases the vehicle mass (L0-CON-110; CV-340). The mass loss is a
   real effect on the dynamics: the same force gives a larger acceleration (L0-ASM-090). The
   maximum vehicle mass, used by the authority budgets, is [P-FU-030] plus [P-FU-010]. Children
-  must show (D40): (Analysis) at each output sample of a run, the reported vehicle mass equals
+  must show (D58): (Analysis) at each output sample of a run, the reported vehicle mass equals
   the dry mass plus the reported remaining fuel mass.
   Sufficiency: with L1-AER-190 (remaining fuel is the initial fuel minus the integral of the
   flow), this record makes the vehicle mass decrease by the fuel consumed (L0-CON-110).
@@ -511,7 +520,7 @@ Source:        N-280; CV-340
 Allocated to:  FU, DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-FU-030, P-FU-010
 TBD/TBR:       P-FU-030 value TBD, Martin, G2 (C2)
 Owner:         Martin
@@ -528,7 +537,7 @@ Type:          Model fidelity
 Statement:     The Aeronef shall keep its remaining fuel mass within [P-FU-060] of its initial fuel
   mass minus the time integral of its fuel mass flow.
 Rationale:     The fuel-mass integral is one of the independent credibility checks of METHODOLOGY
-  §10.3. The tolerance covers the numerical integration only. Children must show (D40):
+  §10.3. The tolerance covers the numerical integration only. Children must show (D58):
   (Analysis) over the reference mission (SC-110), an independent integration of the recorded
   fuel mass flow agrees with the reported remaining fuel mass within [P-FU-060].
   Sufficiency: see L1-AER-180.
@@ -537,7 +546,7 @@ Source:        METHODOLOGY §10.3; N-290
 Allocated to:  FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-FU-060
 TBD/TBR:       P-FU-060 value TBD, Martin, G2 (C2)
 Owner:         Martin
@@ -556,7 +565,7 @@ Statement:     When the remaining fuel mass reaches zero, the Aeronef shall prod
 Rationale:     The output of each effector depends on the availability of fuel (L0-CON-100).
   Fuel exhaustion is nominal behaviour, not a failure (L0-ASM-070): the vehicle then moves under
   gravity and drag alone and keeps its angular rate (CONOPS SC-110 leg 10). What the autoflight
-  modes do at exhaustion is open at L2 (#59). Children must show (D40): (Test) in the reference
+  modes do at exhaustion is open at L2 (#59). Children must show (D58): (Test) in the reference
   mission, each effector output is zero from the first sample at which the remaining fuel mass
   is zero.
   Sufficiency: with L1-AER-150 and -160, this record ties every effector output to the fuel
@@ -566,7 +575,7 @@ Source:        N-150; CONOPS §4.5, SC-110
 Allocated to:  EF, FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -584,7 +593,7 @@ Statement:     The Aeronef shall keep its centre of gravity at one fixed positio
   at each fuel state.
 Rationale:     The centre of gravity is fixed, including while fuel is consumed (L0-CON-130). It
   is the body-frame origin (CV-160), so the effector moment arms stay constant. Children must
-  show (D40): (Inspection) MS-DYN and the mass-properties requirements give one centre-of-gravity
+  show (D58): (Inspection) MS-DYN and the mass-properties requirements give one centre-of-gravity
   position for every fuel mass.
   Sufficiency: FU defines the mass distribution and DYN uses the centre of gravity as origin;
   both fixing it covers L0-CON-130.
@@ -593,7 +602,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §4
 Allocated to:  FU, DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -607,24 +616,29 @@ Version:       1
 ID:            L1-AER-220
 Level:         L1
 Type:          Model fidelity
-Statement:     The Aeronef shall derive its inertia tensor at each fuel state from the elongated body
-  shape and the simplified mass distribution stated in MS-DYN.
+Statement:     The Aeronef shall derive, at each fuel state, a diagonal inertia tensor in the body
+  frame from the body shape and the mass distribution that MS-DYN states.
 Rationale:     The shape matters only through its mass properties (L0-CON-140;
-  AIRCRAFT_CHARACTERISTICS §1, §4). Whether the inertia changes with the fuel state is a C2
-  decision; this record requires that the answer be stated for each fuel state. The body shape
-  is provisional (TBR in L0-CON-140). Children must show (D40): (Inspection) MS-DYN derives each
-  moment and product of inertia from the stated shape and distribution, with the CV-350 sign
+  AIRCRAFT_CHARACTERISTICS §1, §4). The body axes are the principal axes of inertia, so the
+  products of inertia are zero and the tensor is diagonal (D61); a rotation about one body axis
+  then produces no torque about another, which supports L1-AER-020. L0-CON-140 describes the
+  concept as an elongated shape with a simplified mass distribution; at L1 the shape and the
+  distribution are the ones MS-DYN states, with their dimensions as DYN parameters (C1).
+  Whether the inertia changes with the fuel state is a C2 decision; this record requires that
+  the answer be stated for each fuel state. The body shape is provisional (TBR in L0-CON-140).
+  Children must show (D58): (Inspection) MS-DYN derives each principal moment of inertia from
+  the stated shape and distribution, and states zero products of inertia with the CV-350 sign
   convention.
   Sufficiency: one derivation covers L0-CON-140; the fuel-state dependence closes the question
   L0-CON-140 leaves to the mass-properties requirements.
 Parent(s):     L0-CON-140
-Source:        AIRCRAFT_CHARACTERISTICS.md §1, §4; CV-350
+Source:        AIRCRAFT_CHARACTERISTICS.md §1, §4; CV-350; D61
 Allocated to:  FU, DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
-TBD/TBR:       Elongated body shape provisional (L0-CON-140), Martin, 2026-11-30
+TBD/TBR:       Body shape provisional (L0-CON-140), Martin, 2026-11-30
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -667,7 +681,7 @@ Level:         L1
 Type:          Constraint
 Statement:     The Aeronef shall have its nose on the positive body x axis.
 Rationale:     The nose marks the designated forward direction (L0-CON-150), which fixes the body x
-  axis (CV-170) and the heading (CV-530). Children must show (D40): (Inspection) the MS-DYN
+  axis (CV-170) and the heading (CV-530). Children must show (D58): (Inspection) the MS-DYN
   geometry places the nose on the positive body x axis.
   Sufficiency: with L1-AER-250 (crew station), this record gives the forward direction and the
   crew position that L0-CON-150 asks for.
@@ -676,7 +690,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §1; CV-170
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -693,7 +707,7 @@ Type:          Constraint
 Statement:     The Aeronef shall have its crew station at the body-frame position [P-DYN-400].
 Rationale:     The crew sits in the cockpit toward the nose (L0-CON-150, CV-170). The position
   places the crew in the body frame; the crew acceleration limit is evaluated at the centre of
-  gravity (D45, L1-AER-290), not here. Children must show (D40): (Inspection) the MS-DYN geometry states the crew
+  gravity (D45, L1-AER-290), not here. Children must show (D58): (Inspection) the MS-DYN geometry states the crew
   station position.
   Sufficiency: see L1-AER-240.
 Parent(s):     L0-CON-150
@@ -701,7 +715,7 @@ Source:        AIRCRAFT_CHARACTERISTICS.md §1; CV-170
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-DYN-400
 TBD/TBR:       P-DYN-400 value TBD, Martin, G2 (C1)
 Owner:         Martin
@@ -719,7 +733,7 @@ Statement:     When the Aeronef makes ground contact within the landing envelope
   report a landing in its operational data.
 Rationale:     Ideal landing (D37, L0-CON-290, L0-ASM-110): contact at altitude zero within the
   envelope (L1-AER-280) is a landing. There is no gear, bounce or friction model; the TST ends
-  the run on the event (CONOPS §4.6). Children must show (D40): (Test) a descent to the ground
+  the run on the event (CONOPS §4.6). Children must show (D58): (Test) a descent to the ground
   within the envelope produces one landing event at the contact sample.
   Sufficiency: with L1-AER-270 (crash) and -280 (envelope), this record defines ground contact,
   the envelope and both outcomes, as L0-CON-290 requires.
@@ -728,7 +742,7 @@ Source:        D8, D37; CONOPS §4.2, §4.6
 Allocated to:  DYN, TM
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -746,7 +760,7 @@ Statement:     When the Aeronef makes ground contact outside the landing envelop
   report a crash in its operational data.
 Rationale:     Contact outside the envelope is a crash that ends the run (D37, L0-CON-290). The
   reference mission normally ends this way after fuel exhaustion (SC-110). Children must show
-  (D40): (Test) a free fall to the ground from fuel exhaustion produces one crash event at the
+  (D58): (Test) a free fall to the ground from fuel exhaustion produces one crash event at the
   contact sample.
   Sufficiency: see L1-AER-260.
 Parent(s):     L0-CON-290
@@ -754,7 +768,7 @@ Source:        D37; CONOPS SC-110
 Allocated to:  DYN, TM
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -767,14 +781,14 @@ Version:       1
 ```req
 ID:            L1-AER-280
 Level:         L1
-Type:          Performance
+Type:          Functional
 Statement:     The Aeronef shall classify a ground contact as within the landing envelope when the
   vertical speed magnitude is at most [P-SYS-500] and the horizontal speed is at most
   [P-SYS-510] at the contact sample.
 Rationale:     The envelope limits the velocity at contact (L0-CON-290, D37). The two limits are
   one envelope, so they are one requirement (D30). There is no acceleration limit: the ideal
   landing has no gear model, so no touchdown shock is computed, and the vertical speed limit
-  stands in for the impact (D53, #100). Children must show (D40): (Test) contacts on each side
+  stands in for the impact (D53, #100). Children must show (D58): (Test) contacts on each side
   of each limit are classified correctly.
   Sufficiency: see L1-AER-260.
 Parent(s):     L0-CON-290
@@ -782,7 +796,7 @@ Source:        D37, D53
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-500, P-SYS-510
 TBD/TBR:       P-SYS-500, P-SYS-510 values TBR (owner, #100), Martin, G2
 Owner:         Martin
@@ -804,8 +818,10 @@ Rationale:     Crew g-limit (L0-CON-310, D38). L0 leaves the evaluation point to
   [P-SYS-440] (vehicle acceleration), with the rest as margin. As
   fuel burns, the allowed resultant control force falls with the mass (D38); FC owns that limit,
   AF keeps its manoeuvres within [P-SYS-440], and FU supplies the mass. Children must show
-  (D40): (Test) in every automated test run, at every fuel state, while airborne, the sensed
+  (D58): (Test) in every automated test run, at every fuel state, while airborne, the sensed
   acceleration at the centre of gravity does not exceed [P-SYS-120].
+  The budget closes for the winds the TST applies, which stay within the wind envelope, whose
+  gusts build up over at least [P-SYS-570] (D51, D62, FUNCTIONAL_ANALYSIS §7.2).
   Sufficiency: with L1-AER-300 (vehicle acceleration limit), this record covers L0-CON-310.
   The ideal landing computes no touchdown shock (D53), so contact adds no further share.
 Parent(s):     L0-CON-310
@@ -813,9 +829,10 @@ Source:        D38; N-170
 Allocated to:  FC, AF, FU, DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
-Parameters:    P-SYS-120, P-DYN-010, P-SYS-440
-TBD/TBR:       —
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    P-SYS-120, P-DYN-010, P-SYS-440, P-SYS-570
+TBD/TBR:       P-DYN-010 value TBR (TT-150), P-SYS-440 value TBR (TT-040), P-SYS-570 value TBD
+  (TT-650), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -827,24 +844,29 @@ Version:       1
 ID:            L1-AER-300
 Level:         L1
 Type:          Performance
-Statement:     While the Aeronef is airborne with fuel remaining, the Aeronef shall keep the
-  magnitude of its vehicle acceleration at most [P-SYS-440].
+Statement:     While the Aeronef is airborne with fuel remaining in a wind within the wind envelope,
+  the Aeronef shall keep the magnitude of its vehicle acceleration at most [P-SYS-440].
 Rationale:     Manoeuvres are g-limited, and the maximum acceleration and deceleration are design
   parameters (D16). This record is the vehicle-acceleration share of the crew budget
   (L1-AER-290, FUNCTIONAL_ANALYSIS §7.2). Its split: the autoflight manoeuvre limit [P-AF-200]
-  plus the flight-control transient allowance [P-FC-020] is at most [P-SYS-440]. It also bounds
-  the effector authority budget (L1-AER-120, -130). Children must show (D40): (Test) in every
-  automated test run, while fuel remains, the vehicle acceleration does not exceed
+  plus the flight-control transient allowance [P-FC-020] is at most [P-SYS-440]. The transient
+  allowance also covers the response to a gust: the wind envelope bounds the steady wind
+  [P-SYS-430] and the gusts [P-SYS-560], and each gust builds up over at least [P-SYS-570], so the
+  drag changes at a bounded rate that FC can follow within the control-loop latency [P-SYS-480]
+  (D51, D62). It also bounds the effector authority budget (L1-AER-120, -130). Children must
+  show (D58): (Test) in every automated test run, while fuel remains, in winds within the wind
+  envelope including gusts of the shortest rise time, the vehicle acceleration does not exceed
   [P-SYS-440].
   Sufficiency: see L1-AER-290.
 Parent(s):     L0-CON-310
-Source:        D16, D38; N-170
+Source:        D16, D38, D51, D62; N-170
 Allocated to:  AF, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
-Parameters:    P-SYS-440, P-AF-200, P-FC-020
-TBD/TBR:       P-SYS-440 value TBR (proposed 14.709 975 m/s², 1.5 g, D48), Martin, G2
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    P-SYS-440, P-AF-200, P-FC-020, P-SYS-430, P-SYS-560, P-SYS-570, P-SYS-480
+TBD/TBR:       P-SYS-440, P-AF-200, P-FC-020 values TBR (D48, TT-040); P-SYS-570 value TBD (D62,
+  TT-650), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -856,25 +878,33 @@ Version:       1
 ID:            L1-AER-310
 Level:         L1
 Type:          Performance
-Statement:     While in level flight in the operating volume with a steady wind speed of at most [P-SYS-430] plus gusts of at most [P-SYS-560], the
-  Aeronef shall sustain a horizontal speed of [P-SYS-230] under autoflight.
+Statement:     While in level flight in the operating volume in a wind within the wind envelope, the
+  Aeronef shall be able to sustain each horizontal speed up to [P-SYS-230] under autoflight.
 Rationale:     Performance envelope (N-170, CONOPS §5). The crew needs known limits to plan, and
-  the limit is the top of the selectable horizontal speed. Horizontal speed is ground-referenced
-  (CV-480), so a headwind raises the airspeed and the drag the effectors must overcome; that is
-  why the wind limit enters the authority budget (L1-AER-130). Children must show (D40): (Test)
-  the vehicle holds [P-SYS-230] in level flight at both ends of the operating altitude range,
-  into a steady wind of [P-SYS-430] with gusts of [P-SYS-560].
+  [P-SYS-230] is the top of the selectable horizontal speed, which runs from zero to the maximum
+  (D56). The record states a capability, not a state the Aeronef is always in: the holds and the
+  selected speeds below the maximum stay valid. How closely a selected speed is tracked is a
+  per-mode tolerance set at L2 (C5, P-AF-120). The operating volume is bounded by [P-SYS-210],
+  [P-SYS-200] and [P-SYS-220], and the wind envelope by [P-SYS-430], [P-SYS-560] and the gust
+  rise time [P-SYS-570] (glossary; D51, D62). Horizontal speed is ground-referenced (CV-480), so
+  a headwind raises the airspeed and the drag the effectors must overcome; that is why the wind
+  limit enters the authority budget (L1-AER-130). Children must show (D58): (Test) the vehicle
+  reaches and holds horizontal speeds up to and including [P-SYS-230] in level flight at the
+  minimum and the maximum operating altitude, into a steady wind of [P-SYS-430] with gusts of
+  [P-SYS-560] built up over [P-SYS-570].
   Sufficiency: with L1-AER-320, -330 (vertical speeds), -350 (heading rate) and -360
   (endurance), this record sets the aircraft-level envelope inside which the modes of the
   catalogue operate (L0-OBJ-030).
 Parent(s):     L0-OBJ-030
-Source:        N-170; CONOPS §4.2, §5
+Source:        N-170; CONOPS §4.2, §5; D51, D56, D62
 Allocated to:  AF, FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
-Parameters:    P-SYS-430, P-SYS-230, P-SYS-560
-TBD/TBR:       P-SYS-230 value TBD (D47), Martin, G2 (I1); P-SYS-430 value TBR (D51), Martin, G2
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    P-SYS-230, P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-430, P-SYS-560, P-SYS-570
+TBD/TBR:       P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-230 values TBD (D47, TT-010), Martin, G2
+  (I1); P-SYS-430, P-SYS-560 values TBR (D51, TT-030), Martin, G2; P-SYS-570 value TBD (D62,
+  TT-650), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -886,20 +916,23 @@ Version:       1
 ID:            L1-AER-320
 Level:         L1
 Type:          Performance
-Statement:     While climbing in the operating volume, the Aeronef shall sustain a vertical speed of
-  [P-SYS-240] under autoflight.
+Statement:     While in the operating volume, the Aeronef shall be able to climb at each vertical speed
+  up to [P-SYS-240] under autoflight.
 Rationale:     Performance envelope (N-170). The Aeronef can climb with no horizontal motion and
-  without tilting (SC-040). The value bounds the upward authority budget (L1-AER-120). Children
-  must show (D40): (Test) the vehicle holds [P-SYS-240] at zero and at maximum horizontal speed.
+  without tilting (SC-040). [P-SYS-240] is the top of the selectable climb vertical speed (D56);
+  the record is a capability, and the tracking tolerance of a selected vertical speed is set at
+  L2 (C5, P-AF-090). The value bounds the upward authority budget (L1-AER-120). Children must
+  show (D58): (Test) the vehicle reaches and holds climb vertical speeds up to and including
+  [P-SYS-240], at zero and at maximum horizontal speed.
   Sufficiency: see L1-AER-310.
 Parent(s):     L0-OBJ-030
 Source:        N-170; CONOPS SC-040
 Allocated to:  AF, FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-240
-TBD/TBR:       P-SYS-240 value TBD (D47), Martin, G2 (I1)
+TBD/TBR:       P-SYS-240 value TBD (D47, TT-010), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -911,20 +944,25 @@ Version:       1
 ID:            L1-AER-330
 Level:         L1
 Type:          Performance
-Statement:     While descending in the operating volume, the Aeronef shall sustain a vertical speed
-  magnitude of [P-SYS-250] under autoflight.
-Rationale:     Performance envelope (N-170). Descent has its own limit, like climb (D56:
-  Go to altitude and Vertical speed work in both senses). Children must show (D40): (Test) the vehicle holds a descent at [P-SYS-250] at zero and
-  at maximum horizontal speed, and levels off above the minimum operating altitude.
+Statement:     While in the operating volume, the Aeronef shall be able to descend at each vertical
+  speed magnitude up to [P-SYS-250] under autoflight.
+Rationale:     Performance envelope (N-170). Descent has its own limit, like climb (D56: Go to
+  altitude and Vertical speed work in both senses). The record is a capability; the tracking
+  tolerance of a selected vertical speed is set at L2 (C5, P-AF-090). Where a descent levels off
+  is mode logic, not part of this record: Go to altitude and Vertical speed arm Altitude hold,
+  which levels off at the selected altitude (D56), and the selectable altitude is bounded below
+  by [P-SYS-210] (L2, C8). Children must show (D58): (Test) the vehicle reaches and holds
+  descent vertical speed magnitudes up to and including [P-SYS-250], at zero and at maximum
+  horizontal speed.
   Sufficiency: see L1-AER-310.
 Parent(s):     L0-OBJ-030
 Source:        N-170; CONOPS SC-020, SC-030
 Allocated to:  AF, FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
-Parameters:    P-SYS-250
-TBD/TBR:       P-SYS-250 value TBD (D47), Martin, G2 (I1)
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    P-SYS-250, P-SYS-210
+TBD/TBR:       P-SYS-250, P-SYS-210 values TBD (D47, TT-010), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -963,22 +1001,24 @@ Version:       2
 ID:            L1-AER-350
 Level:         L1
 Type:          Performance
-Statement:     While in the operating volume, the Aeronef shall sustain a heading rate of
-  [P-SYS-270] under autoflight.
+Statement:     While in the operating volume, the Aeronef shall be able to change its heading at each
+  heading rate magnitude up to [P-SYS-270] under autoflight.
 Rationale:     Performance envelope (N-170). Heading rate is dψ/dt (CV-290). Heading is
   independent of track on the Aeronef (CV-550), so a heading change does not change the
-  direction of motion unless a mode asks for it (L2). The value bounds the moment authority
-  budget (L1-AER-140) and the rotational term of the crew budget (L1-AER-290). Children must
-  show (D40): (Test) a heading change at [P-SYS-270] at maximum inertia.
+  direction of motion unless a mode asks for it (L2). The record is a capability; the heading
+  rate a mode commands is set at L2 (C5). The value bounds the moment authority budget
+  (L1-AER-140). The crew limit is evaluated at the centre of gravity, so rotation adds no share
+  to the crew budget (D45, FUNCTIONAL_ANALYSIS §7.2). Children must show (D58): (Test) heading
+  changes at heading rates up to and including [P-SYS-270], at maximum inertia.
   Sufficiency: see L1-AER-310.
 Parent(s):     L0-OBJ-030
 Source:        N-170; CONOPS SC-050, SC-060
 Allocated to:  AF, FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-270
-TBD/TBR:       P-SYS-270 value TBD (D47), Martin, G2 (I1)
+TBD/TBR:       P-SYS-270 value TBD (D47, TT-010), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -990,15 +1030,19 @@ Version:       1
 ID:            L1-AER-360
 Level:         L1
 Type:          Performance
-Statement:     While holding a fixed position with no wind applied, from an initial fuel mass of
-  [P-FU-010], the Aeronef shall stay airborne with fuel remaining for at least [P-SYS-280].
-Rationale:     Fuel budget (FUNCTIONAL_ANALYSIS §7.3). Holding a fixed position is the condition
-  in which the effectors only counter gravity, so it sets the endurance at full fuel and maximum
-  mass (CONOPS SC-110 variation). With a consumption proportional to force, [P-FU-010] must be at
-  least [P-FU-030] times the exponential of the product of the translational consumption
-  coefficient, [P-DYN-010] and [P-SYS-280], minus one; C2 confirms the form. Children must show
-  (D40): (Test) from full fuel, the time to fuel exhaustion while holding position is at least
-  [P-SYS-280].
+Statement:     While autoflight holds the horizontal position and the altitude with no wind applied,
+  from an initial fuel mass of [P-FU-010], the Aeronef shall stay airborne with fuel remaining
+  for at least [P-SYS-280].
+Rationale:     Fuel budget (FUNCTIONAL_ANALYSIS §7.3). Holding the horizontal position and the
+  altitude in still air is the condition in which the effectors only counter gravity, so it sets
+  the endurance at full fuel and maximum mass (CONOPS SC-110 variation). It is the hold of
+  Stationary with Altitude hold, or of Hover (D56, D60). With no wind and no motion there is no
+  drag, so the result does not depend on the altitude held inside the operating volume. With a
+  consumption proportional to force, [P-FU-010] must be at least [P-FU-030] times the
+  exponential of the product of the translational consumption coefficient [P-FU-040],
+  [P-DYN-010] and [P-SYS-280], minus one; C2 confirms the form. Children must show (D58): (Test)
+  from full fuel, the time to fuel exhaustion while autoflight holds the horizontal position and
+  the altitude in still air is at least [P-SYS-280].
   Sufficiency: the finite supply of L0-CON-100 must still allow useful missions; this record
   turns that into a measurable endurance, and with L1-AER-310 to -350 it completes the envelope
   for L0-OBJ-030.
@@ -1007,9 +1051,10 @@ Source:        N-150, N-250; CONOPS SC-110
 Allocated to:  FU, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
-Parameters:    P-FU-010, P-SYS-280, P-FU-030, P-DYN-010
-TBD/TBR:       P-SYS-280 value TBD (D47), Martin, G2 (I1)
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    P-FU-010, P-SYS-280, P-FU-030, P-FU-040, P-DYN-010
+TBD/TBR:       P-SYS-280 value TBD (D47, TT-010), Martin, G2 (I1); P-FU-010, P-FU-030, P-FU-040
+  values TBD (TT-110, TT-120), Martin, G2 (C2)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1027,8 +1072,10 @@ Rationale:     Flight control regulates motion independently in each of the thre
   and three rotational degrees of freedom (L0-OBJ-020; AIRCRAFT_CHARACTERISTICS §5). The
   references come from autoflight (L1-AER-420). Which quantity is regulated per axis (velocity,
   position, rate, attitude) and in which frame is a C4 decision. One control-law set is developed
-  (D42). Children must show (D40): (Test) a step in the reference of each degree of freedom is
-  followed by that degree of freedom.
+  (D42). Children must show (D58): (Test) after a step in the reference of each degree of
+  freedom, that degree of freedom settles on its reference within the tracking tolerance and the
+  settling time that the FC children state as parameters (C4); the other degrees of freedom stay
+  within the L1-AER-380 tolerances.
   Sufficiency: with L1-AER-380 (independence) and -440 (state), this record gives a regulation
   requirement for each of the six degrees of freedom (L0-OBJ-020), each acting on its own
   (L0-CON-020).
@@ -1037,7 +1084,7 @@ Source:        N-240; AIRCRAFT_CHARACTERISTICS.md §5
 Allocated to:  FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1052,12 +1099,15 @@ ID:            L1-AER-380
 Level:         L1
 Type:          Performance
 Statement:     When the reference of one degree of freedom changes, the Aeronef shall keep the
-  velocity along each other translational axis within [P-SYS-540] of its reference and the body
-  rate about each other rotational axis within [P-SYS-550] of its reference.
+  velocity along each other body axis within [P-SYS-540] of its reference and the body rate about
+  each other body axis within [P-SYS-550] of its reference.
 Rationale:     Measurable form of independent control authority (L0-CON-020) and of the absence
   of cross-axis coupling (L0-CON-030, D18): a manoeuvre on one axis leaves the others where they
-  were. The two tolerances are the cross-axis budget shared by FC (regulation) and EF
-  (allocation without side components). Children must show (D40): (Test) for a step on each
+  were. The tolerances apply in the body frame, the frame in which D18 states the absence of
+  coupling; with pitch and roll at zero the body z axis is the local vertical (D57), and in
+  Heading the body x and y axes turn with the heading (D56). The two tolerances are the
+  cross-axis budget shared by FC (regulation and allocation) and EF (the effector geometry that
+  lets a pure force or moment be produced). Children must show (D58): (Test) for a step on each
   degree of freedom in turn, the other five stay within the tolerances.
   Sufficiency: see L1-AER-370.
 Parent(s):     L0-CON-020, L0-OBJ-020
@@ -1065,9 +1115,9 @@ Source:        N-240; D18
 Allocated to:  FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-540, P-SYS-550
-TBD/TBR:       P-SYS-540, P-SYS-550 values TBD, Martin, G2 (C4)
+TBD/TBR:       P-SYS-540, P-SYS-550 values TBD (TT-100), Martin, G2 (C4)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1079,26 +1129,29 @@ Version:       1
 ID:            L1-AER-390
 Level:         L1
 Type:          Performance
-Statement:     While airborne, the Aeronef shall hold its pitch angle and its roll angle within
-  [P-AF-180] of zero.
-Rationale:     Owner decisions D10 and D57: the dynamics keep all six degrees of freedom, but pitch
-  and roll are not used for now and are held at zero at all times; the craft translates along
-  three axes and rotates about the vertical axis only. This is a rule for
-  every mode, not a mode definition, so it is stated once at aircraft level; the heading
-  behaviour of each mode is L2 (D33, A2-Q03). Level attitude also keeps the negative body z axis
-  pointing up for the upward authority budget (L1-AER-120). Children must show (D40): (Test) in
-  each mode of the catalogue, pitch and roll angles stay within [P-AF-180].
+Statement:     While the Aeronef is airborne with fuel remaining, the Aeronef shall hold its pitch
+  angle and its roll angle within [P-AF-180] of zero.
+Rationale:     Owner decision D57 (which revises D10): the dynamics keep all six degrees of
+  freedom, but pitch and roll are not used for now and are held at zero at all times; the craft
+  translates along three axes and rotates about the vertical axis only. This is a rule for every
+  mode, not a mode definition, so it is stated once at aircraft level; the heading behaviour of
+  each mode is L2 (D33; the ConOps reading is parked for C5 under #89). The record applies while
+  fuel remains: at fuel exhaustion the effectors produce no moment (L1-AER-200), so the attitude
+  is then free and keeps the angular rate it had (CONOPS SC-110). Level attitude also keeps the
+  negative body z axis pointing up for the upward authority budget (L1-AER-120). Children must
+  show (D58): (Test) in each automated test run, while fuel remains, the pitch and roll angles
+  stay within [P-AF-180].
   Sufficiency: the attitude references come from AF and are held by FC; both children together
   give the predictable attitude the autoflight operating concept needs (L0-OBJ-030, N-160)
   while keeping attitude independent of translation (L0-CON-020).
 Parent(s):     L0-OBJ-030, L0-CON-020
-Source:        D10, D57; N-160
+Source:        D57; N-160
 Allocated to:  AF, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-AF-180
-TBD/TBR:       P-AF-180 value TBR, Martin, G2 (C5)
+TBD/TBR:       P-AF-180 value TBR (TT-190), Martin, G2 (C5)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1115,7 +1168,7 @@ Statement:     The Aeronef shall take its flight-control-law design from its con
 Rationale:     Control-law designers swap controllers without touching the vehicle model
   (L0-CON-200, N-230). One design exists now (D42); a test variant is enough to show the
   replacement (R-F02). The vehicle model is DYN, FU and EF (FUNCTIONAL_ANALYSIS §5). Children
-  must show (D40): (Demonstration) a test variant of the control-law design is selected through
+  must show (D58): (Demonstration) a test variant of the control-law design is selected through
   the configuration, the run uses it, and the vehicle model files have unchanged checksums.
   Sufficiency: with L1-AER-420 (common FC-AF interface) and -430 (vehicle-model boundary), this
   record makes the control law replaceable without modifying the vehicle model (L0-CON-200).
@@ -1124,7 +1177,7 @@ Source:        N-230; D15, D42
 Allocated to:  FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1141,7 +1194,7 @@ Type:          Constraint
 Statement:     The Aeronef shall take its autoflight implementation from its configuration, so that
   replacing the implementation changes no vehicle model file.
 Rationale:     Same reason as L1-AER-400 for autoflight (L0-CON-210). There is one autoflight
-  implementation (D24). Children must show (D40): (Demonstration) a test variant of the
+  implementation (D24). Children must show (D58): (Demonstration) a test variant of the
   autoflight implementation is selected through the configuration, the run uses it, and the
   vehicle model files have unchanged checksums.
   Sufficiency: with L1-AER-420 and -430, this record covers L0-CON-210.
@@ -1150,7 +1203,7 @@ Source:        N-220; D15, D24
 Allocated to:  AF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1164,12 +1217,14 @@ Version:       1
 ID:            L1-AER-420
 Level:         L1
 Type:          Interface
-Statement:     The Aeronef shall pass the axis references and mode status from autoflight to flight
-  control through the one interface defined in ICD-FC-AF, for each flight-control-law design and
-  each autoflight implementation.
+Statement:     The Aeronef shall pass the axis references from autoflight to flight control through
+  the one interface defined in ICD-FC-AF, for each flight-control-law design and each autoflight
+  implementation.
 Rationale:     Modes and controllers are decoupled: any autoflight implementation pairs with any
   control law behind a common mode logic (D15, #72). A single interface is what makes that true.
-  Children must show (D40): (Inspection) the FC and AF requirements each cite ICD-FC-AF as their
+  Only the axis references cross it (FUNCTIONAL_ANALYSIS I-13): flight control receives no mode
+  information, so no control law can depend on the mode logic (D15, D33).
+  Children must show (D58): (Inspection) the FC and AF requirements each cite ICD-FC-AF as their
   only mutual interface; (Demonstration) the test variants of L1-AER-400 and -410 run against
   the same interface.
   Sufficiency: see L1-AER-400 and L1-AER-410.
@@ -1178,7 +1233,7 @@ Source:        D15
 Allocated to:  FC, AF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1193,22 +1248,25 @@ ID:            L1-AER-430
 Level:         L1
 Type:          Interface
 Statement:     The Aeronef shall exchange data between its vehicle model and its flight software
-  only as effector commands into the vehicle model and as vehicle state, vehicle mass and fuel
-  state out of it.
+  only as effector commands into the vehicle model and as vehicle state, mass properties and
+  fuel state out of it.
 Rationale:     A fixed vehicle-model boundary is what lets the control law and the autoflight be
-  replaced without modifying the vehicle model (L0-CON-200, -210). The list is closed. The data
-  definitions go in a vehicle-model boundary ICD (IN-B1-01). Children must show (D40):
-  (Inspection) each data item crossing the boundary in the DYN, FU, EF and FC requirements is one
-  of the listed kinds and is defined in the ICD.
+  replaced without modifying the vehicle model (L0-CON-200, -210). The list is closed. Mass
+  properties are the vehicle mass, the centre-of-gravity position and the inertia tensor
+  (glossary), so that FC can use the inertia as it changes with fuel (L1-AER-220). The data
+  definitions go in a vehicle-model boundary ICD (IN-B1-01, I1). TM observes the boundary
+  without being a party to it (FUNCTIONAL_ANALYSIS §5). Children must show (D58): (Inspection)
+  each data item crossing the boundary in the DYN, FU, EF, FC, AF, FCP and NAV requirements is
+  one of the listed kinds and is defined in the ICD.
   Sufficiency: see L1-AER-400 and L1-AER-410.
 Parent(s):     L0-CON-200, L0-CON-210
-Source:        TESTING_ENVIRONMENT.md §2; D15
-Allocated to:  DYN, FU, EF, FC
+Source:        TESTING_ENVIRONMENT.md §2; D15, D55
+Allocated to:  DYN, FU, EF, FC, AF, FCP, NAV
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
-TBD/TBR:       —
+TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1225,7 +1283,7 @@ Statement:     The Aeronef shall provide its navigation and flight-control funct
 Rationale:     Perfect state knowledge (L0-ASM-010, confirmed at G0) is turned into a requirement
   here, as METHODOLOGY §4.4 asks before L1 is baselined. The only delay is the control-frame
   sampling, which the timing budget accounts for (L1-AER-680, -710). Sensor models are a later
-  upgrade (#83). Children must show (D40): (Test) the state the navigation and flight-control
+  upgrade (#83). Children must show (D58): (Test) the state the navigation and flight-control
   functions receive equals the recorded vehicle state of the frame-start step.
   Sufficiency: regulation (L0-OBJ-020) and guidance (L0-OBJ-030) need the state; with
   L1-AER-370 and -530 this record supplies it on a defined basis.
@@ -1234,7 +1292,7 @@ Source:        L0-ASM-010; METHODOLOGY §4.4
 Allocated to:  DYN, NAV, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1249,23 +1307,24 @@ ID:            L1-AER-450
 Level:         L1
 Type:          Functional
 Statement:     The Aeronef shall guide its translation and its heading toward the targets the crew
-  selects, through the autoflight modes of the baselined mode catalogue.
+  selects, through the autoflight modes of the mode catalogue.
 Rationale:     Autoflight is the primary means of operating the Aeronef (L0-OBJ-030, N-050). The
   catalogue is plan decision D56: independent horizontal modes (Stationary, Heading) and vertical
   modes (Altitude hold, Go to altitude, Vertical speed), plus Go to hover and Hover, which govern
   both axes. Arming, capture and transitions, and the annunciation labels, are defined at L2 by
-  AF (C5, D33). This record states only the aircraft-level capability. Children must show (D40):
+  AF (C5, D33). This record states only the aircraft-level capability. Children must show (D58):
   (Inspection) each mode of the catalogue is covered by an AF requirement that traces to this
   record, and the mode logic is specified in AF_MODE_LOGIC.
   Sufficiency: with L1-AER-460 (position accuracy budget), -470 (annunciation), -480
-  (selections), -530 (navigation) and the envelope L1-AER-310 to -360, this record
+  (selections), -530 and -890 (navigation), -880 (panel interface) and the envelope L1-AER-310
+  to -360, this record
   covers the autoflight objective at aircraft level; the per-mode coverage is shown at L2.
 Parent(s):     L0-OBJ-030
 Source:        N-050, N-190; D33, D56
 Allocated to:  AF, NAV, FC
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1279,26 +1338,36 @@ Version:       1
 ID:            L1-AER-460
 Level:         L1
 Type:          Performance
-Statement:     While autoflight holds a fixed position with a steady wind speed of at most [P-SYS-430] plus gusts of at most [P-SYS-560], the
-  Aeronef shall keep its position within [P-SYS-450] of the reference position at each output
-  sample that follows the start of the hold by at least [P-SYS-460].
+Statement:     While autoflight holds the horizontal position over the ground in a wind within the
+  wind envelope, the Aeronef shall keep its horizontal position within [P-SYS-450] of the
+  reference position at each output sample that follows the start of the hold by at least
+  [P-SYS-460].
 Rationale:     Position error budget (FUNCTIONAL_ANALYSIS §7.4), the aircraft-level accuracy of
-  the hold capability of Stationary and Hover (N-130, D17, D56). Split: the autoflight guidance share [P-AF-160] plus the
-  translational regulation share [P-FC-010] is at most [P-SYS-450]; the navigation share is zero
-  under perfect state knowledge (L1-AER-440). Which position is the reference is L2 (C5); Hover
-  begins its hold once the craft is stationary at the hover height (D56). Children must show (D40): (Test) holds in zero wind, and in a steady
-  wind of [P-SYS-430] with gusts of [P-SYS-560] from several directions, stay within
-  [P-SYS-450].
+  the hold capability (N-130, D17). The budget is a horizontal position error, in Stationary and
+  in Hover, whatever the vertical mode with Stationary (D60); the altitude error is covered
+  separately by the altitude-hold tolerance [P-AF-110] at L2. Split: the autoflight guidance
+  share [P-AF-160] plus the translational regulation share [P-FC-010] is at most [P-SYS-450]; the
+  navigation share is zero under perfect state knowledge (L1-AER-440). The wind envelope bounds
+  the steady wind [P-SYS-430] and the gusts [P-SYS-560], and each gust builds up over at least
+  [P-SYS-570] (D51, D62), so the gust response falls inside the FC share. Which position is the
+  reference is L2 (C5, #78); Hover begins its hold once the craft is stationary at the hover
+  height (D56). Children must show (D58): (Test) holds in zero wind, and in a steady wind of
+  [P-SYS-430] with gusts of [P-SYS-560] built up over [P-SYS-570] from several directions, keep
+  the horizontal position within [P-SYS-450] of the reference position at each output sample
+  from [P-SYS-460] after the start of the hold, in Stationary with each vertical mode and in
+  Hover.
   Sufficiency: L0-OBJ-020 needs regulation accuracy and L0-OBJ-030 a usable hold; this record
   sets the one aircraft-level number both are measured against.
 Parent(s):     L0-OBJ-030, L0-OBJ-020
-Source:        N-130, N-140; D17, D56; METHODOLOGY §12
+Source:        N-130, N-140; D17, D51, D56, D60, D62; METHODOLOGY §12
 Allocated to:  AF, FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
-Parameters:    P-SYS-430, P-SYS-450, P-SYS-460, P-AF-160, P-FC-010, P-SYS-560
-TBD/TBR:       P-SYS-450 value TBR (proposed 1 m, D48), Martin, G2; P-SYS-460 value TBD, Martin, G2 (C5)
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    P-SYS-450, P-SYS-460, P-AF-160, P-FC-010, P-AF-110, P-SYS-430, P-SYS-560, P-SYS-570
+TBD/TBR:       P-SYS-450, P-AF-160, P-FC-010 values TBR (D48, TT-050), Martin, G2; P-SYS-460 value
+  TBD (TT-060), Martin, G2 (C5); P-SYS-430, P-SYS-560 values TBR (D51, TT-030), Martin, G2;
+  P-SYS-570 value TBD (D62, TT-650), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1310,13 +1379,17 @@ Version:       1
 ID:            L1-AER-470
 Level:         L1
 Type:          Performance
-Statement:     When an autoflight mode becomes armed or active, or when a target changes, the Aeronef
-  shall annunciate the new mode state or target to the crew within [P-SYS-470].
+Statement:     When the mode state or a target changes, the Aeronef shall annunciate the new mode state
+  or target to the crew within [P-SYS-470].
 Rationale:     The crew needs to know which mode is active, which is armed and what the vehicle
   will do next (N-060, N-210); annunciations are data items of the crew interface
-  (L0-CON-170). Timing budget (FUNCTIONAL_ANALYSIS §7.5): [P-SYS-470] is at least two control
-  frames [P-SYS-310] plus one output sample period [P-TM-010]; AF's share is [P-AF-060]. AF decides the content; the flight control panel (FCP) presents it (D55). The
-  labels are L2 (C5). Children must show (D40): (Test) each change of mode state or target in the
+  (L0-CON-170). The mode state covers the armed and active modes and whether autoflight is
+  engaged (glossary), so a mode that arms, becomes active, leaves the armed state or is
+  disengaged is a change of mode state. Timing budget (FUNCTIONAL_ANALYSIS §7.5): [P-SYS-470] is
+  at least two control frames [P-SYS-310] plus one output sample period [P-TM-010]. AF decides
+  the content and its share is [P-AF-060]; the flight control panel (FCP) presents it at each
+  output sample (L1-AER-490), so the FCP share is one output sample period [P-TM-010] (D55). The
+  labels are L2 (C5). Children must show (D58): (Test) each change of mode state or target in the
   mode-transition tests is annunciated within [P-SYS-470].
   Sufficiency: with L1-AER-490 (output as data), this record makes the crew interface carry the
   autoflight state (L0-CON-170) that operating by autoflight requires (L0-OBJ-030).
@@ -1325,9 +1398,10 @@ Source:        N-060, N-210; CONOPS §4.4
 Allocated to:  AF, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-470, P-SYS-310, P-TM-010, P-AF-060
-TBD/TBR:       P-SYS-470 value TBR (proposed 0.5 s, D48), Martin, G2 (I1)
+TBD/TBR:       P-SYS-470, P-SYS-310, P-TM-010 values TBR (D48, TT-070), P-AF-060 value TBD
+  (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1346,7 +1420,7 @@ Rationale:     The crew interface is data, with no model of physical controls (L
   (L0-ASM-120, N-320, SC-230), so a scripted selection at a given time behaves as an interactive
   one. The selections are those of the flight control panel: the modes and the heading,
   horizontal speed, target altitude and vertical speed selectors (D56). The panel is its own
-  subsystem, FCP (D55, #80.3); its detailed content is #79. Children must show (D40): (Test) a selection
+  subsystem, FCP (D55, #80.3); its detailed content is #79. Children must show (D58): (Test) a selection
   scripted at a stated simulation time and the same selection made interactively at that time
   give the same operational data.
   Sufficiency: with L1-AER-490 (output side) and -510 (no device or format), this record makes
@@ -1357,9 +1431,9 @@ Source:        N-300, N-320, N-360; L0-ASM-120
 Allocated to:  FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
-TBD/TBR:       Flight control panel content (#79), Martin, G2 (FCP)
+TBD/TBR:       Flight control panel content (#79), Martin, G2 (C8)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1375,9 +1449,10 @@ Statement:     The Aeronef shall output its annunciations and indications as dat
   interface defined in ICD-AER-TST, at each output sample.
 Rationale:     The crew receives annunciations and indications as data (L0-CON-170). The
   indications are the vehicle quantities the crew sees: altitude, vertical speed,
-  horizontal speed, heading, track and remaining fuel (CONOPS §4.3). FCP owns the
-  presentation (D55); AF, NAV and FU supply the content (FUNCTIONAL_ANALYSIS §5).
-  Children must show (D40): (Inspection) each annunciation and indication is defined as a data
+  horizontal speed, heading, track and remaining fuel (CONOPS §4.3; glossary *Indication*). FCP
+  owns the presentation (D55); AF, NAV and FU supply the content across the panel interface
+  (L1-AER-880, FUNCTIONAL_ANALYSIS §5).
+  Children must show (D58): (Inspection) each annunciation and indication is defined as a data
   item in ICD-AER-TST; (Test) the data items are present at each output sample.
   Sufficiency: see L1-AER-480.
 Parent(s):     L0-CON-170
@@ -1385,7 +1460,7 @@ Source:        N-060, N-380; CONOPS §4.3
 Allocated to:  FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1400,22 +1475,20 @@ ID:            L1-AER-500
 Level:         L1
 Type:          Constraint
 Statement:     The Aeronef shall state each crew selection and each annunciated or indicated quantity
-  in the crew-facing unit that CONVENTIONS CV-740 assigns to it, converted to and from SI by the
-  exact factors of CV-750.
+  in the crew-facing unit that CONVENTIONS CV-740 assigns to it.
 Rationale:     North American aviation units for everything the crew selects or sees (D7, D9,
-  D34; L0-CON-270). The unit rule and its limits are CV-760; selections convert without
-  intermediate rounding (CV-770). Display resolution and rounding are L2 (CV-780, #55). Children
-  must show (D40): (Inspection) each crew selection and each crew-facing output in the FCP
-  requirements names its CV-740 unit; (Test) a selected value and its shown value convert by
-  the CV-750 factor.
+  D34; L0-CON-270). The unit rule and its limits are CV-760. The conversion to and from SI is
+  L1-AER-870 (split from this record at G1, D30). Display resolution and rounding are L2
+  (CV-780, #55). Children must show (D58): (Inspection) each crew selection and each crew-facing
+  output in the FCP requirements names its CV-740 unit.
   Sufficiency: FCP owns both the selection and the presentation side of the crew interface
-  (D55), so it covers every crew-facing quantity of L0-CON-270.
+  (D55), so with L1-AER-870 (conversion) it covers every crew-facing quantity of L0-CON-270.
 Parent(s):     L0-CON-270
 Source:        N-070; D7, D9, D34; CV-740 to CV-770
 Allocated to:  FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1433,7 +1506,10 @@ Statement:     The Aeronef shall define no physical control device and no displa
   crew interface.
 Rationale:     Detailed pilot controls and displays are excluded (L0-CON-170;
   AIRCRAFT_CHARACTERISTICS §7). A graphical interface for the panel belongs to the TST and does
-  not change this boundary. This is a leaf at L1: it is checked directly over the whole Aeronef
+  not change this boundary. A display format is the layout, graphics and symbology of the
+  shown data (glossary); the value resolution and rounding of a crew-interface data item
+  (CV-780) are not a display format, so the FCP requirements on them do not breach this
+  record. This is a leaf at L1: it is checked directly over the whole Aeronef
   branch. "Shall define no" is a true prohibition.
   Sufficiency: with L1-AER-480 and -490, which make the crew interface data, this record covers
   the exclusion part of L0-CON-170.
@@ -1458,13 +1534,12 @@ Level:         L1
 Type:          Constraint
 Statement:     The Aeronef shall take each crew input through the flight control panel data of its
   crew interface and through no direct manual flight control.
-Rationale:     A stick or yoke is out of scope; the flight control panel is as manual as flying the
-  Aeronef gets (L0-CON-180, owner at G0). Plan §1 mentions manual control as an optional "Where"
-  feature; B1 does not write one, because it would contradict L0-CON-180 (B1-Q09). Leaf at L1,
-  checked directly over the Aeronef branch.
+Rationale:     The flight control panel is the only crew input (L0-CON-180, D55): there is no stick
+  or yoke. No manual-control requirement is written at L1 (D49). Leaf at L1, checked directly
+  over the Aeronef branch.
   Sufficiency: one inspection over the branch covers L0-CON-180.
 Parent(s):     L0-CON-180
-Source:        L0-CON-180; plan §1
+Source:        L0-CON-180; D49, D55
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: no requirement of the Aeronef branch at L1 or
@@ -1489,8 +1564,9 @@ Statement:     The Aeronef shall compute, at each control frame, its altitude, h
 Rationale:     Navigation function F-AER-09: one definition of each guidance quantity, used by
   autoflight, the crew indications and the operational data (FUNCTIONAL_ANALYSIS §5.2).
   Validity thresholds for track and heading are NAV requirements (CV-580). There is no flight
-  path angle and no VOR quantity (D56). Children must show (D40): (Analysis) each computed quantity matches an
-  independent computation from the recorded state, inside its validity range.
+  path angle and no VOR quantity (D56). Autoflight receives the quantities across ICD-NAV-AF
+  (L1-AER-890). Children must show (D58): (Analysis) each computed quantity matches an
+  independent computation from the recorded state, inside the validity range of CV-580.
   Sufficiency: this record gives autoflight every quantity the mode
   catalogue guides (L0-OBJ-030).
 Parent(s):     L0-OBJ-030
@@ -1498,7 +1574,7 @@ Source:        N-190; CV-430 to CV-580
 Allocated to:  NAV
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1570,7 +1646,7 @@ Type:          Functional
 Statement:     The Aeronef shall indicate its remaining fuel mass to the crew at each output sample.
 Rationale:     The crew needs to see how much fuel is left (N-150); the finite supply bounds every
   mission (L0-CON-100), and the indication is a data item of the crew interface (L0-CON-170).
-  It is shown in lb (D9, L1-AER-500). Children must show (D40): (Test) the indicated fuel equals
+  It is shown in lb (D9, L1-AER-500). Children must show (D58): (Test) the indicated fuel equals
   the remaining fuel mass converted to lb, at each output sample.
   Sufficiency: with L1-AER-570 and -580 (alerts), this record makes the fuel state known to the
   crew, which completes the crew side of L0-CON-100 through the interface of L0-CON-170.
@@ -1579,7 +1655,7 @@ Source:        N-150; D9; CONOPS §4.3, §4.5
 Allocated to:  FU, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1596,7 +1672,7 @@ Type:          Functional
 Statement:     When the remaining fuel mass falls below the fraction [P-FU-020] of [P-FU-010], the
   Aeronef shall annunciate a low-fuel alert within [P-SYS-470].
 Rationale:     The crew needs a warning before the fuel runs out (N-150, METHODOLOGY §8.5). The
-  threshold is a fraction (CV-720). The alert label is L2. Children must show (D40): (Test) in
+  threshold is a fraction (CV-720). The alert label is L2. Children must show (D58): (Test) in
   the reference mission, the alert appears within [P-SYS-470] of the first sample below the
   threshold.
   Sufficiency: see L1-AER-560.
@@ -1605,9 +1681,9 @@ Source:        N-150; CONOPS §4.5, SC-110
 Allocated to:  FU, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-FU-020, P-FU-010, P-SYS-470
-TBD/TBR:       P-FU-020 value TBR (proposed 0.1, D48), Martin, G2
+TBD/TBR:       P-FU-020 value TBR (D48, TT-130), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1622,7 +1698,7 @@ Type:          Functional
 Statement:     When the remaining fuel mass reaches zero, the Aeronef shall annunciate fuel
   exhaustion within [P-SYS-470].
 Rationale:     The crew needs to know when the fuel has run out and what follows (N-150): the
-  effectors stop (L1-AER-200). What the modes do then is L2 (#59). Children must show (D40):
+  effectors stop (L1-AER-200). What the modes do then is L2 (#59). Children must show (D58):
   (Test) in the reference mission, the annunciation appears within [P-SYS-470] of the first
   sample with zero fuel.
   Sufficiency: see L1-AER-560.
@@ -1631,7 +1707,7 @@ Source:        N-150; CONOPS §4.5, SC-110
 Allocated to:  FU, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-470
 TBD/TBR:       Autoflight state after fuel exhaustion (#59), Martin, G2 (C2, C5)
 Owner:         Martin
@@ -1649,7 +1725,8 @@ Statement:     The Aeronef shall attach to each output sample, crew selection re
   record the timestamp that CONVENTIONS CV-840 defines.
 Rationale:     The operational data must relate inputs, mode changes, control activity and
   responses in time (L0-OBJ-140, N-390). One time base, with the step index authoritative
-  (CV-820, CV-840), is what makes that correlation possible. Children must show (D40):
+  (CV-820, CV-840), is what makes that correlation possible. The record kinds are glossary
+  terms (*Output sample*, *Crew selection*, *Event record*). Children must show (D58):
   (Inspection) each record kind in ICD-AER-TST carries the step index and simulation time;
   (Test) the timestamps of a run are consistent with the simulation step.
   Sufficiency: with L1-AER-600 (rate) and L1-AER-610 to -640 (content), this record gives the
@@ -1660,7 +1737,7 @@ Source:        N-340, N-390; CV-840
 Allocated to:  TM
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1679,16 +1756,16 @@ Statement:     The Aeronef shall produce one operational data output sample ever
 Rationale:     The TST needs the data at each step it assesses (N-340), and the RVS needs a rate
   fine enough to see cause and effect. [P-TM-010] is an integer multiple of the simulation step
   (timing budget, FUNCTIONAL_ANALYSIS §7.5); it is proposed equal to the control frame period.
-  Children must show (D40): (Test) the output samples of a run are spaced by [P-TM-010].
+  Children must show (D58): (Test) the output samples of a run are spaced by [P-TM-010].
   Sufficiency: see L1-AER-590.
 Parent(s):     L0-OBJ-140
 Source:        N-340; CV-830
 Allocated to:  TM
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-TM-010
-TBD/TBR:       P-TM-010 value TBR (proposed equal to P-SYS-310), Martin, G2 (C7)
+TBD/TBR:       P-TM-010 value TBR (D48, TT-070), Martin, G2 (C7)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1704,7 +1781,7 @@ Statement:     The Aeronef shall record in its operational data each crew select
   each target that results from it.
 Rationale:     Crew inputs are the first of the four things L0-OBJ-140 relates (OBJECTIVES §4;
   REVERSE_ENGINEERING §3C, §5). The target is recorded in SI with, where the crew selected it,
-  the crew-facing value (CV-760 group 4). Children must show (D40): (Test) each scripted
+  the crew-facing value (CV-760 group 4). Children must show (D58): (Test) each scripted
   selection of a run appears once in the operational data with its timestamp and its target.
   Sufficiency: see L1-AER-590.
 Parent(s):     L0-OBJ-140
@@ -1712,7 +1789,7 @@ Source:        N-340, N-390
 Allocated to:  TM, AF, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1730,7 +1807,7 @@ Statement:     The Aeronef shall record in its operational data, at each output 
   and active autoflight modes and the annunciations presented to the crew.
 Rationale:     Mode changes are the second thing L0-OBJ-140 relates; they are what the RVS
   reconstructs (L0-SUC-100, -110) and what mode-transition tests assess. Children must show
-  (D40): (Test) each mode change of a mode-transition test appears in the operational data at
+  (D58): (Test) each mode change of a mode-transition test appears in the operational data at
   the sample where it occurs.
   Sufficiency: see L1-AER-590.
 Parent(s):     L0-OBJ-140
@@ -1738,7 +1815,7 @@ Source:        N-060, N-340, N-390
 Allocated to:  TM, AF, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1757,7 +1834,7 @@ Statement:     The Aeronef shall record in its operational data, at each output 
   flow.
 Rationale:     Control activity is the third thing L0-OBJ-140 relates (TESTING_ENVIRONMENT §8).
   The list is closed. Whether a signal is released to the RVS is decided with the RVS (#69,
-  G0-F22). Children must show (D40): (Inspection) each listed signal is defined in ICD-AER-TST;
+  G0-F22). Children must show (D58): (Inspection) each listed signal is defined in ICD-AER-TST;
   (Test) each is present at each output sample.
   Sufficiency: see L1-AER-590.
 Parent(s):     L0-OBJ-140
@@ -1765,10 +1842,10 @@ Source:        N-250, N-340
 Allocated to:  TM, FC, EF, FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
-TBD/TBR:       Releasable or protected classification of each signal (#69), Martin, RVS plan
-  extension (D44)
+TBD/TBR:       Releasable or protected classification of each signal (#69), Martin, closes when the
+  plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1781,12 +1858,13 @@ ID:            L1-AER-640
 Level:         L1
 Type:          Functional
 Statement:     The Aeronef shall record in its operational data, at each output sample, its vehicle
-  state, its navigation quantities, its sensed acceleration at the centre of gravity, its vehicle mass,
-  its remaining fuel mass and each ground-contact event.
+  state, its altitude, horizontal speed, vertical speed, heading and track, its sensed
+  acceleration at the centre of gravity, its vehicle mass, its remaining fuel mass and each
+  ground-contact event.
 Rationale:     Vehicle responses are the fourth thing L0-OBJ-140 relates. These are also the
   measurements the TST needs to assess the performance records (L1-AER-290, -300, -460) and the
   fuel used per leg of the reference mission (N-250). The list is closed. Children must show
-  (D40): (Inspection) each listed signal is defined in ICD-AER-TST; (Test) each is present at
+  (D58): (Inspection) each listed signal is defined in ICD-AER-TST; (Test) each is present at
   each output sample, and each event at its sample.
   Sufficiency: see L1-AER-590.
 Parent(s):     L0-OBJ-140
@@ -1794,7 +1872,7 @@ Source:        N-250, N-340, N-390
 Allocated to:  TM, DYN, NAV, FU
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1813,7 +1891,7 @@ Statement:     The Aeronef shall output, for each run, the identifier and versio
 Rationale:     A result is evidence only if the configuration that produced it is known (N-350).
   There is one configuration to pass every requirement (L0-SUC-020, D42), and the control law and
   autoflight are replaceable (L0-CON-200, -210), so each run must say which design ran. The TST
-  adds its own run metadata (CV-870). Children must show (D40): (Test) the identifiers output by
+  adds its own run metadata (CV-870). Children must show (D58): (Test) the identifiers output by
   a run match the configuration it was started with, including a test variant.
   Sufficiency: with L1-AER-400, -410 and -790, this record lets the verification results be tied
   to the one Aeronef configuration and to the design actually loaded.
@@ -1822,7 +1900,7 @@ Source:        N-350; CV-870
 Allocated to:  TM
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1840,16 +1918,17 @@ Statement:     The Aeronef shall accept from the TST, at the start of each run, 
   of position, velocity, attitude, body rates, fuel mass, autoflight mode state and targets.
 Rationale:     The TST sets the whole starting state of a run (N-310, CONOPS §4.6), and every
   scenario starts airborne (CONOPS §4.2). The mode state is a data item here; which mode states
-  are valid at start is L2 (#60). Children must show (D40): (Test) the first output sample of a
+  are valid at start is L2 (#60). The targets are the initial selector values, which the flight
+  control panel holds (D55), so FCP is allocated with AF. Children must show (D58): (Test) the first output sample of a
   run reports the initial condition it was given.
   Sufficiency: an executable model (L0-OBJ-010) must be started from a defined state, and
   autoflight (L0-OBJ-030) from a defined mode state; this record supplies both.
 Parent(s):     L0-OBJ-010, L0-OBJ-030
 Source:        N-310; CONOPS §4.6, SC-200
-Allocated to:  DYN, FU, AF
+Allocated to:  DYN, FU, AF, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       Valid initial mode states (#60), Martin, G2 (C5)
 Owner:         Martin
@@ -1863,21 +1942,24 @@ Version:       1
 ID:            L1-AER-670
 Level:         L1
 Type:          Interface
-Statement:     The Aeronef shall advance its vehicle model by one simulation step of [P-SYS-300] each
-  time the TST commands a step.
+Statement:     Each time the TST commands a step, the Aeronef shall advance its vehicle model by one
+  simulation step of [P-SYS-300] with the wind velocity that the TST gives with that command.
 Rationale:     The TST executes the simulation at a fixed step (F-TST-01, CV-820) and controls
   time, so that a run can execute faster or slower than real time with the same result (CV-810).
-  The wind of the run comes with the step command (I-25). Children must show (D40): (Test) after
-  k commanded steps, the simulation time is k times [P-SYS-300].
+  The wind of the run, steady wind plus gusts within the wind envelope, comes with the step
+  command (I-25, D51, D62); drag uses it through the air-relative velocity (L1-AER-070). Only the
+  vehicle model receives the wind: the flight software does not know it. Children must show
+  (D58): (Test) after k commanded steps, the simulation time is k times [P-SYS-300]; (Analysis)
+  the air-relative velocity of each step uses the wind velocity given with that step.
   Sufficiency: with L1-AER-660, this record makes the model executable by the TST (L0-OBJ-010).
 Parent(s):     L0-OBJ-010
 Source:        N-300, N-360; CV-810, CV-820
 Allocated to:  DYN
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-300
-TBD/TBR:       P-SYS-300 value TBR (proposed 0.01 s), Martin, G2 (I1)
+TBD/TBR:       P-SYS-300 value TBR (D48, TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1889,21 +1971,23 @@ Version:       1
 ID:            L1-AER-680
 Level:         L1
 Type:          Performance
-Statement:     The Aeronef shall execute its navigation, autoflight and flight-control functions at
-  a control frame period of [P-SYS-310] that is an integer multiple of [P-SYS-300].
+Statement:     The Aeronef shall execute its crew-selection, navigation, autoflight and flight-control
+  functions at a control frame period of [P-SYS-310] that is an integer multiple of
+  [P-SYS-300].
 Rationale:     Derived from the architecture (DD-010 proposed): the flight software runs at a fixed
-  rate, synchronised with the simulation step, in the order of FUNCTIONAL_ANALYSIS §4.2. A whole
+  rate, synchronised with the simulation step, in the order of FUNCTIONAL_ANALYSIS §4.2; the
+  flight control panel takes the crew selections at step 2 of the frame (F-AER-10). A whole
   number of steps per frame keeps the sampling exact on the CV-840 time base. The frame period
-  is part of the timing budget (§7.5). Children must show (D40): (Test) the effector commands
+  is part of the timing budget (§7.5). Children must show (D58): (Test) the effector commands
   change only at control-frame boundaries.
 Parent(s):     Derived (DD-010)
 Source:        Trade study: FUNCTIONAL_ANALYSIS §4.2, §5; CV-830
-Allocated to:  NAV, AF, FC
+Allocated to:  NAV, AF, FC, FCP
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-310, P-SYS-300
-TBD/TBR:       P-SYS-310 value TBR (proposed 0.02 s), Martin, G2 (I1)
+TBD/TBR:       P-SYS-310 value TBR (D48, TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1915,22 +1999,26 @@ Version:       1
 ID:            L1-AER-690
 Level:         L1
 Type:          Constraint
-Statement:     The Aeronef shall produce identical operational data from an identical configuration,
-  initial condition, crew selection sequence and execution host.
-Rationale:     Runs must be reproducible (L0-OBJ-110, N-330), and the assumption behind it is a
-  deterministic run (L0-ASM-020). The Aeronef's own software is part of every run, so it must not
-  add any unrecorded variation. L0-OBJ-110 is allocated to the TST only; CR-B1-01 asks to add AER.
-  Bit-identical runs are not checked across hosts (D25); on one host they are the simple test.
-  Children must show (D40): (Test) two executions of the same run on one host give identical
-  operational data.
-  Sufficiency: every subsystem contributes to the operational data, so a determinism child in
-  each covers the Aeronef's share of L0-OBJ-110.
+Statement:     When a run is repeated with the same configuration, initial condition, crew selection
+  script and TST step and wind inputs, the Aeronef shall produce operational data that give the
+  same pass or fail verdict against each success criterion assessed on the run.
+Rationale:     Runs must be reproducible (L0-OBJ-110, N-330). The owner ruled that repeat runs give
+  the same pass or fail verdicts and agree within the stated tolerances, and are not required to
+  be bit-identical (D59, confirming D25); the tolerances are those each success criterion states.
+  L0-ASM-020 (deterministic runs) is a stronger assumption that this record does not need. The
+  TST inputs (the step commands and the wind of L1-AER-670) are part of the run, so they are
+  part of the condition. The Aeronef's own software is part of every run, so it must not add
+  any variation that changes a verdict. L0-OBJ-110 is allocated to the TST and the Aeronef
+  (CR-B1-01, D50). Children must show (D58): (Test) repeated executions of the same automated
+  test run give the same verdict for each success criterion.
+  Sufficiency: every subsystem contributes to the operational data, so a reproducibility child
+  in each covers the Aeronef's share of L0-OBJ-110.
 Parent(s):     L0-OBJ-110
-Source:        N-330; L0-ASM-020; D25
+Source:        N-330; L0-ASM-020; D25, D59
 Allocated to:  DYN, FU, EF, FC, AF, FCP, NAV, TM
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -1947,8 +2035,8 @@ Type:          Constraint
 Statement:     The Aeronef shall execute each of its functions without a graphical display.
 Rationale:     The simulation core must work without graphics so that campaigns run unattended
   (L0-CON-190, N-300). The Aeronef runs inside the core, so none of its functions may need a
-  display; its crew output is data (L1-AER-490). L0-CON-190 is allocated to the TST only;
-  CR-B1-02 asks to add AER. Leaf at L1.
+  display; its crew output is data (L1-AER-490). L0-CON-190 is allocated to the TST and the
+  Aeronef (CR-B1-02, D50). Leaf at L1.
   Sufficiency: the Aeronef's share of L0-CON-190 is that it needs no display; one demonstration
   covers it.
 Parent(s):     L0-CON-190
@@ -1977,16 +2065,17 @@ Rationale:     Derived from the timing budget (DD-020 proposed). A discrete flig
   finite effector response add latency to the control loop; bounding it lets the control-law
   design and the effector model be sized against one number. Split (FUNCTIONAL_ANALYSIS §7.5):
   one control frame [P-SYS-310] plus the effector command response time [P-EF-010] is at most
-  [P-SYS-480]. Children must show (D40): (Test) a step in a reference produces the first change
-  of effector output within [P-SYS-480].
+  [P-SYS-480]. Children must show (D58): (Test) for a change of vehicle state, the time from the
+  simulation time of that state to the first change of effector output that responds to it is
+  at most [P-SYS-480].
 Parent(s):     Derived (DD-020)
 Source:        METHODOLOGY §7 rule 4 (timing budget)
 Allocated to:  FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    P-SYS-480, P-SYS-310, P-EF-010
-TBD/TBR:       P-SYS-480 value TBR (proposed 0.1 s), P-EF-010 value TBD, Martin, G2 (C3, C4)
+TBD/TBR:       P-SYS-480 value TBR (D48, TT-070), P-EF-010 value TBD (TT-080), Martin, G2 (C3, C4)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -2003,7 +2092,8 @@ Statement:     The Aeronef shall have a baselined model specification, MS-DYN, t
   effector, fuel and mass-properties models.
 Rationale:     L0-OBJ-010 requires the executable model to conform to a baselined model
   specification. The list is the closed content of MS-DYN (plan C1; glossary). Children must
-  show (D40): (Inspection) MS-DYN is baselined at G2 and each listed model has a section.
+  show (D58): (Inspection) MS-DYN is baselined at G2 and each listed model has a section.
+  MS-DYN does not exist yet; it is written by C1 (TT-660).
   Sufficiency: with L1-AER-010 and the model-fidelity records it points to, this record gives
   the baselined specification L0-OBJ-010 names.
 Parent(s):     L0-OBJ-010
@@ -2011,7 +2101,7 @@ Source:        N-270; plan §6 C1
 Allocated to:  DYN, FU, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
-  verification and the decomposition has been reviewed (D40).
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -2078,19 +2168,20 @@ Version:       1
 ID:            L1-AER-750
 Level:         L1
 Type:          Documentation
-Statement:     The Aeronef shall have its requirements in one level file per level, with each
-  requirement below L0 stating its level and either its parent requirements or the design
-  decision it derives from.
+Statement:     The Aeronef shall hold its requirements in one level file per requirement level.
 Rationale:     Top-down hierarchy (L0-OBJ-180, plan §3, D2, D31). Depth is decided per branch
-  (D4). Leaf at L1: the trace check and the record format check it directly.
-  Sufficiency: the Aeronef part of L0-OBJ-180 is its own branch of the hierarchy; this record
-  covers it.
+  (D4). The former second half of this record was split at G1 (D30) into L1-AER-850 (each record
+  states its level) and L1-AER-860 (each record traces to its parents or to its design
+  decision). Leaf at L1: the record format check verifies it directly.
+  Sufficiency: the Aeronef part of L0-OBJ-180 is its own branch of the hierarchy; with
+  L1-AER-850 and -860 this record covers it.
 Parent(s):     L0-OBJ-180
 Source:        Plan §3; D2, D4, D31
 Allocated to:  —
 Criticality:   Not assessed
-Verification:  Inspection — TBD; success criteria: the lint and trace check report no LEVEL,
-  ID-FORMAT, ORPHAN or DERIVED error in the Aeronef branch, checked at each gate.
+Verification:  Inspection — TBD; success criteria: each Aeronef requirement is held in the level
+  file requirements/L<n>.md of its level, one file per level, and the assembler reports no
+  section error, checked at each gate.
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
@@ -2177,12 +2268,13 @@ Version:       1
 ```req
 ID:            L1-AER-790
 Level:         L1
-Type:          Documentation
+Type:          Performance
 Statement:     The Aeronef configuration shall pass the verification of each baselined Aeronef
   requirement.
 Rationale:     One configuration: one autoflight implementation with one flight-control-law design
-  on the vehicle model, and it must pass every requirement (L0-SUC-020, D26, D39, D42). Leaf at
-  L1: the verification matrix shows it directly.
+  on the vehicle model, and it must pass every requirement (L0-SUC-020, D26, D39, D42). Typed
+  Performance like its parent L0-SUC-020. Leaf at L1: the verification matrix shows it
+  directly.
   Sufficiency: the Aeronef part of L0-SUC-020 is exactly this pass.
 Parent(s):     L0-SUC-020
 Source:        D26, D39, D42
@@ -2204,10 +2296,11 @@ Version:       1
 ID:            L1-AER-800
 Level:         L1
 Type:          Documentation
-Statement:     The Aeronef shall have its requirements baselined down to the last requirement layer of
-  each subsystem branch, with no open major review finding, at the requirements baseline.
-Rationale:     L0-SUC-010: the baselined set is the definition of the vehicle. The last layer is
-  the one above implementation (D4). The requirements baseline is AER-REQ-baseline-1 (G4). Leaf
+Statement:     The Aeronef shall have its requirements baselined down to the lowest requirement level
+  of each subsystem branch, with no open major review finding, at the requirements baseline.
+Rationale:     L0-SUC-010: the baselined set is the definition of the vehicle. The lowest
+  requirement level of a branch is the level whose next layer would describe the
+  implementation (D4); it is reached branch by branch in Phases 3 and 4 of the plan. The requirements baseline is AER-REQ-baseline-1 (G4). Leaf
   at L1.
   Sufficiency: this is the Aeronef part of L0-SUC-010 in full.
 Parent(s):     L0-SUC-010
@@ -2256,10 +2349,13 @@ Version:       1
 ID:            L1-AER-820
 Level:         L1
 Type:          Documentation
-Statement:     The Aeronef shall contribute to the final test report the last result of each
-  verification procedure performed against each Aeronef requirement.
+Statement:     When the requirements baseline is approved, the Aeronef shall contribute to the final
+  test report the last result of each verification procedure performed against each Aeronef
+  requirement.
 Rationale:     L0-SUC-170: the report of completion lists every test against every level. Each
-  element contributes its section and the orchestrator compiles it (D28). Leaf at L1.
+  element contributes its section and the orchestrator compiles it (D28). The report is issued
+  for the complete requirements baseline, approved at Gate G4 (plan §6); *Requirements baseline*
+  and *Final test report* are glossary terms. Leaf at L1.
   Sufficiency: this is the Aeronef part of L0-SUC-170.
 Parent(s):     L0-SUC-170
 Source:        D28
@@ -2282,8 +2378,8 @@ Level:         L1
 Type:          Documentation
 Statement:     The Aeronef shall contribute to the method assessment report one section that
   assesses the AI-assisted methods used to design and to verify the Aeronef.
-Rationale:     L0-OBJ-210 (important to the owner): the assessment of the AI-assisted methods is an
-  objective in its own right. Each element contributes; the owner audits (D28). The
+Rationale:     L0-OBJ-210; OBJECTIVES §1: the assessment of the AI-assisted methods is an objective
+  in its own right, because the project exists to try those methods. Each element contributes; the owner audits (D28). The
   reverse-engineering section comes from the RVS. Leaf at L1.
   Sufficiency: the Aeronef covers the system-design and automated-verification parts of
   L0-OBJ-210 that concern it.
@@ -2310,8 +2406,8 @@ Statement:     The Aeronef shall have a Vehicle Operating Manual, normal procedu
   reference checklists, each of which states the requirements baseline it describes.
 Rationale:     L0-OBJ-150; METHODOLOGY §11.2. The manuals are written after the requirements
   baseline and describe observable behaviour and operator actions. Abnormal and emergency
-  procedures are deferred with the hazard analysis. The TST user guide belongs to the TST. Leaf
-  at L1.
+  procedures are deferred with the hazard analysis (tailoring note, L0-ASM-070); the deferral
+  is recorded in the TBD/TBR field. The TST user guide belongs to the TST. Leaf at L1.
   Sufficiency: these three documents are the Aeronef part of the set L0-OBJ-150 names.
 Parent(s):     L0-OBJ-150
 Source:        METHODOLOGY §11.2; N-380, N-430
@@ -2319,6 +2415,154 @@ Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: the three documents exist and each names the
   requirements baseline it describes.
+Parameters:    —
+TBD/TBR:       Abnormal and emergency procedures deferred with the hazard analysis, Martin,
+  closes when failures are introduced (#85)
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L1-AER-850
+
+```req
+ID:            L1-AER-850
+Level:         L1
+Type:          Documentation
+Statement:     The Aeronef shall state in each of its requirements below L0 the level of that
+  requirement.
+Rationale:     Split from L1-AER-750 at G1 (D30). L0-OBJ-180 asks that each requirement below L0
+  has a level attribute; the ID starts with the level and the Level field must match it (D31).
+  Leaf at L1: the lint checks it directly.
+  Sufficiency: see L1-AER-750.
+Parent(s):     L0-OBJ-180
+Source:        Plan §3; D31; METHODOLOGY §9.1
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: the lint reports no LEVEL or ID-FORMAT error in
+  the Aeronef branch, checked at each gate.
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L1-AER-860
+
+```req
+ID:            L1-AER-860
+Level:         L1
+Type:          Documentation
+Statement:     The Aeronef shall trace each of its requirements below L0 to its parent requirements,
+  or, for a derived requirement, to the design decision it derives from.
+Rationale:     Split from L1-AER-750 at G1 (D30). L0-OBJ-180 asks for a parent or a Derived flag
+  with its design decision for each requirement below L0. The two cases are the two values of
+  one trace attribute (Parent(s)), checked by one tool. Leaf at L1: the trace check verifies it
+  directly.
+  Sufficiency: see L1-AER-750.
+Parent(s):     L0-OBJ-180
+Source:        METHODOLOGY §9.2, §10.4; D31
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: the trace check reports no ORPHAN or DERIVED
+  error in the Aeronef branch, checked at each gate.
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L1-AER-870
+
+```req
+ID:            L1-AER-870
+Level:         L1
+Type:          Constraint
+Statement:     The Aeronef shall convert each crew selection to SI, and each annunciated or
+  indicated quantity from SI, by the exact factors of CONVENTIONS CV-750.
+Rationale:     Split from L1-AER-500 at G1 (D30): the unit assignment and the conversion are two
+  checks. Selections convert without intermediate rounding (CV-770); display resolution and
+  rounding are L2 (CV-780, #55). The conversion sits in the flight control panel, so only SI
+  values cross into autoflight (D55, L1-AER-880). Children must show (D58): (Test) a selected
+  value and its SI target, and an SI quantity and its shown value, convert by the CV-750 factor;
+  (Inspection) no FCP requirement rounds a selected value before conversion.
+  Sufficiency: see L1-AER-500.
+Parent(s):     L0-CON-270
+Source:        N-070; D7, D9, D34; CV-750, CV-770
+Allocated to:  FCP
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: each child requirement has passed its
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L1-AER-880
+
+```req
+ID:            L1-AER-880
+Level:         L1
+Type:          Interface
+Statement:     The Aeronef shall exchange data between its flight control panel and its other
+  functions only as crew selections, with each selected value converted to its SI target, out of
+  the panel, and as annunciation content, navigation quantities and fuel state into it, as
+  defined in ICD-FCP.
+Rationale:     The flight control panel is its own subsystem (D55). C8 writes the panel while C5, C6
+  and C2 write its neighbours, in parallel (plan §6), so they need one definition of what
+  crosses the panel boundary. The list is closed. Only SI values cross into autoflight, so the crew units
+  stay in the panel (CV-760, L1-AER-500, -870). Autoflight gives the annunciation content (which
+  modes, which targets, D55), navigation the indicated quantities (L1-AER-530) and FU the fuel
+  state for the fuel indication and alerts (L1-AER-560 to -580). TM records the panel signals
+  without being a party to the exchange (L1-AER-610, -620). ICD-FCP is a new ICD, added to the
+  plan §3 list (TT-680). Children must show (D58): (Inspection) each data item crossing the panel
+  boundary in the FCP, AF, NAV and FU requirements is one of the listed kinds and is defined in
+  ICD-FCP; (Demonstration) the FCP and AF implementations run against the same ICD-FCP
+  definition.
+  Sufficiency: with L1-AER-480 and -490 (the crew side of the panel), this record defines the
+  Aeronef side of the panel, so the crew interface is data end to end (L0-CON-170) and
+  autoflight receives its crew input in one form (L0-OBJ-030).
+Parent(s):     L0-CON-170, L0-OBJ-030
+Source:        D55, D56; FUNCTIONAL_ANALYSIS §3.2 I-06, I-16, I-18, I-19, §5.1
+Allocated to:  FCP, AF, NAV, FU
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: each child requirement has passed its
+  verification and the decomposition has been reviewed (D40, D58).
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L1-AER-890
+
+```req
+ID:            L1-AER-890
+Level:         L1
+Type:          Interface
+Statement:     The Aeronef shall pass its altitude, horizontal speed, vertical speed, heading and
+  track, with their validity, from navigation to autoflight through the one interface defined in
+  ICD-NAV-AF.
+Rationale:     The navigation → autoflight boundary of the architecture (FUNCTIONAL_ANALYSIS §5.1,
+  I-17) needs an interface record on both sides (METHODOLOGY §13.2); L1-AER-530 states the
+  computation, not the interface. One definition of each quantity is used by autoflight
+  and the crew indications (D55). Validity follows the CV-580 thresholds. There is no VOR and no
+  flight path angle (D56). Children must show (D58): (Inspection) the NAV and AF requirements
+  each cite ICD-NAV-AF for these quantities, and each quantity is defined there with its unit,
+  frame and validity.
+  Sufficiency: with L1-AER-530 (the computation), this record delivers every quantity the mode
+  catalogue guides on to autoflight across a defined boundary (L0-OBJ-030).
+Parent(s):     L0-OBJ-030
+Source:        N-190; CV-430 to CV-580; FUNCTIONAL_ANALYSIS §3.2 I-17, §5.1
+Allocated to:  NAV, AF
+Criticality:   Not assessed
+Verification:  Inspection — TBD; success criteria: each child requirement has passed its
+  verification and the decomposition has been reviewed (D40, D58).
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin

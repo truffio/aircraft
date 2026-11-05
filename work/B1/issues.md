@@ -2,6 +2,8 @@
 
 Task B1 (plan §6, Phase 2): L1 Aeronef requirements (`work/B1/L1_AER.md`, 84 records) and `specs/FUNCTIONAL_ANALYSIS.md`. Questions are at L1 level: the Aeronef as a whole, its budgets, its interfaces and its architecture. Mode-level questions stay deferred at L2 (D33); they are listed in §7 only where L1 touches them. The local IDs B1-Qnn need GitHub issues; cite them by issue number once filed.
 
+> **Status after the G1 rework (2026-11-04).** The B1 owner questions are answered (D45 to D58), and D59 to D62 answered the G1 inspection. Section 3 (the Q5 proposal) and DD-040 are **superseded** by D56 and D55 and are kept only as a record: no L2 agent uses them. The current state is in `requirements/L1.md`, `specs/FUNCTIONAL_ANALYSIS.md`, `work/B1/interface_needs.md` and `reviews/G1/dispositions.md`. The counts in §1 are those of the first draft.
+
 ## 1. Summary
 
 | Item | Count |
@@ -30,11 +32,13 @@ Task B1 (plan §6, Phase 2): L1 Aeronef requirements (`work/B1/L1_AER.md`, 84 re
 | B1-Q09 (#103) | **Manual control as an optional feature.** Plan §1 says manual control is "recorded as an optional feature (EARS 'Where' pattern)". L0-CON-180 excludes direct manual flight controls. Write the "Where" record? | No. A "Where a manual control is installed" record would contradict L0-CON-180. Keep N-180 in the ConOps only, and amend plan §1 to say so. | L1-AER-520; plan §1<br>**Answered (D49):** no record now; a lower-level matter. |
 | B1-Q10 (#104) | **Determinism and headless running.** L0-OBJ-110 (reproducible runs) and L0-CON-190 (no graphical display) are allocated to the TST only, but the Aeronef's own software decides both. Add AER to their allocation (CR-B1-01, CR-B1-02)? | Yes. The Aeronef children L1-AER-690 and -700 are written against them already. | L0-OBJ-110, L0-CON-190<br>**Answered (D50):** approved; CR-B1-01 and -02 applied to L0. |
 
-## 3. Q5 (#6) — mode combinations: proposal for the owner
+## 3. Q5 (#6) — mode combinations: proposal for the owner (SUPERSEDED by D56)
+
+> **Superseded (D56, owner, 2026-11-04).** The owner replaced the mode catalogue: D56 replaces D3, D11 and D13 and withdraws D12 and D14. Everything in this section is obsolete: the three groups, the flight path angle (FPA), track hold (TRK), VOR radial tracking (VOR), position hold (POS HOLD) and horizontal speed (SPD) modes, the compatibility matrix, the heading rules and option B. It was built on D3, D11 and D13, which no longer hold. It is **not an input to C5** or to any L2 agent. The catalogue is D56: one horizontal mode (Stationary, Heading) and one vertical mode (Altitude hold, Go to altitude, Vertical speed) at a time, independent, with Go to hover and Hover governing both (see `specs/CONOPS.md` §4.4 and the glossary).
 
 **Status.** The owner deferred Q5 to L2, where the modes are defined (D33, #6 comments). B1 does not write any of this as an L1 requirement (L1-AER-450 only references the catalogue). The proposal is offered for a decision at G1 so that C5 starts from an agreed rule. It revises the plan's proposal to match D11, as the owner asked on #6.
 
-### 3.1 Proposal (recommended: option A, three airliner-style groups)
+### 3.1 Proposal (superseded by D56; record only)
 
 | Group | Modes (D3) | Armed modes |
 | --- | --- | --- |
@@ -67,11 +71,11 @@ Note on V/S with POS HOLD: forbidden under the "stops on every axis" reading of 
 
 Heading in TRK, VOR, POS HOLD and HOVER: held at its value when the mode became active (ConOps reading A2-Q03, confirmed at L2).
 
-### 3.2 Option B (recorded alternative): a fourth, heading group
+### 3.2 Option B (superseded by D56; record only)
 
 Heading and track are independent on the Aeronef (CV-550, N-110). Option B moves HDG into its own heading group, so the lateral group holds only the horizontal path (TRK, VOR, POS HOLD) and the crew can select a heading while flying a track. It uses the vehicle's independence more fully, but it departs from the airliner concept that manuals and the RVS can relate to, and it needs a path mode for "fly where the nose points". **B1 recommends option A for this cycle**, with B kept for a later version.
 
-### 3.3 Why this answers Q5 at the right level
+### 3.3 Why this answers Q5 at the right level (superseded by D56; record only)
 
 It fixes which modes can be active together and what happens on a conflict, which is all that Q5 asks. It does not fix capture conditions, transition criteria, labels or per-mode accuracies; those stay with C5 and Phase 4. It respects D11 (POS HOLD lateral, HOVER vertical, HOVER needs POS HOLD), D13 (FPA not with POS HOLD) and D16 (arm, then capture).
 
@@ -91,7 +95,7 @@ No other change to L0 is needed: every AER-allocated L0 record has at least one 
 | DD-010 | The flight software (NAV, AF, FC) runs once per control frame of fixed period, an integer multiple of the simulation step, in the order NAV → AF → FC (FUNCTIONAL_ANALYSIS §4.2). | Execute at every simulation step; asynchronous or event-driven execution. | A whole number of steps per frame keeps sampling exact on the CV-840 time base and decouples the integration step (accuracy) from the software rate. Execution at every step ties the two; asynchronous execution breaks determinism (L1-AER-690). | L1-AER-680 |
 | DD-020 | The control-loop latency is bounded at aircraft level and split into one control frame plus the effector command response time. | No latency requirement (leave it to C4); a separate budget per axis. | A single number lets C3 (effector response) and C4 (control-law margins) size against the same budget (METHODOLOGY §7 rule 4). Per-axis budgets are a C4 refinement if needed. | L1-AER-710 |
 | DD-030 | Withdrawn: the owner chose the centre of gravity (D45, #97). | | | | 
-| DD-040 | Logical architecture: three-layer cascade around a vehicle model behind one fixed boundary; separate NAV; TM as an observer; crew input in AF and crew presentation in TM (no FCP subsystem). | Integrated guidance and control; NAV inside AF; a separate FCP subsystem (FUNCTIONAL_ANALYSIS §5.3). | Replaceable control laws and autoflight (L0-CON-200, -210, D15); one definition of each navigation quantity; observation without interference. Awaiting B1-Q01. | None (allocation basis for every L1 record) |
+| DD-040 | **Superseded (D55):** the owner approved the cascade and made the flight control panel its own subsystem, so the "crew input in AF and crew presentation in TM (no FCP subsystem)" part is obsolete. The architecture basis is plan decision D55 and FUNCTIONAL_ANALYSIS §5; no DD entry is needed. Original: three-layer cascade around a vehicle model behind one fixed boundary; separate NAV; TM as an observer; crew input in AF and crew presentation in TM. | Integrated guidance and control; NAV inside AF; a separate FCP subsystem (FUNCTIONAL_ANALYSIS §5.3). | Replaceable control laws and autoflight (L0-CON-200, -210, D15); one definition of each navigation quantity; observation without interference. | None (allocation basis for every L1 record) |
 
 Until DD-010 and DD-020 are in `registers/DECISIONS.md`, `trace_check.py` reports two DERIVED errors (L1-AER-680, -710).
 
@@ -102,27 +106,27 @@ Until DD-010 and DD-020 are in `registers/DECISIONS.md`, `trace_check.py` report
 | N-B1-01 | Expected check results after assembly: lint 0 errors, 48 COMPOUND warnings on L1 (judged in §8); trace 69 CHILDLESS (L1 records, no L2 yet) and 2 DERIVED (DD-010, -020 not yet in the register), and no CHILDLESS L0 record; param PARAM-MISSING for every referenced parameter (the database is empty until B2). | Accept at G1; DD-010 and DD-020 go in the register; B2 seeds the parameters. |
 | N-B1-02 | `requirements/L1.md` was restored after the self-check (task instruction); the draft is `work/B1/L1_AER.md`. The L1.md header says "Skeleton (T0)"; update it at assembly. | Orchestrator. |
 | N-B1-03 | P-AF-160 changes meaning, from the whole position-hold tolerance (CONOPS SC-090) to the AF guidance share of P-SYS-450. CONOPS SC-090 and SC-100 should cite P-SYS-450 for the scenario tolerance. The ConOps mode material is parked for L2 (#89), so the edit can wait for C5. | B2 seeds the new description; log on #89. |
-| N-B1-04 | P-AF-070 (minimum horizontal speed for FPA) supports the A2-Q06 behaviour that the owner rejected (D13, #61, #89 item b). The Q5 proposal (§3 rule 6) gives C5 a different use for a minimum speed. | B2 does not seed it, or seeds it marked superseded. |
+| N-B1-04 | **Closed (D56):** P-AF-070 (minimum horizontal speed for FPA) is withdrawn with the flight path angle mode; the §3 rule 6 it served is superseded. | None. |
 | N-B1-05 | METHODOLOGY §12 example "L1-AER-001 The Aeronef shall provide a Position Hold autoflight mode" conflicts with D33. The example is illustrative; L1 follows D33 and states no mode. | None (no change to METHODOLOGY). |
 | N-B1-06 | METHODOLOGY §5 lists "failures" as an input of F-AER-08. Removed under the tailoring note (hazards deferred). | None. |
 | N-B1-07 | A new ICD is proposed for the vehicle-model boundary (IN-B1-01): plan §3 lists only ICD-AER-TST, ICD-FC-AF and ICD-NAV-AF. | I1 decides: new `icd/ICD-VM-FS.md` or a section of ICD-AER-TST. |
-| N-B1-08 | L0-CON-100 guidance asks for "an initial fuel quantity as a parameter". L1 reads it as the capacity P-FU-010 (a parameter) plus the initial fuel of each run (initial condition), so that tests can start at any fuel state (N-310). | Accept the reading at G1, or raise a CR if the owner wants a fixed initial quantity. |
-| N-B1-09 | `tools/lint.py` `SUBSYSTEMS` and `param_check.py` `PARAM_ID_RE` would need an `FCP` code if B1-Q01 adds a flight control panel subsystem. | Only if the owner adds FCP. |
-| N-B1-10 | The L1 performance records use the phrase "under autoflight" and "holding a fixed position" without mode names, to stay at aircraft level (D33). The per-mode accuracies (P-AF-080 to -150) are not L1 budgets; they are C5 and Phase 4 parameters. | None. |
+| N-B1-08 | L0-CON-100 guidance asks for "an initial fuel quantity as a parameter". L1 reads it as the capacity P-FU-010 (a parameter) plus the initial fuel of each run (initial condition), so that tests can start at any fuel state (N-310). | Asked as owner question Q3 at the G1 rework (`reviews/G1/dispositions.md`; TT-700). |
+| N-B1-09 | **Closed (D55):** `tools/lint.py` and `param_check.py` accept the `FCP` code; `requirements/L2.md` and `L3.md` have an FCP section (G1 rework). | None. |
+| N-B1-10 | The L1 performance records use the phrase "under autoflight" without mode names, to stay at aircraft level (D33). "Holding a fixed position" was replaced at G1 by "autoflight holds the horizontal position" (D60: Stationary and Hover). The per-mode accuracies are not L1 budgets; they are C5 and Phase 4 parameters. | None. |
 
 ## 7. Deferred questions that L1 touches (not asked again)
 
 | Issue | Where L1 meets it | Handling in L1 |
 | --- | --- | --- |
-| #6 (Q5) mode combinations | L1-AER-450 | Proposal in §3; nothing written as an L1 requirement. |
+| #6 (Q5) mode combinations | L1-AER-450 | **Answered (D56).** The §3 proposal is superseded; nothing written as an L1 requirement. |
 | #59 modes after fuel exhaustion | L1-AER-200, -580 | L1 fixes only the effector behaviour (zero output) and the annunciation; mode state left to C2/C5. |
 | #60 can a group have no active mode | L1-AER-660 | Initial mode state is a data item; validity left to C5. |
 | #78 hold point and deceleration | L1-AER-460 | Reference position and the start of the hold left to C5; the budget applies from P-SYS-460. |
-| #79 flight control panel | L1-AER-480 | Selections are data items; panel content left to C5 (or FCP, B1-Q01). |
-| #80.3 FCP subsystem | Architecture | Asked as B1-Q01 (it was deferred "to B1/L2"). |
+| #79 flight control panel | L1-AER-480 | Selections are data items; panel content left to FCP (C8, D55). |
+| #80.3 FCP subsystem | Architecture | **Answered (D55):** FCP is its own subsystem. |
 | #81 kinematic and gyroscopic terms | L1-AER-020 | Exception named, decision left to C1. |
-| #54 course deviation sign | L1-AER-540 | Left to C6. |
-| #55 display rounding | L1-AER-500 | Left to C5/C7 (CV-780). |
+| #54 course deviation sign | L1-AER-540 (Deleted) | **Moot (D56):** no VOR; G0-12 withdrawn (CR-B1-10). The GitHub issue can be closed. |
+| #55 display rounding | L1-AER-500 | Left to FCP (C8; CV-780 changed by CR-B1-10). |
 | #69 releasable or protected signals | L1-AER-630 | TBD with the RVS plan extension (D44, G0-F22). |
 | #83 sensor models | L1-AER-440 | Perfect knowledge now; NAV isolates a later sensor model. |
 

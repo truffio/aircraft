@@ -21,6 +21,8 @@
 #   P-SYS-400..590  L1 budgets (B1).
 #
 # Seeded by task B2 (2026-11-04) from work/A1, A2, A3 and B1 param_proposals.md.
+# G1 rework (2026-11-04): P-SYS-570 added (gust rise time, D62); descriptions aligned with D55,
+#   D56, D60 and the G1 findings (reviews/G1/dispositions.md).
 # Withdrawn by D56 and never reused: P-SYS-260, P-SYS-520 (D53), P-AF-050, -070, -080, -150,
 #   P-NAV-020, -040, -050, P-TM-060, -070.
 
@@ -120,12 +122,12 @@ parameters:
     owner: Martin
   - id: P-SYS-280
     name: Minimum hover endurance at full fuel
-    description: Shortest time from engagement of Hover at Altitude with full fuel at maximum mass to fuel exhaustion.
+    description: Shortest time, from full fuel at maximum mass, during which autoflight holds the horizontal position and the altitude in still air before fuel exhaustion (Stationary with Altitude hold, or Hover; D56, D60).
     unit: s
     value: null
     tolerance: null
     status: TBD
-    source: CONOPS SC-110 (variation hover endurance)
+    source: CONOPS SC-110 (variation hover endurance); L1-AER-360
     owner: Martin
   - id: P-SYS-300
     name: Simulation step
@@ -194,16 +196,16 @@ parameters:
     owner: Martin
   - id: P-SYS-450
     name: Position-holding error budget
-    description: Largest distance between the vehicle position and the reference position while autoflight holds a fixed position, in a wind up to P-SYS-430, from P-SYS-460 after the start of the hold. Split into P-AF-160 (guidance) and P-FC-010 (translational regulation); navigation share zero (L1-AER-440).
+    description: Largest horizontal distance between the vehicle position and the reference position while autoflight holds the horizontal position over the ground (Stationary or Hover, D60), in a wind within the wind envelope (steady wind up to P-SYS-430 plus gusts up to P-SYS-560 built up over at least P-SYS-570), from P-SYS-460 after the start of the hold. Horizontal only; the altitude error is P-AF-110. Split into P-AF-160 (guidance) and P-FC-010 (translational regulation); navigation share zero (L1-AER-440).
     unit: m
     value: 1.0
     tolerance: null
     status: TBR
-    source: L1-AER-460; METHODOLOGY §12 example; FUNCTIONAL_ANALYSIS §7.4
+    source: L1-AER-460; D60; METHODOLOGY §12 example; FUNCTIONAL_ANALYSIS §7.4
     owner: Martin
   - id: P-SYS-460
     name: Position-hold settling time
-    description: Time from the start of a position hold after which the position-holding error budget applies. When the hold starts is set by the mode logic (#78, C5).
+    description: Time from the start of a hold of the horizontal position (Stationary or Hover) after which the position-holding error budget P-SYS-450 applies. When the hold starts is set by the mode logic (#78, C5).
     unit: s
     value: null
     tolerance: null
@@ -249,7 +251,7 @@ parameters:
     owner: Martin
   - id: P-SYS-540
     name: Cross-axis velocity tolerance
-    description: Largest departure of the velocity along each translational axis from its reference while the reference of another degree of freedom changes.
+    description: Largest departure of the velocity along each body axis from its reference while the reference of another degree of freedom changes.
     unit: m/s
     value: null
     tolerance: null
@@ -267,13 +269,22 @@ parameters:
     owner: Martin
   - id: P-SYS-560
     name: Maximum gust speed
-    description: Largest horizontal wind speed that gusts and bursts add to the steady wind (P-SYS-430). The largest instantaneous wind is P-SYS-430 + P-SYS-560. The gust shape (onset and duration) is defined in MS-DYN and set by the TST for each run.
+    description: Largest horizontal wind speed that gusts and bursts add to the steady wind (P-SYS-430). The largest instantaneous wind is P-SYS-430 + P-SYS-560. Each gust builds up over at least P-SYS-570 (D62); the rest of the gust shape is defined in MS-DYN and set by the TST for each run.
     unit: m/s
     value: 25.722
     tolerance: null
     note: '50 kt (owner, #99, D51); 150 kt instantaneous with the steady wind.'
     status: TBR
     source: 'L1-AER-130, -310, -460; L0-ASM-050; D51; #99'
+    owner: Martin
+  - id: P-SYS-570
+    name: Minimum gust rise time
+    description: Shortest time over which a gust or burst builds up from the steady wind to its full speed. Instantaneous wind steps are not allowed, so the drag changes at a bounded rate and the vehicle acceleration, position-holding and speed budgets close against it (D62).
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: 'D62 (G1-F08); L1-AER-290, -300, -310, -460; set at G2 with MS-DYN (C1) and the TST wind model'
     owner: Martin
 
   # --- DYN ---
@@ -366,7 +377,7 @@ parameters:
   # --- FC ---
   - id: P-FC-010
     name: Translational regulation position share
-    description: Largest distance between the vehicle position and the autoflight reference position while a fixed position is held. Share of P-SYS-450.
+    description: Largest horizontal distance between the vehicle position and the autoflight reference position while autoflight holds the horizontal position (Stationary or Hover, D60). Share of P-SYS-450.
     unit: m
     value: 0.5
     tolerance: null
@@ -388,6 +399,7 @@ parameters:
   - id: P-AF-010
     name: Altitude selection resolution
     description: Smallest step of the selected altitude.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: ft
     crew_facing: true
     value: null
@@ -398,6 +410,7 @@ parameters:
   - id: P-AF-020
     name: Vertical speed selection resolution
     description: Smallest step of the selected vertical speed.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: ft/min
     crew_facing: true
     value: null
@@ -408,6 +421,7 @@ parameters:
   - id: P-AF-030
     name: Horizontal speed selection resolution
     description: Smallest step of the selected horizontal speed.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: kt
     crew_facing: true
     value: null
@@ -418,6 +432,7 @@ parameters:
   - id: P-AF-040
     name: Heading selection resolution
     description: Smallest step of the selected heading.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: deg
     crew_facing: true
     value: null
@@ -432,11 +447,11 @@ parameters:
     value: null
     tolerance: null
     status: TBD
-    source: CONOPS §4.4, §5, SC-110, N-060
+    source: L1-AER-470; FUNCTIONAL_ANALYSIS §7.5; CONOPS §4.4, N-060
     owner: Martin
   - id: P-AF-090
     name: Vertical speed tracking tolerance
-    description: Largest settled difference between vertical speed and selected vertical speed in V/S mode.
+    description: Largest settled difference between vertical speed and selected vertical speed in Vertical speed mode, or in Go to altitude at a selected vertical speed.
     unit: m/s
     value: null
     tolerance: null
@@ -463,7 +478,7 @@ parameters:
     owner: Martin
   - id: P-AF-120
     name: Horizontal speed tracking tolerance
-    description: Largest settled difference between horizontal speed and selected horizontal speed in SPD mode.
+    description: Largest settled difference between horizontal speed and selected horizontal speed in Heading (there is no separate speed mode, D56).
     unit: m/s
     value: null
     tolerance: null
@@ -541,7 +556,7 @@ parameters:
     value: null
     tolerance: null
     status: TBD
-    source: D56; CONOPS SC-100; L1-AER-450
+    source: D56; CONOPS SC-100
     owner: Martin
   - id: P-AF-220
     name: Standard vertical speed
@@ -550,7 +565,7 @@ parameters:
     value: null
     tolerance: null
     status: TBD
-    source: D56; CONOPS SC-020; L1-AER-450
+    source: D56; CONOPS SC-020
     owner: Martin
 
   # --- NAV ---

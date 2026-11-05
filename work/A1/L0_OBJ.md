@@ -66,13 +66,13 @@ Statement:     The Aeronef project shall develop autoflight functions, adapted f
 Rationale:     Direct manual control of a vehicle with six independent degrees of freedom is
   expected to be impractical, so autoflight is developed first (OBJECTIVES §2,
   AIRCRAFT_CHARACTERISTICS §6). Airliner modes give an operating concept that a crew
-  can follow from annunciations and that operational manuals can describe. The initial
-  mode catalogue is fixed by plan decision D3; direct manual flight controls are
-  excluded (L0-CON-180). The modes themselves are defined at L2 (D33). Children must
-  show (D41): (Inspection) each mode of the baselined mode catalogue (D3) is covered by
-  a requirement in the Aeronef branch that traces to this objective.
+  can follow from annunciations and that operational manuals can describe. The mode
+  catalogue is plan decision D56, which replaced D3 (CR-B1-08); direct manual flight
+  controls are excluded (L0-CON-180). The modes themselves are defined at L2 (D33).
+  Children must show (D41): (Inspection) each mode of the mode catalogue (D56) is covered
+  by a requirement in the Aeronef branch that traces to this objective.
 Parent(s):     —
-Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §6; AIRCRAFT_REQUIREMENTS_PLAN.md §9 D3
+Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §6; AIRCRAFT_REQUIREMENTS_PLAN.md §9 D56
 Allocated to:  AER
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
@@ -81,7 +81,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       2
+Version:       3
 ```
 
 ### L0-OBJ-040
