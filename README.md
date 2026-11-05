@@ -18,6 +18,7 @@ This repository holds the project's engineering documentation.
 | [AIRCRAFT_CHARACTERISTICS.md](AIRCRAFT_CHARACTERISTICS.md) | Preliminary vehicle concept: motion and physics, force effectors, mass and fuel, flight controls, autoflight, and modeling boundaries. |
 | [TESTING_ENVIRONMENT.md](TESTING_ENVIRONMENT.md) | Simulation core, interactive and automated testing, parallel execution, comparative evaluation, data collection, and traceability. |
 | [REVERSE_ENGINEERING.md](REVERSE_ENGINEERING.md) | Information separation, material available to reverse-engineering agents, approach, assessment of results, and experimental integrity. |
+| [METHODOLOGY.md](METHODOLOGY.md) | Requirements engineering methodology: level-by-level process, functional analysis, decomposition, writing rules (EARS, INCOSE), attributes, verification, traceability, and peer review. Hazard and failure analysis is deferred for now. |
 
 ## Status
 
