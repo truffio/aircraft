@@ -93,12 +93,12 @@ parameters:
     owner: Martin
   - id: P-SYS-230
     name: Maximum horizontal speed
-    description: Highest horizontal speed reached in autoflight, as true airspeed; the effectors saturate there. Upper limit of the selected horizontal speed (crew-facing kt). 300 kt.
+    description: Highest horizontal speed (ground speed, CV-480) reached in autoflight. Upper limit of the selected horizontal speed (crew-facing kt). 300 kt; in still air it is also the airspeed of the endurance anchor P-SYS-290 (D66, D72).
     unit: m/s
     value: 154.333
     tolerance: null
     status: Set
-    source: CONOPS §5, N-170; owner (D66)
+    source: CONOPS §5, N-170; owner (D66, D72)
     owner: Martin
   - id: P-SYS-240
     name: Maximum climb vertical speed
@@ -126,7 +126,7 @@ parameters:
     unit: rad/s
     value: 0.062832
     tolerance: null
-    note: '3.6 deg/s: at P-SYS-230 the lateral acceleration is 9.70 m/s^2, inside P-AF-200 (1 g).'
+    note: '3.6 deg/s: at 300 kt ground speed the lateral acceleration is 9.70 m/s^2, inside P-AF-200 (1 g). At higher ground speed (tailwind) C5 bounds the heading rate to stay within P-AF-200 (D72).'
     status: TBR
     source: CONOPS §5, SC-050, SC-060, N-170; owner (D67)
     owner: Martin
@@ -142,7 +142,7 @@ parameters:
     owner: Martin
   - id: P-SYS-290
     name: Endurance at maximum horizontal speed
-    description: Time, from full fuel at maximum mass, during which the vehicle sustains the maximum horizontal speed P-SYS-230 at sea level in still air before fuel exhaustion. The anchor from which the consumption coefficients P-FU-040 and P-FU-050 are derived (D66). 8 h.
+    description: Time, from full fuel at maximum mass, during which the vehicle sustains the maximum horizontal speed P-SYS-230 at sea level in still air before fuel exhaustion. The anchor from which the consumption coefficients P-FU-040 and P-FU-050 and the hover endurance P-SYS-280 are derived (D66); not a requirement to verify (D72). A change of P-DYN-100 re-derives them. 8 h.
     unit: s
     value: 28800
     tolerance: null
@@ -423,9 +423,9 @@ parameters:
     name: Model accuracy horizon
     description: Simulation time over which the credibility-check tolerances P-DYN-220 and P-DYN-250 apply. At least the longest run; raised to P-SYS-280 if that is set longer.
     unit: s
-    value: 172800.0
+    value: 600.0
     tolerance: null
-    note: '48 h: at least the hover endurance P-SYS-280 (46 h, D66), the longest run.'
+    note: 'Short horizon for checks C-3 and C-5 in a gravity-free check configuration; no check runs for the 48 h hover duration (D72, G2-F01).'
     status: TBR
     source: L1-AER-010; L2-AER-DYN-620, -640; MS-DYN §10.3, §11
     owner: Martin
