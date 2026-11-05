@@ -8,7 +8,7 @@ Parameters referenced by `work/C2/L2_FU.md`. The field layout follows `parameter
 
 ## 1. Existing parameters: proposed updates
 
-The changes are to the description, the value, the status, the source and the note. The ID, name and unit are unchanged, except that the unit of P-FU-040 and P-FU-050 is confirmed as that of one linear coefficient each (DD-C2-01).
+The changes are to the description, the value, the status, the source and the note. The ID, name and unit are unchanged, except that the unit of P-FU-040 and P-FU-050 is confirmed as that of one linear coefficient each (DD-110).
 
 **Proposed value set (TBR).** B1 left P-FU-010, -030, -040, -050 and -060 TBD for C2 to set at G2 (TT-110, TT-120). C2 proposes one coherent set that closes the fuel budget of L2-AER-FU-290 for an assumed hover endurance [P-SYS-280] of 3600 s, which is the owner's to set (D47). With [P-FU-030] = 1000 kg, [P-FU-010] = 500 kg, [P-FU-100] = 0.05 and [P-DYN-010] = 9.80665 m/s², the budget needs [P-FU-040] ≤ ln(1.5) / (1.05 × 9.80665 × 3600) = 1.0938e-5 kg/(N·s). With [P-FU-040] = 1.09e-5 kg/(N·s), the capacity needed is 1000 × (exp(1.05 × 1.09e-5 × 9.80665 × 3600) − 1) = 497.9 kg ≤ 500 kg, and the closed-form still-air endurance is ln(1.5) / (1.09e-5 × 9.80665) = 3793 s. The hover fuel mass flow at maximum mass is then 0.160 kg/s. The masses are a placeholder scale for a small fictional craft; I1 rescales them with the effector authority budget (P-SYS-400 to -420) if needed. If the owner sets another [P-SYS-280], keep [P-FU-030] and [P-FU-010] and recompute [P-FU-040] from the same inequality (owner question C2-Q6).
 
@@ -47,7 +47,7 @@ parameters:
     owner: Martin
   - id: P-FU-040
     name: Translational fuel consumption coefficient
-    description: Coefficient k_t of the translational consumption relationship of MS-DYN (DD-C2-01) - fuel mass flow per newton of the magnitude of the resultant control force. One coefficient, common to the effector set.
+    description: Coefficient k_t of the translational consumption relationship of MS-DYN (DD-110) - fuel mass flow per newton of the magnitude of the resultant control force. One coefficient, common to the effector set.
     unit: kg/(N*s)
     value: 1.09e-5
     tolerance: null
@@ -57,7 +57,7 @@ parameters:
     owner: Martin
   - id: P-FU-050
     name: Rotational fuel consumption coefficient
-    description: Coefficient k_r of the rotational consumption relationship of MS-DYN (DD-C2-01) - fuel mass flow per newton metre of the magnitude of the resultant control moment about the centre of gravity. One coefficient, common to the effector set.
+    description: Coefficient k_r of the rotational consumption relationship of MS-DYN (DD-110) - fuel mass flow per newton metre of the magnitude of the resultant control moment about the centre of gravity. One coefficient, common to the effector set.
     unit: kg/(N*m*s)
     value: 1.09e-5
     tolerance: null
@@ -94,7 +94,7 @@ parameters:
     owner: Martin
   - id: P-FU-080
     name: Full-fuel principal moments of inertia
-    description: Principal moments of inertia (Ixx, Iyy, Izz) of the fuel at full capacity P-FU-010 about the centre of gravity, in the body axes, three components. Products of inertia are zero. The fuel share of the inertia tensor is this value times the ratio of the remaining fuel mass to P-FU-010 (L2-AER-FU-170; uniform depletion, DD-C2-02). Derived in MS-DYN from the fuel-mass distribution with P-FU-010 (L2-AER-FU-190); not set independently.
+    description: Principal moments of inertia (Ixx, Iyy, Izz) of the fuel at full capacity P-FU-010 about the centre of gravity, in the body axes, three components. Products of inertia are zero. The fuel share of the inertia tensor is this value times the ratio of the remaining fuel mass to P-FU-010 (L2-AER-FU-170; uniform depletion, DD-120). Derived in MS-DYN from the fuel-mass distribution with P-FU-010 (L2-AER-FU-190); not set independently.
     unit: kg*m^2
     value: null
     tolerance: null

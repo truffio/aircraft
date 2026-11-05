@@ -4,7 +4,7 @@ The dynamics model requirements (task C1). The subject of each statement is the 
 
 **Depth.** Each record below is a leaf: the next layer would be the implementation (integration method, code structure), so DYN has no L3 section (D4). Each record is verified directly by its own method (D40). Procedure IDs follow the record number (IN-, AN-, TP-, DM-DYN-nnn); Phase 5 (V1) writes the procedures.
 
-**Open owner questions that the records are written around** (`work/C1/issues.md`): the rotation-during-translation term (#81.1, C1-Q01), the retained kinematic terms (#81, C1-Q02), the drag form (C1-Q03), the gust shape and rise time (C1-Q04) and the body shape (C1-Q05). Each affected record is correct under either answer, because it points to the MS-DYN section that records the answer, and carries the item in its TBD/TBR field.
+**Owner answers (D64, 2026-11-05).** The rotation-during-translation term is retained (#81.1, option T1) and #81 is closed with the MS-DYN kinematic terms list; drag is isotropic quadratic with no aerodynamic moment (option D1); the gust shape and the 2 s rise time, the capsule and its dimensions (TBR) and standard gravity (Set) are accepted. The records point to the MS-DYN sections that record these answers.
 
 **Coverage of the L1 parents.** Every L1 record allocated to DYN has at least one DYN child. L1-AER-230 is Deleted (D54) and has none.
 
@@ -34,7 +34,7 @@ The dynamics model requirements (task C1). The subject of each statement is the 
 | L1-AER-690 | Each step depends only on the run's state, inputs and parameters | -420 |
 | L1-AER-720 | MS-DYN is baselined with a named section for each DYN model; FU and EF fill theirs | -700 |
 
-One record is Derived: L2-AER-DYN-540 (DD-C1-03).
+One record is Derived: L2-AER-DYN-540 (DD-070).
 
 ### L2-AER-DYN-010
 
@@ -47,8 +47,7 @@ Statement:     The dynamics model shall propagate the vehicle state as the motio
 Rationale:     For a simulated vehicle the physics is the requirement (METHODOLOGY §7); MS-DYN holds
   the equations so that this record can point to them (INCOSE R23). The body is rigid, with no
   flexibility or fuel slosh (L0-ASM-080), and the local reference frame is inertial (CV-140). The
-  equations are written so that the open question #81.1 does not change this record (MS-DYN §4.2,
-  §4.5).
+  equations retain the rotation-during-translation term (D64, MS-DYN §4.2, §4.5).
   Sufficiency (L1-AER-010): L1-AER-010 asks for six-degree-of-freedom rigid-body motion in
   accordance with MS-DYN, shown against free fall, free fall with drag and torque-free rotation.
   This record fixes the equations; -020 the state; -030 and -040 the translational and rotational
@@ -109,8 +108,8 @@ Statement:     The dynamics model shall compute the rate of change of the vehicl
 Rationale:     The mass loss is a real effect on the dynamics: the same force gives a larger
   acceleration as fuel burns (L0-ASM-090, L1-AER-180). The equation takes the instantaneous mass and
   has no thrust term from the fuel mass flow (MS-DYN §4.1). The statement says "rate of change of
-  the vehicle velocity" and not "total force divided by mass" so that it holds under both options
-  of #81.1 (MS-DYN §4.2).
+  the vehicle velocity" and not "total force divided by mass"; with the term retained (D64) the
+  two are the same in the local reference frame (MS-DYN §4.2).
   Sufficiency (L1-AER-180): FU computes the vehicle mass as the dry mass plus the remaining fuel
   mass (FU child). DYN's share is to make that mass act on the motion: this record uses it,
   L2-AER-DYN-210 takes it from FU at each step, and L2-AER-DYN-630 checks the result against the
@@ -122,10 +121,10 @@ Source:        L0-ASM-090; MS-DYN §4.1, §4.2
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-DYN-030; success criteria: the implemented translational equation
-  is the one MS-DYN §4.2 gives for the #81.1 option recorded in the kinematic terms list, it uses
+  is the one MS-DYN §4.2 gives with the rotation-during-translation term retained (D64), it uses
   the vehicle mass that FU provides for the step, and it has no term in the fuel mass flow.
 Parameters:    —
-TBD/TBR:       Rotation-during-translation term (#81.1, C1-Q01), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -173,9 +172,9 @@ Statement:     The dynamics model shall include, as terms that relate motion alo
   freedom to an acceleration along another degree of freedom in the body frame, only the
   rigid-body kinematic terms that the kinematic terms list of MS-DYN gives.
 Rationale:     Owner definition D18 and the exception of L1-AER-020. MS-DYN §4.5 lists the
-  gyroscopic term (K-1, retained as proposed), the rotation-during-translation term (K-2, open:
-  #81.1) and the resolution of gravity, drag and control force through the attitude (K-3). The
-  record holds under either answer to #81.1, because the list records the answer. With pitch and
+  gyroscopic term (K-1), the rotation-during-translation term (K-2) and the resolution of gravity,
+  drag and control force through the attitude (K-3), all three retained by the owner (D64, #81,
+  #81.1). With pitch and
   roll held at zero (D57) K-1 is zero in normal operation, and K-2 has no vertical component.
   Sufficiency (L1-AER-020): the coupling sources the model contains are the equations of motion,
   the drag, the effectors and the inertia. DYN covers the equations (this record), the drag
@@ -184,15 +183,14 @@ Rationale:     Owner definition D18 and the exception of L1-AER-020. MS-DYN §4.
   gives zero products of inertia. L2-AER-DYN-640 checks the K-2 behaviour. With MS-DYN listing each
   retained term, the DYN part of what L1-AER-020 asks its children to show is met.
 Parent(s):     L1-AER-020
-Source:        D18, D57, D61; #81
+Source:        D18, D57, D61, D64; #81
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-DYN-050; success criteria: each implemented term that relates two
   degrees of freedom is a term of the MS-DYN kinematic terms list, and the list states the owner's
-  decisions on #81 and #81.1.
+  decision (D64).
 Parameters:    —
-TBD/TBR:       Rotation-during-translation term (#81.1, C1-Q01), Martin, G2; retained terms K-1 and
-  K-3 to be confirmed (#81, C1-Q02), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -290,20 +288,20 @@ Type:          Model fidelity
 Statement:     The dynamics model shall compute the total moment about the centre of gravity as the
   control moment, with no moment from gravity or from drag.
 Rationale:     Gravity is uniform and acts at the centre of gravity, so it gives no moment. Drag
-  acts at the centre of gravity and there is no rotational damping moment (DD-C1-01, proposed): a
+  acts at the centre of gravity and there is no rotational damping moment (DD-050, proposed): a
   vehicle at fuel exhaustion keeps its angular momentum, as CONOPS SC-110 and the L1-AER-200 and
   -390 rationales describe. A drag moment depending on the translation would also be a cross-axis
   term (D18). The drag-moment lines of the moment budget (L1-AER-140) are then zero.
   Sufficiency (L1-AER-050): see L2-AER-DYN-100. Sufficiency (L1-AER-020): see L2-AER-DYN-050.
 Parent(s):     L1-AER-050, L1-AER-020
-Source:        DD-C1-01 (proposed); MS-DYN §5.1, §5.5
+Source:        DD-050 (proposed); MS-DYN §5.1, §5.5
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-DYN-110; success criteria: gravity and drag are applied at the
   centre of gravity, and the only moment in the implemented rotational equation is the control
   moment from EF.
 Parameters:    —
-TBD/TBR:       No aerodynamic moment (DD-C1-01, C1-Q03), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -332,7 +330,7 @@ Verification:  Inspection — IN-DYN-120; success criteria: the implemented grav
   axis of the local reference frame, the same at each position and time, applied at the centre of
   gravity.
 Parameters:    P-DYN-010
-TBD/TBR:       P-DYN-010 value TBR (TT-150), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -348,8 +346,9 @@ Statement:     The dynamics model shall compute the drag force from the air-rela
   the air density at the vehicle altitude by the drag model of MS-DYN.
 Rationale:     Drag acts on the velocity relative to the air, which includes the wind (L0-CON-090,
   L0-ASM-050, CV-470). The form is a C1 choice bounded by L1-AER-020 and -030 (L1-AER-070
-  rationale): MS-DYN §5.5 recommends isotropic quadratic drag with one drag area [P-DYN-100]
-  (DD-C1-02), with a per-axis form as the alternative (C1-Q03). Both act at the centre of gravity.
+  rationale): MS-DYN §5.5 uses isotropic quadratic drag with one drag area [P-DYN-100]
+  (DD-060, D64); the per-axis form stays documented as the alternative. It acts at the centre of
+  gravity.
   Sufficiency (L1-AER-070): L1-AER-070 asks for drag computed from the air-relative velocity and
   the standard-atmosphere density. This record ties the drag to both; L2-AER-DYN-140 defines the
   air-relative velocity with the wind of each step; L2-AER-DYN-150 the density; L2-AER-DYN-610 is
@@ -363,7 +362,7 @@ Verification:  Analysis — AN-DYN-130; success criteria: for air-relative veloc
   atmosphere model, the drag force the model computes equals the MS-DYN drag formula evaluated
   independently, to floating-point rounding.
 Parameters:    P-DYN-100
-TBD/TBR:       Drag form (DD-C1-02, C1-Q03), Martin, G2; P-DYN-100 value TBR, Martin, G2 (I1)
+TBD/TBR:       P-DYN-100 value TBR (TT-750), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -434,10 +433,9 @@ Type:          Constraint
 Statement:     The dynamics model shall compute no aerodynamic force other than the drag force of
   the drag model.
 Rationale:     Lift would couple attitude and translation (L1-AER-030 rationale). "Shall compute no"
-  is a true prohibition (METHODOLOGY §8.4 rule 11). Under the recommended drag form (MS-DYN §5.5,
-  option D1) the drag force is opposite to the air-relative velocity, so no part of it is
-  perpendicular to the flow. Under option D2 a cross-flow component exists for oblique flow; the
-  owner's ruling on C1-Q03 says whether it is accepted as drag.
+  is a true prohibition (METHODOLOGY §8.4 rule 11). Under the drag form the owner chose (MS-DYN
+  §5.5, option D1, D64) the drag force is opposite to the air-relative velocity, so no part of it
+  is perpendicular to the flow.
   Sufficiency (L1-AER-030): the dynamics model is the only place an aerodynamic force can arise
   (L1-AER-030 rationale), so this record satisfies the inspection L1-AER-030 asks for.
 Parent(s):     L1-AER-030
@@ -446,10 +444,9 @@ Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-DYN-160; success criteria: MS-DYN and the implementation define no
   aerodynamic force other than the drag force of the drag model, and that force has no component
-  perpendicular to the air-relative velocity (option D1) or the C1-Q03 ruling accepts its
-  cross-flow component (option D2).
+  perpendicular to the air-relative velocity.
 Parameters:    —
-TBD/TBR:       Drag form (C1-Q03), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -519,8 +516,8 @@ Type:          Constraint
 Statement:     While the air-relative velocity lies along one body axis, the dynamics model shall
   compute a drag force along that body axis only.
 Rationale:     The DYN share of D18 for the drag: a translation along one axis does not cause an
-  acceleration along another. Both drag forms of MS-DYN §5.5 meet it, so the record holds whatever
-  the answer to C1-Q03.
+  acceleration along another. The isotropic drag of MS-DYN §5.5 (D64) meets it, as the per-axis
+  alternative would.
   Sufficiency (L1-AER-020): see L2-AER-DYN-050.
 Parent(s):     L1-AER-020
 Source:        D18; MS-DYN §5.5
@@ -603,7 +600,8 @@ Rationale:     L0-CON-140 asks for the inertia to be derived from an elongated b
   provisionally a "Tic Tac" (AIRCRAFT_CHARACTERISTICS §1). L1-AER-220 places the shape in MS-DYN
   with its dimensions as DYN parameters (G1 disposition of L1-AER-220). A capsule is symmetric in
   each body coordinate plane, so a mass distribution with the same symmetry gives principal body
-  axes (D61). The shape is provisional (C1-Q05).
+  axes (D61). The owner accepted the capsule (D64); the shape stays provisional until
+  2026-11-30 (L0-CON-140).
   Sufficiency (L1-AER-220): see L2-AER-DYN-040.
 Parent(s):     L1-AER-220
 Source:        L0-CON-140; AIRCRAFT_CHARACTERISTICS.md §1; MS-DYN §2.1
@@ -613,8 +611,8 @@ Verification:  Inspection — IN-DYN-220; success criteria: MS-DYN states the ca
   along the body x axis, its centre at the centre of gravity and its dimensions as [P-DYN-020] and
   [P-DYN-030], and [P-DYN-020] is at least [P-DYN-030] in the parameter database.
 Parameters:    P-DYN-020, P-DYN-030
-TBD/TBR:       Body shape provisional (L0-CON-140, C1-Q05), Martin, 2026-11-30; P-DYN-020 and
-  P-DYN-030 values TBR, Martin, G2
+TBD/TBR:       Body shape provisional (L0-CON-140), Martin, 2026-11-30; P-DYN-020 and
+  P-DYN-030 values TBR (TT-740), Martin, 2026-11-30
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -685,8 +683,8 @@ Statement:     The dynamics model shall compute, at each simulation step, the se
 Rationale:     The crew limit is on the sensed acceleration, evaluated at the centre of gravity
   (D38, D45). DYN computes it from its definition (glossary; MS-DYN §8), so that the limit FC
   enforces can be measured in every run. The instant at which it is evaluated is MS-DYN §3.3
-  (DD-C1-04). Under option T2 of #81.1 it differs from the vehicle acceleration minus gravity
-  (C1-Q01).
+  (DD-080). With the rotation-during-translation term retained (D64) it equals the vehicle
+  acceleration minus gravity, resolved in the body frame.
   Sufficiency (L1-AER-290): FC limits the resultant control force at the current mass, AF limits
   the manoeuvres and FU supplies the mass (their children). DYN's share is the measured quantity
   (this record), the gravity that the budget counts as [P-DYN-010] (L2-AER-DYN-120), and no shock
@@ -704,7 +702,7 @@ Verification:  Analysis — AN-DYN-300; success criteria: (1) in check C-1 the s
   drag and a control force, the recorded sensed acceleration equals the control force plus the
   drag divided by the mass, computed independently. Each to floating-point rounding.
 Parameters:    P-DYN-010
-TBD/TBR:       Evaluation instant of the acceleration quantities (DD-C1-04), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -721,8 +719,7 @@ Statement:     The dynamics model shall compute, at each simulation step, the ve
   translational equation of MS-DYN gives.
 Rationale:     The vehicle acceleration is part of the vehicle state (glossary) and is what the
   TST measures for the vehicle acceleration limit (L1-AER-300). It is a derivative, so it depends
-  on the inputs; MS-DYN §3.3 fixes the instant at which it is evaluated (DD-C1-04). The statement
-  holds under both options of #81.1.
+  on the inputs; MS-DYN §3.3 fixes the instant at which it is evaluated (DD-080).
   Sufficiency (L1-AER-640): see L2-AER-DYN-350.
 Parent(s):     L1-AER-640
 Source:        Glossary *Vehicle acceleration*; MS-DYN §3.2, §3.3, §4.2
@@ -733,7 +730,7 @@ Verification:  Analysis — AN-DYN-310; success criteria: at each step of a run 
   independently from the recorded state and inputs at the instant of MS-DYN §3.3, to
   floating-point rounding; in check C-1 it equals the gravitational acceleration.
 Parameters:    —
-TBD/TBR:       Evaluation instant of the acceleration quantities (DD-C1-04), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -900,8 +897,7 @@ Criticality:   Not assessed
 Verification:  Inspection — IN-DYN-410; success criteria: the implementation uses the wind of the
   command for a step at each evaluation within that step, and no other wind value.
 Parameters:    P-SYS-570, P-SYS-300
-TBD/TBR:       P-SYS-570 value TBD (TT-650; proposed TBR value in work/C1/param_proposals.md),
-  Martin, G2
+TBD/TBR:       P-SYS-570 value TBR (TT-650), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1120,13 +1116,13 @@ Level:         L2
 Type:          Functional
 Statement:     When the dynamics model raises a ground-contact event, the dynamics model shall
   report the vehicle position of the contact step with an altitude of zero.
-Rationale:     Derived from a design decision (DD-C1-03, proposed). With a fixed step the
+Rationale:     Derived from a design decision (DD-070, proposed). With a fixed step the
   propagated altitude at the contact step is at most zero and can be slightly negative. CV-420
   states that the altitude is never negative in a run, so the reported position is set onto the
   datum plane; the horizontal position and the velocity stay as propagated, and the
   classification uses that velocity. The alternative, interpolating the state to the crossing
   instant, puts a state off the CV-820 time grid.
-Parent(s):     Derived (DD-C1-03)
+Parent(s):     Derived (DD-070)
 Source:        CV-420, CV-820; MS-DYN §9
 Allocated to:  —
 Criticality:   Not assessed
@@ -1134,7 +1130,7 @@ Verification:  Test — TP-DYN-540; success criteria: in each contact test, the 
   the contact step is zero, its horizontal position and velocity equal the propagated values, and
   no recorded altitude of the run is negative.
 Parameters:    —
-TBD/TBR:       DD-C1-03 to be accepted, Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1290,24 +1286,23 @@ Level:         L2
 Type:          Model fidelity
 Statement:     While the fuel mass is zero in the vacuum-equivalent configuration with a non-zero
   yaw rate, the dynamics model shall match the horizontal velocity of the rotation-during-
-  translation check of MS-DYN, for the option that the kinematic terms list records, within
+  translation check of MS-DYN, with the rotation-during-translation term retained, within
   [P-DYN-250] over [P-DYN-270].
-Rationale:     The rotation-during-translation term (K-2) is the one kinematic term whose treatment
-  is open (#81.1). Check C-5 states the expected horizontal velocity under each option, so the
-  record is correct under either answer and shows that the model contains the term the owner
-  chose.
+Rationale:     The rotation-during-translation term (K-2) is retained (D64, #81.1). Check C-5
+  states the expected horizontal velocity with the term retained: with no force the velocity
+  stays fixed in the local reference frame while the body turns, which shows that the model
+  contains the term the owner chose.
   Sufficiency (L1-AER-020): see L2-AER-DYN-050. Sufficiency (L1-AER-010): see L2-AER-DYN-010.
 Parent(s):     L1-AER-020, L1-AER-010
-Source:        D18; #81.1; MS-DYN §4.5, §11 (C-5)
+Source:        D18, D64; #81.1; MS-DYN §4.5, §11 (C-5)
 Allocated to:  —
 Criticality:   Not assessed
-Verification:  Analysis — AN-DYN-640; success criteria: check C-5 for the recorded option: over
+Verification:  Analysis — AN-DYN-640; success criteria: check C-5: over
   [P-DYN-270], the horizontal velocity error relative to the initial horizontal speed is at most
   [P-DYN-250] at each step, and the yaw rate, pitch angle and roll angle keep their initial values
   to within the same relative tolerance.
 Parameters:    P-DYN-250, P-DYN-270
-TBD/TBR:       Rotation-during-translation term (#81.1, C1-Q01), Martin, G2; P-DYN-250 value TBR,
-  Martin, G2
+TBD/TBR:       P-DYN-250 value TBR (TT-760), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1338,7 +1333,7 @@ Criticality:   Not assessed
 Verification:  Inspection — IN-DYN-700; success criteria: MS-DYN is baselined at G2, and it has a
   section under each listed name that states that model.
 Parameters:    —
-TBD/TBR:       MS-DYN not yet baselined (TT-660), Martin, G2
+TBD/TBR:       MS-DYN not yet baselined (TT-780), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1

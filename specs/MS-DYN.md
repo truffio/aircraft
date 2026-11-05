@@ -4,7 +4,7 @@
 **Date:** 2026-11-05
 **Owner:** Martin (author: C1)
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
-**Related:** [L1](../requirements/L1.md) (tag `AER-L1-baseline-1`), the DYN section of L2 (draft `work/C1/L2_DYN.md`), [CONVENTIONS](CONVENTIONS.md), [GLOSSARY](GLOSSARY.md), [FUNCTIONAL_ANALYSIS](FUNCTIONAL_ANALYSIS.md), [PARAMETERS](../parameters/PARAMETERS.yaml), METHODOLOGY §7 and §10.3, plan §9 (D1–D63).
+**Related:** [L1](../requirements/L1.md) (tag `AER-L1-baseline-1`), the DYN section of L2 (draft `work/C1/L2_DYN.md`), [CONVENTIONS](CONVENTIONS.md), [GLOSSARY](GLOSSARY.md), [FUNCTIONAL_ANALYSIS](FUNCTIONAL_ANALYSIS.md), [PARAMETERS](../parameters/PARAMETERS.yaml), METHODOLOGY §7 and §10.3, plan §9 (D1–D66).
 
 ## 0. Purpose, scope and how to cite
 
@@ -13,7 +13,7 @@ For a simulated vehicle the physics is the requirement (METHODOLOGY §7). This d
 - **Citing.** Requirement statements cannot carry section numbers (the lint forbids digits), so they cite a section by its name in bold below, for example "the **drag model** of MS-DYN". Each named section keeps its name for the life of the document.
 - **Numbers.** Numbers in this document are definitions: exact mathematical constants, the constants of a named standard (the atmosphere of §5.3) and the conventions. Every value that the design can change is a parameter `P-<SUB>-<NNN>`. New parameters are proposed in `work/C1/param_proposals.md`.
 - **Content owners.** C1 (DYN) owns §1 to §5 and §8 to §13. The **mass-properties model** (§6) and the **effector and fuel models** (§7) are sections of this document because L1-AER-160, -220 and -720 place them here, but their content is written by C2 (FU) and C3 (EF) and merged at integration (I1). This draft states what DYN needs from them and leaves their content slots marked.
-- **Open decisions.** Two items are open with the owner and are written so that the document is correct under either answer: the rotation-during-translation term (#81.1, §4.5) and the drag form (C1-Q03, §5.5). Section 13 lists every open item.
+- **Owner decisions.** The owner answered the C1 questions on 2026-11-05 (plan D64): the rotation-during-translation term is retained (§4.5), drag is isotropic with no aerodynamic moment (§5.5), and the gust shape, the capsule and the proposed values are accepted. The alternatives stay documented. Section 13 lists the items still open.
 
 ## 1. Frames, notation and units
 
@@ -80,7 +80,7 @@ The crew station is the body-frame position `[P-DYN-400]` (L1-AER-250). It lies 
 
 ### 2.4 What the shape is used for
 
-The shape gives the mass properties (§6). It does not shape the drag under the recommended drag form (§5.5, option D1); under option D2 it gives the reference areas. It has no other role: there is no lift and no control surface (L1-AER-030, -040).
+The shape gives the mass properties (§6). It does not shape the drag under the drag form chosen (§5.5, option D1, D64); under option D2 it gives the reference areas. It has no other role: there is no lift and no control surface (L1-AER-030, -040).
 
 ## 3. Vehicle state and outputs
 
@@ -110,7 +110,7 @@ These thirteen numbers are the integrated state of the rigid body. Under option 
 
 The altitude, horizontal speed, vertical speed, heading and track are navigation quantities computed by NAV from the vehicle state (L1-AER-530); MS-DYN does not redefine them. The vehicle mass and the remaining fuel mass are FU outputs (L1-AER-180).
 
-### 3.3 Evaluation instant of the acceleration quantities (proposed, TBR; DD-C1-04)
+### 3.3 Evaluation instant of the acceleration quantities (DD-080)
 
 An acceleration depends on the inputs (control force, mass, wind), and the inputs change at step boundaries (§10.2). The acceleration quantities reported with step `k` are therefore defined as follows:
 
@@ -152,7 +152,7 @@ dr^L/dt = v^L
 
 The rate of change of the velocity is given by one of the two options of §4.5:
 
-| | Option T1 — rotation-during-translation term retained (recommended) | Option T2 — term removed |
+| | Option T1 — rotation-during-translation term retained (chosen, D64) | Option T2 — term removed |
 | --- | --- | --- |
 | Equation integrated | `m·dv^L/dt = F^L` (Newton's second law in the inertial frame L) | `m·dv^B/dt = C_BL·F^L` (no `ω^B × v^B` term) |
 | Same equation in the other frame | `dv^B/dt = C_BL·F^L/m − ω^B × v^B` | `dv^L/dt = F^L/m + ω^L × v^L` |
@@ -200,14 +200,14 @@ This section is the **kinematic terms** list of MS-DYN. L1-AER-020 and L0-CON-03
 
 | ID | Term | Where it appears | Status | Effect in normal operation |
 | --- | --- | --- | --- | --- |
-| K-1 | Gyroscopic term `ω^B × (J·ω^B)` | Rotational equation (§4.3) | Retained (proposed; #81, confirmation C1-Q02) | Zero. With pitch and roll held at zero (D57) the body rates are `(0, 0, r)`, and every product term of §4.3 contains `p` or `q_r`. It is non-zero only during pitch or roll transients within `[P-AF-180]` and after fuel exhaustion, when the attitude is free (L1-AER-390). It is what conserves the angular momentum in a torque-free rotation (§11, check C-3). |
-| K-2 | Rotation-during-translation term `ω^B × v^B` | Translational equation written in body axes (§4.2) | **Open: owner question #81.1.** Option T1 retains it (recommended), option T2 removes it | In Heading at a non-zero horizontal speed, a heading change turns the body under the velocity (T1) or turns the velocity with the body (T2). In Stationary, Hover and a turn in place the horizontal speed is near zero and the term is near zero. Vertical motion is unaffected under both options: with `ω^B = (0, 0, r)` the term has no body z component. |
-| K-3 | Resolution of gravity, drag and wind in the body frame through the attitude, `C_BL` | Both equations, through `C_BL` and `C_LB` | Retained (inherent in a rigid body with body-fixed effectors; C1-Q02) | Gravity stays along `z_B` while pitch and roll are zero. A body-fixed control force turns with the heading in L. It is a change of frame, not a force. |
+| K-1 | Gyroscopic term `ω^B × (J·ω^B)` | Rotational equation (§4.3) | Retained (D64; #81 closed) | Zero. With pitch and roll held at zero (D57) the body rates are `(0, 0, r)`, and every product term of §4.3 contains `p` or `q_r`. It is non-zero only during pitch or roll transients within `[P-AF-180]` and after fuel exhaustion, when the attitude is free (L1-AER-390). It is what conserves the angular momentum in a torque-free rotation (§11, check C-3). |
+| K-2 | Rotation-during-translation term `ω^B × v^B` | Translational equation written in body axes (§4.2) | **Retained** (option T1, D64; #81.1 closed). Option T2, removing it, is not used | In Heading at a non-zero horizontal speed, a heading change turns the body under the velocity (T1) or turns the velocity with the body (T2). In Stationary, Hover and a turn in place the horizontal speed is near zero and the term is near zero. Vertical motion is unaffected under both options: with `ω^B = (0, 0, r)` the term has no body z component. |
+| K-3 | Resolution of gravity, drag and wind in the body frame through the attitude, `C_BL` | Both equations, through `C_BL` and `C_LB` | Retained (inherent in a rigid body with body-fixed effectors; D64) | Gravity stays along `z_B` while pitch and roll are zero. A body-fixed control force turns with the heading in L. It is a change of frame, not a force. |
 
 Notes:
 
-- K-2 is a choice between two models, not a numerical detail. Option T1 is Newton's second law in an inertial frame: it conserves linear momentum, it is what the free-fall and terminal-velocity checks assume, and it is the standard rigid-body model. Option T2 reads D18 literally ("seen from the aircraft's body frame"): with no force, the velocity stays fixed in the body, so the vehicle's path turns with its heading. It is not Newtonian. Its consequences are listed with the question in `work/C1/issues.md` (C1-Q01).
-- Whichever option the owner chooses, this table records it, and L2-AER-DYN-050 requires the model to contain exactly the terms listed here. L1-AER-020 can then cite this section when #81 closes (CR-C1-01).
+- K-2 is a choice between two models, not a numerical detail. Option T1 is Newton's second law in an inertial frame: it conserves linear momentum, it is what the free-fall and terminal-velocity checks assume, and it is the standard rigid-body model. Option T2 reads D18 literally ("seen from the aircraft's body frame"): with no force, the velocity stays fixed in the body, so the vehicle's path turns with its heading. It is not Newtonian. The owner chose T1 (D64); T2 is kept here only to record the alternative.
+- L2-AER-DYN-050 requires the model to contain exactly the terms listed here, and L1-AER-020 cites this section (CR-C1-01).
 
 ## 5. External forces and moments
 
@@ -285,15 +285,15 @@ s_j(τ) = 0                                              otherwise
 
   A gust and a burst are both gust events; they differ only by their hold time and amplitude, which the test procedure sets (D32). An event starts only when the previous one has decayed to zero.
 - **Consequences used by the budgets.** The largest instantaneous wind speed is `[P-SYS-430] + [P-SYS-560]` (D51). The wind is continuous with a continuous rate. Its rate of change is at most `(π/2)·[P-SYS-560]/[P-SYS-570]`, and its second derivative at most `(π²/2)·[P-SYS-560]/[P-SYS-570]²`. There is no instantaneous step (D62).
-- **Proposed rise time.** `[P-SYS-570]` = 2.0 s (TBR, TT-650): about the time a gust front of the longest FAR 25.341 gust gradient (350 ft, 107 m) takes to pass at the steady wind `[P-SYS-430]`. It is 20 times the control-loop latency `[P-SYS-480]`, so flight control can follow it. C4 confirms the gust share of `[P-FC-020]` and `[P-FC-010]` against it at I1 (FUNCTIONAL_ANALYSIS §7.2, §7.4).
+- **Rise time.** `[P-SYS-570]` = 2.0 s (TBR, TT-650; accepted by the owner, D64): about the time a gust front of the longest FAR 25.341 gust gradient (350 ft, 107 m) takes to pass at the steady wind `[P-SYS-430]`. It is 20 times the control-loop latency `[P-SYS-480]`, so flight control can follow it. C4 confirms the gust share of `[P-FC-020]` and `[P-FC-010]` against it at I1 (FUNCTIONAL_ANALYSIS §7.2, §7.4).
 - **Sampling.** The wind given with the command for the step from `t_k` to `t_{k+1}` is the wind at `t_k`. The model holds it over that step (§10.2). ICD-AER-TST fixes the signal (IN-C1-20).
 - A wind that varies across the operating volume is outside this model (#84).
 
 ### 5.5 Drag model
 
-This section is the **drag model** of MS-DYN. Drag acts on the air-relative velocity `v_a^L = v^L − w^L` (L1-AER-070, CV-470), with the density `ρ(h)` of the atmosphere model at the vehicle altitude. It acts at the CG. The form is a design choice of C1, bounded by L1-AER-020 and L1-AER-030; it is proposed as DD-C1-01 and DD-C1-02 and put to the owner for confirmation (C1-Q03). The recommended form is D1.
+This section is the **drag model** of MS-DYN. Drag acts on the air-relative velocity `v_a^L = v^L − w^L` (L1-AER-070, CV-470), with the density `ρ(h)` of the atmosphere model at the vehicle altitude. It acts at the CG. The form is a design choice of C1, bounded by L1-AER-020 and L1-AER-030; it is recorded as DD-050 and DD-060, and the owner chose D1 (D64).
 
-| | Option D1 — isotropic quadratic drag (recommended) | Option D2 — per-axis quadratic drag in body axes |
+| | Option D1 — isotropic quadratic drag (chosen, D64) | Option D2 — per-axis quadratic drag in body axes |
 | --- | --- | --- |
 | Force | `D^L = −½·ρ(h)·[P-DYN-100]·|v_a^L|·v_a^L` | `D_i^B = −½·ρ(h)·C_D,i·A_i·|v_a,i^B|·v_a,i^B` for `i = x, y, z`, with `v_a^B = C_BL·v_a^L` |
 | Parameters | Drag area `[P-DYN-100]` (C_D·A, m²) | Three drag coefficients `C_D,i` (new parameters if chosen) and the reference areas from the capsule: `A_x = π·D_b²/4`, `A_y = A_z = H·D_b + π·D_b²/4` |
@@ -304,12 +304,12 @@ This section is the **drag model** of MS-DYN. Drag acts on the air-relative velo
 
 Common to both options:
 
-- **No aerodynamic moment.** The drag acts at the CG and there is no rotational damping moment (DD-C1-01). A vehicle at fuel exhaustion keeps its angular momentum, as CONOPS SC-110 leg 11 and the L1-AER-200 and -390 rationales describe ("keeps the angular rate it had"). The drag-moment lines of the moment authority budget (L1-AER-140, FUNCTIONAL_ANALYSIS §7.1) are zero under this model.
+- **No aerodynamic moment.** The drag acts at the CG and there is no rotational damping moment (DD-050). A vehicle at fuel exhaustion keeps its angular momentum, as CONOPS SC-110 leg 11 and the L1-AER-200 and -390 rationales describe ("keeps the angular rate it had"). The drag-moment lines of the moment authority budget (L1-AER-140, FUNCTIONAL_ANALYSIS §7.1) are zero under this model.
 - **No Mach or Reynolds dependence.** The coefficients are constant; this is a definition of the fictional vehicle.
 - **Budget form.** Under D1 the drag at airspeed `V` is `D(V) = ½·ρ·[P-DYN-100]·V²` along the air-relative velocity, and its component along any body axis is at most `D(V)`. This is the `D(V)` of FUNCTIONAL_ANALYSIS §7.1. The budgets use the largest density in the operating volume, at the minimum operating altitude `[P-SYS-210]`.
 - **Vacuum-equivalent configuration.** A vehicle parameter set with `[P-DYN-100] = 0` (D1), or each `C_D,i = 0` (D2), has no drag. The credibility checks of §11 use it.
 
-Why D1 is recommended: it has no lift by construction (L1-AER-030 is then shown by inspection of one line), it has no attitude dependence, so translation and attitude are independent through the aerodynamics in every frame (L0-CON-020), it gives the single `D(V)` the L1 budgets are written with, and a pure motion along one body axis produces drag along that axis only (D18). AIRCRAFT_CHARACTERISTICS §1 says the exterior shape matters only through the mass properties, which D1 respects. D2 meets D18 in the stronger "per axis" reading but gives a cross-flow force for oblique flow, which an inspection of L1-AER-030 could read as lift.
+Why D1 (chosen by the owner, D64): it has no lift by construction (L1-AER-030 is then shown by inspection of one line), it has no attitude dependence, so translation and attitude are independent through the aerodynamics in every frame (L0-CON-020), it gives the single `D(V)` the L1 budgets are written with, and a pure motion along one body axis produces drag along that axis only (D18). AIRCRAFT_CHARACTERISTICS §1 says the exterior shape matters only through the mass properties, which D1 respects. D2 meets D18 in the stronger "per axis" reading but gives a cross-flow force for oblique flow, which an inspection of L1-AER-030 could read as lift.
 
 ## 6. Mass-properties model
 
@@ -363,7 +363,7 @@ f^B = (F_c^B + C_BL·D^L) / m
 
 - It is evaluated at the CG, so rotation adds nothing to it (D45).
 - In free fall it is zero (no control force, no drag). In a still-air hover at level attitude, with the control force equal to the weight, it is `g` along `−z_B` (glossary).
-- Under option T1 (§4.5) it equals `a^L − g^L` resolved in B, the relation that FUNCTIONAL_ANALYSIS §7.2 uses for the crew budget. Under option T2 the vehicle acceleration also contains `ω^L × v^L`, which no force produces, so `f` and `a − g` differ by that term (C1-Q01).
+- With the rotation-during-translation term retained (option T1, D64) it equals `a^L − g^L` resolved in B, the relation that FUNCTIONAL_ANALYSIS §7.2 uses for the crew budget.
 - The ideal landing computes no touchdown shock (D53), and the vehicle is no longer airborne at the contact step, so no sensed acceleration is defined for the contact itself.
 - It is evaluated at the instant §3.3 states.
 
@@ -376,7 +376,7 @@ This section is the **ground contact model** of MS-DYN. The ground is the datum 
    - the contact is a **landing** when `|VS| ≤ [P-SYS-500]` and `V_H ≤ [P-SYS-510]` (L1-AER-280, D53);
    - otherwise it is a **crash**.
    There is no acceleration limit (D53). The speeds are not interpolated to the crossing instant: the classification uses the state of the contact step, which keeps it exact on the CV-840 time base.
-3. **Reported position.** The state of the contact step is reported with the altitude set to zero and the propagated horizontal position and velocity unchanged, so that the altitude is never negative in a run (CV-420; DD-C1-03).
+3. **Reported position.** The state of the contact step is reported with the altitude set to zero and the propagated horizontal position and velocity unchanged, so that the altitude is never negative in a run (CV-420; DD-070).
 4. **Event record.** The model outputs one event record with the classification and the timestamp of the contact step (CV-840) to TM and to the TST (I-37, I-41). The TST ends the run on it (CONOPS §4.6).
 5. **After contact.** If the TST commands a further step, the model keeps the state of the contact step and raises no further event.
 
@@ -432,7 +432,7 @@ C-4 and C-8 together check the mass decrease end to end: FU integrates the flow 
 
 | Parameter | Name | Unit | Proposed value | Status | Source and pedigree |
 | --- | --- | --- | --- | --- | --- |
-| P-DYN-010 | Gravitational acceleration | m/s² | 9.806 65 | TBR (proposed Set at G2) | Standard gravity (CGPM 1901); L1-AER-060 |
+| P-DYN-010 | Gravitational acceleration | m/s² | 9.806 65 | Set (D64) | Standard gravity (CGPM 1901); L1-AER-060 |
 | P-DYN-020 | Body overall length | m | 12.0 | TBR | C1 proposal for the provisional "Tic Tac" shape (L0-CON-140) |
 | P-DYN-030 | Body diameter | m | 4.0 | TBR | C1 proposal (length-to-diameter ratio 3) |
 | P-DYN-100 | Drag area | m² | 5.0 | TBR | C1 estimate: a round-nosed body of these dimensions has C_D ≈ 0.3 on its frontal area of 12.6 m² (3.8 m²) and more in cross-flow (Hoerner, *Fluid-Dynamic Drag*, 1965); confirmed at I1 with the authority budgets |
@@ -443,26 +443,23 @@ C-4 and C-8 together check the mass decrease end to end: FU integrates the flow 
 | P-DYN-240 | Variable-mass check tolerance | 1 | 1·10⁻⁴ | TBR | C1 proposal; check C-4 |
 | P-DYN-250 | Rotation-during-translation check tolerance | 1 | 1·10⁻⁴ | TBR | C1 proposal; check C-5 |
 | P-DYN-260 | Atmosphere density tolerance | 1 | 1·10⁻⁴ | TBR | C1 proposal; check C-7 (the table has five significant figures) |
-| P-DYN-270 | Accuracy horizon | s | 3600 | TBR | C1 proposal; at least the longest run; to be raised to `[P-SYS-280]` if that is longer |
+| P-DYN-270 | Accuracy horizon | s | 172 800 | TBR | 48 h: at least the hover endurance `[P-SYS-280]` (46 h, D66), the longest run |
 | P-DYN-400 | Crew station position | m | (4.0, 0.0, −1.0) | TBR | C1 proposal: forward of the CG, inside the capsule, above the axis |
 | P-SYS-300 | Simulation step | s | 0.01 | TBR | B1 (L1-AER-670) |
 | P-SYS-430, -560 | Steady wind, gust amplitude | m/s | 51.444, 25.722 | TBR | Owner (D51) |
-| P-SYS-570 | Minimum gust rise time | s | 2.0 | TBD → TBR proposed | C1 proposal, §5.4 |
+| P-SYS-570 | Minimum gust rise time | s | 2.0 | TBR | C1 proposal accepted (D64), §5.4 |
 | P-SYS-500, -510 | Landing envelope | m/s | 3.458, 0.5 | TBR | Owner (D53) |
-| P-FU-030 and FU mass properties | Dry mass, inertia | kg, kg·m² | — | TBD | C2 |
+| P-FU-010, P-FU-030 | Fuel capacity, dry mass | kg | 500, 1000 | TBR | C2 (D65) |
+| P-FU-070, P-FU-080 | Principal moments of inertia (dry, full fuel) | kg·m² | — | TBD | Derived in §6 (C2, I1) |
 
 ## 13. Open items
 
 | Item | Where | Owner | Closure |
 | --- | --- | --- | --- |
-| Rotation-during-translation term: option T1 or T2 (#81.1, C1-Q01) | §4.2, §4.5, C-5 | Martin | G2 |
-| Confirm the retained kinematic terms K-1 and K-3 and close #81 (C1-Q02) | §4.5 | Martin | G2 |
-| Drag form D1 or D2, and no aerodynamic moment (C1-Q03; DD-C1-01, -02) | §5.5 | Martin | G2 |
-| Gust shape and `[P-SYS-570]` value (C1-Q04; TT-650) | §5.4 | Martin | G2 (with the TST wind model and C4's budget check) |
-| Body shape and dimensions (C1-Q05; L0-CON-140 TBR) | §2.1 | Martin | 2026-11-30 |
-| Evaluation instant of the acceleration quantities (DD-C1-04) | §3.3 | Martin | G2 |
-| Content of §6 and §7 | §6, §7 | C2, C3 | I1 |
-| Parameter values P-DYN-020 to -400 | §12 | Martin | G2 |
+| Body dimensions with the provisional shape (L0-CON-140 TBR; TT-740) | §2.1 | Martin | 2026-11-30 |
+| `[P-SYS-570]` confirmed against the FC budgets (TT-650) | §5.4 | C4 | I1 |
+| Content of §6 and §7 (TT-780) | §6, §7 | C2, C3 | I1 |
+| Parameter values P-DYN-020 to -400, TBR (TT-740, -750, -760, TT-140) | §12 | Martin | G2 |
 
 ## 14. Trace
 

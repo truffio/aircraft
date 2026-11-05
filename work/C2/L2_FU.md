@@ -1,8 +1,8 @@
 ## FU — Fuel and mass properties
 
-The fuel and mass-properties requirements (task C2). The subject of each statement is the FU subsystem, the fuel and mass-properties subsystem of the Aeronef, one of the three subsystems of the vehicle model, with the dynamics subsystem (DYN) and the effector subsystem (EF), behind the vehicle-model boundary (D55, L1-AER-430). FU runs at each simulation step `[P-SYS-300]`. Its inputs are the fuel mass of the initial condition, the vehicle parameter set and the effector outputs of each step. Its outputs are the fuel mass flow, the remaining fuel mass, the mass properties (vehicle mass, centre-of-gravity position, inertia tensor), the fuel availability for the effectors and the fuel state.
+The fuel and mass-properties requirements (task C2). The subject of each statement is the FU subsystem, the fuel and mass-properties subsystem of the Aeronef, one of the three subsystems of the vehicle model, with the dynamics model (DYN) and the effector subsystem (EF), behind the vehicle-model boundary (D55, L1-AER-430). FU runs at each simulation step `[P-SYS-300]`. Its inputs are the fuel mass of the initial condition, the vehicle parameter set and the effector outputs of each step. Its outputs are the fuel mass flow, the remaining fuel mass, the mass properties (vehicle mass, centre-of-gravity position, inertia tensor), the fuel availability for the effectors and the fuel state.
 
-**What FU decides.** The consumption relationships are linear in the magnitude of the resultant control force and of the resultant control moment (DD-C2-01, owner question C2-Q2). The inertia tensor changes with the fuel: it runs linearly from the dry-mass tensor at fuel exhaustion to its full-capacity value, because the fuel depletes uniformly over a fixed volume centred on the centre of gravity (DD-C2-02, C2-Q1); a constant inertia is the special case of a zero fuel tensor. In the step that ends at fuel exhaustion, the flow is limited to the fuel left (DD-C2-03). The equations themselves go in MS-DYN, which C1 writes; `work/C2/interface_needs.md` IN-C2-10 to -16 gives them.
+**What FU decides.** The consumption relationships are linear in the magnitude of the resultant control force and of the resultant control moment (DD-110, owner D65). The inertia tensor changes with the fuel: it runs linearly from the dry-mass tensor at fuel exhaustion to its full-capacity value, because the fuel depletes uniformly over a fixed volume centred on the centre of gravity (DD-120, D65); a constant inertia is the special case of a zero fuel tensor. In the step that ends at fuel exhaustion, the flow is limited to the fuel left (DD-130). The equations themselves go in MS-DYN, which C1 writes; `work/C2/interface_needs.md` IN-C2-10 to -16 gives them.
 
 **Exhaustion is nominal.** Fuel exhaustion is nominal behaviour, not a failure (L0-ASM-070). FU then gives the dry-mass properties, zero fuel mass flow, a fuel availability of not available and the exhaustion indication, and it keeps doing so to the end of the run.
 
@@ -39,9 +39,9 @@ Verification:  Demonstration — DM-FU-010; success criteria: two runs from the 
   AN-FU-040 using that run's values, and each run outputs the identity of the parameter set it
   used.
 Parameters:    P-FU-010, P-FU-020, P-FU-030, P-FU-040, P-FU-050, P-FU-070, P-FU-080, P-FU-090
-TBD/TBR:       P-FU-010, P-FU-030, P-FU-040, P-FU-050 values TBR as proposed by C2 (TT-110,
-  TT-120), P-FU-020 value TBR (TT-130), Martin, G2 (I1); P-FU-070, P-FU-080 new, values TBD,
-  Martin, G2 (C1, C2); P-FU-090 new, value TBR, Martin, G2 (C2)
+TBD/TBR:       P-FU-010, P-FU-030, P-FU-040, P-FU-050 values TBR (TT-110, TT-120), P-FU-020 value
+  TBR (TT-130), Martin, G2 (I1); P-FU-070, P-FU-080 values TBD (TT-770), Martin, G2 (I1);
+  P-FU-090 value TBR (TT-790), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -72,7 +72,7 @@ Verification:  Test — TP-FU-020; success criteria: for runs started with an in
   zero, of one half of [P-FU-010] and of [P-FU-010], the remaining fuel mass at the first output
   sample equals the initial fuel mass within [P-FU-060].
 Parameters:    P-FU-010, P-FU-060
-TBD/TBR:       P-FU-010, P-FU-060 values TBR as proposed by C2 (TT-110, TT-120), Martin, G2 (I1)
+TBD/TBR:       P-FU-010, P-FU-060 values TBR (TT-110, TT-120), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -94,7 +94,7 @@ Rationale:     L1-AER-150 bounds the initial fuel by the capacity. A negative fu
   test procedure asked for, so a run cannot pass against a fuel state it did not have (D59). The
   error item is defined in ICD-AER-TST (IN-C2-31); the TST decides what to do with the run. This
   is checking the run set-up, not failure handling (tailoring note). Zero and [P-FU-010] are
-  valid. Owner question C2-Q4.
+  valid. Rejection chosen by the owner (D65, DD-140).
   Sufficiency (L1-AER-150): see L2-AER-FU-010.
   Sufficiency (L1-AER-660): see L2-AER-FU-020.
 Parent(s):     L1-AER-150, L1-AER-660
@@ -106,7 +106,7 @@ Verification:  Test — TP-FU-030; success criteria: initial conditions with a f
   minus 0.01 times [P-FU-010] each produce one initial-condition error that names the fuel mass,
   and no output sample.
 Parameters:    P-FU-010
-TBD/TBR:       P-FU-010 value TBR as proposed by C2 (TT-120), Martin, G2 (I1); initial-condition
+TBD/TBR:       P-FU-010 value TBR (TT-120), Martin, G2 (I1); initial-condition
   error item in ICD-AER-TST (IN-C2-31, TT-680), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
@@ -125,7 +125,7 @@ Statement:     The FU subsystem shall compute the consumption rate of each simul
   [P-FU-040] and [P-FU-050] that MS-DYN defines.
 Rationale:     Fuel is consumed to produce the control forces and control moments, with separate
   terms for translation and rotation (L0-CON-120; AIRCRAFT_CHARACTERISTICS §4). The form of each
-  relationship is a C2 decision recorded in MS-DYN (L1-AER-160). C2 proposes (DD-C2-01,
+  relationship is a C2 decision recorded in MS-DYN (L1-AER-160). C2 proposes (DD-110,
   IN-C2-10): the translational term is [P-FU-040] times the magnitude of the resultant control
   force, and the rotational term is [P-FU-050] times the magnitude of the resultant control
   moment about the centre of gravity. Both terms are linear, so the hover endurance has the
@@ -133,9 +133,8 @@ Rationale:     Fuel is consumed to produce the control forces and control moment
   outputs are zero, so no fuel is used in free fall or in torque-free rotation, which keeps the
   MS-DYN credibility checks exact (N-290). Both are at least zero for non-negative parameters,
   so the remaining fuel never increases (L2-AER-FU-100). Using the resultant keeps the
-  consumption independent of the effector layout, which stays an EF design decision. Owner
-  question C2-Q2 asks whether to charge each effector instead; this record holds under either
-  answer, because MS-DYN holds the form. The effectors counter gravity, so fuel is consumed in
+  consumption independent of the effector layout, which stays an EF design decision. The owner
+  chose this resultant form over charging each effector (D65); MS-DYN holds the form. The effectors counter gravity, so fuel is consumed in
   each flight condition, hover included (CONOPS §4.5). The consumption rate is the fuel mass
   flow except in the step that ends at fuel exhaustion (L2-AER-FU-050).
   Sufficiency (L1-AER-160): with L2-AER-FU-050 (the flow, limited at exhaustion) and
@@ -154,8 +153,8 @@ Verification:  Analysis — AN-FU-040; success criteria: in the reference missio
   [P-FU-050]; at each output sample with zero effector outputs the recorded fuel mass flow is
   zero.
 Parameters:    P-FU-040, P-FU-050, P-FU-090
-TBD/TBR:       Consumption form (C2-Q2, DD-C2-01), Martin, G2; P-FU-040, P-FU-050 values TBR as
-  proposed by C2 (TT-110), Martin, G2 (I1); MS-DYN not yet written (TT-660), Martin, G2 (C1)
+TBD/TBR:       P-FU-040, P-FU-050 values TBR (TT-110), Martin, G2 (I1); MS-DYN fuel model content
+  (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -177,7 +176,7 @@ Rationale:     The effectors produce their output during a step whose remaining 
   (L2-AER-FU-080) and keeps the remaining fuel at or above zero (L2-AER-FU-090). In each other
   step the flow equals the consumption rate. The effector output is one value per simulation
   step (glossary *Effector output*), so the fuel consumed in a step is the flow times
-  [P-SYS-300] exactly (DD-C2-03, IN-C2-12).
+  [P-SYS-300] exactly (DD-130, IN-C2-12).
   Sufficiency (L1-AER-160): see L2-AER-FU-040.
   Sufficiency (L1-AER-190): with L2-AER-FU-080 (the accounting) and L2-AER-FU-090 (at or above
   zero), this record keeps the remaining fuel mass equal to the initial fuel mass minus the
@@ -193,7 +192,7 @@ Verification:  Analysis — AN-FU-050; success criteria: in the reference missio
   relative tolerance [P-FU-090], the remaining fuel mass of the next step is zero, and the fuel
   mass flow of each other step equals the consumption rate of AN-FU-040 within [P-FU-090].
 Parameters:    P-SYS-300, P-FU-090, P-FU-060
-TBD/TBR:       P-SYS-300 value TBR (TT-070), Martin, G2 (I1); P-FU-090 new, value TBR, Martin, G2
+TBD/TBR:       P-SYS-300 value TBR (TT-070), Martin, G2 (I1); P-FU-090 value TBR (TT-790), Martin, G2
   (C2)
 Owner:         Martin
 Status:        Draft
@@ -212,9 +211,8 @@ Statement:     The FU subsystem shall define the fuel consumption of the effecto
 Rationale:     L1-AER-100 closes the list of the kinds of parameter that define an effector; the
   fifth kind, fuel consumption, belongs to FU (L1-AER-100 rationale). A further consumption term,
   for example an idle flow or a per-effector efficiency outside these two sets, would add a sixth
-  kind. Under the C2 proposal (DD-C2-01) each set is one coefficient, common to the effector set;
-  if the owner chooses to charge each effector (C2-Q2), each set becomes one coefficient per
-  effector, still of these two kinds. The step duration that limits the flow at exhaustion
+  kind. Under the owner's choice (D65, DD-110) each set is one coefficient, common to the
+  effector set. The step duration that limits the flow at exhaustion
   (L2-AER-FU-050) is the time base, not a consumption parameter.
   Sufficiency (L1-AER-100): the EF children define the direction of action, the control
   effectiveness, the output limits and the command response; this record makes the two
@@ -228,7 +226,7 @@ Verification:  Inspection — IN-FU-060; success criteria: the MS-DYN consumptio
   no parameter other than [P-FU-040] and [P-FU-050], and the parameter database holds no FU or EF
   parameter that enters a consumption relationship other than these two.
 Parameters:    P-FU-040, P-FU-050
-TBD/TBR:       Consumption form (C2-Q2, DD-C2-01), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -243,7 +241,7 @@ Type:          Interface
 Statement:     The FU subsystem shall take the effector outputs of each simulation step from the
   effector subsystem through the interface that MS-DYN defines between the two subsystems.
 Rationale:     Interface I-01 (FUNCTIONAL_ANALYSIS §3.2) is internal to the vehicle model, so it is
-  defined in MS-DYN, not in an ICD. FU uses the same effector outputs as the dynamics subsystem,
+  defined in MS-DYN, not in an ICD. FU uses the same effector outputs as the dynamics model,
   so the fuel used and the motion come from one set of control forces and control moments. MS-DYN
   states one mapping from the effector outputs to the resultant control force and control moment
   about the centre of gravity, through the EF control effectiveness, and DYN and FU both use it
@@ -259,7 +257,7 @@ Verification:  Inspection — IN-FU-070; success criteria: MS-DYN defines the in
   control force and control moment that both the equations of motion and the consumption
   relationships use; no FU requirement takes effector output from another source.
 Parameters:    —
-TBD/TBR:       MS-DYN not yet written (TT-660), Martin, G2 (C1)
+TBD/TBR:       MS-DYN content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -278,7 +276,7 @@ Rationale:     The fuel-mass integral is one of the independent credibility chec
   §10.3. The flow is constant over each step (L2-AER-FU-050), so the time integral of the flow
   is this sum, and the tolerance covers the arithmetic only. The check uses the flow of each
   simulation step; an integration of the output samples at [P-TM-010] would add a sampling error
-  that the tolerance is not meant to cover (owner question C2-Q3).
+  that the tolerance is not meant to cover; the owner chose per-step data (D65).
   Sufficiency (L1-AER-190): see L2-AER-FU-050.
 Parent(s):     L1-AER-190
 Source:        METHODOLOGY §10.3; N-290
@@ -289,8 +287,7 @@ Verification:  Analysis — AN-FU-080; success criteria: over the reference miss
   an independent summation of the fuel mass flow of each step times [P-SYS-300], subtracted from
   the initial fuel mass, agrees with the remaining fuel mass of each step within [P-FU-060].
 Parameters:    P-FU-060, P-SYS-300, P-TM-010, P-FU-010
-TBD/TBR:       P-FU-060 value TBR as proposed by C2 (TT-110), Martin, G2 (I1); data rate of the
-  check (C2-Q3), Martin, G2
+TBD/TBR:       P-FU-060 value TBR (TT-110), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -320,7 +317,7 @@ Verification:  Test — TP-FU-090; success criteria: in the reference mission (S
   it is exactly zero at each output sample from the first sample at fuel exhaustion to the end of
   the run.
 Parameters:    P-FU-030
-TBD/TBR:       P-FU-030 value TBR as proposed by C2 (TT-110), Martin, G2 (I1)
+TBD/TBR:       P-FU-030 value TBR (TT-110), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -378,7 +375,7 @@ Verification:  Analysis — AN-FU-110; success criteria: at each output sample o
   mission (SC-110), including the samples from fuel exhaustion to ground contact, the recorded
   vehicle mass equals [P-FU-030] plus the recorded remaining fuel mass within [P-FU-060].
 Parameters:    P-FU-030, P-FU-010, P-FU-060
-TBD/TBR:       P-FU-030, P-FU-010, P-FU-060 values TBR as proposed by C2 (TT-110, TT-120),
+TBD/TBR:       P-FU-030, P-FU-010, P-FU-060 values TBR (TT-110, TT-120),
   Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
@@ -391,7 +388,7 @@ Version:       1
 ID:            L2-AER-FU-120
 Level:         L2
 Type:          Interface
-Statement:     The FU subsystem shall give the dynamics subsystem, at each simulation step, the
+Statement:     The FU subsystem shall give the dynamics model, at each simulation step, the
   vehicle mass, the centre-of-gravity position and the inertia tensor of that step through the
   interface that MS-DYN defines between the two subsystems.
 Rationale:     Interface I-04 is internal to the vehicle model. The equations of motion of a step
@@ -413,7 +410,7 @@ Verification:  Inspection — IN-FU-120; success criteria: MS-DYN defines the in
   units and frame (CV-340, CV-350), and states that the equations of motion of a step use the
   mass properties of that step.
 Parameters:    —
-TBD/TBR:       MS-DYN not yet written (TT-660), Martin, G2 (C1)
+TBD/TBR:       MS-DYN content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -459,7 +456,7 @@ ID:            L2-AER-FU-140
 Level:         L2
 Type:          Interface
 Statement:     The FU subsystem shall give the flight software the same vehicle mass as it gives the
-  dynamics subsystem for the same simulation step.
+  dynamics model for the same simulation step.
 Rationale:     Flight control holds the sensed acceleration within [P-SYS-120] by limiting the
   resultant control force at the current mass (D38, L1-AER-290), and DYN computes the sensed
   acceleration with the mass it receives. Both must use one value, or the limit would be set
@@ -475,7 +472,7 @@ Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FU-140; success criteria: in the reference mission (SC-110), at the first
   simulation step of each control frame, the vehicle mass across the vehicle-model boundary
-  equals the vehicle mass given to the dynamics subsystem for that step.
+  equals the vehicle mass given to the dynamics model for that step.
 Parameters:    P-SYS-120, P-SYS-440
 TBD/TBR:       P-SYS-440 value TBR (TT-040), Martin, G2
 Owner:         Martin
@@ -525,7 +522,7 @@ Statement:     The FU subsystem shall use a dry-mass distribution and a fuel-mas
   each have the body-frame origin as centre of mass at each fuel state.
 Rationale:     The centre of gravity stays fixed while fuel is consumed only if neither part moves it
   (L0-CON-130). The fuel does not slosh (L0-ASM-080). C2 proposes that the fuel depletes
-  uniformly over a fixed fuel volume centred on the centre of gravity (DD-C2-02), so the centre
+  uniformly over a fixed fuel volume centred on the centre of gravity (DD-120), so the centre
   of mass of the fuel stays at the origin at each fuel mass and its inertia scales with its mass
   (L2-AER-FU-170). MS-DYN states both distributions, with their dimensions as DYN parameters
   (L1-AER-220; IN-C2-13).
@@ -538,8 +535,7 @@ Verification:  Inspection — IN-FU-160; success criteria: MS-DYN states the dry
   fuel-mass distributions, and the first moment of each about the body-frame origin is zero for
   each remaining fuel mass from zero to [P-FU-010].
 Parameters:    P-FU-010
-TBD/TBR:       Fuel depletion model (C2-Q1, DD-C2-02), Martin, G2; MS-DYN not yet written
-  (TT-660), Martin, G2 (C1)
+TBD/TBR:       MS-DYN content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -555,7 +551,7 @@ Statement:     The FU subsystem shall compute the inertia tensor of each simulat
   of [P-FU-070] and the product of [P-FU-080] with the ratio of the remaining fuel mass of that
   step to [P-FU-010].
 Rationale:     L1-AER-220 leaves to C2 whether the inertia changes with the fuel state. C2 decides
-  that it does (DD-C2-02; owner confirmation C2-Q1). First, the vehicle mass changes with the
+  that it does, and the owner confirmed it (DD-120, D65). First, the vehicle mass changes with the
   fuel (L1-AER-180), and an inertia that kept its full-fuel value while the fuel burns would
   contradict it. Second, the control laws then meet a varying inertia as well as a varying mass,
   which is what comparing control laws needs (L0-OBJ-020); the vehicle-model boundary carries the
@@ -564,7 +560,7 @@ Rationale:     L1-AER-220 leaves to C2 whether the inertia changes with the fuel
   proportional to the remaining fuel mass, so the tensor runs linearly from [P-FU-070] at fuel
   exhaustion to [P-FU-070] plus [P-FU-080] at full capacity. The maximum inertia, used by the
   moment authority budget (L1-AER-140, -350), is the full-capacity value. A constant inertia is
-  the case of [P-FU-080] at zero, so this record holds whichever answer the owner gives to C2-Q1.
+  the case of [P-FU-080] at zero.
   MS-DYN uses the inertia of each step with no rate-of-change term, because consumed fuel leaves
   with no moment (L0-ASM-090, IN-C2-14).
   Sufficiency (L1-AER-220): with L2-AER-FU-180 (diagonal), L2-AER-FU-190 (derived from the shape
@@ -580,8 +576,7 @@ Verification:  Analysis — AN-FU-170; success criteria: at each output sample o
   plus [P-FU-080] times the ratio of the recorded remaining fuel mass to [P-FU-010], within the
   relative tolerance [P-FU-090] on each principal moment.
 Parameters:    P-FU-070, P-FU-080, P-FU-010, P-FU-090
-TBD/TBR:       Inertia variation with fuel (C2-Q1, DD-C2-02), Martin, G2; P-FU-070, P-FU-080 new,
-  values TBD (derived in MS-DYN), Martin, G2 (C1, C2)
+TBD/TBR:       P-FU-070, P-FU-080 values TBD, derived in MS-DYN (TT-770), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -613,7 +608,7 @@ Verification:  Inspection — IN-FU-180; success criteria: [P-FU-070] and [P-FU-
   the CV-350 sign convention, for both distributions; the vehicle-model boundary ICD defines the
   inertia tensor with zero off-diagonal terms.
 Parameters:    P-FU-070, P-FU-080
-TBD/TBR:       P-FU-070, P-FU-080 new, values TBD (derived in MS-DYN), Martin, G2 (C1, C2)
+TBD/TBR:       P-FU-070, P-FU-080 values TBD, derived in MS-DYN (TT-770), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -643,7 +638,7 @@ Verification:  Inspection — IN-FU-190; success criteria: MS-DYN derives each p
   source that cites MS-DYN.
 Parameters:    P-FU-070, P-FU-080, P-FU-030, P-FU-010
 TBD/TBR:       Body shape provisional (L0-CON-140, TT-430), Martin, 2026-11-30; P-FU-070, P-FU-080
-  new, values TBD (derived in MS-DYN), Martin, G2 (C1, C2)
+  values TBD (TT-770), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -708,7 +703,7 @@ Verification:  Test — TP-FU-210; success criteria: at each output sample of th
   (SC-110), the remaining fuel mass in the fuel state, in kg, equals the recorded remaining fuel
   mass within [P-FU-060].
 Parameters:    P-FU-060
-TBD/TBR:       P-FU-060 value TBR as proposed by C2 (TT-110), Martin, G2 (I1)
+TBD/TBR:       P-FU-060 value TBR (TT-110), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -757,7 +752,7 @@ Statement:     The FU subsystem shall indicate, in the fuel state of each simula
   the vehicle is at fuel exhaustion at that step.
 Rationale:     The crew needs to know when the fuel has run out (N-150, L1-AER-580). Autoflight
   takes the fuel state too (F-AER-08), to set its mode state at exhaustion; what the modes do then
-  is open (#59, C5), and FU gives the indication whatever C5 decides (C2-Q5). The remaining fuel
+  is C5's (#59), and FU gives the indication whatever C5 decides (D65). The remaining fuel
   mass reaches exactly zero (L2-AER-FU-050, -090), so the indication is set at the first step
   with zero fuel, and FU's share of [P-SYS-470] is zero. Fuel exhaustion is a nominal state
   (L0-ASM-070): the indication is not a failure annunciation.
@@ -771,7 +766,7 @@ Verification:  Test — TP-FU-230; success criteria: in the reference mission (S
   fuel-exhaustion indication is clear at each simulation step with remaining fuel mass above zero,
   and set from the first step with zero remaining fuel mass to the end of the run.
 Parameters:    P-SYS-470
-TBD/TBR:       Autoflight state after fuel exhaustion (#59, TT-580), Martin, G2 (C2, C5)
+TBD/TBR:       Autoflight state after fuel exhaustion (#59, TT-580), Martin, G2 (C5)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -918,7 +913,7 @@ Verification:  Inspection — IN-FU-280; success criteria: MS-DYN, at its G2 bas
   for each of the five listed FU models, and each FU model-fidelity requirement (L2-AER-FU-040,
   -050, -080, -110, -170) cites the section it rests on.
 Parameters:    —
-TBD/TBR:       MS-DYN not yet written (TT-660), Martin, G2 (C1)
+TBD/TBR:       MS-DYN content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -942,10 +937,9 @@ Rationale:     Fuel budget (FUNCTIONAL_ANALYSIS §7.3, L1-AER-360). In symbols: 
   [P-FU-040] times [P-DYN-010]; it is at least [P-SYS-280] when the capacity meets this record
   with [P-FU-100] at zero. C2 confirms the form that B1 assumed. The margin [P-FU-100] adds the
   consumption the closed form leaves out, as FUNCTIONAL_ANALYSIS §7.3 asks: the regulation of the
-  hold, the moments that hold the attitude, and the transient at the start of the hold. If the
-  owner chooses another consumption form (C2-Q2), the formula changes with it. The proposed values
-  (`work/C2/param_proposals.md`) meet this record for a [P-SYS-280] of one hour, which is an
-  assumption until the owner sets it (D47).
+  hold, the moments that hold the attitude, and the transient at the start of the hold. The
+  consumption coefficient comes from the owner's endurance at maximum speed (D66), and
+  [P-SYS-280] is set from this inequality with it, so the database values meet this record.
   Sufficiency (L1-AER-360): the endurance depends on the capacity and the consumption (FU) and on
   the control force the effectors produce in the hold (EF, with FC and AF holding still); this
   record sizes the capacity for the hold with margin, which is FU's share, and the EF child shows
@@ -959,9 +953,8 @@ Verification:  Analysis — AN-FU-290; success criteria: the parameter database 
   simulated hold in still air at level attitude from full fuel (SC-110 hover endurance variation)
   reaches fuel exhaustion no earlier than [P-SYS-280] from the start of the hold.
 Parameters:    P-FU-010, P-FU-030, P-FU-040, P-FU-100, P-DYN-010, P-SYS-280
-TBD/TBR:       P-SYS-280 value TBD (D47, TT-010), Martin, G2 (I1); P-FU-010, P-FU-030, P-FU-040
-  values TBR as proposed by C2 (TT-110, TT-120), Martin, G2 (I1); P-FU-100 new, value TBR,
-  Martin, G2 (C2); P-DYN-010 value TBR (TT-150), Martin, G2 (C1)
+TBD/TBR:       P-SYS-280 value TBR (TT-800), Martin, G2 (I1); P-FU-010, P-FU-030, P-FU-040
+  values TBR (TT-110, TT-120), Martin, G2 (I1); P-FU-100 value TBR (TT-790), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1

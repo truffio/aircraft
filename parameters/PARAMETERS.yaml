@@ -16,7 +16,7 @@
 # P-SYS number blocks (fixed at the G0 owner review, 2026-10-25, after A1, A2 and A3 had
 # each started at P-SYS-010):
 #   P-SYS-010..190  L0 requirements (A1). Withdrawn and never reused: 010-050, 080-110.
-#   P-SYS-200..290  ConOps operating envelope (A2; was P-SYS-010..090).
+#   P-SYS-200..290  ConOps operating envelope (A2; was P-SYS-010..090). P-SYS-290 added by D66.
 #   P-SYS-300..390  Conventions time base (A3; was P-SYS-010, -020).
 #   P-SYS-400..590  L1 budgets (B1).
 #
@@ -25,6 +25,9 @@
 #   D56, D60 and the G1 findings (reviews/G1/dispositions.md).
 # Withdrawn by D56 and never reused: P-SYS-260, P-SYS-520 (D53), P-AF-050, -070, -080, -150,
 #   P-NAV-020, -040, -050, P-TM-060, -070.
+# C1/C2 merge (2026-11-05): P-DYN-020, -030, -100, -200 to -270 and P-FU-070 to -100 added; P-DYN, P-FU and P-SYS-570
+#   values from the C1/C2 proposals as accepted by the owner (D64, D65); P-SYS-230, -280, -290 and P-FU-040, -050 from D66.
+#   P-DYN blocks: 010-090 gravity and geometry; 100-190 aerodynamics; 200-290 model accuracy; 400 crew station.
 
 parameters:
 
@@ -86,12 +89,12 @@ parameters:
     owner: Martin
   - id: P-SYS-230
     name: Maximum horizontal speed
-    description: Highest horizontal speed reached in autoflight. Upper limit of the selected horizontal speed (crew-facing kt).
+    description: Highest horizontal speed reached in autoflight, as true airspeed; the effectors saturate there. Upper limit of the selected horizontal speed (crew-facing kt). 300 kt.
     unit: m/s
-    value: null
+    value: 154.333
     tolerance: null
-    status: TBD
-    source: CONOPS §5, N-170
+    status: Set
+    source: CONOPS §5, N-170; owner (D66)
     owner: Martin
   - id: P-SYS-240
     name: Maximum climb vertical speed
@@ -124,10 +127,20 @@ parameters:
     name: Minimum hover endurance at full fuel
     description: Shortest time, from full fuel at maximum mass, during which autoflight holds the horizontal position and the altitude in still air before fuel exhaustion (Stationary with Altitude hold, or Hover; D56, D60).
     unit: s
-    value: null
+    value: 165600
     tolerance: null
-    status: TBD
-    source: CONOPS SC-110 (variation hover endurance); L1-AER-360
+    note: '46 h. Derived (D66) from the endurance at maximum speed through the fuel budget of L2-AER-FU-290: ln(1500/1000) / (1.05 x 2.34e-7 x 9.80665) = 46.7 h, rounded down.'
+    status: TBR
+    source: CONOPS SC-110 (variation hover endurance); L1-AER-360; D66
+    owner: Martin
+  - id: P-SYS-290
+    name: Endurance at maximum horizontal speed
+    description: Time, from full fuel at maximum mass, during which the vehicle sustains the maximum horizontal speed P-SYS-230 at sea level in still air before fuel exhaustion. The anchor from which the consumption coefficients P-FU-040 and P-FU-050 are derived (D66). 8 h.
+    unit: s
+    value: 28800
+    tolerance: null
+    status: Set
+    source: owner (D66)
     owner: Martin
   - id: P-SYS-300
     name: Simulation step
@@ -279,88 +292,236 @@ parameters:
     owner: Martin
   - id: P-SYS-570
     name: Minimum gust rise time
-    description: Shortest time over which a gust or burst builds up from the steady wind to its full speed. Instantaneous wind steps are not allowed, so the drag changes at a bounded rate and the vehicle acceleration, position-holding and speed budgets close against it (D62).
+    description: Shortest time over which a gust or burst builds up from the steady wind to its full speed, and decays back; the shape is the one-minus-cosine ramp of MS-DYN §5.4. Instantaneous wind steps are not allowed, so the drag changes at a bounded rate (at most (pi/2) x P-SYS-560 / P-SYS-570 for the wind) and the vehicle acceleration, position-holding and speed budgets close against it (D62).
     unit: s
-    value: null
+    value: 2.0
     tolerance: null
-    status: TBD
-    source: 'D62 (G1-F08); L1-AER-290, -300, -310, -460; set at G2 with MS-DYN (C1) and the TST wind model'
+    status: TBR
+    note: 'Accepted by the owner (D64) - about the passage time of the longest FAR 25.341 gust gradient (350 ft, 107 m) at the steady wind P-SYS-430, and 20 times P-SYS-480. C4 confirms the gust shares of P-FC-020 and P-FC-010 against it at I1.'
+    source: 'D62 (G1-F08); L1-AER-290, -300, -310, -460; L2-AER-DYN-410; MS-DYN §5.4 (C1)'
     owner: Martin
 
   # --- DYN ---
   - id: P-DYN-010
     name: Gravitational acceleration
-    description: Magnitude of the uniform gravitational acceleration along +z_L. Proposed equal to standard gravity, so that the 3 g crew limit reads 1 g in a hover exactly.
+    description: Magnitude of the uniform gravitational acceleration along +z_L. Equal to standard gravity, so that the 3 g crew limit reads 1 g in a hover exactly. Not used by the standard atmosphere, whose own g_0 is a constant of that standard (MS-DYN §5.3).
     unit: m/s^2
     value: 9.80665
     tolerance: null
+    status: Set
+    source: CV-110; L1-AER-060; L2-AER-DYN-120; MS-DYN §5.2; B1 proposal (G0-F25); set by the owner (D64)
+    owner: Martin
+  - id: P-DYN-020
+    name: Body overall length
+    description: Overall length of the capsule body shape along the body x axis, nose to tail (MS-DYN §2.1). At least P-DYN-030.
+    unit: m
+    value: 12.0
+    tolerance: null
     status: TBR
-    source: CV-110; L1-AER-060; B1 proposal (G0-F25)
+    source: 'L0-CON-140 (shape provisional, closes 2026-11-30); L1-AER-220; L2-AER-DYN-220; MS-DYN §2.1; C1 proposal'
+    owner: Martin
+  - id: P-DYN-030
+    name: Body diameter
+    description: Diameter of the capsule body shape, which is also the diameter of its two hemispherical ends (MS-DYN §2.1).
+    unit: m
+    value: 4.0
+    tolerance: null
+    status: TBR
+    source: 'L0-CON-140 (shape provisional, closes 2026-11-30); L1-AER-220; L2-AER-DYN-220; MS-DYN §2.1; C1 proposal'
+    owner: Martin
+  - id: P-DYN-100
+    name: Drag area
+    description: Product of the drag coefficient and the reference area (C_D x A) of the isotropic quadratic drag model; drag = 0.5 x density x P-DYN-100 x airspeed x air-relative velocity, opposite to the air-relative velocity (MS-DYN §5.5, option D1). Zero gives the vacuum-equivalent configuration used by the credibility checks.
+    unit: m^2
+    value: 5.0
+    tolerance: null
+    status: TBR
+    note: 'Estimate for a round-nosed capsule of P-DYN-020 x P-DYN-030 - C_D about 0.3 on the 12.6 m^2 frontal area gives 3.8 m^2, more in cross-flow (Hoerner, Fluid-Dynamic Drag, 1965). Isotropic form chosen by the owner (D64). Confirmed at I1 with the authority budgets; the consumption coefficients P-FU-040, -050 are derived from it (D66).'
+    source: L1-AER-070; L2-AER-DYN-130; MS-DYN §5.5; DD-060; FUNCTIONAL_ANALYSIS §7.1
+    owner: Martin
+  - id: P-DYN-200
+    name: Free-fall check tolerance
+    description: Largest error of the simulated position and velocity in vacuum-equivalent free fall, relative to their change since the start of the check (MS-DYN check C-1).
+    unit: '1'
+    value: 1.0e-4
+    tolerance: null
+    status: TBR
+    source: L1-AER-010, -060; L2-AER-DYN-600; MS-DYN §11; METHODOLOGY §10.3
+    owner: Martin
+  - id: P-DYN-210
+    name: Terminal vertical speed check tolerance
+    description: Largest difference between the settled vertical speed magnitude in a free fall with drag and the expected terminal value of MS-DYN check C-2, relative to that value. Also bounds the settled horizontal velocity error relative to the wind speed in the same check.
+    unit: '1'
+    value: 1.0e-3
+    tolerance: null
+    status: TBR
+    source: L1-AER-010, -070; L2-AER-DYN-140, -610; MS-DYN §11; METHODOLOGY §10.3
+    owner: Martin
+  - id: P-DYN-220
+    name: Torque-free rotation check tolerance
+    description: Largest relative change of the angular momentum magnitude, change of its direction (rad) and relative change of the rotational kinetic energy over P-DYN-270 in a torque-free rotation (MS-DYN check C-3).
+    unit: '1'
+    value: 1.0e-4
+    tolerance: null
+    status: TBR
+    source: L1-AER-010; L2-AER-DYN-620; MS-DYN §11; METHODOLOGY §10.3
+    owner: Martin
+  - id: P-DYN-230
+    name: Quaternion norm tolerance
+    description: Largest difference between the norm of the attitude quaternion and one, at each simulation step (MS-DYN check C-6).
+    unit: '1'
+    value: 1.0e-6
+    tolerance: null
+    status: TBR
+    source: CV-250; L1-AER-010; L2-AER-DYN-060; MS-DYN §4.4, §11
+    owner: Martin
+  - id: P-DYN-240
+    name: Variable-mass check tolerance
+    description: Largest error of the simulated velocity under a prescribed constant control force and a prescribed decreasing mass, relative to its change since the start of the check (MS-DYN check C-4).
+    unit: '1'
+    value: 1.0e-4
+    tolerance: null
+    status: TBR
+    source: L1-AER-010, -180; L2-AER-DYN-630; MS-DYN §11
+    owner: Martin
+  - id: P-DYN-250
+    name: Rotation-during-translation check tolerance
+    description: Largest error of the simulated horizontal velocity, relative to the initial horizontal speed, in a vacuum-equivalent free fall with a yaw rate, against the expected result with the rotation-during-translation term retained (D64, MS-DYN check C-5).
+    unit: '1'
+    value: 1.0e-4
+    tolerance: null
+    status: TBR
+    source: 'L1-AER-020; L2-AER-DYN-640; MS-DYN §4.5, §11; D64 (#81.1)'
+    owner: Martin
+  - id: P-DYN-260
+    name: Atmosphere density tolerance
+    description: Largest difference between the density of the atmosphere model and the published table of the U.S. Standard Atmosphere 1976, relative to the table value, at the base altitude and the midpoint of each modelled layer (MS-DYN check C-7).
+    unit: '1'
+    value: 1.0e-4
+    tolerance: null
+    status: TBR
+    source: D20; L1-AER-070; L2-AER-DYN-150; MS-DYN §5.3, §11
+    owner: Martin
+  - id: P-DYN-270
+    name: Model accuracy horizon
+    description: Simulation time over which the credibility-check tolerances P-DYN-220 and P-DYN-250 apply. At least the longest run; raised to P-SYS-280 if that is set longer.
+    unit: s
+    value: 172800.0
+    tolerance: null
+    note: '48 h: at least the hover endurance P-SYS-280 (46 h, D66), the longest run.'
+    status: TBR
+    source: L1-AER-010; L2-AER-DYN-620, -640; MS-DYN §10.3, §11
     owner: Martin
   - id: P-DYN-400
     name: Crew station position
-    description: Position of the crew station in the body frame (three components, x forward of the CG). The crew acceleration limit is evaluated at the centre of gravity, not here (D45).
+    description: Position of the crew station in the body frame (three components, x forward of the CG, z down), inside the capsule of P-DYN-020 and P-DYN-030 and forward of the CG. The crew acceleration limit is evaluated at the centre of gravity, not here (D45).
     unit: m
-    value: null
+    value: [4.0, 0.0, -1.0]
     tolerance: null
-    status: TBD
-    source: L1-AER-250, -290; L0-CON-150
+    status: TBR
+    source: L1-AER-250, -290; L0-CON-150; L2-AER-DYN-240; MS-DYN §2.3; C1 proposal
     owner: Martin
 
   # --- FU ---
   - id: P-FU-010
     name: Usable fuel mass at full capacity
-    description: Mass of usable fuel when the tank is full. Initial fuel of the reference mission.
+    description: Mass of usable fuel when the tank is full (fuel capacity). The largest valid initial fuel mass of a run (L1-AER-150, L2-AER-FU-030) and the initial fuel of the reference mission. The maximum vehicle mass is P-FU-030 + P-FU-010. Sized by the fuel budget of L2-AER-FU-290.
     unit: kg
-    value: null
+    value: 500
     tolerance: null
-    status: TBD
-    source: CONOPS §4.5, SC-110
+    note: 'Range: greater than zero. Accepted by the owner (D65); with P-FU-030 and P-FU-040 it meets L2-AER-FU-290 for P-SYS-280 = 46 h (D66).'
+    status: TBR
+    source: CONOPS §4.5, SC-110; L1-AER-150, -360; L2-AER-FU-290; C2 proposal; D65
     owner: Martin
   - id: P-FU-020
     name: Low-fuel threshold
-    description: Fraction of the full fuel capacity P-FU-010 below which LOW FUEL is annunciated.
+    description: Fraction of the fuel capacity P-FU-010 below which the fuel state indicates low fuel and the low-fuel alert is annunciated (L1-AER-570, L2-AER-FU-220).
     unit: '1'
     value: 0.1
     tolerance: null
+    note: 'Range: greater than zero and less than one.'
     status: TBR
-    source: CONOPS §4.5; L1-AER-570; B1 proposal
+    source: CONOPS §4.5; L1-AER-570; B1 proposal (D48)
     owner: Martin
   - id: P-FU-030
     name: Dry mass
-    description: Vehicle mass with no fuel. The maximum vehicle mass is P-FU-030 + P-FU-010.
+    description: Vehicle mass with no fuel. The maximum vehicle mass is P-FU-030 + P-FU-010; the vehicle mass at fuel exhaustion is P-FU-030.
     unit: kg
-    value: null
+    value: 1000
     tolerance: null
-    status: TBD
-    source: L1-AER-180, -360; FUNCTIONAL_ANALYSIS §7.3
+    note: 'Range: greater than zero. Accepted by the owner (D65); I1 may rescale it with the effector authority budget.'
+    status: TBR
+    source: L1-AER-180, -360; FUNCTIONAL_ANALYSIS §7.3; L2-AER-FU-110; C2 proposal; D65
     owner: Martin
   - id: P-FU-040
-    name: Translational fuel consumption parameters
-    description: Parameters of the translational consumption relationship (fuel mass flow per unit of control force). The form, and therefore the number of coefficients, is set by C2 in MS-DYN; the unit is that of a linear coefficient.
+    name: Translational fuel consumption coefficient
+    description: Coefficient k_t of the translational consumption relationship of MS-DYN (DD-110) - fuel mass flow per newton of the magnitude of the resultant control force. One coefficient, common to the effector set (D65).
     unit: kg/(N*s)
-    value: null
+    value: 2.34e-7
     tolerance: null
-    status: TBD
-    source: L1-AER-170; L0-CON-120
+    note: 'Range: zero or more (zero switches off translational consumption, for model checks). Derived from the owner endurance at maximum speed (D66): 8 h (P-SYS-290) at 300 kt (P-SYS-230) at sea level in still air, from full fuel, with the drag of P-DYN-100 and the masses P-FU-010, P-FU-030; the fuel burn integrated as the weight falls gives 2.347e-7, rounded down so that the endurance at speed is at least 8 h.'
+    status: TBR
+    source: L1-AER-170, -360; L0-CON-120; L2-AER-FU-040, -290; D65, D66
     owner: Martin
   - id: P-FU-050
-    name: Rotational fuel consumption parameters
-    description: Parameters of the rotational consumption relationship (fuel mass flow per unit of control moment). Form set by C2 in MS-DYN.
+    name: Rotational fuel consumption coefficient
+    description: Coefficient k_r of the rotational consumption relationship of MS-DYN (DD-110) - fuel mass flow per newton metre of the magnitude of the resultant control moment about the centre of gravity. One coefficient, common to the effector set (D65).
     unit: kg/(N*m*s)
-    value: null
+    value: 2.34e-7
     tolerance: null
-    status: TBD
-    source: L1-AER-170; L0-CON-120
+    note: 'Range: zero or more. Equal in number to P-FU-040, so that a control moment of 1 N*m costs as much fuel as a control force of 1 N; rotation is then a small share of the reference-mission fuel (D66).'
+    status: TBR
+    source: L1-AER-170; L0-CON-120; L2-AER-FU-040; C2 proposal; D65, D66
     owner: Martin
   - id: P-FU-060
     name: Fuel mass accounting tolerance
-    description: Largest difference between the remaining fuel mass and the initial fuel mass minus the integral of the fuel mass flow (numerical integration only).
+    description: Largest difference between the remaining fuel mass of a simulation step and the initial fuel mass minus the sum, over the preceding steps, of the fuel mass flow times P-SYS-300 (L2-AER-FU-080). Covers the floating-point arithmetic of the model and of the independent check only. Also the tolerance on equal fuel and mass values in the FU tests.
     unit: kg
+    value: 1.0e-6
+    tolerance: null
+    note: 'Range: greater than zero. About 2e-9 of P-FU-010, ample for double-precision sums over a reference mission of up to P-SYS-280 at P-SYS-300 = 0.01 s. The check uses the flow of each simulation step (D65, IN-C2-30).'
+    status: TBR
+    source: L1-AER-190; METHODOLOGY §10.3; L2-AER-FU-080; C2 proposal
+    owner: Martin
+  - id: P-FU-070
+    name: Dry-mass principal moments of inertia
+    description: Principal moments of inertia (Ixx, Iyy, Izz) of the dry mass about the centre of gravity, in the body axes, three components. Products of inertia are zero (D61; CV-350 sign convention). The inertia tensor at fuel exhaustion (L2-AER-FU-170). Derived in MS-DYN from the body shape and the dry-mass distribution with P-FU-030 (L2-AER-FU-190); not set independently.
+    unit: kg*m^2
     value: null
     tolerance: null
+    note: 'Range: each component greater than zero, and each at most the sum of the other two (triangle inequality of a physical body). Value TBD until C1 states the body shape and the distributions in MS-DYN.'
     status: TBD
-    source: L1-AER-190; METHODOLOGY §10.3
+    source: L1-AER-220; L0-CON-140; L2-AER-FU-170, -180, -190; MS-DYN (C1)
+    owner: Martin
+  - id: P-FU-080
+    name: Full-fuel principal moments of inertia
+    description: Principal moments of inertia (Ixx, Iyy, Izz) of the fuel at full capacity P-FU-010 about the centre of gravity, in the body axes, three components. Products of inertia are zero. The fuel share of the inertia tensor is this value times the ratio of the remaining fuel mass to P-FU-010 (L2-AER-FU-170; uniform depletion, DD-120). Derived in MS-DYN from the fuel-mass distribution with P-FU-010 (L2-AER-FU-190); not set independently.
+    unit: kg*m^2
+    value: null
+    tolerance: null
+    note: 'Range: each component zero or more. The owner chose an inertia that changes with fuel (D65), so it is not zero. If MS-DYN gives the fuel the same uniform distribution as the dry mass (IN-C2-13), P-FU-080 = P-FU-070 x P-FU-010 / P-FU-030.'
+    status: TBD
+    source: L1-AER-220; L0-CON-140; L2-AER-FU-170, -180, -190; MS-DYN (C1, C2)
+    owner: Martin
+  - id: P-FU-090
+    name: FU computation agreement tolerance
+    description: Largest relative difference between an FU output (fuel mass flow, principal moment of inertia) and its independent computation from the recorded inputs, in the FU analyses and tests (AN-FU-040, -050, -170; DM-FU-010). Floating-point agreement only.
+    unit: '1'
+    value: 1.0e-9
+    tolerance: null
+    note: 'Range: greater than zero. A verification tolerance, kept in the database like P-FU-060 because the requirements cite it.'
+    status: TBR
+    source: L2-AER-FU-010, -040, -050, -170; C2 proposal
+    owner: Martin
+  - id: P-FU-100
+    name: Hover endurance consumption margin
+    description: Fraction by which the fuel mass flow in a still-air hold may exceed the translational term that balances the weight, used to size the fuel capacity P-FU-010 (L2-AER-FU-290). Covers the regulation of the hold, the attitude-holding moments and the transient at the start of the hold (FUNCTIONAL_ANALYSIS §7.3).
+    unit: '1'
+    value: 0.05
+    tolerance: null
+    note: 'Range: zero or more. Confirmed or resized at G2 from a prototype hover run (FC and EF).'
+    status: TBR
+    source: L1-AER-360; FUNCTIONAL_ANALYSIS §7.3; L2-AER-FU-290; C2 proposal
     owner: Martin
 
   # --- EF ---

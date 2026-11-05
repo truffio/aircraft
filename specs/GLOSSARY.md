@@ -1,6 +1,6 @@
 # Aeronef — Glossary
 
-**Status:** Fixed at Gate G0 (D43), 2026-10-27. Extended at later gates from agents' `glossary_proposals.md`; changes to a fixed definition go through a change request. G1 rework (2026-11-04): B1 terms merged, corrected for D55 to D62; *Crew interface*, *Gust*, *Landing envelope*, *Mode catalogue*, *Operational data* and *Subsystem* changed by CR-B1-11.
+**Status:** Fixed at Gate G0 (D43), 2026-10-27. Extended at later gates from agents' `glossary_proposals.md`; changes to a fixed definition go through a change request. C1/C2 merge (2026-11-05): DYN and FU terms added, CR-C1-02 and CR-C2-03 applied. G1 rework (2026-11-04): B1 terms merged, corrected for D55 to D62; *Crew interface*, *Gust*, *Landing envelope*, *Mode catalogue*, *Operational data* and *Subsystem* changed by CR-B1-11.
 **Date:** 2026-10-27
 **Owner:** Martin (maintained by the orchestrator)
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
@@ -11,6 +11,7 @@ The mode names below (for example *Stationary*) are the names of functions in th
 
 | Term | Definition | Ref. |
 | --- | --- | --- |
+| Accuracy horizon | The simulation time `[P-DYN-270]` over which the credibility-check tolerances of the *dynamics model* apply; at least the longest run. | MS-DYN §10.3, §11 |
 | Active (mode) | State of a *mode* in which it is producing the references for the axes of its *mode group*. At most one mode per mode group is active at a time (D56). In requirements, "active" is used for this state; "engaged" is not used for modes. TBR (C5). | — |
 | AER | Identifier of the Aeronef element in requirement IDs (`AER-…`). | METHODOLOGY 9.1 |
 | Aeronef | The fictional six-degree-of-freedom flying vehicle that is the subject of the project, including its dynamics, effectors, fuel and mass properties, flight control, autoflight, flight control panel, navigation and operational data output. One of the three L1 elements, with the *TST* and the *RVS*. | — |
@@ -35,6 +36,8 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Baseline | Reviewed and approved version of an artifact, placed under configuration control and changed only by an approved change request. | METHODOLOGY 10.5 |
 | Body frame | Frame B fixed to the vehicle: origin at the CG, x toward the nose, y to the right, z down through the cockpit floor. | CV-160, CV-170 |
 | Body rates | Components (p, q, r) of the vehicle angular velocity along the body axes: roll rate, pitch rate and yaw rate, in rad/s. Not equal to the *Euler-angle* rates in general. | CV-280, CV-290 |
+| Body shape | The exterior shape of the *Aeronef* from which the *mass properties* are derived: a *capsule* in version 1 (provisional, L0-CON-140). | MS-DYN §2.1; L1-AER-220 |
+| Capsule | A circular cylinder closed at each end by a hemisphere of the cylinder's radius. Its overall length is `[P-DYN-020]` and its diameter `[P-DYN-030]`. | MS-DYN §2.1 |
 | Capture | Transition of an *armed* mode to *active* when its capture condition is met, for example *Altitude Hold* capturing the selected altitude from *Go to altitude*, or *Hover* engaging from *Go to hover*; for a mode with a capture phase, also the period during which the vehicle converges onto the *target* before holding it. TBR (C5). | — |
 | Centre of gravity (CG) | Point about which the vehicle's weight acts. Fixed in the *body frame* in version 1, and the origin of the body frame. | CV-160 |
 | Childless parent | Trace-check term (METHODOLOGY §10.4): a requirement with no child at the next level where one is expected. L0 requirements allocated only to the *TST* or the *RVS* are not childless parents until the plan covers those branches (D44). | L0-SUC-150, D44 |
@@ -43,11 +46,15 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Configuration (run) | The items a run is started with besides its *initial condition* and *selection script*: the *vehicle parameter set*, the *flight-control-law design* and the *autoflight implementation*, each with an identifier and a version. Not to be confused with *Aeronef configuration* (D42), the one verified combination. | CONOPS §4.6; N-350 |
 | Constraint | Requirement type that limits the design or the model, for example "no aerodynamic lift". | METHODOLOGY 4.4 |
 | Consumption parameters | The translational `[P-FU-040]` and rotational `[P-FU-050]` parameters of the relationships that give the *fuel mass flow* from the control forces and control moments. Their form is set in MS-DYN (C2). | L0-CON-120; L1-AER-160, -170 |
+| Consumption rate | The fuel mass per unit of time that the *consumption relationships* give for the *effector outputs* of a *simulation step*, in kg/s. It equals the *fuel mass flow* in each step except the one that ends at *fuel exhaustion*, where the flow is limited to the fuel left. | L2-AER-FU-040, -050 |
+| Consumption relationship | One of the two relationships of MS-DYN that give fuel use from the effector outputs: the translational relationship, from the *control forces*, with `[P-FU-040]`, and the rotational relationship, from the *control moments*, with `[P-FU-050]`. | L0-CON-120; L1-AER-160 |
+| Contact step | The first *simulation step* at which the propagated *altitude* is at most zero. *Ground contact* is detected and classified at this step; it is the "contact sample" of L1-AER-280 and of the *landing envelope*. | MS-DYN §9; L1-AER-280; CV-940 |
 | Control effectiveness | The control force and control moment, in the *body frame* and about the *centre of gravity*, that one *effector* produces per unit of its *effector command*. It carries the effector's point of application and moment arm. | L0-CON-080; CV-330 |
 | Control force, control moment | A force or moment on the *Aeronef* other than gravity and aerodynamic drag. Only the *effectors* produce them. | L0-CON-060 |
 | Control frame | One execution of the flight-control or autoflight functions. Its period is a parameter. | CV-830 |
 | Control law | The rule by which the flight-control function turns references and vehicle state into *effector* commands. Defined at L2 (D33). | L0-CON-200 |
 | Crash | *Ground contact* outside the *landing envelope*. It ends the run (D37). | L0-CON-290 |
+| Credibility check | A comparison of the simulated motion with an independent solution (a closed form or a conservation law) computed outside the model, with a stated configuration and tolerance. MS-DYN lists checks C-1 to C-8 (NASA-STD-7009B). | METHODOLOGY §10.3; MS-DYN §11 |
 | Crew | The person or simulated operator who selects modes and targets and reads annunciations. Never the subject of a requirement. | METHODOLOGY 8.1 |
 | Crew interface | The data exchanged between the *crew* and the *Aeronef*: mode selections, *target* selections, *annunciations* and *indications*. Physical controls and *display formats* are not modelled (L0-CON-170). | L0-CON-170 |
 | Crew selection | One data item of the *crew interface* by which the *crew* selects a *mode* or a *selected value*, with its *timestamp*. | L0-CON-170; CONOPS §4.3 |
@@ -64,7 +71,11 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Direction angle | Angle in the horizontal plane measured clockwise from true north, in [0, 2π) rad (crew-facing: [0°, 360°)). *Heading* and *track* are direction angles. | CV-520 |
 | Disengagement | Transition of a *mode* out of the *active* or *armed* state, by crew action or automatically. TBR (C5). | — |
 | Display format | The layout, graphics and symbology in which *crew-interface* data are shown. Not the value resolution or the rounding of a crew-interface data item, which are requirement matters (CV-780). | L0-CON-170; L1-AER-510 |
+| Drag area | The product of the drag coefficient and the reference area, `[P-DYN-100]`, in m², that scales the drag force. | MS-DYN §5.5 |
+| Drag force | The aerodynamic force on the vehicle computed by the drag model of MS-DYN from the *air-relative velocity* and the air density at the vehicle *altitude*. It acts at the *centre of gravity*. The only aerodynamic force (L1-AER-030). | MS-DYN §5.5; L1-AER-070 |
 | Dry mass | *Vehicle mass* with no fuel, `[P-FU-030]`, in kg. | CV-340 |
+| Dry-mass distribution, fuel-mass distribution | The distributions of the *dry mass* and of the *remaining fuel mass* over the body that MS-DYN states; each is centred on the *centre of gravity* and symmetric about the body axes. The fuel depletes uniformly over a fixed fuel volume (DD-120). | L0-CON-140; L1-AER-210, -220 |
+| Dynamics model | The Aeronef subsystem DYN, part of the *vehicle model*: it propagates the six-degree-of-freedom rigid-body motion under gravity, drag and the control forces and moments, computes the *sensed acceleration*, and detects and classifies *ground contact*. Specified by MS-DYN. The subject of the DYN requirements. | FUNCTIONAL_ANALYSIS §6.1 |
 | Effector | A fictional force or moment emitter that acts along a fixed direction in the *body frame* and produces a variable output on command, consuming fuel. "Emitter" is a synonym used in the concept documents; requirements use "effector". The set of effectors is the effector subsystem (EF). | CV-330 |
 | Effector command | The value that *flight control* sends to one *effector* for a *control frame*. | CV-330 |
 | Effector output | The force or moment one *effector* produces along its fixed direction at a *simulation step*. | CV-330 |
@@ -82,14 +93,21 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Flight software | The Aeronef functions outside the *vehicle model* that run once per *control frame*: flight control, autoflight, the *flight control panel* and navigation. The *flight-control-law design* and the *autoflight implementation* are replaceable through the *configuration*. | FUNCTIONAL_ANALYSIS §5 |
 | Flight-control-law design | One design of the *control laws* of the flight-control function, replaceable without modifying the vehicle model. There is one for now (D42). | L0-CON-200 |
 | Force effector | Synonym of *effector*, used in the L0 requirements. | L0-CON-060 to -080, -300 |
+| Free fall | Motion with zero *control force* and zero *control moment*, for example after *fuel exhaustion*. "Free fall in the *vacuum-equivalent configuration*" is free fall with no drag. | MS-DYN §11; N-290 |
+| FU subsystem | The fuel and mass-properties subsystem of the *Aeronef* (FU), part of the *vehicle model*. At each *simulation step* it computes the *fuel mass flow*, the *remaining fuel mass*, the *mass properties*, the *fuel availability* and the *fuel state*. The subject of the FU requirements. | Plan §3, §6 C2; FUNCTIONAL_ANALYSIS F-AER-02 |
+| Fuel availability | The state that the FU subsystem gives the *effectors* at each *simulation step*: available while the *remaining fuel mass* is above zero, not available at *fuel exhaustion*. While fuel is not available, the effectors produce no output. A nominal state, not a failure. | L0-CON-100; FUNCTIONAL_ANALYSIS I-03 |
+| Fuel capacity | The usable fuel mass at full capacity, `[P-FU-010]`, in kg: the largest initial fuel mass of a run. | L1-AER-150 |
 | Fuel exhaustion | State in which the remaining fuel mass is zero. Nominal behaviour, not a failure. | — |
 | Fuel mass flow | Mass of fuel consumed per unit of time, in kg/s, computed from the control forces and control moments through the *consumption parameters*. | CV-720; L1-AER-160 |
-| Fuel state | The *remaining fuel mass* and whether it is below the low-fuel threshold `[P-FU-020]` or at *fuel exhaustion*. | CONOPS §4.5 |
+| Fuel state | The *remaining fuel mass* and whether it is below the fraction `[P-FU-020]` of `[P-FU-010]` (the low-fuel threshold) or at *fuel exhaustion*. | CONOPS §4.5 |
 | Gate | Review point between plan phases (G0 to G4) at which the project owner approves a baseline. | Plan §6 |
 | Go to altitude | Autoflight vertical *mode* that climbs or descends toward the selected altitude at the *standard vertical speed*, or at the selected vertical speed if the crew sets one, and arms *Altitude Hold* (D56). | Plan D56 |
 | Go to hover | Autoflight *mode* that governs both axes: from whatever the vehicle is flying, it brings the vehicle to zero velocity at the *hover height* and arms *Hover* (D56). | Plan D56 |
+| Gravity force | The force of gravity on the vehicle: the *vehicle mass* times `[P-DYN-010]`, along the positive z axis of the *local reference frame*, at the *centre of gravity*. | MS-DYN §5.2; L1-AER-060 |
 | Ground contact | Contact of the vehicle with the *datum plane*. Modelled as an ideal landing: within the *landing envelope* it is a *landing*, outside it a *crash*. There is no landing gear, bounce or friction model (D37). | L0-CON-290 |
 | Gust | A change in time of the *wind* added to the steady wind, as a gust or a burst. Horizontal; its speed adds to the steady wind speed (D51). It builds up over at least `[P-SYS-570]`: there is no instantaneous step (D62). | L0-ASM-050, P-SYS-560, D62 |
+| Gust event | One gust or burst of the *wind model*: a one-minus-cosine rise of at least `[P-SYS-570]` to an amplitude of at most `[P-SYS-560]` along a fixed horizontal direction, a hold, and a one-minus-cosine decay of at least `[P-SYS-570]`. | MS-DYN §5.4; D51, D62 |
+| Gyroscopic term | The rigid-body term `ω × (J·ω)` of the rotational equation. Zero while pitch and roll are held at zero (D57). | MS-DYN §4.3, §4.5 (K-1); #81 |
 | Heading | The direction in which the nose points: the *direction angle* of the horizontal projection of the body x axis; equal to the Euler yaw angle. Independent of *track* on the Aeronef. In rad (crew-facing: deg). | CV-530, CV-550 |
 | Heading (mode) | Autoflight horizontal *mode* that turns the vehicle to the selected *heading* and moves it along that heading at the selected *horizontal speed*. With no horizontal speed, a heading change turns the vehicle in place about its vertical axis (D56). | Plan D56 |
 | Heading rate | Rate of change of *heading*, dψ/dt, in rad/s. Not a *body rate* (CV-290). | CV-290 |
@@ -100,10 +118,13 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Hover height | The height above the ground that *Go to hover* brings the vehicle to and *Hover* holds; a project constant `[P-AF-210]`. On the flat ground (D8) it is an altitude. | Plan D56 |
 | ICD | Interface control document: data, units, rates and frames exchanged between two elements or subsystems. | METHODOLOGY 11.1 |
 | Indication | A vehicle quantity shown to the *crew* in its *crew-facing unit*: *altitude*, *vertical speed*, *horizontal speed*, *heading*, *track* and *remaining fuel mass*. Distinct from an *annunciation*, which shows the autoflight state or an alert. | CONOPS §4.3; CV-760 |
+| Inertia tensor | The 3 × 3 tensor of the moments and products of inertia of the vehicle about the *centre of gravity* in the *body frame*, with the CV-350 sign convention, in kg·m². Diagonal, because the body axes are principal axes (D61). It changes with the *remaining fuel mass* (L2-AER-FU-170). | CV-340, CV-350, D61 |
 | Initial condition | The state a run starts from: position, velocity, attitude, *body rates*, fuel mass, *mode state* and *targets*. Set by the TST (L1-AER-660). | CONOPS §4.6; N-310 |
+| Initial-condition error | A data item by which the *Aeronef* tells the *TST* that an item of the *initial condition* is outside its valid range, naming the item and its value. The run does not start. | ICD-AER-TST (proposed, IN-C2-31) |
 | Inspection | Verification method: examination of an artifact, code or data against the requirement, without running it. | METHODOLOGY 9.3 |
+| Kinematic terms list | The list in MS-DYN §4.5 of the rigid-body kinematic terms the *dynamics model* retains (L1-AER-020 exception). | MS-DYN §4.5; #81 |
 | Landing | *Ground contact* within the *landing envelope*: a successful outcome, not a crash (D37). | L0-CON-290 |
-| Landing envelope | The limits on the *vertical speed* magnitude (`[P-SYS-500]`) and the *horizontal speed* (`[P-SYS-510]`) at the ground-contact sample within which *ground contact* is a *landing*. There is no acceleration limit (D53). | L0-CON-290, D53 |
+| Landing envelope | The limits on the *vertical speed* magnitude (`[P-SYS-500]`) and the *horizontal speed* (`[P-SYS-510]`) at the *contact step* within which *ground contact* is a *landing*. There is no acceleration limit (D53). | L0-CON-290, D53 |
 | Level attitude | *Attitude* with zero *pitch angle* and zero *roll angle*, at any *heading*. | CV-270 |
 | Level file | The file `requirements/L<n>.md` that holds the requirements of one level, assembled from draft sections (plan §3, D2). | Plan §3 |
 | Level flight | Motion with zero *vertical speed*. Unrelated to *level attitude*. | CV-570 |
@@ -121,6 +142,7 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Model specification | The specification of the Aeronef dynamics model (MS-DYN, task C1): equations of motion, external effects, *effector*, fuel and mass models. | L0-OBJ-010, L0-CON-010 to -140 |
 | Navigation | The Aeronef subsystem (NAV) that provides *position*, *altitude*, *heading*, *track*, *horizontal speed* and *vertical speed* to autoflight and to the *flight control panel*. | — |
 | Navigation quantities | The quantities the navigation subsystem computes from the *vehicle state* at each control frame: *altitude*, *horizontal speed*, *vertical speed*, *heading* and *track*, each with its validity (whether it is defined at the current state, per the validity thresholds of CV-580). | L1-AER-530, L1-AER-890 |
+| Nose | The end of the *body shape* on the positive body x axis; it marks the designated forward direction. | CV-170; MS-DYN §2.2 |
 | Operating volume | The region of nominal operation: *altitudes* from the minimum operating altitude `[P-SYS-210]` to the maximum operating altitude `[P-SYS-200]`, within a *horizontal distance* `[P-SYS-220]` of the local reference frame origin. | CONOPS §4.2 |
 | Operational data | Signals the Aeronef outputs, at each *output sample*, describing its externally observable activity: *crew selections*, *targets*, *armed* and *active* modes, *annunciations*, control activity and *vehicle states*. Whether each signal is *releasable* or *protected* is decided with the RVS (#69, D44). | CV-830, CV-840 |
 | Operational manuals | The Vehicle Operating Manual, the normal procedures and the quick reference checklists of METHODOLOGY §11.2, written for an operator after the *requirements baseline*. | L0-OBJ-150 |
@@ -132,6 +154,7 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Parameter database | The file `parameters/PARAMETERS.yaml`, which holds each *parameter* with its ID, unit, value or TBD, status and source. | CV-790; plan §3 |
 | Pitch angle | Euler angle θ: rotation about the body y axis, positive nose up, in [−π/2, +π/2] rad. | CV-220, CV-230 |
 | Position (vehicle position) | Position of the body origin (the CG) in the local reference frame, in m. *Horizontal position* is its north and east components. | CV-410 |
+| Principal moments of inertia | The three moments of inertia `I_xx`, `I_yy`, `I_zz` about the body axes, which are principal axes (D61). | CV-350; D61 |
 | Project owner | The person who decides open questions and approves each gate (Martin). | Plan §5 |
 | Protected | Classification of information that must not reach the *RVS*: requirements, design artifacts (including this glossary and the conventions), source code, ground-truth test expectations, assessment answers and *operational data* signals classified protected. | REVERSE_ENGINEERING §2, §7 |
 | Protected design baseline | The baselined requirements and design against which the *reconstructed model* is assessed. It is *protected*. | L0-OBJ-170 |
@@ -147,19 +170,21 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Requirement | A single "shall" statement with its attributes (METHODOLOGY §9.2), stored as one record per the requirement template. | METHODOLOGY 8, 9 |
 | Requirements baseline | The complete baselined Aeronef requirement set, tag `AER-REQ-baseline-1`, approved at Gate G4. | Plan §6 G4 |
 | Roll angle | Euler angle φ: rotation about the body x axis, positive right side down, in (−π, +π] rad. "Bank angle" is not used. | CV-220, CV-230 |
+| Rotation-during-translation term | The rigid-body term `ω × v` that appears when the translational equation is written in body axes. The model retains it (D64, #81.1). | MS-DYN §4.2, §4.5 (K-2) |
 | RVS | Reverse-Engineering Effort: the L1 element that reconstructs the Aeronef's functions and logic from *releasable* material only. | OBJECTIVES §4 |
 | Selected value | A value the crew chooses for a *target*, in a crew-facing unit (for example a selected altitude in ft). It becomes the SI *target* by exact conversion. | CV-770 |
 | Selection script | The *crew selections* of a run, each with the *simulation time* at which it applies; empty for an interactive run. | CONOPS §4.6 |
-| Sensed acceleration | The acceleration the *crew* feels: the sum of the non-gravitational forces on the vehicle divided by its current mass (specific force), gravity included in the load felt. 1 g in a hover, 0 g in free fall. Limited to `[P-SYS-120]`, 3 g for now (D38). | L0-CON-310 |
+| Sensed acceleration | The acceleration the *crew* feels: the sum of the non-gravitational forces on the vehicle divided by its current mass (specific force): the *control force* plus the *drag force*, divided by the *vehicle mass*, evaluated at the *centre of gravity* (D45, MS-DYN §8). 1 g in a hover, 0 g in free fall. Limited to `[P-SYS-120]`, 3 g for now (D38). | L0-CON-310 |
 | Shall, will, should | "Shall" states a verified requirement, "will" a fact or declaration of purpose, "should" a goal (not verified). | METHODOLOGY 8.2 |
 | Simulation core | The part of the *TST* that executes the vehicle model and the Aeronef software, without any graphical display. | L0-CON-190 |
 | Simulation instance | One isolated, independently started copy of the simulation, running one *test run* at a time. | L0-OBJ-090 (Draft) |
 | Simulation step | The fixed time increment `Δt` by which the vehicle model advances; step k is at simulation time `k·Δt`. | CV-820 |
 | Simulation time | Independent time variable of the vehicle model, in s, zero at the instant the initial conditions apply; independent of wall-clock time. | CV-810 |
 | Slant range | Three-dimensional distance between two points, in m. | CV-450 |
-| Standard atmosphere | A standard model of air density as a function of *altitude* only (D20, L0-ASM-060). MS-DYN names the model (C1). | D20 |
+| Standard atmosphere | A standard model of air density as a function of *altitude* only (D20, L0-ASM-060). The model is the U.S. Standard Atmosphere, 1976 (identical to the ICAO Standard Atmosphere up to 32 km), from altitude zero to 47 000 m, with the geopotential altitude taken equal to the altitude (MS-DYN §5.3, DD-090). | D20 |
 | Standard vertical speed | The vertical speed magnitude `[P-AF-220]` that *Go to altitude* uses until the crew selects another. | Plan D56 |
 | Stationary | Autoflight horizontal *mode* that stops the horizontal motion and holds the horizontal position over the ground, compensating for *wind*; the vertical mode is independent of it (D56). | Plan D56 |
+| Step command | The TST's command to advance the *vehicle model* by one *simulation step*, carrying the *wind velocity* for that step. | L1-AER-670; I-25 |
 | Subsystem | Part of an element at L2. Aeronef subsystems: DYN (dynamics), FU (fuel and mass properties), EF (effectors), FC (flight control), AF (autoflight), FCP (flight control panel, D55), NAV (navigation), TM (operational data output). | Plan §3, D55 |
 | Target | The SI reference value toward which a *mode* guides a quantity: either converted from a *selected value* or set by the autoflight system (for example the position held by *Stationary*). | CV-770 |
 | TBD | To Be Determined: a value or item not yet known, recorded in the TBD/TBR register with an owner and a closure date. | METHODOLOGY 9.2 |
@@ -169,21 +194,25 @@ The mode names below (for example *Stationary*) are the names of functions in th
 | Test category | One of: functional and logic tests, mode-transition tests, performance tests, statistical campaigns (OBJECTIVES §3). | L0-OBJ-120, L0-SUC-070 |
 | Test run | One execution of one *automated test procedure*, or one interactive session, in one *simulation instance*. | L0-OBJ-120, L0-SUC-040 |
 | Timestamp | The step index k and the simulation time `t_k` attached to an output sample, selection or event. The step index is authoritative. | CV-840 |
+| Total force, total moment | The sum of the forces on the vehicle (*gravity force*, *drag force*, *control force*) and the sum of the moments about the *centre of gravity* (the *control moment* only). | MS-DYN §5.1; L1-AER-050 |
 | Total speed | Magnitude of the vehicle velocity relative to the ground, in m/s. "Speed" alone is not used. | CV-460 |
 | Track | The direction of horizontal motion: the *direction angle* of the horizontal velocity, ground-referenced. Independent of *heading* on the Aeronef. Undefined at zero horizontal speed. In rad (crew-facing: deg). | CV-540, CV-550 |
 | TST | Simulation and Testing Platform: the L1 element that executes the Aeronef simulation, runs interactive and automated tests in parallel and reports results. | OBJECTIVES §3 |
+| Vacuum-equivalent configuration | A *vehicle parameter set* with a zero *drag area*, so that no drag acts; used by the *credibility checks*. | MS-DYN §5.5, §11; L1-AER-060 |
 | Validity range | The states in which a direction quantity is defined and used, bounded by the CV-580 thresholds `[P-NAV-010]` and `[P-NAV-030]`. | CV-580 |
 | Vehicle acceleration | Time derivative of the vehicle velocity in the *local reference frame*, in m/s². Not the *sensed acceleration*, which excludes gravity. | CV-460 |
 | Vehicle mass | *Dry mass* plus *remaining fuel mass*, in kg. | CV-340 |
 | Vehicle model | The part of the Aeronef that reproduces its physics: the DYN, FU and EF subsystems and MS-DYN. It is unchanged when the *flight-control-law design* or the *autoflight implementation* is replaced. | L0-CON-200, -210; FUNCTIONAL_ANALYSIS §5 |
 | Vehicle model file | A source or data file of the *vehicle model*; its checksum shows that a replacement did not modify the model. | L0-CON-200 |
 | Vehicle parameter set | The values of the *vehicle model* parameters used in a run, identified by a version. | N-350 |
-| Vehicle state | Position, velocity, attitude (quaternion, with *Euler angles* derived), *body rates* and *vehicle acceleration* of the vehicle at a *simulation step*. | CV-250, CV-410, CV-460 |
+| Vehicle state | Position, velocity, attitude (quaternion, with *Euler angles* derived), *body rates* and *vehicle acceleration* of the vehicle at a *simulation step*. The vehicle acceleration of step k is evaluated at the end of the step that produced the state (for step 0, with the inputs of the first step), as MS-DYN §3.3 states (DD-080). The *sensed acceleration* is not part of the vehicle state. | CV-250, CV-410, CV-460 |
 | Vehicle-carried local frame | Frame V with origin at the body origin and axes parallel to the local reference frame (north, east, down). Reference for the Euler angles. | CV-150 |
+| Vehicle-model boundary | The one fixed interface between the *vehicle model* and the *flight software*: *effector commands* in; *vehicle state*, *mass properties* and *fuel state* out (L1-AER-430). Its data are defined in the vehicle-model boundary ICD, whose home is decided at I1 (IN-B1-01). | L1-AER-430; FUNCTIONAL_ANALYSIS §5.1 |
 | Verification matrix | The table of each requirement with its verification method, procedure and last result (VCRM, `tools/vcrm.py`). | L0-SUC-020, -030 |
 | Vertical speed | Rate of change of *altitude*, positive when climbing, in m/s (crew-facing: ft/min). Independent of attitude. | CV-490 |
 | Vertical speed (mode) | Autoflight vertical *mode* that climbs or descends at the selected constant *vertical speed* toward the selected altitude, and arms *Altitude Hold* so that it levels off there (D56). | Plan D56 |
 | Wind | Motion of the air mass relative to the *local reference frame*. In version 1 it is uniform (the same everywhere at a given time), horizontal, and set by the test environment for each run: a steady wind plus *gusts* (D17, D51). | L0-ASM-050, CV-470 |
 | Wind envelope | The winds for which the Aeronef performance requirements apply, and the only winds the TST applies: a horizontal steady wind of speed at most `[P-SYS-430]` plus *gusts* of speed at most `[P-SYS-560]`, each building up over at least `[P-SYS-570]`. | L0-ASM-050, D51, D62 |
 | Wind speed | Magnitude of the *wind* velocity, in m/s. | CV-470 |
+| Wind velocity | The velocity of the air mass relative to the *local reference frame*, uniform and horizontal: the steady wind plus the *gust events* (MS-DYN wind model). | CV-470; MS-DYN §5.4 |
 | Withheld assessment scenario | A scenario defined by the *evaluators* and not shown to the *RVS*, used to test whether the *reconstructed model* predicts unseen behaviour. | L0-SUC-120 |

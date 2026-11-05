@@ -54,7 +54,7 @@ Proposals for `parameters/PARAMETERS.yaml` from task C1 (DYN, MS-DYN). The orche
     tolerance: null
     status: TBR
     note: 'Estimate for a round-nosed capsule of P-DYN-020 x P-DYN-030 - C_D about 0.3 on the 12.6 m^2 frontal area gives 3.8 m^2, more in cross-flow (Hoerner, Fluid-Dynamic Drag, 1965). Confirmed at I1 with the authority budgets. If the owner chooses option D2 (C1-Q03), this entry is replaced by three per-axis drag coefficients.'
-    source: L1-AER-070; L2-AER-DYN-130; MS-DYN §5.5; DD-C1-02; FUNCTIONAL_ANALYSIS §7.1
+    source: L1-AER-070; L2-AER-DYN-130; MS-DYN §5.5; DD-060; FUNCTIONAL_ANALYSIS §7.1
     owner: Martin
   - id: P-DYN-200
     name: Free-fall check tolerance
@@ -161,6 +161,6 @@ Proposals for `parameters/PARAMETERS.yaml` from task C1 (DYN, MS-DYN). The orche
 | Crew station position proposed (TT-140: TBD → TBR) | TBR | P-DYN-400 | Martin | G2 |
 | Gust rise time proposed (TT-650: TBD → TBR) | TBR | P-SYS-570 | Martin | G2 (C4 budget check at I1) |
 | Rotation-during-translation term (#81.1) | TBD | MS-DYN §4.5; L2-AER-DYN-030, -050, -640 | Martin | G2 |
-| No aerodynamic moment, drag form (DD-C1-01, -02, C1-Q03) | TBR | MS-DYN §5.5; L2-AER-DYN-110, -130, -160 | Martin | G2 |
-| Evaluation instant of the acceleration quantities (DD-C1-04) | TBR | MS-DYN §3.3; L2-AER-DYN-300, -310 | Martin | G2 |
-| Contact-step altitude reported as zero (DD-C1-03) | TBR | MS-DYN §9; L2-AER-DYN-540 | Martin | G2 |
+| No aerodynamic moment, drag form (DD-050, -02, C1-Q03) | TBR | MS-DYN §5.5; L2-AER-DYN-110, -130, -160 | Martin | G2 |
+| Evaluation instant of the acceleration quantities (DD-080) | TBR | MS-DYN §3.3; L2-AER-DYN-300, -310 | Martin | G2 |
+| Contact-step altitude reported as zero (DD-070) | TBR | MS-DYN §9; L2-AER-DYN-540 | Martin | G2 |

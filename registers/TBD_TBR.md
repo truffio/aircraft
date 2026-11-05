@@ -2,11 +2,11 @@
 
 Open items in requirements and parameters. Every item has an owner and a closure date.
 
-Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR parameters of `parameters/PARAMETERS.yaml`; the later rows copy the TBD/TBR field of each live L0 and L1 requirement, whose closure is stated in the field itself. IDs are never reused. G1 rework (2026-11-04): field copies refreshed from the records; TT-650 to TT-730 added (`reviews/G1/dispositions.md`).
+Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR parameters of `parameters/PARAMETERS.yaml`; the later rows copy the TBD/TBR field of each live L0 and L1 requirement, whose closure is stated in the field itself. IDs are never reused. G1 rework (2026-11-04): field copies refreshed from the records; TT-650 to TT-730 added (`reviews/G1/dispositions.md`). C1/C2 merge (2026-11-05): TT-740 to TT-800 added; rows updated for D64 to D66.
 
 | ID | Item | Type (TBD/TBR) | Location (requirement or parameter ID) | Owner | Closure date | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| TT-010 | Performance envelope values (B1-Q07, D47) | TBD | P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-230, P-SYS-240, P-SYS-250, P-SYS-270, P-SYS-280 | Martin | G2 (I1) | Open |
+| TT-010 | Performance envelope values (B1-Q07, D47); P-SYS-230 Set and P-SYS-280 TBR by D66 | TBD | P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-240, P-SYS-250, P-SYS-270 | Martin | G2 (I1) | Open |
 | TT-020 | Effector authority values | TBD | P-SYS-400, P-SYS-410, P-SYS-420 | Martin | G2 (I1 budget closure) | Open |
 | TT-030 | Wind: steady 100 kt, gusts 50 kt (D51) | TBR | P-SYS-430, P-SYS-560 | Martin | G2 | Open |
 | TT-040 | Vehicle acceleration limit 1.5 g and its split (D48) | TBR | P-SYS-440, P-AF-200, P-FC-020 | Martin | G2 | Open |
@@ -16,11 +16,11 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-080 | Effector command response time | TBD | P-EF-010 | Martin | G2 (C3) | Open |
 | TT-090 | Landing envelope: 2 ft fall, 0.5 m/s (D53) | TBR | P-SYS-500, P-SYS-510 | Martin | G2 | Open |
 | TT-100 | Cross-axis tolerances | TBD | P-SYS-540, P-SYS-550 | Martin | G2 (C4) | Open |
-| TT-110 | Dry mass, consumption parameters, accounting tolerance | TBD | P-FU-030, P-FU-040, P-FU-050, P-FU-060 | Martin | G2 (C2) | Open |
-| TT-120 | Usable fuel mass at full capacity | TBD | P-FU-010 | Martin | G2 (C2) | Open |
+| TT-110 | Dry mass 1000 kg, consumption coefficients 2.34e-7, accounting tolerance 1e-6 kg (D65, D66) | TBR | P-FU-030, P-FU-040, P-FU-050, P-FU-060 | Martin | G2 (I1) | Open |
+| TT-120 | Usable fuel mass at full capacity 500 kg (D65) | TBR | P-FU-010 | Martin | G2 (I1) | Open |
 | TT-130 | Low-fuel threshold 0.1 of capacity (D48) | TBR | P-FU-020 | Martin | G2 | Open |
-| TT-140 | Crew station position | TBD | P-DYN-400 | Martin | G2 (C1) | Open |
-| TT-150 | Gravity = standard gravity (D48) | TBR | P-DYN-010 | Martin | G2 (C1) | Open |
+| TT-140 | Crew station position (4, 0, −1) m (D64) | TBR | P-DYN-400 | Martin | G2 | Open |
+| TT-150 | Gravity = standard gravity (D48) | TBR | P-DYN-010 | Martin | G2 (C1) | Closed 2026-11-05: Set by the owner (D64) |
 | TT-160 | Hover height and standard vertical speed (D56) | TBD | P-AF-210, P-AF-220 | Martin | G2 (C5) | Open |
 | TT-170 | Selection resolutions (crew units) | TBD | P-AF-010, P-AF-020, P-AF-030, P-AF-040 | Martin | G2 (C8) | Open |
 | TT-180 | Autoflight tolerances and settling time (placeholders, split per mode in Phase 4) | TBD | P-AF-090, P-AF-100, P-AF-110, P-AF-120, P-AF-130, P-AF-140, P-AF-170, P-AF-190 | Martin | G3 (M0 to M8) | Open |
@@ -28,7 +28,7 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-200 | Navigation validity thresholds | TBD | P-NAV-010, P-NAV-030 | Martin | G2 (C6) | Open |
 | TT-210 | Display resolutions (crew units) | TBD | P-TM-020, P-TM-030, P-TM-040, P-TM-050 | Martin | G2 (C8) | Open |
 | TT-220 | Parallel efficiency and instance count | TBR | P-SYS-060, P-SYS-070 | Martin | When parallel execution is picked up (#86) | Open |
-| TT-230 | Treatment of rigid-body kinematic terms (#81, deferred to L2), Martin, closes at G2 (C1) | TBD/TBR field | L0-CON-030 | Martin | as stated | Open |
+| TT-230 | Treatment of rigid-body kinematic terms (#81, deferred to L2), Martin, closes at G2 (C1) | TBD/TBR field | L0-CON-030 | Martin | as stated | Closed 2026-11-05: D64, CR-C1-01 |
 | TT-240 | Elongated body shape provisional, TBR, Martin, 2026-11-30 | TBD/TBR field | L0-CON-140 | Martin | as stated | Open |
 | TT-250 | Landing envelope limits TBD (lower level), Martin, closes at G2 | TBD/TBR field | L0-CON-290 | Martin | as stated | Open |
 | TT-260 | Per-effector maximum force values TBD (EF level), Martin, closes at G2 (C3) | TBD/TBR field | L0-CON-300 | Martin | as stated | Open |
@@ -38,7 +38,7 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-300 | Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when the plan is extended to RVS (D44) | TBD/TBR field | L0-SUC-110 | Martin | as stated | Open |
 | TT-310 | Definition of a correct prediction TBD in the reverse-engineering requirements (#69), Martin, closes when the plan is extended to RVS (D44) | TBD/TBR field | L0-SUC-120 | Martin | as stated | Open |
 | TT-320 | Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when the plan is extended to RVS (D44) | TBD/TBR field | L0-SUC-130 | Martin | as stated | Open |
-| TT-330 | Treatment of rigid-body kinematic and gyroscopic terms (#81), Martin, G2 (C1) | TBD/TBR field | L1-AER-020 | Martin | as stated | Open |
+| TT-330 | Treatment of rigid-body kinematic and gyroscopic terms (#81), Martin, G2 (C1) | TBD/TBR field | L1-AER-020 | Martin | as stated | Closed 2026-11-05: D64, CR-C1-01 |
 | TT-340 | P-DYN-010 value TBR (D48, TT-150), Martin, G2 (C1) | TBD/TBR field | L1-AER-060 | Martin | as stated | Open |
 | TT-350 | Per-effector maximum force values TBD, Martin, G2 (C3) | TBD/TBR field | L1-AER-110 | Martin | as stated | Open |
 | TT-360 | P-SYS-400 value TBD (computed when the maximum vehicle mass is known), Martin, G2 (I1); P-SYS-440 value TBR (TT-040), P-SYS-240 value TBD (TT-010) | TBD/TBR field | L1-AER-120 | Martin | as stated | Open |
@@ -70,8 +70,8 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-620 | P-SYS-300 value TBR (D48, TT-070), Martin, G2 (I1) | TBD/TBR field | L1-AER-670 | Martin | as stated | Open |
 | TT-630 | P-SYS-310 value TBR (D48, TT-070), Martin, G2 (I1) | TBD/TBR field | L1-AER-680 | Martin | as stated | Open |
 | TT-640 | P-SYS-480 value TBR (D48, TT-070), P-EF-010 value TBD (TT-080), Martin, G2 (C3, C4) | TBD/TBR field | L1-AER-710 | Martin | as stated | Open |
-| TT-650 | Minimum gust rise time (D62) | TBD | P-SYS-570 | Martin | G2 (C1, with the TST wind model) | Open |
-| TT-660 | Model specification MS-DYN not yet written (cited by L1-AER-010 to -070, -160, -220, -720) | TBD | specs/MS-DYN.md | Martin | G2 (C1) | Open |
+| TT-650 | Minimum gust rise time 2 s (D62, D64) | TBR | P-SYS-570 | Martin | G2 (C4 budget check at I1) | Open |
+| TT-660 | Model specification MS-DYN not yet written (cited by L1-AER-010 to -070, -160, -220, -720) | TBD | specs/MS-DYN.md | Martin | G2 (C1) | Closed 2026-11-05: drafted by C1; §6, §7 content and baseline at I1/G2 (TT-780) |
 | TT-670 | Autoflight mode logic AF_MODE_LOGIC not yet written (cited by L1-AER-450) | TBD | specs/AF_MODE_LOGIC.md | Martin | G2 (C5) | Open |
 | TT-680 | Interface control documents not yet written: ICD-AER-TST, ICD-FC-AF, ICD-NAV-AF, ICD-FCP (new, D55) and the home of the vehicle-model boundary definitions (IN-B1-01) | TBD | icd/; L1-AER-420, -430, -480, -490, -590, -630, -640, -880, -890 | Martin | G2 (I1) | Open |
 | TT-690 | Verification procedure IDs ("Inspection — TBD") of the L1 records, roll-up and leaf | TBD | requirements/L1.md, every live record | Martin | G4 (Phase 5, V4) | Open |
@@ -79,3 +79,10 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-710 | P-DYN-010 value TBR (TT-150), P-SYS-440 value TBR (TT-040), P-SYS-570 value TBD (TT-650), Martin, G2 | TBD/TBR field | L1-AER-290 | Martin | as stated | Open |
 | TT-720 | Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1) | TBD/TBR field | L1-AER-430 | Martin | as stated | Open |
 | TT-730 | Abnormal and emergency procedures deferred with the hazard analysis, Martin, closes when failures are introduced (#85) | TBD/TBR field | L1-AER-840 | Martin | as stated | Open |
+| TT-740 | Body dimensions 12 m × 4 m with the provisional shape (L0-CON-140, D64) | TBR | P-DYN-020, P-DYN-030 | Martin | 2026-11-30 | Open |
+| TT-750 | Drag area 5 m² (D64) | TBR | P-DYN-100 | Martin | G2 (I1 budget closure) | Open |
+| TT-760 | Model accuracy tolerances and horizon (D64) | TBR | P-DYN-200, P-DYN-210, P-DYN-220, P-DYN-230, P-DYN-240, P-DYN-250, P-DYN-260, P-DYN-270 | Martin | G2 | Open |
+| TT-770 | Dry-mass and full-fuel principal moments of inertia, derived in MS-DYN | TBD | P-FU-070, P-FU-080 | Martin | G2 (I1, C1 and C2) | Open |
+| TT-780 | MS-DYN §6 (mass properties) and §7 (effector and fuel models) content, and the MS-DYN baseline | TBD | specs/MS-DYN.md | Martin | G2 (I1, C2 and C3) | Open |
+| TT-790 | FU computation agreement tolerance 1e-9 and hover consumption margin 0.05 (D65) | TBR | P-FU-090, P-FU-100 | Martin | G2 | Open |
+| TT-800 | Hover endurance 46 h, derived from the endurance at maximum speed (D66) | TBR | P-SYS-280 | Martin | G2 (I1) | Open |
