@@ -136,4 +136,4 @@ Rework of the findings in `inspection_B1.md` (G1-F01 to G1-F32) and `checklist_L
 | G1-R06 | **Fixed.** DECISIONS.md and FA header cite D1–D63; FA §9 and interface_needs.md §3 say the owner questions are answered. FA header no longer points to the draft (G1-F15 residue). |
 | G1-R07 | **Fixed.** ConOps §9 drops "3 g"; CR-B1-12 lists SC-090, SC-100 and cites D60, D62; glossary *Mode state* no longer says "disengaged". |
 
-Checks after closure: lint 0 errors, 66 COMPOUND warnings (judged); trace 68 CHILDLESS only (no L2 yet); param 0 errors, 19 PARAM-UNUSED; vcrm clean; 39 tests pass. **Exit decision: Baseline, subject to owner approval.**
+Checks after closure: lint 0 errors, 66 COMPOUND warnings (judged); trace 68 CHILDLESS only (no L2 yet); param 0 errors, 19 PARAM-UNUSED; vcrm clean; 39 tests pass. **Exit decision: Baseline.** Approved by the owner on 2026-11-04; 85 L1 records Baselined; tagged `AER-L1-baseline-1`.

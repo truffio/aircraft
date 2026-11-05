@@ -30,7 +30,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -65,7 +65,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Treatment of rigid-body kinematic and gyroscopic terms (#81), Martin, G2 (C1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -91,7 +91,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -117,7 +117,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -147,7 +147,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -175,7 +175,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-DYN-010
 TBD/TBR:       P-DYN-010 value TBR (D48, TT-150), Martin, G2 (C1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -204,7 +204,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -232,7 +232,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -259,7 +259,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -288,7 +288,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -316,7 +316,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Per-effector maximum force values TBD, Martin, G2 (C3)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -349,7 +349,7 @@ Parameters:    P-SYS-400, P-DYN-010, P-SYS-440, P-SYS-240
 TBD/TBR:       P-SYS-400 value TBD (computed when the maximum vehicle mass is known), Martin, G2
   (I1); P-SYS-440 value TBR (TT-040), P-SYS-240 value TBD (TT-010)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -380,7 +380,7 @@ Parameters:    P-SYS-410, P-SYS-440, P-SYS-230, P-SYS-430, P-SYS-560
 TBD/TBR:       P-SYS-410 value TBD (computed when the maximum vehicle mass is known), Martin, G2
   (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -410,7 +410,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-420, P-SYS-270
 TBD/TBR:       P-SYS-420 value TBD (computed when the inertia is known), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -438,7 +438,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-FU-010
 TBD/TBR:       P-FU-010 value TBD, Martin, G2 (C2, fuel budget §7.3)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -469,7 +469,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -496,7 +496,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-FU-040, P-FU-050
 TBD/TBR:       P-FU-040, P-FU-050 values TBD, Martin, G2 (C2)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -524,7 +524,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-FU-030, P-FU-010
 TBD/TBR:       P-FU-030 value TBD, Martin, G2 (C2)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -550,7 +550,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-FU-060
 TBD/TBR:       P-FU-060 value TBD, Martin, G2 (C2)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -579,7 +579,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -606,7 +606,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -640,7 +640,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Body shape provisional (L0-CON-140), Martin, 2026-11-30
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -694,7 +694,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -719,7 +719,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-DYN-400
 TBD/TBR:       P-DYN-400 value TBD, Martin, G2 (C1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -746,7 +746,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -772,7 +772,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -800,7 +800,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-500, P-SYS-510
 TBD/TBR:       P-SYS-500, P-SYS-510 values TBR (owner, #100), Martin, G2
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -834,7 +834,7 @@ Parameters:    P-SYS-120, P-DYN-010, P-SYS-440, P-SYS-570
 TBD/TBR:       P-DYN-010 value TBR (TT-150), P-SYS-440 value TBR (TT-040), P-SYS-570 value TBD
   (TT-650), Martin, G2
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -868,7 +868,7 @@ Parameters:    P-SYS-440, P-AF-200, P-FC-020, P-SYS-430, P-SYS-560, P-SYS-570, P
 TBD/TBR:       P-SYS-440, P-AF-200, P-FC-020 values TBR (D48, TT-040); P-SYS-570 value TBD (D62,
   TT-650), Martin, G2
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -906,7 +906,7 @@ TBD/TBR:       P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-230 values TBD (D47, TT-01
   (I1); P-SYS-430, P-SYS-560 values TBR (D51, TT-030), Martin, G2; P-SYS-570 value TBD (D62,
   TT-650), Martin, G2
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -934,7 +934,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-240
 TBD/TBR:       P-SYS-240 value TBD (D47, TT-010), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -964,7 +964,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-250, P-SYS-210
 TBD/TBR:       P-SYS-250, P-SYS-210 values TBD (D47, TT-010), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1020,7 +1020,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-270
 TBD/TBR:       P-SYS-270 value TBD (D47, TT-010), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1056,7 +1056,7 @@ Parameters:    P-FU-010, P-SYS-280, P-FU-030, P-FU-040, P-DYN-010
 TBD/TBR:       P-SYS-280 value TBD (D47, TT-010), Martin, G2 (I1); P-FU-010, P-FU-030, P-FU-040
   values TBD (TT-110, TT-120), Martin, G2 (C2)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1088,7 +1088,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1119,7 +1119,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-540, P-SYS-550
 TBD/TBR:       P-SYS-540, P-SYS-550 values TBD (TT-100), Martin, G2 (C4)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1153,7 +1153,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-AF-180
 TBD/TBR:       P-AF-180 value TBR (TT-190), Martin, G2 (C5)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1181,7 +1181,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1207,7 +1207,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1237,7 +1237,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1268,7 +1268,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1296,7 +1296,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1328,7 +1328,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1369,7 +1369,7 @@ TBD/TBR:       P-SYS-450, P-AF-160, P-FC-010 values TBR (D48, TT-050), Martin, G
   TBD (TT-060), Martin, G2 (C5); P-SYS-430, P-SYS-560 values TBR (D51, TT-030), Martin, G2;
   P-SYS-570 value TBD (D62, TT-650), Martin, G2
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1403,7 +1403,7 @@ Parameters:    P-SYS-470, P-SYS-310, P-TM-010, P-AF-060
 TBD/TBR:       P-SYS-470, P-SYS-310, P-TM-010 values TBR (D48, TT-070), P-AF-060 value TBD
   (TT-070), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1435,7 +1435,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Flight control panel content (#79), Martin, G2 (C8)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1464,7 +1464,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1492,7 +1492,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1522,7 +1522,7 @@ Verification:  Inspection — TBD; success criteria: no requirement of the Aeron
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1548,7 +1548,7 @@ Verification:  Inspection — TBD; success criteria: no requirement of the Aeron
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1578,7 +1578,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1659,7 +1659,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1685,7 +1685,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-FU-020, P-FU-010, P-SYS-470
 TBD/TBR:       P-FU-020 value TBR (D48, TT-130), Martin, G2
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1711,7 +1711,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-470
 TBD/TBR:       Autoflight state after fuel exhaustion (#59), Martin, G2 (C2, C5)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1741,7 +1741,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1767,7 +1767,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-TM-010
 TBD/TBR:       P-TM-010 value TBR (D48, TT-070), Martin, G2 (C7)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1793,7 +1793,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1819,7 +1819,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1847,7 +1847,7 @@ Parameters:    —
 TBD/TBR:       Releasable or protected classification of each signal (#69), Martin, closes when the
   plan is extended to the RVS (D44)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1876,7 +1876,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1904,7 +1904,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1932,7 +1932,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       Valid initial mode states (#60), Martin, G2 (C5)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1961,7 +1961,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-300
 TBD/TBR:       P-SYS-300 value TBR (D48, TT-070), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -1989,7 +1989,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-310, P-SYS-300
 TBD/TBR:       P-SYS-310 value TBR (D48, TT-070), Martin, G2 (I1)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2022,7 +2022,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2049,7 +2049,7 @@ Verification:  Demonstration — TBD; success criteria: an automated run of the 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2077,7 +2077,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    P-SYS-480, P-SYS-310, P-EF-010
 TBD/TBR:       P-SYS-480 value TBR (D48, TT-070), P-EF-010 value TBD (TT-080), Martin, G2 (C3, C4)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2105,7 +2105,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2132,7 +2132,7 @@ Verification:  Inspection — TBD; success criteria: each Aeronef parameter that
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2158,7 +2158,7 @@ Verification:  Inspection — TBD; success criteria: each frame, axis, sign and 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2185,7 +2185,7 @@ Verification:  Inspection — TBD; success criteria: each Aeronef requirement is
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2210,7 +2210,7 @@ Verification:  Inspection — TBD; success criteria: the verification matrix at 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2235,7 +2235,7 @@ Verification:  Inspection — TBD; success criteria: the verification matrix lin
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2259,7 +2259,7 @@ Verification:  Inspection — TBD; success criteria: each baselined Aeronef arti
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2286,7 +2286,7 @@ Verification:  Inspection — TBD; success criteria: the verification matrix sho
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2312,7 +2312,7 @@ Verification:  Inspection — TBD; success criteria: the tag AER-REQ-baseline-1 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2339,7 +2339,7 @@ Verification:  Inspection — TBD; success criteria: the trace check output stor
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2366,7 +2366,7 @@ Verification:  Inspection — TBD; success criteria: the Aeronef section of the 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2392,7 +2392,7 @@ Verification:  Inspection — TBD; success criteria: the method assessment repor
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2419,7 +2419,7 @@ Parameters:    —
 TBD/TBR:       Abnormal and emergency procedures deferred with the hazard analysis, Martin,
   closes when failures are introduced (#85)
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2444,7 +2444,7 @@ Verification:  Inspection — TBD; success criteria: the lint reports no LEVEL o
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2470,7 +2470,7 @@ Verification:  Inspection — TBD; success criteria: the trace check reports no 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2498,7 +2498,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2535,7 +2535,7 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
 
@@ -2566,6 +2566,6 @@ Verification:  Inspection — TBD; success criteria: each child requirement has 
 Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
-Status:        Draft
+Status:        Baselined
 Version:       1
 ```
