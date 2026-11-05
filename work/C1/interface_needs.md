@@ -1,0 +1,47 @@
+# C1 — Interface needs (DYN)
+
+What the dynamics model (DYN) needs from, and provides to, the other subsystems and the TST, and which ICD holds each item. Interface IDs I-nn are those of FUNCTIONAL_ANALYSIS §3.2. "MS-DYN internal" means the item stays inside the vehicle model and is defined in MS-DYN (§6, §7, §10.2), not in an ICD. C1 does not coordinate with the other agents directly; the integration step (I1) resolves these.
+
+## 1. Needed by DYN
+
+| ID | From | Need | Interface, home | Driven by |
+| --- | --- | --- | --- | --- |
+| IN-C1-01 | FU (C2) | At each simulation step: the vehicle mass and the three principal moments of inertia about the CG in body axes, with zero products of inertia. One value per step, held over the step (MS-DYN §10.2). | I-04; MS-DYN internal (§6) | L1-AER-180, -220; L2-AER-DYN-030, -040, -210 |
+| IN-C1-02 | FU (C2) | The CG at the body origin at every fuel state (no CG offset crosses the interface). The mass distribution symmetric in each body coordinate plane, so the tensor is diagonal (D61); if it is also axisymmetric about `x_B`, `I_yy = I_zz` (used by check C-3). | MS-DYN §6 | L1-AER-210, -220; L2-AER-DYN-200 |
+| IN-C1-03 | FU (C2) | Text for the MS-DYN **mass-properties model** (§6): the mass distribution of the dry mass and of the fuel over the capsule of §2.1, and whether and how the inertia varies with the remaining fuel mass. A reference derivation for a uniform solid capsule is in §6. | MS-DYN §6 (C2 content slot) | L1-AER-220, -720 |
+| IN-C1-04 | FU (C2) | Text for the MS-DYN **fuel model** (§7.2): the translational and rotational consumption relationships. DYN needs nothing from it directly: consumed fuel gives no force or moment (L0-ASM-090). | MS-DYN §7.2 (C2 content slot) | L1-AER-160, -720 |
+| IN-C1-05 | FU (C2) | Confirmation that the rotational equation with a fuel-dependent inertia has no `J̇·ω` term (MS-DYN §4.1 assumption 4), which is consistent with L0-ASM-090. If C2 keeps the inertia constant, the point is moot. | MS-DYN §4.1 | L0-ASM-090; L2-AER-DYN-040 |
+| IN-C1-10 | EF (C3) | At each simulation step: the control force and the control moment about the CG in body axes, the sum of the effector outputs through their control effectiveness. One value per step, held over the step. Zero at fuel exhaustion. | I-02; MS-DYN internal (§7.1) | L1-AER-050, -080, -200; L2-AER-DYN-180 |
+| IN-C1-11 | EF (C3) | Text for the MS-DYN **effector model** (§7.1): directions, control effectiveness, output limits, command response. | MS-DYN §7.1 (C3 content slot) | L1-AER-100, -720 |
+| IN-C1-12 | EF (C3) | The effector outputs at step 0, before the first effector command (zero, or another stated value). They enter the acceleration quantities of step 0 (MS-DYN §3.3) and the first step of every run that starts in a hover. | MS-DYN §3.3, §7.1 | L1-AER-660; L2-AER-DYN-300, -310 |
+| IN-C1-20 | TST, I1 | The wind velocity given with each step command: two horizontal components (north, east) in m/s, down component zero, the wind at the start of the step (`t_k`). DYN holds it over the step. | I-25; ICD-AER-TST | L1-AER-670; L2-AER-DYN-140, -410 |
+| IN-C1-21 | TST, I1 | The initial condition: position and velocity in L, attitude as a unit quaternion (scalar first, CV-250; state the accepted norm error, proposed at most `[P-DYN-230]`), body rates in B. Initial altitude above zero (CONOPS §4.2: every run starts airborne). | I-21, I-27; ICD-AER-TST | L1-AER-660; L2-AER-DYN-430 |
+| IN-C1-22 | TST, I1 | The vehicle parameter set of the run, with each DYN parameter (P-DYN-010 to -400), identified by a version (N-350). | I-21; ICD-AER-TST | L2-AER-DYN-440 |
+| IN-C1-23 | TST, I1 | The behaviour of a step command received after the ground-contact event (DYN keeps the contact-step state, L2-AER-DYN-550); the TST normally ends the run on the event. | ICD-AER-TST | L2-AER-DYN-550 |
+| IN-C1-24 | TST (test harness) | For checks C-4 and the hover case of L2-AER-DYN-300: a way to drive DYN with a prescribed control force and a prescribed vehicle mass in place of the EF and FU outputs. For C-1 to C-3, C-5: zero initial fuel and a vehicle parameter set with `[P-DYN-100] = 0`. | Test procedures (Phase 5, V1); TST requirements when the plan covers the TST (D44) | L2-AER-DYN-300, -600 to -640 |
+| IN-C1-25 | TST | The TST applies only winds inside the wind envelope of the MS-DYN **wind model** (§5.4): steady wind constant over a run and at most `[P-SYS-430]`; gust events that do not overlap, of amplitude at most `[P-SYS-560]`, with one-minus-cosine rise and decay of at least `[P-SYS-570]` each. This is a TST requirement for when the plan covers the TST (D44); the glossary *Wind envelope* already states it. | ICD-AER-TST; TST branch | D51, D62; L1-AER-290, -300, -310, -460 |
+
+## 2. Provided by DYN
+
+| ID | To | What DYN provides | Interface, home | Driven by |
+| --- | --- | --- | --- | --- |
+| IN-C1-30 | NAV (C6), FC (C4) | At the start of each control frame, the vehicle state of the frame-start step, equal to the recorded state: position and velocity in L, attitude quaternion, body rates; with derived velocity in B, Euler angles (CV-260) and the vehicle acceleration (left-hand value, MS-DYN §3.3; for step 0, known only once the first step is executed). | I-09, I-10; vehicle-model boundary ICD (IN-B1-01) | L1-AER-430, -440; L2-AER-DYN-320, -330 |
+| IN-C1-31 | NAV (C6) | The Euler angles in the vehicle state are derived from the quaternion by CV-260 (L2-AER-DYN-070). NAV's heading (L1-AER-530, CV-530) should equal the yaw angle of the state, so the two definitions do not diverge. | Vehicle-model boundary ICD | L1-AER-530; L2-AER-DYN-070 |
+| IN-C1-32 | FC (C4), AF (C5), I1 | **If #81.1 is answered with option T1 (recommended):** with no lateral force, a heading change at a non-zero horizontal speed leaves the velocity fixed in L, so the body-axis velocity turns. To fly along the new heading (Heading mode) FC must produce a lateral force of the vehicle mass times the horizontal speed times the heading rate. That acceleration, up to `[P-SYS-230]` times `[P-SYS-270]`, is part of the vehicle acceleration (`[P-SYS-440]`, `[P-AF-200]`), of the sensed acceleration (`[P-SYS-120]`) and of the lateral authority (`[P-SYS-410]`). It also bears on the cross-axis tolerance `[P-SYS-540]` of L1-AER-380 when the heading reference changes at speed. Under option T2 none of this applies. | ICD-FC-AF (which quantity the references are); FUNCTIONAL_ANALYSIS §7.1, §7.2 | #81.1; L1-AER-130, -290, -300, -350, -380 |
+| IN-C1-33 | FC (C4), I1 | The drag model for the budgets (MS-DYN §5.5): under option D1, `D(V) = ½·ρ·[P-DYN-100]·V²` opposite to the air-relative velocity, at most `D(V)` along any body axis; use the density at the minimum operating altitude `[P-SYS-210]` (the largest in the operating volume). There is no aerodynamic moment: the drag-moment lines of `[P-SYS-420]` are zero (FUNCTIONAL_ANALYSIS §7.1; L1-AER-140 rationale). | FUNCTIONAL_ANALYSIS §7.1 | L1-AER-120 to -140 |
+| IN-C1-34 | FC (C4), I1 | The gust bounds for the transient and position-holding shares: wind rate at most `(π/2)·[P-SYS-560]/[P-SYS-570]` and second derivative at most `(π²/2)·[P-SYS-560]/[P-SYS-570]²` (MS-DYN §5.4), with `[P-SYS-570]` proposed at 2.0 s. C4 confirms `[P-FC-020]` and `[P-FC-010]` against them (D62). | FUNCTIONAL_ANALYSIS §7.2, §7.4 | L1-AER-300, -460 |
+| IN-C1-35 | FC (C4) | The sensed acceleration is not part of the vehicle state across the boundary; it goes to TM only. If FC needs it to enforce the crew limit, it is computed from the same definition (MS-DYN §8), or I1 adds it to the boundary ICD (L1-AER-430 lists only "vehicle state"; FUNCTIONAL_ANALYSIS I-07 lists it inside the state; alignment for I1). | Vehicle-model boundary ICD | L1-AER-290, -430 |
+| IN-C1-36 | TM (C7) | At each simulation step: the vehicle state (§3.1, §3.2 of MS-DYN, including the Euler angles and the vehicle acceleration) and the sensed acceleration (vector in B and magnitude). TM records them at each output sample. | I-32; ICD-AER-TST (operational data) | L1-AER-640; L2-AER-DYN-350 |
+| IN-C1-37 | TM (C7), TST | One ground-contact event record per run: classification (landing or crash) and the timestamp of the contact step (step index and simulation time, CV-840). The event may fall between output samples; TM records it as an event record, not as part of a sample. The TST ends the run on it. | I-37, I-41; ICD-AER-TST | L1-AER-260, -270; L2-AER-DYN-530 |
+| IN-C1-38 | TM (C7) | The step-0 acceleration quantities are known only when the first step is executed (MS-DYN §3.3). TM records them in the step-0 sample from then on. | ICD-AER-TST | L1-AER-640 |
+| IN-C1-39 | I1 | The atmosphere model covers 0 to 47 000 m (MS-DYN §5.3). The maximum operating altitude `[P-SYS-200]` must be set inside it. | PARAMETERS (P-SYS-200) | L1-AER-070; D47 |
+| IN-C1-40 | I1 | The maximum vehicle mass and the inertia for `[P-SYS-400]` to `[P-SYS-420]` come from FU (C2); DYN provides the drag (IN-C1-33) and the geometry (P-DYN-020, -030). | FUNCTIONAL_ANALYSIS §7.1 | L1-AER-120 to -140 |
+
+## 3. ICDs touched
+
+| ICD | DYN items |
+| --- | --- |
+| Vehicle-model boundary ICD (IN-B1-01; home decided at I1, TT-720) | IN-C1-30, -31, -35 |
+| ICD-AER-TST | IN-C1-20 to -23, -25, -36 to -38 |
+| MS-DYN internal (I-01 to I-04, I-08; not an ICD) | IN-C1-01 to -05, -10 to -12 |
+| ICD-FC-AF | IN-C1-32 (the axis references' frame decides how FC sees the K-2 term) |
