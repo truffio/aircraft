@@ -27,6 +27,7 @@
 #   P-NAV-020, -040, -050, P-TM-060, -070.
 # C1/C2 merge (2026-11-05): P-DYN-020, -030, -100, -200 to -270 and P-FU-070 to -100 added; P-DYN, P-FU and P-SYS-570
 #   values from the C1/C2 proposals as accepted by the owner (D64, D65); P-SYS-230, -280, -290 and P-FU-040, -050 from D66.
+# Owner answers (2026-11-05, D67-D71): envelope, hover, vertical speed, panel values; P-AF-230, -240, P-DYN-040 added.
 #   P-DYN blocks: 010-090 gravity and geometry; 100-190 aerodynamics; 200-290 model accuracy; 400 crew station.
 
 parameters:
@@ -64,28 +65,31 @@ parameters:
     name: Maximum operating altitude
     description: Highest altitude above the ground plane for nominal operation. Upper limit of the selected altitude (crew-facing ft).
     unit: m
-    value: null
+    value: 45720
     tolerance: null
-    status: TBD
-    source: CONOPS §4.2
+    note: '150 000 ft, inside the 47 km atmosphere model (DD-090) with margin.'
+    status: TBR
+    source: CONOPS §4.2; owner (D67)
     owner: Martin
   - id: P-SYS-210
     name: Minimum operating altitude
     description: Lowest altitude above the ground plane for nominal operation. Lower limit of the selected altitude and of scenario initial altitudes (crew-facing ft).
     unit: m
-    value: null
+    value: 1.524
     tolerance: null
-    status: TBD
-    source: CONOPS §4.2, §5, SC-020
+    note: '5 ft: the hover height P-AF-210, measured the same way (TT-820). Runs start on the ground on the gear (D69); this is the lowest selectable altitude in flight.'
+    status: TBR
+    source: CONOPS §4.2, §5, SC-020; owner (D67)
     owner: Martin
   - id: P-SYS-220
     name: Horizontal operating radius
     description: Radius, around the local frame origin, of the horizontal region of nominal operation (crew-facing NM).
     unit: m
-    value: null
+    value: 4444800
     tolerance: null
-    status: TBD
-    source: CONOPS §4.2
+    note: '2400 NM: the range at P-SYS-230 for P-SYS-290.'
+    status: TBR
+    source: CONOPS §4.2; owner (D67)
     owner: Martin
   - id: P-SYS-230
     name: Maximum horizontal speed
@@ -100,28 +104,31 @@ parameters:
     name: Maximum climb vertical speed
     description: Highest upward vertical speed reached in autoflight. Upper limit of a positive selected vertical speed (crew-facing ft/min).
     unit: m/s
-    value: null
+    value: 30.48
     tolerance: null
-    status: TBD
-    source: CONOPS §5, SC-040, N-170
+    note: '6000 ft/min.'
+    status: TBR
+    source: CONOPS §5, SC-040, N-170; owner (D67)
     owner: Martin
   - id: P-SYS-250
     name: Maximum descent vertical speed
     description: Highest downward vertical speed (magnitude) reached in autoflight. Limit of a negative selected vertical speed (crew-facing ft/min).
     unit: m/s
-    value: null
+    value: 30.48
     tolerance: null
-    status: TBD
-    source: CONOPS §5, SC-020, N-170
+    note: '6000 ft/min.'
+    status: TBR
+    source: CONOPS §5, SC-020, N-170; owner (D67)
     owner: Martin
   - id: P-SYS-270
     name: Maximum heading rate in autoflight
     description: Highest rate of change of heading during an autoflight heading change.
     unit: rad/s
-    value: null
+    value: 0.062832
     tolerance: null
-    status: TBD
-    source: CONOPS §5, SC-050, SC-060, N-170
+    note: '3.6 deg/s: at P-SYS-230 the lateral acceleration is 9.70 m/s^2, inside P-AF-200 (1 g).'
+    status: TBR
+    source: CONOPS §5, SC-050, SC-060, N-170; owner (D67)
     owner: Martin
   - id: P-SYS-280
     name: Minimum hover endurance at full fuel
@@ -220,10 +227,11 @@ parameters:
     name: Position-hold settling time
     description: Time from the start of a hold of the horizontal position (Stationary or Hover) after which the position-holding error budget P-SYS-450 applies. When the hold starts is set by the mode logic (#78, C5).
     unit: s
-    value: null
+    value: 30
     tolerance: null
-    status: TBD
-    source: L1-AER-460
+    note: 'Deceleration from P-SYS-230 at P-AF-200 takes about 16 s; the rest is the capture (D70).'
+    status: TBR
+    source: L1-AER-460; owner (D70)
     owner: Martin
   - id: P-SYS-470
     name: Annunciation latency, aircraft level
@@ -328,6 +336,15 @@ parameters:
     tolerance: null
     status: TBR
     source: 'L0-CON-140 (shape provisional, closes 2026-11-30); L1-AER-220; L2-AER-DYN-220; MS-DYN §2.1; C1 proposal'
+    owner: Martin
+  - id: P-DYN-040
+    name: Landing gear length
+    description: Distance from the lowest point of the body to the ground contact points of the extended landing gear (D69). A little less than the hover height P-AF-210, so that the Land descent from the hover is short.
+    unit: m
+    value: 1.4
+    tolerance: null
+    status: TBR
+    source: owner (D69)
     owner: Martin
   - id: P-DYN-100
     name: Drag area
@@ -563,10 +580,10 @@ parameters:
     note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: ft
     crew_facing: true
-    value: null
+    value: 10
     tolerance: null
-    status: TBD
-    source: CONOPS §4.3, §5, N-070
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-AF-020
     name: Vertical speed selection resolution
@@ -574,10 +591,10 @@ parameters:
     note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: ft/min
     crew_facing: true
-    value: null
+    value: 100
     tolerance: null
-    status: TBD
-    source: CONOPS §4.3, §5, N-070
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-AF-030
     name: Horizontal speed selection resolution
@@ -585,10 +602,10 @@ parameters:
     note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: kt
     crew_facing: true
-    value: null
+    value: 1
     tolerance: null
-    status: TBD
-    source: CONOPS §4.3, §5, N-070
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-AF-040
     name: Heading selection resolution
@@ -596,10 +613,10 @@ parameters:
     note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
     unit: deg
     crew_facing: true
-    value: null
+    value: 1
     tolerance: null
-    status: TBD
-    source: CONOPS §4.3, §5, N-070
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-AF-060
     name: Annunciation latency
@@ -712,21 +729,43 @@ parameters:
     owner: Martin
   - id: P-AF-210
     name: Hover height above the ground
-    description: Height above the ground that Go to hover brings the vehicle to and that Hover holds. A project constant, not a crew selection (D56). The ground is flat at altitude zero (D8), so it is also an altitude.
+    description: Height of the lowest point of the body above the ground that Go to hover brings the vehicle to and that Hover holds, from above or from below (D70). A project constant, not a crew selection (D56). The ground is flat at altitude zero (D8); the relation to the CG altitude of CV-430 is TT-820.
     unit: m
-    value: null
+    value: 1.524
     tolerance: null
-    status: TBD
-    source: D56; CONOPS SC-100
+    note: '5 ft (owner, D70).'
+    status: Set
+    source: D56, D70
     owner: Martin
   - id: P-AF-220
     name: Standard vertical speed
     description: Vertical speed magnitude that Go to altitude uses until the crew selects another vertical speed (D56). At most P-SYS-240 in a climb and P-SYS-250 in a descent.
     unit: m/s
-    value: null
+    value: 10.16
     tolerance: null
-    status: TBD
-    source: D56; CONOPS SC-020
+    note: '2000 ft/min, climb and descent; also the default of Vertical speed mode (D70).'
+    status: Set
+    source: D56, D70
+    owner: Martin
+  - id: P-AF-230
+    name: Vertical acceleration for vertical speed changes
+    description: Magnitude of the vertical acceleration with which autoflight changes the vertical speed toward a new target (engagement of Go to altitude or Vertical speed, a new selection, a level-off), so the vertical speed ramps rather than steps (D70).
+    unit: m/s^2
+    value: 0.980665
+    tolerance: null
+    note: '0.1 g: 10.4 s to reach P-AF-220 and a level-off over 52.6 m (173 ft).'
+    status: TBR
+    source: owner (D70)
+    owner: Martin
+  - id: P-AF-240
+    name: Takeoff and landing vertical speed
+    description: Vertical speed magnitude of the Takeoff climb to the hover height and of the Land descent to touchdown (D69).
+    unit: m/s
+    value: 0.3048
+    tolerance: null
+    note: '60 ft/min, well inside the landing envelope P-SYS-500.'
+    status: TBR
+    source: owner (D69, D70)
     owner: Martin
 
   # --- NAV ---
@@ -764,42 +803,42 @@ parameters:
     description: Resolution of altitude values shown to the crew
     unit: ft
     crew_facing: true
-    value: null
+    value: 1
     tolerance: null
     note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
-    status: TBD
-    source: CV-780
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-TM-030
     name: Vertical speed display resolution
     description: Resolution of vertical speed values shown to the crew
     unit: ft/min
     crew_facing: true
-    value: null
+    value: 10
     tolerance: null
     note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
-    status: TBD
-    source: CV-780
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-TM-040
     name: Speed display resolution
     description: Resolution of horizontal speed values shown to the crew
     unit: kt
     crew_facing: true
-    value: null
+    value: 1
     tolerance: null
     note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
-    status: TBD
-    source: CV-780
+    status: TBR
+    source: D71
     owner: Martin
   - id: P-TM-050
     name: Direction angle display resolution
     description: Resolution of heading and track values shown to the crew.
     unit: deg
     crew_facing: true
-    value: null
+    value: 1
     tolerance: null
     note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
-    status: TBD
-    source: CV-780
+    status: TBR
+    source: D71
     owner: Martin

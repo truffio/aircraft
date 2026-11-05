@@ -6,12 +6,12 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 
 | ID | Item | Type (TBD/TBR) | Location (requirement or parameter ID) | Owner | Closure date | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| TT-010 | Performance envelope values (B1-Q07, D47); P-SYS-230 Set and P-SYS-280 TBR by D66 | TBD | P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-240, P-SYS-250, P-SYS-270 | Martin | G2 (I1) | Open |
+| TT-010 | Performance envelope values (D47, D66, D67) | TBR | P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-240, P-SYS-250, P-SYS-270 | Martin | G2 (I1) | Open |
 | TT-020 | Effector authority values | TBD | P-SYS-400, P-SYS-410, P-SYS-420 | Martin | G2 (I1 budget closure) | Open |
 | TT-030 | Wind: steady 100 kt, gusts 50 kt (D51) | TBR | P-SYS-430, P-SYS-560 | Martin | G2 | Open |
 | TT-040 | Vehicle acceleration limit 1.5 g and its split (D48) | TBR | P-SYS-440, P-AF-200, P-FC-020 | Martin | G2 | Open |
 | TT-050 | Position-holding budget 1 m and its split (D48) | TBR | P-SYS-450, P-AF-160, P-FC-010 | Martin | G2 | Open |
-| TT-060 | Position-hold settling time | TBD | P-SYS-460 | Martin | G2 (C5) | Open |
+| TT-060 | Position-hold settling time 30 s (D70) | TBR | P-SYS-460 | Martin | G2 (C5) | Open |
 | TT-070 | Timing budget (D48) | TBR | P-SYS-300, P-SYS-310, P-SYS-470, P-SYS-480, P-TM-010, P-AF-060 | Martin | G2 (I1) | Open |
 | TT-080 | Effector command response time | TBD | P-EF-010 | Martin | G2 (C3) | Open |
 | TT-090 | Landing envelope: 2 ft fall, 0.5 m/s (D53) | TBR | P-SYS-500, P-SYS-510 | Martin | G2 | Open |
@@ -21,12 +21,12 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-130 | Low-fuel threshold 0.1 of capacity (D48) | TBR | P-FU-020 | Martin | G2 | Open |
 | TT-140 | Crew station position (4, 0, −1) m (D64) | TBR | P-DYN-400 | Martin | G2 | Open |
 | TT-150 | Gravity = standard gravity (D48) | TBR | P-DYN-010 | Martin | G2 (C1) | Closed 2026-11-05: Set by the owner (D64) |
-| TT-160 | Hover height and standard vertical speed (D56) | TBD | P-AF-210, P-AF-220 | Martin | G2 (C5) | Open |
-| TT-170 | Selection resolutions (crew units) | TBD | P-AF-010, P-AF-020, P-AF-030, P-AF-040 | Martin | G2 (C8) | Open |
+| TT-160 | Hover height and standard vertical speed (D56) | TBD | P-AF-210, P-AF-220 | Martin | G2 (C5) | Closed 2026-11-05: Set by the owner (D70) |
+| TT-170 | Selection resolutions 10 ft, 100 ft/min, 1 kt, 1° (D71) | TBR | P-AF-010, P-AF-020, P-AF-030, P-AF-040 | Martin | G2 (C8) | Open |
 | TT-180 | Autoflight tolerances and settling time (placeholders, split per mode in Phase 4) | TBD | P-AF-090, P-AF-100, P-AF-110, P-AF-120, P-AF-130, P-AF-140, P-AF-170, P-AF-190 | Martin | G3 (M0 to M8) | Open |
 | TT-190 | Pitch and roll tolerance | TBR | P-AF-180 | Martin | G2 (C5) | Open |
 | TT-200 | Navigation validity thresholds | TBD | P-NAV-010, P-NAV-030 | Martin | G2 (C6) | Open |
-| TT-210 | Display resolutions (crew units) | TBD | P-TM-020, P-TM-030, P-TM-040, P-TM-050 | Martin | G2 (C8) | Open |
+| TT-210 | Display resolutions 1 ft, 10 ft/min, 1 kt, 1° (D71) | TBR | P-TM-020, P-TM-030, P-TM-040, P-TM-050 | Martin | G2 (C8) | Open |
 | TT-220 | Parallel efficiency and instance count | TBR | P-SYS-060, P-SYS-070 | Martin | When parallel execution is picked up (#86) | Open |
 | TT-230 | Treatment of rigid-body kinematic terms (#81, deferred to L2), Martin, closes at G2 (C1) | TBD/TBR field | L0-CON-030 | Martin | as stated | Closed 2026-11-05: D64, CR-C1-01 |
 | TT-240 | Elongated body shape provisional, TBR, Martin, 2026-11-30 | TBD/TBR field | L0-CON-140 | Martin | as stated | Open |
@@ -86,3 +86,6 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-780 | MS-DYN §6 (mass properties) and §7 (effector and fuel models) content, and the MS-DYN baseline | TBD | specs/MS-DYN.md | Martin | G2 (I1, C2 and C3) | Open |
 | TT-790 | FU computation agreement tolerance 1e-9 and hover consumption margin 0.05 (D65) | TBR | P-FU-090, P-FU-100 | Martin | G2 | Open |
 | TT-800 | Hover endurance 46 h, derived from the endurance at maximum speed (D66) | TBR | P-SYS-280 | Martin | G2 (I1) | Open |
+| TT-810 | Landing gear and ground operations: change requests against L0, L1 and the specifications, and the C1/C2 rework (D69) | TBD | task B3; L0-CON-160, -290, -310; L1-AER-280, -580, -660 and the mode records | Martin | Before G2 (B3, owner approval) | Open |
+| TT-820 | Altitude reference with the gear: CV-430 measures the CG, while the hover height and the gear length are measured below the body (capsule radius 2 m) | TBD | P-AF-210, P-SYS-210, P-DYN-040; CV-430 | Martin | B3 | Open |
+| TT-830 | Vertical acceleration 0.1 g, takeoff and landing vertical speed 60 ft/min, gear length 1.4 m (D69, D70) | TBR | P-AF-230, P-AF-240, P-DYN-040 | Martin | G2 (C5, B3) | Open |
