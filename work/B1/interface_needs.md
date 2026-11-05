@@ -35,6 +35,6 @@ What the L1 architecture (`specs/FUNCTIONAL_ANALYSIS.md` §3, §5) needs from th
 
 | From | Need | Why |
 | --- | --- | --- |
-| Project owner | ~~Answers to B1-Q01 to B1-Q10 and the Q5 decision (#6)~~ **Done:** answered by D45 to D58. Remaining: the G1 owner questions in `reviews/G1/dispositions.md`. | `work/B1/issues.md` |
+| Project owner | ~~Answers to B1-Q01 to B1-Q10 and the Q5 decision (#6)~~ **Done:** answered by D45 to D58. The G1 owner questions are answered by D59 to D63. | `work/B1/issues.md` |
 | I1 | Closure of the budgets in FUNCTIONAL_ANALYSIS §7 once the L2 values exist, including the gust rise time `[P-SYS-570]` (D62) | METHODOLOGY §7 rule 4 |
 | C1, C2 | Maximum vehicle mass and inertia, to compute `[P-SYS-400]` to `[P-SYS-420]` | L1-AER-120 to -140 |

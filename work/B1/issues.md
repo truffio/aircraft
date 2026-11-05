@@ -92,12 +92,12 @@ No other change to L0 is needed: every AER-allocated L0 record has at least one 
 
 | ID | Decision | Alternatives considered | Rationale | Derived requirements |
 | --- | --- | --- | --- | --- |
-| DD-010 | The flight software (NAV, AF, FC) runs once per control frame of fixed period, an integer multiple of the simulation step, in the order NAV → AF → FC (FUNCTIONAL_ANALYSIS §4.2). | Execute at every simulation step; asynchronous or event-driven execution. | A whole number of steps per frame keeps sampling exact on the CV-840 time base and decouples the integration step (accuracy) from the software rate. Execution at every step ties the two; asynchronous execution breaks determinism (L1-AER-690). | L1-AER-680 |
+| DD-010 | The flight software (FCP, NAV, AF, FC) runs once per control frame of fixed period, an integer multiple of the simulation step, in the order FCP → NAV → AF → FC (FUNCTIONAL_ANALYSIS §4.2). | Execute at every simulation step; asynchronous or event-driven execution. | A whole number of steps per frame keeps sampling exact on the CV-840 time base and decouples the integration step (accuracy) from the software rate. Execution at every step ties the two; asynchronous execution breaks determinism (L1-AER-690). | L1-AER-680 |
 | DD-020 | The control-loop latency is bounded at aircraft level and split into one control frame plus the effector command response time. | No latency requirement (leave it to C4); a separate budget per axis. | A single number lets C3 (effector response) and C4 (control-law margins) size against the same budget (METHODOLOGY §7 rule 4). Per-axis budgets are a C4 refinement if needed. | L1-AER-710 |
 | DD-030 | Withdrawn: the owner chose the centre of gravity (D45, #97). | | | | 
 | DD-040 | **Superseded (D55):** the owner approved the cascade and made the flight control panel its own subsystem, so the "crew input in AF and crew presentation in TM (no FCP subsystem)" part is obsolete. The architecture basis is plan decision D55 and FUNCTIONAL_ANALYSIS §5; no DD entry is needed. Original: three-layer cascade around a vehicle model behind one fixed boundary; separate NAV; TM as an observer; crew input in AF and crew presentation in TM. | Integrated guidance and control; NAV inside AF; a separate FCP subsystem (FUNCTIONAL_ANALYSIS §5.3). | Replaceable control laws and autoflight (L0-CON-200, -210, D15); one definition of each navigation quantity; observation without interference. | None (allocation basis for every L1 record) |
 
-Until DD-010 and DD-020 are in `registers/DECISIONS.md`, `trace_check.py` reports two DERIVED errors (L1-AER-680, -710).
+DD-010 and DD-020 are in `registers/DECISIONS.md` (G1, 2026-11-04).
 
 ## 6. Notes for the orchestrator
 

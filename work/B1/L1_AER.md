@@ -956,7 +956,7 @@ Rationale:     Performance envelope (N-170). Descent has its own limit, like cli
   horizontal speed.
   Sufficiency: see L1-AER-310.
 Parent(s):     L0-OBJ-030
-Source:        N-170; CONOPS SC-020, SC-030
+Source:        N-170; CONOPS SC-020
 Allocated to:  AF, FC, EF
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
@@ -1422,7 +1422,7 @@ Rationale:     The crew interface is data, with no model of physical controls (L
   horizontal speed, target altitude and vertical speed selectors (D56). The panel is its own
   subsystem, FCP (D55, #80.3); its detailed content is #79. Children must show (D58): (Test) a selection
   scripted at a stated simulation time and the same selection made interactively at that time
-  give the same operational data.
+  give the same pass/fail verdict on the scenario's success criteria (D59).
   Sufficiency: with L1-AER-490 (output side) and -510 (no device or format), this record makes
   each crew selection a data item, as L0-CON-170 requires, and gives autoflight its crew input
   (L0-OBJ-030).
@@ -2517,7 +2517,7 @@ Rationale:     The flight control panel is its own subsystem (D55). C8 writes th
   crosses the panel boundary. The list is closed. Only SI values cross into autoflight, so the crew units
   stay in the panel (CV-760, L1-AER-500, -870). Autoflight gives the annunciation content (which
   modes, which targets, D55), navigation the indicated quantities (L1-AER-530) and FU the fuel
-  state for the fuel indication and alerts (L1-AER-560 to -580). TM records the panel signals
+  state for the fuel indication and alerts (L1-AER-560 to -580); the fuel state itself is defined once, at the vehicle-model boundary (L1-AER-430), and ICD-FCP refers to that definition. TM records the panel signals
   without being a party to the exchange (L1-AER-610, -620). ICD-FCP is a new ICD, added to the
   plan §3 list (TT-680). Children must show (D58): (Inspection) each data item crossing the panel
   boundary in the FCP, AF, NAV and FU requirements is one of the listed kinds and is defined in

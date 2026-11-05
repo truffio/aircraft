@@ -4,7 +4,7 @@
 **Date:** 2026-11-04
 **Owner:** Martin
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
-**Related:** [L0](../requirements/L0.md) (tag `L0-baseline-1`), [L1](../requirements/L1.md) (draft `work/B1/L1_AER.md`), [CONOPS](CONOPS.md), [CONVENTIONS](CONVENTIONS.md), [GLOSSARY](GLOSSARY.md), METHODOLOGY §5 and §7, plan §6 (B1) and §9 (D1–D62).
+**Related:** [L0](../requirements/L0.md) (tag `L0-baseline-1`), [L1](../requirements/L1.md), [CONOPS](CONOPS.md), [CONVENTIONS](CONVENTIONS.md), [GLOSSARY](GLOSSARY.md), METHODOLOGY §5 and §7, plan §6 (B1) and §9 (D1–D63).
 
 ## 1. Purpose and scope
 
@@ -158,7 +158,7 @@ flowchart LR
 
 ### 4.2 Sequence within one control frame
 
-The vehicle model advances in simulation steps of `[P-SYS-300]`; the flight software (NAV, AF, FC) runs once per control frame of `[P-SYS-310]`, an integer multiple of the step (L1-AER-680, DD-010 proposed). Whether an input timestamped k first affects step k or k + 1 is fixed in ICD-AER-TST (CV-840).
+The vehicle model advances in simulation steps of `[P-SYS-300]`; the flight software (FCP, NAV, AF, FC) runs once per control frame of `[P-SYS-310]`, an integer multiple of the step (L1-AER-680, DD-010 proposed). Whether an input timestamped k first affects step k or k + 1 is fixed in ICD-AER-TST (CV-840).
 
 | Order | Function | Uses | Produces |
 | --- | --- | --- | --- |
@@ -240,7 +240,7 @@ Boundaries the architecture fixes (each is an L1 interface requirement):
 | Integrated guidance and control: AF commands the effectors directly | Breaks D15 (modes decoupled from controllers) and L0-CON-200: replacing the control law would mean replacing the autoflight. |
 | NAV inside AF | The crew indications and TM need the same quantities; a separate NAV avoids two definitions and isolates a future sensor model (#83). |
 | FC reads navigation quantities instead of the vehicle state | FC regulates body rates and velocity components that NAV does not need to publish; going through NAV would add a dependency without benefit. Kept open for C4 if a sensor model is added. |
-| No separate flight control panel: crew input in AF, crew presentation in TM | Proposed in the B1 draft; the owner chose a separate FCP subsystem instead (D55, #80.3), because the panel is a thing in its own right. FCP owns L1-AER-480, -490, -500, -870 and shares -470, -610, -620, -660, -680, -880 (with AF and others) and -560 to -580 (with FU). |
+| No separate flight control panel: crew input in AF, crew presentation in TM | Proposed in the B1 draft; the owner chose a separate FCP subsystem instead (D55, #80.3), because the panel is a thing in its own right. FCP owns L1-AER-480, -490, -500, -870 and shares -430, -470, -610, -620, -660, -680, -690, -880 (with AF and others) and -560 to -580 (with FU). |
 | AF or TM as the crew-presentation owner | Superseded by D55: AF owns the annunciation content (which modes, which targets); FCP owns the selection intake, the presentation and the conversion to crew units, which keeps unit conversion in one place (CV-760). TM keeps only the operational data. |
 
 ## 6. Allocation
@@ -476,8 +476,8 @@ Every L0 record allocated to AER has at least one L1 child; the table is generat
 
 ## 9. Open items
 
-- Owner questions raised at the G1 rework: `reviews/G1/dispositions.md`, section "Questions for the owner".
-- Design decisions DD-010 and DD-020 (L1-AER-680, -710) wait for `registers/DECISIONS.md` (orchestrator).
+- The owner questions raised at the G1 rework are answered (D63).
+- Design decisions DD-010 and DD-020 (L1-AER-680, -710) are in `registers/DECISIONS.md`.
 - Open values and deliverables: `registers/TBD_TBR.md` (the budgets of §7 are TBR and close at G2, D48; the gust rise time [P-SYS-570] is TBD, D62).
 - Interface needs for the ICDs and the L2 agents (C1 to C8): `work/B1/interface_needs.md`, refreshed for D55 and D56.
 - The mode catalogue is D56. The B1 Q5 (#6) proposal in `work/B1/issues.md` §3 is superseded by D56 and kept for the record only; it is not an input to C5.

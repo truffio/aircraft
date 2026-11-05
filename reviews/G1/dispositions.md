@@ -121,3 +121,19 @@ Rework of the findings in `inspection_B1.md` (G1-F01 to G1-F32) and `checklist_L
 | Q2 | **Form of the envelope records.** Should L1-AER-310, -320, -330, -350 say the Aeronef can fly **each value up to** the maximum (the whole selectable range), or **at least** the maximum? | **"Each value up to the maximum"** (applied provisionally). It matches the D56 selectors "from zero to the vehicle's maximum", so the whole selectable range is a tested capability; "at least" would test only the top. The per-mode tracking tolerances stay at L2. | G1-F01 |
 | Q3 | **Reading of L0-CON-100.** Its guidance asks for "an initial fuel quantity as a parameter". L1 reads it as the capacity [P-FU-010] (a parameter) plus the initial fuel of each run's initial condition (L1-AER-150), so tests can start at any fuel state (N-310). Accept the reading, or raise a CR for a fixed initial quantity? | **Accept the reading; no CR.** The reference mission still starts at [P-FU-010] (full fuel), and other scenarios need other fuel states. Close TT-700. | Inspection §2, §5 (N-B1-08) |
 | Q4 | **"Stated tolerances" in D59.** Are they the tolerances of each success criterion, or a separate run-to-run tolerance on the operational data (a new parameter)? | **The tolerances of each success criterion; no new parameter.** The verdict is what the tests and the RVS use; a separate data tolerance would need one value per signal and adds nothing the criteria do not already bound. L1-AER-690 is written this way. | G1-F09 (clarification) |
+
+## Moderator closure of the re-inspection findings (2026-11-04)
+
+`reviews/G1/reinspection.md` closed all 15 Majors and recommended **Baseline**, with seven new Minors for the moderator. Closed by the orchestrator:
+
+| F-ID | Disposition |
+| --- | --- |
+| G1-R01 | **Fixed.** DD-010 and DD-020 entered in `registers/DECISIONS.md` (DD-010 updated for FCP: order FCP → NAV → AF → FC). trace_check no longer reports DERIVED errors, so L1-AER-860 meets its criterion. |
+| G1-R02 | **Fixed.** L1-AER-330 Source no longer cites the withdrawn SC-030. |
+| G1-R03 | **Fixed.** Glossary adds *Navigation quantities* (with their validity, CV-580). |
+| G1-R04 | **Fixed.** FA §4.2 and DD-010 name FCP; FA §5.3 FCP list adds -430 and -690; CV-580 names FCP (CR-B1-13); L1-AER-880 rationale says the fuel state is defined once at the vehicle-model boundary (L1-AER-430) and ICD-FCP refers to it. |
+| G1-R05 | **Fixed.** L1-AER-480 test guidance asks for the same pass/fail verdict (D59). |
+| G1-R06 | **Fixed.** DECISIONS.md and FA header cite D1–D63; FA §9 and interface_needs.md §3 say the owner questions are answered. FA header no longer points to the draft (G1-F15 residue). |
+| G1-R07 | **Fixed.** ConOps §9 drops "3 g"; CR-B1-12 lists SC-090, SC-100 and cites D60, D62; glossary *Mode state* no longer says "disengaged". |
+
+Checks after closure: lint 0 errors, 66 COMPOUND warnings (judged); trace 68 CHILDLESS only (no L2 yet); param 0 errors, 19 PARAM-UNUSED; vcrm clean; 39 tests pass. **Exit decision: Baseline, subject to owner approval.**

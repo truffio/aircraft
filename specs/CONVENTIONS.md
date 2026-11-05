@@ -358,7 +358,7 @@ Some direction quantities are undefined, or ill-conditioned, at specific states:
 | Heading, roll angle | Pitch angle = ±90° | `P-NAV-030`: maximum absolute pitch angle for which heading is valid (TBD) |
 | Track | Horizontal speed = 0 | `P-NAV-010`: minimum horizontal speed for which track is valid (TBD) |
 
-The flight path angle and VOR radial rows were deleted with D56 (CR-B1-05). How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and TM. The thresholds are parameters, not conventions.
+The flight path angle and VOR radial rows were deleted with D56 (CR-B1-05). How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and FCP (D55, CR-B1-13). The thresholds are parameters, not conventions.
 **Status:** Fixed (D43).
 
 ## 7. VOR geometry (CV-6xx) — deleted

@@ -633,7 +633,7 @@ Values, status (TBD, TBR or Set), SI units and crew-facing flags are in `paramet
 | P-AF-210 | Hover height above the ground (D56) |
 | P-AF-220 | Standard vertical speed of Go to altitude (D56) |
 | P-SYS-450 | Position-holding accuracy, horizontal (Stationary and Hover, D60) |
-| P-SYS-120 | Maximum crew-sensed acceleration magnitude (Set, 3 g) |
+| P-SYS-120 | Maximum crew-sensed acceleration magnitude (Set) |
 | P-SYS-430 | Maximum steady wind speed |
 | P-SYS-470 | Annunciation latency, aircraft level |
 | P-SYS-560 | Maximum gust speed |
