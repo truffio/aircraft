@@ -344,6 +344,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D60 | Position-holding accuracy (G1-F06) | The position-holding budget ([P-SYS-450], 1 m TBR) is a horizontal position error, in Stationary and in Hover. Altitude error is covered separately by the altitude-hold tolerance. |
 | D61 | Principal axes (G1-F12) | The body axes are the principal axes of inertia: the products of inertia are zero, so a rotation about one body axis produces no torque about another. |
 | D62 | Gust shape (G1-F08) | A gust or burst builds up over a minimum rise time (a new parameter, value TBD, set at G2 with the dynamics model and the TST wind model); instantaneous steps are not allowed. The budgets close against it. |
+| D63 | G1 owner questions (reviews/G1/dispositions.md Q1–Q4, 2026-11-04) | **Q1:** the process and document records L1-AER-750 to -860 stay at L1 as leaves with the Aeronef as subject. **Q2:** the envelope records require each value from zero up to the maximum to be sustainable; tracking tolerances stay at L2. **Q3:** L0-CON-100's "initial fuel quantity as a parameter" is the capacity [P-FU-010] plus the initial fuel of each run's initial condition; no change request. **Q4:** the tolerances of D59 are those of each success criterion; no run-to-run tolerance parameter. Also: the flight control panel boundaries get their own ICD-FCP. |
 
 ### Open questions
 

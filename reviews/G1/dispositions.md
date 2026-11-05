@@ -17,7 +17,7 @@ Rework of the findings in `inspection_B1.md` (G1-F01 to G1-F32) and `checklist_L
 
 | F-ID | Sev. | Disposition |
 | --- | --- | --- |
-| G1-F01 | Major | **Open: owner question Q2** (the form of the envelope records). Applied provisionally in the recommended form so that L2 is not misled meanwhile: L1-AER-310, -320, -330, -350 now state capabilities ("shall be able to sustain each horizontal speed up to [P-SYS-230]", "be able to climb at each vertical speed up to [P-SYS-240]", "descend at each vertical speed magnitude up to [P-SYS-250]", "change its heading at each heading rate magnitude up to [P-SYS-270]"). Each rationale says the record is a capability and that the tracking tolerance of a selected value is a per-mode L2 matter (P-AF-090, P-AF-120). |
+| G1-F01 | Major | **Fixed (D63, owner Q2).** Applied in the recommended form so that L2 is not misled meanwhile: L1-AER-310, -320, -330, -350 now state capabilities ("shall be able to sustain each horizontal speed up to [P-SYS-230]", "be able to climb at each vertical speed up to [P-SYS-240]", "descend at each vertical speed magnitude up to [P-SYS-250]", "change its heading at each heading rate magnitude up to [P-SYS-270]"). Each rationale says the record is a capability and that the tracking tolerance of a selected value is a per-mode L2 matter (P-AF-090, P-AF-120). |
 | G1-F02 | Major | **Fixed (D53, CR-B1-07).** L0-CON-290 v3 (rationale and guidance: two speed limits at the contact sample), L0-CON-310 v6 (rationale: no touchdown shock, the vertical speed limit stands in for the impact; guidance clause on the envelope acceleration limit removed), L0-ASM-110 (assumption text). Glossary *Landing envelope* (CR-B1-11), CONOPS §4.2 (CR-B1-12), FUNCTIONAL_ANALYSIS F-AER-12 and I-08 aligned. |
 | G1-F03 | Major | **Fixed (D56, CR-B1-08).** L0-OBJ-030 v3: rationale, children-must-show guidance and Source cite D56. Plan §1 cites D56. Glossary *Mode catalogue* no longer says "baselined" (CR-B1-11). |
 | G1-F04 | Major | **Fixed.** "and mode status" removed from L1-AER-420; the rationale says only the axis references cross ICD-FC-AF, so no control law can depend on the mode logic (D15, D33, FA I-13). IN-B1-03 marked superseded; *Mode status* not merged into the glossary. |
@@ -75,7 +75,7 @@ Rework of the findings in `inspection_B1.md` (G1-F01 to G1-F32) and `checklist_L
 | L1-AER-840 | Minor | **Fixed.** TBD/TBR field records the deferral of abnormal and emergency procedures (Martin, closes when failures are introduced, #85); TT-730. |
 | L1-AER-630 | Minor | **Accepted.** The closure cannot be a G2 gate: D44 and #69 defer the classification to the RVS plan extension. The field now reads "closes when the plan is extended to the RVS (D44)", the form the L0 RVS items use (TT-290 to TT-320). |
 | L1-AER-750 | Minor | **Fixed** (also G1-F28). Split three ways: L1-AER-750 (one level file per level), new L1-AER-850 (each record states its level; lint LEVEL, ID-FORMAT), new L1-AER-860 (each record traces to its parents or, if derived, to its design decision; trace ORPHAN, DERIVED). All leaves on L0-OBJ-180. |
-| L1-AER-750 to -830 (subject) | Minor | **Open: owner question Q1.** The wording findings on these records are fixed above; whether they belong at L1 is a scope question. |
+| L1-AER-750 to -830 (subject) | Minor | **Accepted (D63, owner Q1):** kept at L1 as leaves. The wording findings on these records are fixed above; whether they belong at L1 is a scope question. |
 | Systemic: terms not in the glossary | Minor | **Fixed** with G1-F11. Each term listed is now defined, or reworded: "operating altitude range" (L1-AER-310 guidance now names the minimum and maximum operating altitudes), "minimum operating altitude" (L1-AER-330), "navigation quantities" (L1-AER-640). |
 | Systemic: values in TBD/TBR fields | Minor | **Fixed.** L1-AER-060, -300, -460, -470, -570, -600, -670, -680, -710 cite the parameter, its status and its TT row, with no value. Values live only in PARAMETERS.yaml. The inspection's §5 list of fields that named only the record's own parameter (L1-AER-120, -290, -300, -310, -460, -470) is completed the same way. |
 | Systemic: documents cited that do not exist | Minor | **Fixed.** TT-660 (MS-DYN, C1, G2), TT-670 (AF_MODE_LOGIC, C5, G2), TT-680 (ICD-AER-TST, ICD-FC-AF, ICD-NAV-AF, ICD-FCP and the vehicle-model boundary ICD home, I1, G2). L1-AER-430 field records the ICD home (TT-720). |
@@ -86,7 +86,7 @@ Rework of the findings in `inspection_B1.md` (G1-F01 to G1-F32) and `checklist_L
 
 | Item | Disposition |
 | --- | --- |
-| L0-CON-100 reading (N-B1-08; §2 sufficiency table, §5) | **Open: owner question Q3.** Registered as TT-700. |
+| L0-CON-100 reading (N-B1-08; §2 sufficiency table, §5) | **Accepted (D63, owner Q3):** no change request; TT-700 closed. |
 | TT-270 opened for a closed field | **Fixed.** Status Closed (D45). |
 | TT-600 closure "RVS plan extension" | **Accepted** with checklist L1-AER-630. |
 | Roll-up procedure IDs not registered | **Fixed** with G1-F25 (TT-690). |
@@ -112,6 +112,8 @@ Rework of the findings in `inspection_B1.md` (G1-F01 to G1-F32) and `checklist_L
 - Plan §9 (D59 to D62) was not touched; the edits to the plan are in §1, §3, §6 (C7, I1, Phase 3, G2, V3), §7 and §10.
 
 ## Questions for the owner
+
+**Answered by the owner on 2026-11-04 (D63):** Q1 keep at L1; Q2 each value up to the maximum; Q3 and Q4 accepted as recommended; ICD-FCP kept as a separate ICD.
 
 | Q | Question | Recommended answer | Findings |
 | --- | --- | --- | --- |

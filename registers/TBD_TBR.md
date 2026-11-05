@@ -75,7 +75,7 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-670 | Autoflight mode logic AF_MODE_LOGIC not yet written (cited by L1-AER-450) | TBD | specs/AF_MODE_LOGIC.md | Martin | G2 (C5) | Open |
 | TT-680 | Interface control documents not yet written: ICD-AER-TST, ICD-FC-AF, ICD-NAV-AF, ICD-FCP (new, D55) and the home of the vehicle-model boundary definitions (IN-B1-01) | TBD | icd/; L1-AER-420, -430, -480, -490, -590, -630, -640, -880, -890 | Martin | G2 (I1) | Open |
 | TT-690 | Verification procedure IDs ("Inspection — TBD") of the L1 records, roll-up and leaf | TBD | requirements/L1.md, every live record | Martin | G4 (Phase 5, V4) | Open |
-| TT-700 | Reading of L0-CON-100 (initial fuel quantity: capacity parameter plus the initial fuel of each run's initial condition; N-B1-08) | TBR | L0-CON-100; L1-AER-150 | Martin | G1 (owner question Q3, `reviews/G1/dispositions.md`) | Open |
+| TT-700 | Reading of L0-CON-100 (initial fuel quantity: capacity parameter plus the initial fuel of each run's initial condition; N-B1-08) | TBR | L0-CON-100; L1-AER-150 | Martin | G1 (owner question Q3, `reviews/G1/dispositions.md`) | Closed (D63) |
 | TT-710 | P-DYN-010 value TBR (TT-150), P-SYS-440 value TBR (TT-040), P-SYS-570 value TBD (TT-650), Martin, G2 | TBD/TBR field | L1-AER-290 | Martin | as stated | Open |
 | TT-720 | Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1) | TBD/TBR field | L1-AER-430 | Martin | as stated | Open |
 | TT-730 | Abnormal and emergency procedures deferred with the hazard analysis, Martin, closes when failures are introduced (#85) | TBD/TBR field | L1-AER-840 | Martin | as stated | Open |
