@@ -14,7 +14,7 @@ This plan organises the work of defining the requirements of the **Aeronef** (el
 - The L1 Aeronef System Requirements Specification.
 - L2 subsystem requirements: dynamics, effectors, fuel and mass properties, flight control, autoflight, flight control panel (D55), navigation, and operational data output.
 - Lower levels wherever a branch needs them, down to the last layer that is still a requirement (Section 9, D4).
-- The autoflight mode catalogue in Section 9, D3.
+- The autoflight mode catalogue in Section 9, D56 (which replaced D3).
 - The model specification (MS-DYN), the parameter database, and the Aeronef side of the interface control documents.
 - Verification planning: a method, a procedure ID and success criteria for every requirement.
 
@@ -25,7 +25,7 @@ This plan organises the work of defining the requirements of the **Aeronef** (el
 - Requirements for the Simulation and Testing Platform (TST) and the Reverse-Engineering Effort (RVS), except the Aeronef side of shared interfaces.
 - Operational manuals. They come after the requirements baseline. This plan only keeps the requirements in a state that manuals can trace to.
 - Test procedure implementation. This plan names procedures and success criteria; the TST writes and runs them later.
-- Manual control. It is recorded as an optional feature (EARS "Where" pattern) and is not developed.
+- Manual control. There is none: no stick or yoke, and no requirement is written for it at L1 (D49, D55).
 
 ## 2. Inputs
 
@@ -59,6 +59,7 @@ icd/
   ICD-AER-TST.md                   Aeronef ↔ TST (Aeronef side)
   ICD-FC-AF.md                     Flight control ↔ autoflight
   ICD-NAV-AF.md                    Navigation ↔ autoflight
+  ICD-FCP.md                       Flight control panel ↔ autoflight, navigation, fuel (D55; L1-AER-880)
 parameters/
   PARAMETERS.yaml                  Parameter database (ID, name, unit, value, status, source)
 registers/
@@ -158,7 +159,7 @@ This phase is one agent, because L1 coherence matters more than speed here.
 
 ### Phase 3 — L2 subsystem requirements (main parallel fan-out)
 
-Seven agents run in parallel. Each agent:
+Eight agents run in parallel. Each agent:
 
 - reads L0, L1, CONVENTIONS, GLOSSARY, PARAMETERS and the relevant parts of METHODOLOGY;
 - writes its subsystem's L2 section, with the full attributes of METHODOLOGY 9.2 and a sufficiency argument per L1 parent;
@@ -175,7 +176,7 @@ Seven agents run in parallel. Each agent:
 | C4 | **FC** — flight control | L2, plus the L3 sections for translational control (TR), rotational control (RO) and control allocation (AL). Includes independent per-axis regulation, saturation handling as nominal behaviour, and the constraint that control laws are swappable without changing the vehicle model (objective: compare control laws). | Opus / xhigh |
 | C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers the catalogue of D56 (one horizontal and one vertical mode, plus Go to hover and Hover), armed versus active states (Go to hover arming Hover), engagement, automatic transitions (for example Go to altitude → Altitude hold, Go to hover → Hover), disengagement, annunciation, target selection, and the heading behaviour in each mode; pitch and roll stay at zero (D57). Per-mode details are left to Phase 4. | Opus / xhigh |
 | C6 | **NAV** — navigation | Navigation references used by autoflight and the panel: position, altitude, height above the ground, heading, track, horizontal and vertical speed. No VOR and no flight path angle (D56). | Opus / high |
-| C7 | **TM** — operational data output | Signals the Aeronef exposes so inputs, mode changes, control activity and responses can be correlated (REVERSE_ENGINEERING §3C, TESTING_ENVIRONMENT §8). Includes the selected targets, armed and active modes, and annunciations. Each signal is classified as *releasable* or *protected*, so telemetry does not leak protected design. | Opus / high |
+| C7 | **TM** — operational data output | Signals the Aeronef exposes so inputs, mode changes, control activity and responses can be correlated (REVERSE_ENGINEERING §3C, TESTING_ENVIRONMENT §8). Includes the selected targets, armed and active modes, and annunciations. Whether each signal is *releasable* or *protected* is decided with the RVS (#69, D44), so that telemetry does not leak protected design. | Opus / high |
 | C8 | **FCP** — flight control panel (D55) | The crew interface as data: the mode selections and the heading, horizontal speed, target altitude and vertical speed selectors (D56), the annunciations and indications, and the conversion to and from crew units (CV-740 to CV-770). Defines the panel content (#79). No physical device or display format (L1-AER-510). | Opus / high |
 
 C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as are C5, C6 and C8 (navigation data used by the modes, selections and annunciations crossing the panel). Coupled agents do not coordinate directly; they record needs in `interface_needs.md` and the integration step resolves them.
@@ -184,13 +185,13 @@ C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as ar
 
 | ID | Task | Model / effort |
 | --- | --- | --- |
-| I1 | Assemble `requirements/L2.md` from the drafts. Merge all staging proposals: the parameter database, glossary and DD register. Write `icd/ICD-AER-TST.md` (Aeronef side: state vector, effector commands, operational data, frame rate, units), `icd/ICD-FC-AF.md` and `icd/ICD-NAV-AF.md`. Resolve cross-subsystem conflicts, check that the budgets close, and turn unresolved conflicts into change requests at L1 or questions for the project owner. | Opus / xhigh |
+| I1 | Assemble `requirements/L2.md` from the drafts. Merge all staging proposals: the parameter database, glossary and DD register. Write `icd/ICD-AER-TST.md` (Aeronef side: state vector, effector commands, operational data, frame rate, units), `icd/ICD-FC-AF.md`, `icd/ICD-NAV-AF.md` and `icd/ICD-FCP.md`, and decide the home of the vehicle-model boundary definitions (IN-B1-01). Resolve cross-subsystem conflicts, check that the budgets close, and turn unresolved conflicts into change requests at L1 or questions for the project owner. | Opus / xhigh |
 | I2 | Re-run the parameter-reference check and the trace check. | Orchestrator (scripts) |
 
 **Gate G2 — Subsystem requirements review**
 
-- Seven Haiku / low lint agents run in parallel, one per L2 section.
-- Two Opus / high inspectors run in parallel: one for DYN, FU and EF plus MS-DYN (physics consistency), and one for FC, AF, NAV and TM plus the ICDs (control, guidance and data consistency).
+- Eight Haiku / low lint agents run in parallel, one per L2 section.
+- Two Opus / high inspectors run in parallel: one for DYN, FU and EF plus MS-DYN (physics consistency), and one for FC, AF, FCP, NAV and TM plus the ICDs (control, guidance, crew interface and data consistency).
 - The project owner approves.
 - Exit: L2 baselined and tagged `AER-L2-baseline-1`.
 
@@ -238,7 +239,7 @@ Physics requirements are verified by analysis against independent solutions, and
 | --- | --- | --- |
 | V1 | DYN, FU, EF and MS-DYN | Sonnet / high |
 | V2 | FC (all levels) | Sonnet / high |
-| V3 | AF and NAV (all levels, all modes) | Sonnet / high |
+| V3 | AF, FCP and NAV (all levels, all modes) | Sonnet / high |
 | V4 | TM, ICDs, L1 and L0 | Sonnet / high |
 | V5 | Runs after V1–V4. Generate `verification/VCRM.md` with the script and check that no requirement lacks a method. | Orchestrator (scripts) |
 
@@ -261,7 +262,7 @@ Each agent prompt contains the following:
    - Use parameter IDs instead of numbers, SI units, and terms from the glossary only. Crew-facing units appear only in requirements about crew selection or annunciation, per CONVENTIONS.
    - Write the rationale at the same time as each requirement, with a sufficiency argument per parent.
 6. **ID scheme** (METHODOLOGY 9.1). Number in steps of 10, and never reuse an ID.
-7. **Information separation.** All design artifacts are protected. Nothing in the outputs is written as operator-facing manual text, and the TM agent marks each signal releasable or protected.
+7. **Information separation.** All design artifacts are protected. Nothing in the outputs is written as operator-facing manual text. Whether each signal is releasable or protected is decided with the RVS (#69, D44).
 8. **Hand-back.** The agent returns its draft sections, its staging files (Section 5), a self-check against METHODOLOGY 13.1, and a short summary: counts per type, open TBD/TBR, derived requirements, and questions for the project owner.
 
 ## 8. Reviews
@@ -339,6 +340,11 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D56 | Autoflight mode catalogue (owner, 2026-11-04; replaces D3, D11, D13; withdraws D12, D14; answers Q5 #6 and #78) | The horizontal and vertical modes are independent: one of each is active at a time. **Horizontal:** *Stationary* holds the horizontal position over the ground, the effectors fighting the wind; *Heading* flies the selected heading at the selected horizontal speed, and with no horizontal velocity a heading change turns the craft in place about the vertical axis. **Vertical:** *Altitude hold* holds the current altitude; *Go to altitude* climbs or descends to the selected altitude at a standard vertical speed, which the crew can change; *Vertical speed* climbs or descends at the selected constant rate and, like Go to altitude, arms Altitude hold, so it levels off at the selected altitude (owner, 2026-11-04). **Both axes:** *Go to hover* takes the craft from whatever it is flying, brings it to zero velocity at the hover height above the ground (a project constant) and arms *Hover*; *Hover* engages once the craft is stationary at that height, and then holds the height and the position over the ground against the wind. These two are the only modes that govern both axes. **Panel selectors:** heading, horizontal speed (from zero to the vehicle's maximum), target altitude and vertical speed. **Dropped:** flight path angle, track hold, VOR radial tracking (and the VOR function), and a separate speed mode. Whether Go to hover climbs to the hover height when engaged below it stays open (#88). Flying with the nose one way and the motion another (need N-110) is dropped (owner, 2026-11-04). |
 | D57 | Attitude (owner, 2026-11-04; revises D10) | The dynamics keep all six degrees of freedom, but pitch and roll are not used for now: they are held at zero at all times. The craft translates along three axes and rotates about the vertical axis only. |
 | D58 | How L1 is verified (#96, B1-Q02) | D40 applies to L1 as D41 does to L0: each L1 record allocated to subsystems is verified by roll-up (Inspection: each child requirement has passed its verification and the decomposition has been reviewed), and its rationale says what the children must show. The L1 leaves (`Allocated to: —`) keep their own direct method. |
+| D59 | Reproducible runs (G1-F09; confirms D25) | Repeat runs of the same configuration, initial condition and selection script must give the same pass/fail verdicts and agree within stated tolerances. They are not required to be bit-identical. |
+| D60 | Position-holding accuracy (G1-F06) | The position-holding budget ([P-SYS-450], 1 m TBR) is a horizontal position error, in Stationary and in Hover. Altitude error is covered separately by the altitude-hold tolerance. |
+| D61 | Principal axes (G1-F12) | The body axes are the principal axes of inertia: the products of inertia are zero, so a rotation about one body axis produces no torque about another. |
+| D62 | Gust shape (G1-F08) | A gust or burst builds up over a minimum rise time (a new parameter, value TBD, set at G2 with the dynamics model and the TST wind model); instantaneous steps are not allowed. The budgets close against it. |
+| D63 | G1 owner questions (reviews/G1/dispositions.md Q1–Q4, 2026-11-04) | **Q1:** the process and document records L1-AER-750 to -860 stay at L1 as leaves with the Aeronef as subject. **Q2:** the envelope records require each value from zero up to the maximum to be sustainable; tracking tolerances stay at L2. **Q3:** L0-CON-100's "initial fuel quantity as a parameter" is the capacity [P-FU-010] plus the initial fuel of each run's initial condition; no change request. **Q4:** the tolerances of D59 are those of each success criterion; no run-to-run tolerance parameter. Also: the flight control panel boundaries get their own ICD-FCP. |
 
 ### Open questions
 
@@ -355,9 +361,9 @@ All open and deferred questions are tracked as GitHub issues labelled `questions
 | 0 | 1 | Sonnet |
 | 1 | 3, then a gate | Opus ×3, Haiku, Opus (review) |
 | 2 | 1, then 1, then a gate | Opus (xhigh), Sonnet, Haiku, Opus (review) |
-| 3 | 7 | Opus ×7 (three at xhigh) |
-| 3b | 1, then a gate | Opus (xhigh), Haiku ×7, Opus ×2 (review) |
-| 4 | 1, then 9, then a gate | Opus (M0), then Opus ×3 (M3, M7, FC1) and Sonnet ×6, Haiku, Opus (review) |
+| 3 | 8 | Opus ×8 (three at xhigh) |
+| 3b | 1, then a gate | Opus (xhigh), Haiku ×8, Opus ×2 (review) |
+| 4 | 1, then 5, then a gate | Opus (M0), then Opus ×3 (M3, M8, FC1) and Sonnet ×2 (M2, M5), Haiku, Opus (review) |
 | 5 | 4, then a gate | Sonnet ×4, Opus (review) |
 
 The critical path runs G0 → B1 → G1 → C5 → I1 → G2 → M0 → M3/M8 → G3 → G4. The largest time savings come from the parallel fan-outs in Phases 3, 4 and 5.

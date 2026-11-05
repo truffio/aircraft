@@ -2,6 +2,8 @@
 
 Terms used in the L1 statements (`work/B1/L1_AER.md`) or in `specs/FUNCTIONAL_ANALYSIS.md` that the fixed glossary does not define. Each is new; none changes a fixed definition. Format as in `specs/GLOSSARY.md`.
 
+> **Merged at the G1 rework (2026-11-04, G1-F11).** These proposals are in `specs/GLOSSARY.md`, corrected for D55 to D62: *Initial condition* without VOR stations; *Reference position* tied to Stationary and Hover (D60), not to Position Hold; *Flight software* includes FCP; *Mode status* not merged (dropped from L1-AER-420, G1-F04), replaced by *Mode state*. The glossary is the reference; this file is kept as a record.
+
 | Term | Proposed definition | Ref. | Used in |
 | --- | --- | --- | --- |
 | Axis demand | A force along, or a moment about, one body axis that the regulation function of *flight control* asks the allocation function to produce. Six per *control frame*. | FUNCTIONAL_ANALYSIS F-AER-05, -06 | L1-AER-630 |

@@ -1,7 +1,8 @@
 """Parameter-reference checks against parameters/PARAMETERS.yaml.
 
 Checks: [P-..] references in statements and the Parameters field exist, duplicate
-or badly formed parameter IDs, unused parameters, non-SI unit hints, and TBD/TBR
+or badly formed parameter IDs, unused parameters, non-SI unit hints (except on
+parameters marked crew_facing, CV-790), and TBD/TBR
 parameters without an entry in registers/TBD_TBR.md (warning). References from
 records with Status "Deleted" are ignored.
 
@@ -15,7 +16,7 @@ from pathlib import Path
 import reqlib
 from reqlib import Finding, DASH
 
-PARAM_ID_RE = re.compile(r"^P-(SYS|DYN|FU|EF|FC|AF|NAV|TM)-\d{3}$")
+PARAM_ID_RE = re.compile(r"^P-(SYS|DYN|FU|EF|FC|AF|FCP|NAV|TM)-\d{3}$")
 
 # Unit tokens that are clearly not SI (lower case). Editable.
 NON_SI_UNITS = {
@@ -40,7 +41,7 @@ def check_parameters(params, path, tbd_text):
             out.append(Finding(loc[0], loc[1], sev, code, pid, msg))
 
         if not PARAM_ID_RE.match(pid):
-            add("error", "PARAM-ID", "ID must look like P-<SYS|DYN|FU|EF|FC|AF|NAV|TM>-NNN")
+            add("error", "PARAM-ID", "ID must look like P-<SYS|DYN|FU|EF|FC|AF|FCP|NAV|TM>-NNN")
         if pid in seen:
             add("error", "PARAM-DUP", "duplicate parameter ID")
         seen[pid] = p
@@ -48,7 +49,7 @@ def check_parameters(params, path, tbd_text):
             add("error", "PARAM-UNIT", "unit is missing (use \"1\" for dimensionless)")
         else:
             bad = [t for t in unit_tokens(p["unit"]) if t in NON_SI_UNITS]
-            if bad:
+            if bad and p.get("crew_facing") is not True:  # crew units are allowed when marked (CV-790)
                 add("warning", "PARAM-UNIT", f"unit {p['unit']!r} looks non-SI ({', '.join(bad)})")
         status = p.get("status")
         if status not in ("TBD", "TBR", "Set"):

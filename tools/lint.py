@@ -45,7 +45,7 @@ TYPES = ["Functional", "Performance", "Interface", "Constraint",
 STATUSES = ["Draft", "Reviewed", "Baselined", "Verified", "Deleted"]
 METHODS = ["Inspection", "Analysis", "Demonstration", "Test"]
 CRITICALITY = "Not assessed"
-SUBSYSTEMS = "DYN|FU|EF|FC|AF|NAV|TM"
+SUBSYSTEMS = "DYN|FU|EF|FC|AF|FCP|NAV|TM"
 
 ID_PATTERNS = {   # level -> pattern of valid IDs
     "L0": re.compile(r"^L0-(OBJ|CON|SUC)-\d{3}$"),

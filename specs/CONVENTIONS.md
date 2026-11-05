@@ -1,16 +1,16 @@
 # Aeronef — Conventions
 
-**Status:** Fixed at Gate G0 (D43), 2026-10-27, except CV-650 and CV-660, which are deferred to L2 (#54). Changes go through a change request (`registers/CHANGE_REQUESTS.md`).
+**Status:** Fixed at Gate G0 (D43), 2026-10-27. CV-650 and CV-660, once deferred to L2 (#54), were deleted with the VOR (D56, CR-B1-05). Changes go through a change request (`registers/CHANGE_REQUESTS.md`); the latest is CR-B1-10 (2026-11-04).
 **Date:** 2026-10-27
 **Owner:** Martin
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
-**Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7–D44).
+**Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7–D62).
 
 ## 0. Purpose, scope and how to cite
 
 This document fixes the coordinate frames, sign conventions, angle definitions, units and time base that every Aeronef requirement, the model specification (MS-DYN), the interface control documents (ICDs), the parameter database and the operational data use. It defines quantities. It does not specify how any function computes, controls or displays them.
 
-- **Basis.** The frames and signs are consistent with the practice of ANSI/AIAA R-004-1992, *Recommended Practice for Atmospheric and Space Flight Vehicle Coordinate Systems*, as described in public sources (no copy of the text is held; checked against public sources, decision D36): a right-handed body frame with x forward, y right and z down, a local-level north-east-down frame, and the yaw-pitch-roll (3-2-1) Euler sequence. Mass-properties terms are compatible with SAWE STD A-6. Where this document goes beyond R-004 (crew-facing units, the time base, VOR definitions, expression rules), it says so.
+- **Basis.** The frames and signs are consistent with the practice of ANSI/AIAA R-004-1992, *Recommended Practice for Atmospheric and Space Flight Vehicle Coordinate Systems*, as described in public sources (no copy of the text is held; checked against public sources, decision D36): a right-handed body frame with x forward, y right and z down, a local-level north-east-down frame, and the yaw-pitch-roll (3-2-1) Euler sequence. Mass-properties terms are compatible with SAWE STD A-6. Where this document goes beyond R-004 (crew-facing units, the time base, expression rules), it says so.
 - **Citing.** A requirement cites a convention by its ID, for example "heading (CONVENTIONS CV-530)". Requirements use the defined names in this document and the [glossary](GLOSSARY.md), never a synonym.
 - **IDs.** `CV-nnn`, grouped by section in blocks of one hundred, numbered in steps of 10. An ID is never reused. A deleted convention keeps its ID with status Deleted.
 - **Status values.** Proposed → Fixed (at G0) → Changed (by an approved change request) or Deleted. Items that needed an owner answer carried a G0 decision reference **(G0-nn)**. Section 11 lists the G0 decisions. Items the owner has decided are **Fixed**, with the plan decision (Dnn, plan §9) that fixes them.
@@ -358,7 +358,7 @@ Some direction quantities are undefined, or ill-conditioned, at specific states:
 | Heading, roll angle | Pitch angle = ±90° | `P-NAV-030`: maximum absolute pitch angle for which heading is valid (TBD) |
 | Track | Horizontal speed = 0 | `P-NAV-010`: minimum horizontal speed for which track is valid (TBD) |
 
-The flight path angle and VOR radial rows were deleted with D56 (CR-B1-05). How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and TM. The thresholds are parameters, not conventions.
+The flight path angle and VOR radial rows were deleted with D56 (CR-B1-05). How the Aeronef behaves when a quantity is invalid (validity flags, annunciation, mode reversion) is a requirement matter for NAV, AF and FCP (D55, CR-B1-13). The thresholds are parameters, not conventions.
 **Status:** Fixed (D43).
 
 ## 7. VOR geometry (CV-6xx) — deleted
@@ -494,8 +494,8 @@ A **selected value** entered by the crew in a crew-facing unit becomes the corre
 
 ### CV-780 — Display resolution and rounding
 
-The resolution with which a crew-facing value is shown, and the rounding rule from the SI value (for example round half away from zero), are requirement matters for AF and TM. They are parameters (proposed `P-TM-020` to `P-TM-070`, TBD), not conventions. Until those requirements exist, no rounding rule is implied.
-**Status:** Fixed (D43).
+The resolution with which a crew-facing value is shown, and the rounding rule from the SI value (for example round half away from zero), are requirement matters for the flight control panel (FCP, D55), which presents the annunciations and indications. They are parameters (`P-TM-020` to `P-TM-050`, TBD; the IDs keep their TM prefix; P-TM-060 and P-TM-070 were withdrawn with D56), not conventions. Until those requirements exist, no rounding rule is implied.
+**Status:** Changed (D55, CR-B1-10).
 
 ### CV-790 — Units in the parameter database
 
@@ -602,7 +602,7 @@ The project owner decides these items at Gate G0. Each row gives the recommendat
 | G0-09 | Air mass | Still air (no wind); wind model | **Still air in version 1**, so airspeed equals ground speed; recorded as an L0 assumption | CV-470 | **D17: wind**, not still air |
 | G0-10 | Units of crew-facing parameters | All parameters in SI; crew-facing parameters in crew units, marked | **Crew-facing parameters in crew units, marked crew-facing**, so values like 100 ft/min stay exact | CV-790 | Accepted (D34) |
 | G0-11 | Time base | Integer step index authoritative; floating time authoritative | **Integer step index authoritative, `t_k = k·Δt`, `t = 0` at initial conditions** | CV-820, CV-840 | Accepted (D35) |
-| G0-12 | VOR course deviation sign | Positive right of course (actual − desired); positive "fly right" (CDI sense) | **Positive when the vehicle is right of the selected course**; the CDI fly-to sense is a display matter | CV-650, CV-660 | Deferred to L2 (#54) |
+| G0-12 | VOR course deviation sign | Positive right of course (actual − desired); positive "fly right" (CDI sense) | **Positive when the vehicle is right of the selected course**; the CDI fly-to sense is a display matter | CV-650, CV-660 | Withdrawn: there is no VOR (D56); CV-650 and CV-660 deleted (CR-B1-05, CR-B1-10) |
 | G0-13 | Product-of-inertia sign | Positive-integral products with negative tensor off-diagonals; the opposite | **Positive-integral products, negative off-diagonals** | CV-350 | Accepted (D35) |
 | G0-14 | Error and deviation sign | Actual − target; target − actual | **Actual − target** | CV-910 | Accepted (D35) |
 | G0-15 | Bound inclusivity | "Within X" inclusive (≤); exclusive (<) | **Inclusive** | CV-940 | Accepted (D35) |

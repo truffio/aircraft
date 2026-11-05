@@ -2,10 +2,11 @@
 # Owned by the orchestrator; agents propose entries in work/<agent-id>/param_proposals.md.
 #
 # Fields:
-#   id:          P-<SUB>-<NNN>  (SUB = SYS, DYN, FU, EF, FC, AF, NAV, TM; steps of 10, never reused)
+#   id:          P-<SUB>-<NNN>  (SUB = SYS, DYN, FU, EF, FC, AF, FCP, NAV, TM; steps of 10, never reused)
 #   name:        short name
 #   description: what it is
-#   unit:        SI unit (use "1" for dimensionless)
+#   unit:        SI unit (use "1" for dimensionless); a crew-facing parameter keeps its crew unit
+#   crew_facing: true for a parameter stored in its crew-facing unit (CV-790, D34); omitted otherwise
 #   value:       number, or null while TBD
 #   tolerance:   number or null
 #   status:      TBD | TBR | Set
@@ -17,5 +18,627 @@
 #   P-SYS-010..190  L0 requirements (A1). Withdrawn and never reused: 010-050, 080-110.
 #   P-SYS-200..290  ConOps operating envelope (A2; was P-SYS-010..090).
 #   P-SYS-300..390  Conventions time base (A3; was P-SYS-010, -020).
-# The VOR reception range is P-NAV-050 (A3); the ConOps used P-NAV-010 for it.
-parameters: []
+#   P-SYS-400..590  L1 budgets (B1).
+#
+# Seeded by task B2 (2026-11-04) from work/A1, A2, A3 and B1 param_proposals.md.
+# G1 rework (2026-11-04): P-SYS-570 added (gust rise time, D62); descriptions aligned with D55,
+#   D56, D60 and the G1 findings (reviews/G1/dispositions.md).
+# Withdrawn by D56 and never reused: P-SYS-260, P-SYS-520 (D53), P-AF-050, -070, -080, -150,
+#   P-NAV-020, -040, -050, P-TM-060, -070.
+
+parameters:
+
+  # --- SYS ---
+  - id: P-SYS-060
+    name: Minimum parallel efficiency
+    description: Minimum parallel efficiency (single-instance campaign duration divided by the product of the parallel campaign duration and the number of instances) at P-SYS-070 instances.
+    unit: '1'
+    value: 0.8
+    tolerance: null
+    status: TBR
+    source: 'L0-SUC-060 (Draft, deferred with #86; OBJECTIVES.md §3; TESTING_ENVIRONMENT.md §5)'
+    owner: Martin
+  - id: P-SYS-070
+    name: Parallel instances for efficiency demonstration
+    description: Number of parallel simulation instances at which the parallel efficiency is measured. Proposed equal to the physical core count of the execution host (L0-ASM-130).
+    unit: '1'
+    value: 8
+    tolerance: null
+    status: TBR
+    source: 'L0-SUC-060 (Draft, deferred with #86)'
+    owner: Martin
+  - id: P-SYS-120
+    name: Maximum crew-sensed acceleration magnitude
+    description: Maximum magnitude of the acceleration sensed by the crew while airborne (specific force; non-gravitational forces divided by current mass), set to protect the crew from excessive g load (D38).
+    unit: m/s^2
+    value: 29.41995
+    tolerance: null
+    note: '3 g (3 x 9.80665 m/s^2), confirmed by the owner (D45, #97); evaluated at the centre of gravity'
+    status: Set
+    source: L0-CON-310; L1-AER-290; D45
+    owner: Martin
+  - id: P-SYS-200
+    name: Maximum operating altitude
+    description: Highest altitude above the ground plane for nominal operation. Upper limit of the selected altitude (crew-facing ft).
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.2
+    owner: Martin
+  - id: P-SYS-210
+    name: Minimum operating altitude
+    description: Lowest altitude above the ground plane for nominal operation. Lower limit of the selected altitude and of scenario initial altitudes (crew-facing ft).
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.2, §5, SC-020
+    owner: Martin
+  - id: P-SYS-220
+    name: Horizontal operating radius
+    description: Radius, around the local frame origin, of the horizontal region of nominal operation (crew-facing NM).
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.2
+    owner: Martin
+  - id: P-SYS-230
+    name: Maximum horizontal speed
+    description: Highest horizontal speed reached in autoflight. Upper limit of the selected horizontal speed (crew-facing kt).
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §5, N-170
+    owner: Martin
+  - id: P-SYS-240
+    name: Maximum climb vertical speed
+    description: Highest upward vertical speed reached in autoflight. Upper limit of a positive selected vertical speed (crew-facing ft/min).
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §5, SC-040, N-170
+    owner: Martin
+  - id: P-SYS-250
+    name: Maximum descent vertical speed
+    description: Highest downward vertical speed (magnitude) reached in autoflight. Limit of a negative selected vertical speed (crew-facing ft/min).
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §5, SC-020, N-170
+    owner: Martin
+  - id: P-SYS-270
+    name: Maximum heading rate in autoflight
+    description: Highest rate of change of heading during an autoflight heading change.
+    unit: rad/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §5, SC-050, SC-060, N-170
+    owner: Martin
+  - id: P-SYS-280
+    name: Minimum hover endurance at full fuel
+    description: Shortest time, from full fuel at maximum mass, during which autoflight holds the horizontal position and the altitude in still air before fuel exhaustion (Stationary with Altitude hold, or Hover; D56, D60).
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-110 (variation hover endurance); L1-AER-360
+    owner: Martin
+  - id: P-SYS-300
+    name: Simulation step
+    description: Fixed duration Δt of one vehicle-model simulation step
+    unit: s
+    value: 0.01
+    tolerance: null
+    status: TBR
+    source: CV-820; L1-AER-670, -680; B1 proposal
+    owner: Martin
+  - id: P-SYS-310
+    name: Control frame period
+    description: Period of one execution of the flight-control and autoflight functions
+    unit: s
+    value: 0.02
+    tolerance: null
+    status: TBR
+    source: CV-830; L1-AER-470, -680, -710; B1 proposal
+    owner: Martin
+  - id: P-SYS-400
+    name: Minimum upward control force
+    description: Control force the effector set can produce along the negative body z axis (up at level attitude), with the other five force and moment components at zero, while fuel remains. Budget - at least m_max x (P-DYN-010 + P-SYS-440) + drag at P-SYS-240.
+    unit: N
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-120; FUNCTIONAL_ANALYSIS §7.1; computed at I1 once P-FU-010 and P-FU-030 are set
+    owner: Martin
+  - id: P-SYS-410
+    name: Minimum control force, other body directions
+    description: Control force the effector set can produce along each of +x_B, -x_B, +y_B, -y_B and +z_B, with the other five components at zero, while fuel remains. Budget - at least m_max x P-SYS-440 + drag at (P-SYS-230 + P-SYS-430 + P-SYS-560).
+    unit: N
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-130; FUNCTIONAL_ANALYSIS §7.1
+    owner: Martin
+  - id: P-SYS-420
+    name: Minimum control moment per body axis
+    description: Control moment the effector set can produce about each body axis in each sense, with the other five components at zero, while fuel remains. Budget - at least J_max x angular acceleration to reach P-SYS-270 + drag moment + level-attitude margin.
+    unit: N*m
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-140; FUNCTIONAL_ANALYSIS §7.1
+    owner: Martin
+  - id: P-SYS-430
+    name: Maximum steady wind speed
+    description: Largest steady horizontal wind speed at which the speed capability and the position-holding accuracy apply, with gusts of up to P-SYS-560 on top. The wind has no vertical component. Enters the effector authority budget through drag.
+    unit: m/s
+    value: 51.444
+    tolerance: null
+    note: '100 kt (owner, #99, D51).'
+    status: TBR
+    source: 'L1-AER-130, -310, -460; D17, D51; #99'
+    owner: Martin
+  - id: P-SYS-440
+    name: Maximum vehicle acceleration magnitude
+    description: Largest magnitude of the vehicle acceleration (time derivative of the vehicle velocity) while airborne with fuel remaining. Aircraft-level share of the crew budget; split into P-AF-200 (autoflight manoeuvre limit) and P-FC-020 (flight-control transient allowance).
+    unit: m/s^2
+    value: 14.709975
+    tolerance: null
+    note: '1.5 g (1.5 x 9.80665 m/s^2). With 1 g to hold the vehicle up, the sensed acceleration at the centre of gravity is at most 2.5 g, leaving 0.5 g of margin to the 3 g of P-SYS-120 (D45). Accepted as TBR (D48, #102).'
+    status: TBR
+    source: L1-AER-300; D16, D38; FUNCTIONAL_ANALYSIS §7.2
+    owner: Martin
+  - id: P-SYS-450
+    name: Position-holding error budget
+    description: Largest horizontal distance between the vehicle position and the reference position while autoflight holds the horizontal position over the ground (Stationary or Hover, D60), in a wind within the wind envelope (steady wind up to P-SYS-430 plus gusts up to P-SYS-560 built up over at least P-SYS-570), from P-SYS-460 after the start of the hold. Horizontal only; the altitude error is P-AF-110. Split into P-AF-160 (guidance) and P-FC-010 (translational regulation); navigation share zero (L1-AER-440).
+    unit: m
+    value: 1.0
+    tolerance: null
+    status: TBR
+    source: L1-AER-460; D60; METHODOLOGY §12 example; FUNCTIONAL_ANALYSIS §7.4
+    owner: Martin
+  - id: P-SYS-460
+    name: Position-hold settling time
+    description: Time from the start of a hold of the horizontal position (Stationary or Hover) after which the position-holding error budget P-SYS-450 applies. When the hold starts is set by the mode logic (#78, C5).
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-460
+    owner: Martin
+  - id: P-SYS-470
+    name: Annunciation latency, aircraft level
+    description: Longest time from a change of mode state, a target change or a fuel alert condition to its annunciation in the crew interface output. Budget - at least 2 x P-SYS-310 + P-TM-010; AF share P-AF-060.
+    unit: s
+    value: 0.5
+    tolerance: null
+    status: TBR
+    source: L1-AER-470, -570, -580; FUNCTIONAL_ANALYSIS §7.5
+    owner: Martin
+  - id: P-SYS-480
+    name: Control-loop latency
+    description: Longest time from the simulation time of a vehicle state to the first change of effector output that responds to it. Budget - at least P-SYS-310 + P-EF-010.
+    unit: s
+    value: 0.1
+    tolerance: null
+    status: TBR
+    source: L1-AER-710; DD-020; FUNCTIONAL_ANALYSIS §7.5
+    owner: Martin
+  - id: P-SYS-500
+    name: Landing envelope, maximum vertical speed magnitude
+    description: Largest vertical speed magnitude at the ground-contact sample for the contact to be a landing.
+    unit: m/s
+    value: 3.458
+    tolerance: null
+    note: 'Impact speed of a free fall from 2 ft (0.6096 m), sqrt(2 x 9.80665 x 0.6096) (owner, #100).'
+    status: TBR
+    source: 'L1-AER-280; #100'
+    owner: Martin
+  - id: P-SYS-510
+    name: Landing envelope, maximum horizontal speed
+    description: Largest horizontal speed at the ground-contact sample for the contact to be a landing.
+    unit: m/s
+    value: 0.5
+    tolerance: null
+    status: TBR
+    source: 'L1-AER-280; #100'
+    owner: Martin
+  - id: P-SYS-540
+    name: Cross-axis velocity tolerance
+    description: Largest departure of the velocity along each body axis from its reference while the reference of another degree of freedom changes.
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-380
+    owner: Martin
+  - id: P-SYS-550
+    name: Cross-axis body rate tolerance
+    description: Largest departure of the body rate about each rotational axis from its reference while the reference of another degree of freedom changes.
+    unit: rad/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-380
+    owner: Martin
+  - id: P-SYS-560
+    name: Maximum gust speed
+    description: Largest horizontal wind speed that gusts and bursts add to the steady wind (P-SYS-430). The largest instantaneous wind is P-SYS-430 + P-SYS-560. Each gust builds up over at least P-SYS-570 (D62); the rest of the gust shape is defined in MS-DYN and set by the TST for each run.
+    unit: m/s
+    value: 25.722
+    tolerance: null
+    note: '50 kt (owner, #99, D51); 150 kt instantaneous with the steady wind.'
+    status: TBR
+    source: 'L1-AER-130, -310, -460; L0-ASM-050; D51; #99'
+    owner: Martin
+  - id: P-SYS-570
+    name: Minimum gust rise time
+    description: Shortest time over which a gust or burst builds up from the steady wind to its full speed. Instantaneous wind steps are not allowed, so the drag changes at a bounded rate and the vehicle acceleration, position-holding and speed budgets close against it (D62).
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: 'D62 (G1-F08); L1-AER-290, -300, -310, -460; set at G2 with MS-DYN (C1) and the TST wind model'
+    owner: Martin
+
+  # --- DYN ---
+  - id: P-DYN-010
+    name: Gravitational acceleration
+    description: Magnitude of the uniform gravitational acceleration along +z_L. Proposed equal to standard gravity, so that the 3 g crew limit reads 1 g in a hover exactly.
+    unit: m/s^2
+    value: 9.80665
+    tolerance: null
+    status: TBR
+    source: CV-110; L1-AER-060; B1 proposal (G0-F25)
+    owner: Martin
+  - id: P-DYN-400
+    name: Crew station position
+    description: Position of the crew station in the body frame (three components, x forward of the CG). The crew acceleration limit is evaluated at the centre of gravity, not here (D45).
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-250, -290; L0-CON-150
+    owner: Martin
+
+  # --- FU ---
+  - id: P-FU-010
+    name: Usable fuel mass at full capacity
+    description: Mass of usable fuel when the tank is full. Initial fuel of the reference mission.
+    unit: kg
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.5, SC-110
+    owner: Martin
+  - id: P-FU-020
+    name: Low-fuel threshold
+    description: Fraction of the full fuel capacity P-FU-010 below which LOW FUEL is annunciated.
+    unit: '1'
+    value: 0.1
+    tolerance: null
+    status: TBR
+    source: CONOPS §4.5; L1-AER-570; B1 proposal
+    owner: Martin
+  - id: P-FU-030
+    name: Dry mass
+    description: Vehicle mass with no fuel. The maximum vehicle mass is P-FU-030 + P-FU-010.
+    unit: kg
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-180, -360; FUNCTIONAL_ANALYSIS §7.3
+    owner: Martin
+  - id: P-FU-040
+    name: Translational fuel consumption parameters
+    description: Parameters of the translational consumption relationship (fuel mass flow per unit of control force). The form, and therefore the number of coefficients, is set by C2 in MS-DYN; the unit is that of a linear coefficient.
+    unit: kg/(N*s)
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-170; L0-CON-120
+    owner: Martin
+  - id: P-FU-050
+    name: Rotational fuel consumption parameters
+    description: Parameters of the rotational consumption relationship (fuel mass flow per unit of control moment). Form set by C2 in MS-DYN.
+    unit: kg/(N*m*s)
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-170; L0-CON-120
+    owner: Martin
+  - id: P-FU-060
+    name: Fuel mass accounting tolerance
+    description: Largest difference between the remaining fuel mass and the initial fuel mass minus the integral of the fuel mass flow (numerical integration only).
+    unit: kg
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-190; METHODOLOGY §10.3
+    owner: Martin
+
+  # --- EF ---
+  - id: P-EF-010
+    name: Effector command response time
+    description: Longest time from a change of effector command to the effector output reaching the commanded value (definition of "reaching" set by C3). Share of P-SYS-480.
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-710; FUNCTIONAL_ANALYSIS §7.5
+    owner: Martin
+
+  # --- FC ---
+  - id: P-FC-010
+    name: Translational regulation position share
+    description: Largest horizontal distance between the vehicle position and the autoflight reference position while autoflight holds the horizontal position (Stationary or Hover, D60). Share of P-SYS-450.
+    unit: m
+    value: 0.5
+    tolerance: null
+    status: TBR
+    source: L1-AER-460; FUNCTIONAL_ANALYSIS §7.4
+    owner: Martin
+  - id: P-FC-020
+    name: Flight-control transient acceleration allowance
+    description: Largest vehicle acceleration magnitude that flight-control transients may add to the commanded manoeuvre acceleration. Share of P-SYS-440.
+    unit: m/s^2
+    value: 4.903325
+    tolerance: null
+    note: 0.5 g
+    status: TBR
+    source: L1-AER-300; FUNCTIONAL_ANALYSIS §7.2
+    owner: Martin
+
+  # --- AF ---
+  - id: P-AF-010
+    name: Altitude selection resolution
+    description: Smallest step of the selected altitude.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
+    unit: ft
+    crew_facing: true
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.3, §5, N-070
+    owner: Martin
+  - id: P-AF-020
+    name: Vertical speed selection resolution
+    description: Smallest step of the selected vertical speed.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
+    unit: ft/min
+    crew_facing: true
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.3, §5, N-070
+    owner: Martin
+  - id: P-AF-030
+    name: Horizontal speed selection resolution
+    description: Smallest step of the selected horizontal speed.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
+    unit: kt
+    crew_facing: true
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.3, §5, N-070
+    owner: Martin
+  - id: P-AF-040
+    name: Heading selection resolution
+    description: Smallest step of the selected heading.
+    note: Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.
+    unit: deg
+    crew_facing: true
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §4.3, §5, N-070
+    owner: Martin
+  - id: P-AF-060
+    name: Annunciation latency
+    description: 'AF share of the aircraft-level annunciation latency P-SYS-470: at most P-SYS-470 minus P-TM-010.'
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: L1-AER-470; FUNCTIONAL_ANALYSIS §7.5; CONOPS §4.4, N-060
+    owner: Martin
+  - id: P-AF-090
+    name: Vertical speed tracking tolerance
+    description: Largest settled difference between vertical speed and selected vertical speed in Vertical speed mode, or in Go to altitude at a selected vertical speed.
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-020, SC-040, SC-050
+    owner: Martin
+  - id: P-AF-100
+    name: Altitude capture maximum overshoot
+    description: Largest overshoot of the selected altitude when Altitude hold captures it from Go to altitude or Vertical speed.
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-020
+    owner: Martin
+  - id: P-AF-110
+    name: Altitude hold tolerance
+    description: Largest altitude error while Altitude hold or Hover holds an altitude.
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-020 to SC-120
+    owner: Martin
+  - id: P-AF-120
+    name: Horizontal speed tracking tolerance
+    description: Largest settled difference between horizontal speed and selected horizontal speed in Heading (there is no separate speed mode, D56).
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-040, SC-050, SC-060
+    owner: Martin
+  - id: P-AF-130
+    name: Heading tolerance
+    description: Largest settled difference between heading and the selected or held heading.
+    unit: rad
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-060, SC-090
+    owner: Martin
+  - id: P-AF-140
+    name: Track tolerance in Heading
+    description: Largest difference between the track and the selected heading once Heading has settled at a non-zero horizontal speed.
+    unit: rad
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-060
+    owner: Martin
+  - id: P-AF-160
+    name: Autoflight position-holding share
+    description: AF guidance share of the position-holding budget P-SYS-450 (reference position versus target), for Stationary and Hover.
+    unit: m
+    value: 0.5
+    tolerance: null
+    status: TBR
+    source: L1-AER-460; FUNCTIONAL_ANALYSIS §7.4; B1 proposal
+    owner: Martin
+  - id: P-AF-170
+    name: Hover horizontal speed tolerance
+    description: Largest horizontal speed once Go to hover or Hover has stopped the vehicle.
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS SC-100
+    owner: Martin
+  - id: P-AF-180
+    name: Level attitude tolerance
+    description: Largest pitch or roll angle magnitude; pitch and roll are held at zero at all times (D10, D57).
+    unit: rad
+    value: null
+    tolerance: null
+    status: TBR
+    source: CONOPS §4.4, Q2
+    owner: Martin
+  - id: P-AF-190
+    name: Settling time
+    description: Longest time from a capture onset or target change until the controlled quantity is within its tolerance.
+    unit: s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CONOPS §5
+    owner: Martin
+  - id: P-AF-200
+    name: Autoflight manoeuvre acceleration limit
+    description: Largest vehicle acceleration magnitude that autoflight guidance commands (D16 g-limited manoeuvres). Share of P-SYS-440.
+    unit: m/s^2
+    value: 9.80665
+    tolerance: null
+    note: 1.0 g
+    status: TBR
+    source: L1-AER-300; D16; FUNCTIONAL_ANALYSIS §7.2
+    owner: Martin
+  - id: P-AF-210
+    name: Hover height above the ground
+    description: Height above the ground that Go to hover brings the vehicle to and that Hover holds. A project constant, not a crew selection (D56). The ground is flat at altitude zero (D8), so it is also an altitude.
+    unit: m
+    value: null
+    tolerance: null
+    status: TBD
+    source: D56; CONOPS SC-100
+    owner: Martin
+  - id: P-AF-220
+    name: Standard vertical speed
+    description: Vertical speed magnitude that Go to altitude uses until the crew selects another vertical speed (D56). At most P-SYS-240 in a climb and P-SYS-250 in a descent.
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: D56; CONOPS SC-020
+    owner: Martin
+
+  # --- NAV ---
+  - id: P-NAV-010
+    name: Track validity speed
+    description: Minimum horizontal speed for which track is valid
+    unit: m/s
+    value: null
+    tolerance: null
+    status: TBD
+    source: CV-540, CV-580; NAV (C6)
+    owner: Martin
+  - id: P-NAV-030
+    name: Heading validity pitch limit
+    description: Maximum absolute pitch angle for which heading and roll angle are valid
+    unit: rad
+    value: null
+    tolerance: null
+    status: TBD
+    source: CV-260, CV-580; NAV (C6)
+    owner: Martin
+
+  # --- TM ---
+  - id: P-TM-010
+    name: Output sample period
+    description: Period of one operational data record
+    unit: s
+    value: 0.02
+    tolerance: null
+    status: TBR
+    source: CV-830; L1-AER-470, -600; B1 proposal (equal to P-SYS-310)
+    owner: Martin
+  - id: P-TM-020
+    name: Altitude display resolution
+    description: Resolution of altitude values shown to the crew
+    unit: ft
+    crew_facing: true
+    value: null
+    tolerance: null
+    note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
+    status: TBD
+    source: CV-780
+    owner: Martin
+  - id: P-TM-030
+    name: Vertical speed display resolution
+    description: Resolution of vertical speed values shown to the crew
+    unit: ft/min
+    crew_facing: true
+    value: null
+    tolerance: null
+    note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
+    status: TBD
+    source: CV-780
+    owner: Martin
+  - id: P-TM-040
+    name: Speed display resolution
+    description: Resolution of horizontal speed values shown to the crew
+    unit: kt
+    crew_facing: true
+    value: null
+    tolerance: null
+    note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
+    status: TBD
+    source: CV-780
+    owner: Martin
+  - id: P-TM-050
+    name: Direction angle display resolution
+    description: Resolution of heading and track values shown to the crew.
+    unit: deg
+    crew_facing: true
+    value: null
+    tolerance: null
+    note: Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.
+    status: TBD
+    source: CV-780
+    owner: Martin
