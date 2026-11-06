@@ -1,19 +1,22 @@
 # C2 — Issues, change requests, design decisions and questions for the project owner
 
-Task C2 (plan §6, Phase 3): the L2 FU section, fuel and mass properties (`work/C2/L2_FU.md`, 29 records). The questions are L2 questions about the FU subsystem and its interfaces. The local IDs C2-Qn need GitHub issues; once they are filed, cite them by issue number (sub-questions as #N.k).
+Task C2 (plan §6, Phase 3): the L2 FU section, fuel and mass properties (`work/C2/L2_FU.md`). **Rework** (2026-11-05, TT-840): the G2 findings on FU with the owner rulings of D72, the landing gear and ground operations of D69 from the approved B3 package (D73), and the C3 answer that EF computes the resultant control force and moment once (DD-C3-05). The finding-by-finding dispositions are in `rework_G2_D69.md`; the MS-DYN content that C2 supplies is in `ms_dyn_s6_s7_fu.md`.
 
 ## 1. Summary
 
 | Item | Count |
 | --- | --- |
-| L2 FU records | 29: Functional 8, Constraint 7, Interface 7, Model fidelity 5, Performance 1, Documentation 1 |
-| Verification methods | Test 12, Inspection 10, Analysis 6, Demonstration 1 |
-| L1 parents covered | 22 of 22 records allocated to FU (L1-AER-230 is Deleted, D54, so it needs no child) |
-| Derived records | 0 (each record has an L1 parent; the design choices inside them are DD proposals, §4) |
-| Parameters | 6 reused and updated (P-FU-010 to -060), 4 new (P-FU-070 to -100) |
-| Owner questions | 6 (§2) |
-| Change requests against L1 | 1 editorial, 1 conditional (§3.1); 1 editorial against the glossary (§3.2) |
-| Interface needs | `interface_needs.md` IN-C2-10 to -34 |
+| L2 FU records | 34: 26 changed (v2), 3 unchanged (L2-AER-FU-210, -240, -260), 5 new (L2-AER-FU-300 to -340), 0 deleted |
+| Types | Functional 9, Constraint 8, Interface 8, Model fidelity 7, Performance 1, Documentation 1 |
+| Verification methods | Test 15, Inspection 12, Analysis 6, Demonstration 1 |
+| L1 parents covered | 26: the 22 of the first draft, L1-AER-940 (new, allocated to FU), and L1-AER-900, -260, -270 (FU added by CR-C2-04) |
+| Derived records | 0 |
+| G2 findings closed on the FU side | 12 (G2-F05, -F10, -F11, -F13, -F16 to -F22, -F24), plus the G2 §4 EF note |
+| New DD proposals | DD-C2-05, DD-C2-06 (revises DD-130), DD-C2-07 (§4) |
+| Parameters | No new parameter; values proposed for P-FU-070, -080 (TBD → TBR); notes and descriptions updated (`param_proposals.md`) |
+| Change requests | CR-C2-04 (L1 allocations), CR-C2-05 (glossary, five terms) (§3) |
+| Owner questions | 1 (§2) |
+| Interface needs | `interface_needs.md`: IN-C2-19, -24, -50 to -54 new; IN-C2-10 to -18, -20 to -23 closed or superseded |
 
 **Coverage, L1 parent → FU children.**
 
@@ -25,10 +28,12 @@ Task C2 (plan §6, Phase 3): the L2 FU section, fuel and mass properties (`work/
 | L1-AER-160 | L2-AER-FU-040, -050, -070 |
 | L1-AER-170 | L2-AER-FU-010 |
 | L1-AER-180 | L2-AER-FU-090, -100, -110, -120 |
-| L1-AER-190 | L2-AER-FU-050, -080, -090 |
-| L1-AER-200 | L2-AER-FU-200 |
-| L1-AER-210 | L2-AER-FU-120, -150, -160 |
-| L1-AER-220 | L2-AER-FU-120, -170, -180, -190 |
+| L1-AER-190 | L2-AER-FU-050, -080, -090, -340 |
+| L1-AER-200 | L2-AER-FU-200, -340 |
+| L1-AER-210 | L2-AER-FU-150, -160, -310 |
+| L1-AER-220 | L2-AER-FU-120, -170, -180, -190, -310, -330 |
+| L1-AER-260 | L2-AER-FU-320 (with CR-C2-04) |
+| L1-AER-270 | L2-AER-FU-320 (with CR-C2-04) |
 | L1-AER-290 | L2-AER-FU-140 |
 | L1-AER-360 | L2-AER-FU-290 |
 | L1-AER-430 | L2-AER-FU-130 |
@@ -41,81 +46,85 @@ Task C2 (plan §6, Phase 3): the L2 FU section, fuel and mass properties (`work/
 | L1-AER-690 | L2-AER-FU-270 |
 | L1-AER-720 | L2-AER-FU-280 |
 | L1-AER-880 | L2-AER-FU-240 |
+| L1-AER-900 | L2-AER-FU-310 (with CR-C2-04) |
+| L1-AER-940 | L2-AER-FU-300, -040, -060 |
+
+L1-AER-210 lost L2-AER-FU-120 as a child (G2-F05: the centre of gravity no longer crosses I-04); it keeps three FU children and DYN's L2-AER-DYN-200.
 
 ## 2. Questions for the project owner
 
-Each FU record is written so that it is correct under either answer, or the open point is in its TBD/TBR field.
+The first-draft questions C2-Q1 to C2-Q6 are answered (D65, D66; C2-Q5 by D68). One question is new.
 
 | ID | Question | Recommended answer | Affects |
 | --- | --- | --- | --- |
-| C2-Q1 | **Does the inertia change with the fuel?** L1-AER-220 leaves this to C2. C2 decided that it does: the fuel depletes uniformly over a fixed volume centred on the centre of gravity, so the inertia runs linearly from the dry-mass tensor [P-FU-070] at exhaustion to [P-FU-070] + [P-FU-080] at full capacity (DD-C2-02). The other option is a constant inertia, for example the fuel as a point mass at the centre of gravity. Confirm? | **Confirm the varying inertia.** The mass already changes with fuel (L1-AER-180), and a fixed full-fuel inertia would contradict it. The control laws then meet a varying inertia as well as a varying mass, which is what comparing laws needs, and the boundary carries the inertia for that reason (L1-AER-430 rationale). The centre of gravity stays fixed and the axes stay principal, so L0-CON-130 and D61 still hold. A constant inertia needs no rewrite: set [P-FU-080] to zero. | L2-AER-FU-160, -170, -180, -190; P-FU-070, -080; MS-DYN (C1); the moment budget P-SYS-420 (I1) |
-| C2-Q2 | **Consumption form.** L1-AER-160 makes the form a C2 decision. C2 proposes (DD-C2-01): fuel mass flow = [P-FU-040] × the magnitude of the resultant control force + [P-FU-050] × the magnitude of the resultant control moment about the centre of gravity. The other option is to charge each effector on its own output, with one pair of coefficients per effector. Accept the resultant form? | **Accept the resultant form.** (1) It does not depend on the effector layout, which stays an EF design decision (D4, L1-AER-090 rationale). (2) Both terms apply whatever the layout; with per-effector charging, a layout that makes moments from offset forces would never use the rotational term, and L0-CON-120 asks for both. (3) The hover endurance keeps the closed form B1 assumed (L1-AER-360, FUNCTIONAL_ANALYSIS §7.3). (4) It is zero at zero output, so the free-fall and torque-free checks stay exact. **Cost:** effectors that oppose each other use no fuel, so an allocation that wastes authority is not penalised in fuel. FC already has to produce pure forces with the other components at zero (L1-AER-120 to -140), so this is acceptable for this cycle. If the owner prefers per-effector charging, only MS-DYN and the values of P-FU-040 and -050 change; L2-AER-FU-290 changes its formula. | L2-AER-FU-040, -060, -290; P-FU-040, -050; MS-DYN (C1); EF (C3) |
-| C2-Q3 | **Data rate of the fuel-integral check.** The fuel mass flow is constant over each simulation step, so the integral is exact when the check uses each step's flow. The operational data are sampled every [P-TM-010] (two steps, proposed), so an integration of the output samples misses one step in two, and the error is not "numerical integration only" (L1-AER-190 rationale). Which data does the check use? | **The FU outputs at each simulation step, recorded by the TST for the analysis run** (IN-C2-30), with no change to the Aeronef configuration. [P-FU-060] then covers only the arithmetic (proposed 1e-6 kg). The same recording serves the tests that read outputs the operational data do not carry (inertia, fuel availability). The other option, integrating the output samples, needs a larger [P-FU-060] set from a prototype run, and the editorial change CR-C2-02. | L2-AER-FU-050, -080; P-FU-060; TST; L1-AER-190 rationale |
-| C2-Q4 | **Initial fuel outside the range zero to [P-FU-010].** Reject the initial condition, or clamp the value? | **Reject**, with an initial-condition error to the TST (L2-AER-FU-030; new ICD-AER-TST item, IN-C2-31). Clamping would run a different case from the one the test procedure set, and the run could then pass against a fuel state it did not have. Zero and [P-FU-010] are valid. | L2-AER-FU-030; ICD-AER-TST (I1) |
-| C2-Q5 | **#59, autoflight after fuel exhaustion (C2 share).** L1-AER-580 leaves the mode state at exhaustion to C2 and C5. What does FU give, and what should C5 do? | **FU gives the fuel-exhaustion indication in the fuel state from the first step with zero fuel to the end of the run** (L2-AER-FU-230), and nothing else changes on the FU side; this closes the C2 part of #59. For C5, C2 suggests that autoflight disengage at the first control frame in which it reads the indication, and that it annunciate no active mode, so that the crew interface and the operational data do not show a hold that the vehicle is not doing while it falls. The decision is C5's. | L2-AER-FU-230; TT-580; AF (C5) |
-| C2-Q6 | **Proposed FU values.** B1 left the FU values for C2 to set at G2. C2 proposes one set that closes the fuel budget for an assumed hover endurance [P-SYS-280] of 3600 s: dry mass 1000 kg, capacity 500 kg, [P-FU-040] = [P-FU-050] = 1.09e-5 (kg/(N·s), kg/(N·m·s)), margin [P-FU-100] = 0.05, accounting tolerance [P-FU-060] = 1e-6 kg (`param_proposals.md` §1). Accept as TBR, and set [P-SYS-280]? | **Accept as TBR.** The owner sets [P-SYS-280] (D47); if it is not 3600 s, keep the masses and recompute [P-FU-040] from the inequality of L2-AER-FU-290. I1 may rescale the masses with the effector authority budget. | P-FU-010 to -060, -100; P-SYS-280; TT-110, TT-120 |
+| C2-Q7 | **FU in the allocation of three L1 records (CR-C2-04).** L1-AER-900 asks the FU requirements to show that the landing gear moves no mass property, and L1-AER-260 v2 and -270 v2 make fuel remaining a condition of a landing and a contact at exhaustion a crash, which DYN can only classify with FU's fuel availability (CR-B3-39 already sends I-03 to the ground contact function). All three are allocated without FU (B3: "allocations do not change"). Add FU to their allocation? | **Yes, approve CR-C2-04.** The trace then shows the FU children (L2-AER-FU-310, -320) under parents that are allocated to FU, and FUNCTIONAL_ANALYSIS §6.2 shows the FU share. If the owner declines, L2-AER-FU-310 keeps L1-AER-210 and -220 as its parents, and L2-AER-FU-320 becomes Derived, with a DD recording that DYN's contact classification needs FU's availability. | L1-AER-260, -270, -900; FUNCTIONAL_ANALYSIS §6.2; L2-AER-FU-310, -320 |
+
+**Answered earlier (for the record):** C2-Q1 varying inertia (D65, DD-120); C2-Q2 resultant consumption form (D65, DD-110); C2-Q3 per-step data for the fuel integral (D65); C2-Q4 reject an out-of-range initial fuel (D65, DD-140); C2-Q5 #59 (FU share closed by D65; the autoflight behaviour answered by D68); C2-Q6 masses 1000 kg and 500 kg (D65), coefficients and hover endurance from the endurance at maximum speed (D66).
 
 ## 3. Change requests
 
 ### 3.1 Against L1 (baselined; proposed, not applied)
 
-Every L1 record allocated to FU can be satisfied as written. The requests below are editorial.
-
 | ID | Against | Requested change | Reason | Recommendation |
 | --- | --- | --- | --- | --- |
-| CR-C2-01 | L1-AER-100 rationale | After "The consumption parameters belong to FU (L1-AER-160, -170)", add: "They may be common to the effector set rather than one set per effector (L2-AER-FU-060)." | The statement says "each effector … its fuel consumption parameters", which suggests one set per effector. Under the resultant form (C2-Q2) the two coefficients are shared by the effector set. The statement still holds, because "only by" closes the list and does not require each kind to be present, but a G4 reviewer could read it otherwise. | Apply with the answer to C2-Q2 if the owner accepts the resultant form; withdraw if the owner chooses per-effector charging. Editorial: no requirement changes meaning. |
-| CR-C2-02 | L1-AER-190 rationale (conditional) | "The tolerance covers the numerical integration only" → "The tolerance covers the numerical integration and the sampling of the independent check." | Needed only if the owner chooses integration of the output samples in C2-Q3. | Not needed under the recommended answer to C2-Q3. |
+| CR-C2-01 | L1-AER-100 rationale | — | — | Applied (D65). |
+| CR-C2-02 | L1-AER-190 rationale | — | — | Withdrawn (D65). |
+| CR-C2-04 | L1-AER-260 v2, L1-AER-270 v2, L1-AER-900 (field `Allocated to`); FUNCTIONAL_ANALYSIS §6.2 rows | L1-AER-260: "DYN, TM" → "DYN, TM, FU". L1-AER-270: "DYN, TM" → "DYN, TM, FU". L1-AER-900: "DYN" → "DYN, FU". Add the children-must-show sentence to L1-AER-260 and -270: "(Inspection) the fuel availability that the effectors use is the one the ground contact model uses." Version + 1 (on top of the B3 versions). FA §6.2: tick FU in the three rows; FU count 23 → 26. | L1-AER-900's rationale already names the FU requirements; the "fuel remaining" and "at fuel exhaustion" conditions of CR-B3-12 and -13 need FU's fuel availability (D68, D73 B3-3; I-03 to F-AER-12 by CR-B3-39). See C2-Q7. | Approve with the B3 records. |
 
 ### 3.2 Against a fixed specification
 
 | ID | Against | Requested change | Reason | Recommendation |
 | --- | --- | --- | --- | --- |
-| CR-C2-03 | GLOSSARY *Fuel state* | "below the low-fuel threshold `[P-FU-020]`" → "below the fraction `[P-FU-020]` of `[P-FU-010]`". | [P-FU-020] is a fraction, not a mass (L1-AER-570, CV-720). | Editorial; apply at the next glossary merge. |
+| CR-C2-03 | GLOSSARY *Fuel state* | — | — | Applied (D65). |
+| CR-C2-05 | GLOSSARY *Consumption rate*, *Consumption relationship*, *Fuel availability*, *Initial-condition error*, *Dry-mass distribution, fuel-mass distribution*; new term *Exhaustion step* | As in `glossary_proposals.md` §2 and §1. | DD-C3-05 (FU charges the resultant EF computes), G2-F10 (exhaustion step), D68 and CR-B3-39 (availability to the ground contact model), G2-F11 and G2-F17 (error item), DD-C2-07 and L1-AER-900 (distributions, gear). | Editorial; apply at the I1 glossary merge. |
 
-### 3.3 Notes on L1 and the functional analysis (no change request)
+### 3.3 Notes on L1, the functional analysis and other drafts (no change request)
 
 | ID | Note | Proposed action |
 | --- | --- | --- |
-| N-C2-01 | L1-AER-360 rationale: "C2 confirms the form." Confirmed (L2-AER-FU-290), and the attitude-holding and regulation consumption that FUNCTIONAL_ANALYSIS §7.3 asked C2 to add is the margin [P-FU-100]. | I1 adds [P-FU-100] to the FUNCTIONAL_ANALYSIS §7.3 rule: [P-FU-010] ≥ [P-FU-030] · (exp((1 + [P-FU-100]) · [P-FU-040] · [P-DYN-010] · [P-SYS-280]) − 1). |
-| N-C2-02 | L1-AER-210 rationale says FU defines the mass distribution; L1-AER-220 says MS-DYN states the shape and the distribution, with the dimensions as DYN parameters (C1). C2 reads them together: FU requires the distributions (centred, symmetric, uniform fuel depletion: L2-AER-FU-160, -190) and C1 states them in MS-DYN (IN-C2-13). | Integration (I1) confirms with C1. |
-| N-C2-03 | L1-AER-580 TBD/TBR "#59, G2 (C2, C5)": the C2 share is closed by L2-AER-FU-230 (C2-Q5). | Update TT-580 to "C5 only" once the owner agrees. |
-| N-C2-04 | The subject of the FU statements is "the FU subsystem", not "the fuel and mass-properties subsystem": the full name contains "and", and the lint raises COMPOUND on every record. *FU subsystem* is proposed for the glossary. Other agents may meet the same issue with their subsystem names. | Orchestrator: keep, or allow the full name and accept the warning. |
-| N-C2-05 | Expected check results after assembly. lint: 0 errors, 14 COMPOUND warnings on the FU section (judged in §5). Trace: each of the 22 FU-allocated L1 records has at least one child (checked on a trial assembly in a scratch copy). param_check: PARAM-MISSING for P-FU-070, -080, -090, -100 until they are merged, then four PARAM-TBD warnings until the register rows of `param_proposals.md` §3 are added. | Orchestrator merges the parameters and the register rows. |
-| N-C2-06 | Several FU tests read outputs that the operational data do not carry, because L1-AER-640 closes its list: the centre of gravity, the inertia tensor and the fuel availability. C2 did not ask to add them to the operational data; the tests read them through the TST recording of IN-C2-30. | TST plan extension; or a CR against L1-AER-640 if the owner wants them in the operational data. |
+| N-C2-01 | FUNCTIONAL_ANALYSIS §7.3 rule: add the margin [P-FU-100] and "from a takeoff" (CR-B3-41 does the second). | I1, with CR-B3-41. |
+| N-C2-02 | The mass distributions: closed by G2-F16 (C2 owns the derivation; fuel volume = body shape, DD-C2-07). | Closed. |
+| N-C2-03 | TT-580: rewrite as the C5 annunciation item (B3 impact list §6). | I1, with B3. |
+| N-C2-04 | *FU subsystem* as the subject: merged in the glossary. | Closed. |
+| N-C2-05 | Expected checks after assembly: lint 0 errors, 18 COMPOUND warnings on FU (each judged, §5); trace: NO-PARENT for L1-AER-900 and -940 until the B3 records are merged, then none; param_check: PARAM-UNUSED for P-SYS-290 (expected, D72 Q4). | Orchestrator. |
+| N-C2-06 | Several FU tests read outputs that the operational data do not carry (centre of gravity, inertia, fuel availability, per-step values). They use the TST recording of IN-C2-30. | TST plan extension. |
+| N-C2-07 | **L2-AER-FU-290 criterion 2 is a long run.** D72 rules out long *credibility checks*. The simulated hover from a takeoff to exhaustion (about 47 h) is the performance test that L1-AER-360 v2 asks its children to show, not a credibility check, so C2 keeps it. If the owner wants no run of that length at all, the alternative is an analysis: the per-step fuel accounting checked over a short hold (C-8) plus the closed form. | Owner informed; no change unless asked. |
+| N-C2-08 | **L2-AER-EF-140** still gives FU "the effector outputs … with the control force and the control moment". FU uses only the resultant (L2-AER-FU-070 v2). | C3 may drop the effector outputs from L2-AER-EF-140 at I1 (editorial, IN-C2-21). |
+| N-C2-09 | B3 impact list §2 suggested adding the fuel availability for DYN to L2-AER-FU-120. C2 made it a separate record, L2-AER-FU-320, because it crosses I-03, not I-04, and has different parents. | Information for I1. |
+| N-C2-10 | B3's P-SYS-280 note ("about 0.7 s of climb and one gear transit") and P-FU-100 description (the takeoff) agree with L2-AER-FU-290 v2: the climb lasts about 0.7 s, and the gear transit is flown at the hover height, inside the hold. | None. |
 
-## 4. Proposed design decisions (for `registers/DECISIONS.md`)
+## 4. Design decisions
 
-These are choices inside parented records, as B1 recorded DD-030 and DD-040; no FU record is Derived. Provisional IDs DD-C2-0n; the orchestrator assigns the DD-nnn numbers.
+DD-C2-01 to -04 are accepted as DD-110 to DD-140 (D65). The rework proposes three more. The orchestrator assigns the DD-nnn numbers.
 
 | ID | Decision | Alternatives considered | Rationale | Requirements |
 | --- | --- | --- | --- | --- |
-| DD-C2-01 | The consumption rate is [P-FU-040] times the magnitude of the resultant control force plus [P-FU-050] times the magnitude of the resultant control moment about the centre of gravity (Euclidean norms). | (a) Charge each effector on its own output, with per-effector coefficients. (b) Per-body-axis absolute values of the resultant components. (c) Add an idle flow at zero output. | Independent of the effector layout; both terms apply whatever the layout; the hover endurance has a closed form; zero at zero output, which keeps the free-fall and torque-free checks exact; frame-invariant, unlike (b). (c) would add a sixth parameter kind (L1-AER-100) and break the zero-flow checks. Cost: opposing effectors use no fuel (C2-Q2). | L2-AER-FU-040, -060, -290 |
-| DD-C2-02 | The fuel depletes uniformly over a fixed fuel volume centred on the centre of gravity and symmetric about the body axes, so the inertia tensor is the dry-mass tensor plus the full-fuel tensor scaled by the ratio of remaining fuel to capacity. | (a) A constant inertia, the fuel as a point mass at the centre of gravity. (b) A tank that drains from one side, which moves the centre of gravity (excluded by L0-CON-130). (c) A non-linear depletion law. | Keeps the centre of gravity fixed and the axes principal at each fuel state (L0-CON-130, D61) while the inertia follows the mass; linear, so it is simple to verify and to budget; (a) is its special case [P-FU-080] = 0 (C2-Q1). | L2-AER-FU-160, -170, -180, -190 |
-| DD-C2-03 | The fuel availability of a step follows the remaining fuel at the start of the step, and in the step that ends at fuel exhaustion the fuel mass flow is limited to the remaining fuel divided by the step. | (a) Scale down the effector outputs in the last step so that they use exactly the fuel left. (b) Let the fuel go negative within one step and clamp it at the next. | Keeps the remaining fuel at or above zero, makes the fuel-mass integral exact and keeps the effector model free of fuel bookkeeping. (a) moves fuel logic into EF; (b) breaks L2-AER-FU-090 and the L1-AER-190 check. The cost, one step in which the effectors produce slightly more output than the fuel used pays for, is at most one step of output, below any test tolerance. | L2-AER-FU-050, -200 |
-| DD-C2-04 | An initial fuel mass outside the range zero to [P-FU-010] is rejected with an initial-condition error; it is not clamped. | Clamp to the range; accept any value. | The run stays what the test procedure asked for (D59); clamping would hide an error in the procedure (C2-Q4). | L2-AER-FU-030 |
+| DD-C2-05 | At the start of each run FU checks that the inertia tensors `[P-FU-070]` and `[P-FU-080]` of the vehicle parameter set match, within `[P-FU-090]`, the values that the MS-DYN mass-properties model derives from that set's body dimensions and masses, and rejects the set otherwise (G2-F17). | (a) FU derives the tensors at run start and ignores the set's values. (b) Check the database values only (the G2 state). | The run uses only values its parameter set states, and the parameter set named in the operational data is what the run used (L1-AER-650); consistent with the rejection of DD-140. (a) would run values that no parameter set records; (b) lets a campaign run a body that no mass distribution gives. | L2-AER-FU-330 |
+| DD-C2-06 | **Revises DD-130.** The exhaustion step is the step whose remaining fuel at its start is above zero and at most the fuel `fl(q·Δt)` it would use at its consumption rate. In it the flow is the fuel left divided by the step, and the remaining fuel at its end is set to zero. In every other step the remaining fuel is reduced by the same `fl(q·Δt)` used in the comparison (G2-F10). | (a) Compute `m_f − ṁ_f·Δt` in every step (the G2 state: residuals of either sign). (b) Clamp a negative result to zero (leaves positive residuals, so one more step of full output on almost no fuel). | Exactness at exhaustion does not depend on floating-point rounding; no step can end below zero; the fuel-mass integral holds within rounding; the effector model stays free of fuel bookkeeping, as DD-130 intended. | L2-AER-FU-050, -090, -200, -340 |
+| DD-C2-07 | **Refines DD-120.** The fuel volume is the body shape: the fuel, like the dry mass, is uniform over the capsule of the MS-DYN vehicle geometry, with its density falling in proportion to the remaining fuel mass. Hence `[P-FU-080] = [P-FU-070]·[P-FU-010]/[P-FU-030]` (G2-F16). | (a) A smaller fuel volume centred on the centre of gravity, with its own dimension parameters. (b) Fuel as a point mass at the centre of gravity (a constant inertia, excluded by D65). | No new parameter; centred and symmetric by construction; the inertia follows the shape when the provisional shape changes (L0-CON-140); C3 already uses the resulting full-fuel inertia for the moment budget. (a) adds parameters for no effect that the requirements use. | L2-AER-FU-160, -170, -190, -330 |
 
 ## 5. Self-check (METHODOLOGY §13.1 and §13.2)
 
 **§13.1, per record.**
 
-- One "shall" each, subject the FU subsystem, EARS patterns: ubiquitous (most records), event-driven (L2-AER-FU-010, -020: "When a run starts"), unwanted behaviour (L2-AER-FU-030: "If … then"). The lint reports 0 errors on 29 records.
-- No number in a statement; each quantity is a parameter ID listed under Parameters. "Zero" and "one" appear only as definitional constants (zero fuel, zero products of inertia, "minus one" in the exponential budget of L2-AER-FU-290).
-- No vague terms, escape clauses, open lists or absolutes (lint clean). No TIMING or KEYWORD warning.
-- COMPOUND warnings (14), each judged one thought (D30):
-  - closed lists of one object (4): L2-AER-FU-010 (the FU parameters), -120 (the three mass properties), -260 (two signals), -280 (the five MS-DYN models);
-  - one relationship with two operands (6): L2-AER-FU-040 (the two terms of one sum), -050 ("the smaller of" two values), -060 (the two consumption sets), -170 (the two tensors of one sum), -190 (the shape and the distributions behind one derivation), -290 (one inequality);
-  - a pair that is one constraint (4): L2-AER-FU-130 (the two kinds of boundary output), -160 (both distributions centred), -200 (the two values of one signal), -270 (the inputs of one function).
+- One "shall" each; subject the FU subsystem; EARS patterns: ubiquitous (most records), event-driven (L2-AER-FU-010, -020: "When a run starts"), unwanted behaviour (L2-AER-FU-030, -330: "If … then"). Lint: 0 errors on 34 records.
+- No number in a statement; each quantity is a parameter ID under Parameters. "Zero" and "one" are definitional constants only.
+- No vague terms, escape clauses, open lists or absolutes (lint clean); no TIMING or KEYWORD warning.
+- COMPOUND warnings (18), each judged one thought (D30):
+  - closed lists of one object (6): L2-AER-FU-010 (the FU parameters), -120 (two mass properties), -260 (two signals), -270 (the inputs of one function), -280 (the five MS-DYN models), -330 (the inputs of one derivation);
+  - one relationship with its operands (8): -040 (the two terms of one sum), -050 (the flow in a step, with its one exception, the exhaustion step), -060 (the two consumption sets), -070 (the resultant pair), -170 (the two tensors of one sum), -190 (the shape and the distributions behind one derivation), -290 (one inequality), -300 (both resultants zero);
+  - a pair that is one constraint (4): -130 (the two kinds of boundary output), -160 (both distributions centred), -200 (the two values of one signal), -330 ("or" over the two tensors of one check).
   None forms a tree of cases.
-- Solution-free: no algorithm, data structure or code. The consumption form, the depletion model and the exhaustion-step limit are model physics (METHODOLOGY §7: for a simulation the physics is the requirement), recorded as DD proposals with alternatives. The equations are in MS-DYN through IN-C2-10 to -16, not in the statements.
-- Terms: glossary terms, or proposals in `glossary_proposals.md` (FU subsystem, Dynamics subsystem, Vehicle-model boundary, Consumption relationship, Consumption rate, Fuel availability, Fuel capacity, Initial-condition error, Inertia tensor, Dry-mass and fuel-mass distribution). Axes and signs per CONVENTIONS (CV-160, CV-340, CV-350).
-- Rationale with a "Sufficiency" argument per L1 parent on each record; parent, source, verification method, procedure ID and success criteria on each record.
+- Solution-free: no algorithm, data structure or code in a statement. The consumption form, the depletion model, the exhaustion step and the run-start check are model physics or run set-up, recorded as DDs with alternatives; the equations are in `ms_dyn_s6_s7_fu.md`, not in the statements.
+- Terms: glossary terms, the B3 terms (*gear position*, *effectors off*, *on the ground*), or the proposals of `glossary_proposals.md` (*exhaustion step*). Axes and signs per CONVENTIONS (CV-160, CV-340, CV-350).
+- A rationale with a "Sufficiency" argument per L1 parent in each record; parent, source, verification method, procedure ID and success criteria in each record; Parameters and TBD/TBR fields follow the G2-F20 rule.
 - Criticality Not assessed; each TBD or TBR names an owner and a closure point.
 
 **§13.2, the set.**
 
-- Each L1 record allocated to FU has at least one FU child, with the sufficiency argument in the first child and "see …" in the others (coverage table, §1).
-- Types considered: functional, interface, constraint, model fidelity, performance and documentation are present; failure handling is deferred (tailoring), and fuel exhaustion is treated as nominal behaviour throughout.
-- Interfaces: each FU interface has an FU interface record and a home (MS-DYN, the boundary ICD, ICD-FCP, ICD-AER-TST); the other side is in `interface_needs.md`.
-- No derived records. The DD proposals are reviewed with the set.
-- No conflict found with L1. Possible overlaps with C1 (who states the mass distributions, N-C2-02; the DYN glossary term, IN-C2-18), C3 (consumption parameters stay FU's, IN-C2-22) and C8 (alert priority at exhaustion, IN-C2-43) are listed for I1.
-- Manual sections affected: the Vehicle Operating Manual fuel limitations and the LOW FUEL and FUEL EXHAUSTED procedures (written after the requirements baseline, L1-AER-840).
+- Each L1 record allocated to FU, L1-AER-940 included, has at least one FU child, with the sufficiency argument in the first child and "see …" in the others (coverage table, §1). The three records of CR-C2-04 have their FU child ready.
+- Types: functional, interface, constraint, model fidelity, performance and documentation are present. Failure handling is deferred (tailoring), and fuel exhaustion is nominal behaviour throughout; in flight its consequence, a crash at contact, is DYN's classification (D68).
+- Interfaces: each FU interface has an FU record and a home (MS-DYN, the boundary ICD, ICD-FCP, ICD-AER-TST); the other side is in `interface_needs.md`. I-04 now matches DYN (G2-F05); I-01 matches EF (DD-C3-05); I-03 goes to EF and DYN.
+- No derived records.
+- D69 consistency: no FU record assumes a run ends at the first ground contact or starts airborne; zero flow with the effectors off follows from DD-110 with no new term; the hover endurance counts from a takeoff, and the inequality still closes (490.35 kg of 500 kg).
+- Manual sections affected (written after the requirements baseline, L1-AER-840): the Vehicle Operating Manual fuel limitations, the LOW FUEL and FUEL EXHAUSTED procedures, and the fuel on the ground (none used with the effectors off).

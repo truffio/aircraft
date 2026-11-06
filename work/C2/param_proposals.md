@@ -1,137 +1,51 @@
-# C2 — Parameter proposals (FU)
+# C2 — Parameter proposals (FU), rework for G2 and D69
 
-Parameters referenced by `work/C2/L2_FU.md`. The field layout follows `parameters/PARAMETERS.yaml`. A value is `null` while TBD; a proposed value is marked TBR. Owner Martin for each. Units are SI (CV-720); no FU parameter is crew-facing.
+The first C2 proposals (P-FU-010 to -100) were merged into `parameters/PARAMETERS.yaml` with the owner's values (D65, D66). This file now holds only the **changes** that the C2 rework proposes to the merged entries (§1), the register rows (§2) and the parameters cited but not owned (§3). Field layout as in `parameters/PARAMETERS.yaml`; owner Martin for each; SI units (CV-720); no FU parameter is crew-facing. **No new FU parameter is proposed**, and no ID is withdrawn: the fuel volume is the body shape (DD-C2-07), so G2-F16 needs no fuel-volume dimension.
 
-**IDs.** P-FU-010 to -060 exist and are reused with the same meaning (§1). P-FU-070 to -100 are new (§2). No FU ID has been withdrawn, so none is reused. The register rows TT-110, TT-120 and TT-130 cover P-FU-010 to -060; §3 proposes rows for the new IDs.
+The B3 package already changes the `P-SYS-280` note and the `P-FU-100` description for the takeoff (`work/B3/param_proposals.md`); C2 agrees with both and does not repeat them.
 
-**Ranges.** The parameter database has no range field, so each range is in the `note`. FU relies on these ranges: L2-AER-FU-040 and -100 (the consumption rate is at least zero), L2-AER-FU-170 (the ratio to [P-FU-010]) and L2-AER-FU-190 (the tensors are physical). A future `param_check.py` range check could read them (suggestion for the orchestrator, not a request).
+## 1. Changes to merged parameters
 
-## 1. Existing parameters: proposed updates
-
-The changes are to the description, the value, the status, the source and the note. The ID, name and unit are unchanged, except that the unit of P-FU-040 and P-FU-050 is confirmed as that of one linear coefficient each (DD-110).
-
-**Proposed value set (TBR).** B1 left P-FU-010, -030, -040, -050 and -060 TBD for C2 to set at G2 (TT-110, TT-120). C2 proposes one coherent set that closes the fuel budget of L2-AER-FU-290 for an assumed hover endurance [P-SYS-280] of 3600 s, which is the owner's to set (D47). With [P-FU-030] = 1000 kg, [P-FU-010] = 500 kg, [P-FU-100] = 0.05 and [P-DYN-010] = 9.80665 m/s², the budget needs [P-FU-040] ≤ ln(1.5) / (1.05 × 9.80665 × 3600) = 1.0938e-5 kg/(N·s). With [P-FU-040] = 1.09e-5 kg/(N·s), the capacity needed is 1000 × (exp(1.05 × 1.09e-5 × 9.80665 × 3600) − 1) = 497.9 kg ≤ 500 kg, and the closed-form still-air endurance is ln(1.5) / (1.09e-5 × 9.80665) = 3793 s. The hover fuel mass flow at maximum mass is then 0.160 kg/s. The masses are a placeholder scale for a small fictional craft; I1 rescales them with the effector authority budget (P-SYS-400 to -420) if needed. If the owner sets another [P-SYS-280], keep [P-FU-030] and [P-FU-010] and recompute [P-FU-040] from the same inequality (owner question C2-Q6).
+Only the fields shown change.
 
 ```yaml
 parameters:
-  # --- FU (existing IDs, updated) ---
-  - id: P-FU-010
-    name: Usable fuel mass at full capacity
-    description: Mass of usable fuel when the tank is full (fuel capacity). The largest valid initial fuel mass of a run (L1-AER-150, L2-AER-FU-030) and the initial fuel of the reference mission. The maximum vehicle mass is P-FU-030 + P-FU-010. Sized by the fuel budget of L2-AER-FU-290.
-    unit: kg
-    value: 500
-    tolerance: null
-    note: 'Range: greater than zero. Proposed with P-FU-030 and P-FU-040 as one set that meets L2-AER-FU-290 for P-SYS-280 = 3600 s (assumed; D47).'
-    status: TBR
-    source: CONOPS §4.5, SC-110; L1-AER-150, -360; L2-AER-FU-290; C2 proposal
-    owner: Martin
-  - id: P-FU-020
-    name: Low-fuel threshold
-    description: Fraction of the fuel capacity P-FU-010 below which the fuel state indicates low fuel and the low-fuel alert is annunciated (L1-AER-570, L2-AER-FU-220).
-    unit: '1'
-    value: 0.1
-    tolerance: null
-    note: 'Range: greater than zero and less than one.'
-    status: TBR
-    source: CONOPS §4.5; L1-AER-570; B1 proposal (D48)
-    owner: Martin
-  - id: P-FU-030
-    name: Dry mass
-    description: Vehicle mass with no fuel. The maximum vehicle mass is P-FU-030 + P-FU-010; the vehicle mass at fuel exhaustion is P-FU-030.
-    unit: kg
-    value: 1000
-    tolerance: null
-    note: 'Range: greater than zero. Placeholder scale; see the proposed value set in work/C2/param_proposals.md §1.'
-    status: TBR
-    source: L1-AER-180, -360; FUNCTIONAL_ANALYSIS §7.3; L2-AER-FU-110; C2 proposal
-    owner: Martin
   - id: P-FU-040
-    name: Translational fuel consumption coefficient
-    description: Coefficient k_t of the translational consumption relationship of MS-DYN (DD-110) - fuel mass flow per newton of the magnitude of the resultant control force. One coefficient, common to the effector set.
-    unit: kg/(N*s)
-    value: 1.09e-5
-    tolerance: null
-    note: 'Range: zero or more (zero switches off translational consumption, for model checks). Value from the fuel budget of L2-AER-FU-290 with P-SYS-280 = 3600 s (assumed). If the owner chooses per-effector consumption (C2-Q2), this becomes one coefficient per effector.'
-    status: TBR
-    source: L1-AER-170, -360; L0-CON-120; L2-AER-FU-040, -290; C2 proposal
-    owner: Martin
+    note: 'Range: zero or more (zero switches off translational consumption, for model checks). Derived from the anchor P-SYS-290 (D66, D72 Q4) by the MS-DYN fuel model, parameter derivation (work/C2/ms_dyn_s6_s7_fu.md §7.2.4): 8 h at P-SYS-230 at sea level in still air, from full fuel, with the drag of P-DYN-100 and the masses P-FU-010, P-FU-030; k_t = (asinh(m_max g/D) - asinh(m_dry g/D)) / (g P-SYS-290) = 2.347e-7, rounded down so that the endurance at speed is at least 8 h (8.02 h). Re-derived, with P-FU-050 and then P-SYS-280, whenever P-DYN-100, P-SYS-230, P-FU-010 or P-FU-030 changes (TT-110, TT-750, TT-800).'
   - id: P-FU-050
-    name: Rotational fuel consumption coefficient
-    description: Coefficient k_r of the rotational consumption relationship of MS-DYN (DD-110) - fuel mass flow per newton metre of the magnitude of the resultant control moment about the centre of gravity. One coefficient, common to the effector set.
-    unit: kg/(N*m*s)
-    value: 1.09e-5
-    tolerance: null
-    note: 'Range: zero or more. Proposed equal in number to P-FU-040, so that a control moment of 1 N*m costs as much fuel as a control force of 1 N; rotation is then a small share of the reference-mission fuel. If the owner chooses per-effector consumption (C2-Q2), this becomes one coefficient per effector.'
-    status: TBR
-    source: L1-AER-170; L0-CON-120; L2-AER-FU-040; C2 proposal
-    owner: Martin
+    note: 'Range: zero or more. Equal in number to P-FU-040 (D66), so that a control moment of 1 N*m costs as much fuel as a control force of 1 N; rotation is then a small share of the reference-mission fuel. Re-derived with P-FU-040.'
   - id: P-FU-060
-    name: Fuel mass accounting tolerance
-    description: Largest difference between the remaining fuel mass of a simulation step and the initial fuel mass minus the sum, over the preceding steps, of the fuel mass flow times P-SYS-300 (L2-AER-FU-080). Covers the floating-point arithmetic of the model and of the independent check only. Also the tolerance on equal fuel and mass values in the FU tests.
-    unit: kg
-    value: 1.0e-6
-    tolerance: null
-    note: 'Range: greater than zero. About 2e-9 of P-FU-010, ample for double-precision sums over a reference mission of a few hours at P-SYS-300 = 0.01 s. Valid only if the check uses the flow of each simulation step (C2-Q3, IN-C2-30); an integration of output samples at P-TM-010 needs a larger value, set from a prototype run.'
-    status: TBR
-    source: L1-AER-190; METHODOLOGY §10.3; L2-AER-FU-080; C2 proposal
-    owner: Martin
-```
-
-## 2. New parameters
-
-```yaml
-parameters:
-  # --- FU (new) ---
+    note: 'Range: greater than zero. About 2e-9 of P-FU-010, ample for double-precision per-step sums over a reference mission of up to P-SYS-280 at P-SYS-300 = 0.01 s, the rest on the ground included (D69). Setting the remaining fuel to zero at the end of the exhaustion step (L2-AER-FU-340) differs from the sum by rounding only. The check uses the flow of each simulation step (D65, IN-C2-30).'
   - id: P-FU-070
-    name: Dry-mass principal moments of inertia
-    description: Principal moments of inertia (Ixx, Iyy, Izz) of the dry mass about the centre of gravity, in the body axes, three components. Products of inertia are zero (D61; CV-350 sign convention). The inertia tensor at fuel exhaustion (L2-AER-FU-170). Derived in MS-DYN from the body shape and the dry-mass distribution with P-FU-030 (L2-AER-FU-190); not set independently.
-    unit: kg*m^2
-    value: null
-    tolerance: null
-    note: 'Range: each component greater than zero, and each at most the sum of the other two (triangle inequality of a physical body). Value TBD until C1 states the body shape and the distributions in MS-DYN.'
-    status: TBD
-    source: L1-AER-220; L0-CON-140; L2-AER-FU-170, -180, -190; MS-DYN (C1)
-    owner: Martin
+    description: Principal moments of inertia (Ixx, Iyy, Izz) of the dry mass about the centre of gravity, in the body axes, three components. Products of inertia are zero (D61; CV-350 sign convention). The inertia tensor at fuel exhaustion (L2-AER-FU-170). Derived in the MS-DYN mass-properties model from the body dimensions P-DYN-020, P-DYN-030 and P-FU-030, with the dry mass uniform over the capsule (L2-AER-FU-190, DD-C2-07); not set independently, and checked against each vehicle parameter set at run start (L2-AER-FU-330).
+    value: [1900.0, 10650.0, 10650.0]
+    note: 'Range: each component greater than zero, and each at most the sum of the other two (triangle inequality of a physical body). 12 m x 4 m capsule, 1000 kg uniform: the cylinder holds 0.75 of the mass, each hemisphere 0.125 (MS-DYN §6 reference derivation; rederived by the G2 inspector). Re-derived when P-DYN-020, P-DYN-030 or P-FU-030 changes.'
+    status: TBR
+    source: L1-AER-220; L0-CON-140; L2-AER-FU-170, -180, -190, -330; MS-DYN mass-properties model (C2 content, work/C2/ms_dyn_s6_s7_fu.md §6.3); DD-120, DD-C2-07
   - id: P-FU-080
-    name: Full-fuel principal moments of inertia
-    description: Principal moments of inertia (Ixx, Iyy, Izz) of the fuel at full capacity P-FU-010 about the centre of gravity, in the body axes, three components. Products of inertia are zero. The fuel share of the inertia tensor is this value times the ratio of the remaining fuel mass to P-FU-010 (L2-AER-FU-170; uniform depletion, DD-120). Derived in MS-DYN from the fuel-mass distribution with P-FU-010 (L2-AER-FU-190); not set independently.
-    unit: kg*m^2
-    value: null
-    tolerance: null
-    note: 'Range: each component zero or more; all three zero gives an inertia that does not change with fuel (the alternative of C2-Q1). If MS-DYN gives the fuel the same uniform distribution as the dry mass (IN-C2-13), P-FU-080 = P-FU-070 x P-FU-010 / P-FU-030.'
-    status: TBD
-    source: L1-AER-220; L0-CON-140; L2-AER-FU-170, -180, -190; MS-DYN (C1, C2)
-    owner: Martin
+    description: Principal moments of inertia (Ixx, Iyy, Izz) of the fuel at full capacity P-FU-010 about the centre of gravity, in the body axes, three components. Products of inertia are zero. The fuel share of the inertia tensor is this value times the ratio of the remaining fuel mass to P-FU-010 (L2-AER-FU-170; uniform depletion, DD-120). Derived in the MS-DYN mass-properties model from P-DYN-020, P-DYN-030 and P-FU-010, with the fuel uniform over the capsule (L2-AER-FU-190, DD-C2-07); checked against each vehicle parameter set at run start (L2-AER-FU-330).
+    value: [950.0, 5325.0, 5325.0]
+    note: 'Range: each component zero or more. The owner chose an inertia that changes with fuel (D65). With the fuel volume equal to the body shape (DD-C2-07), P-FU-080 = P-FU-070 x P-FU-010 / P-FU-030. Full-fuel tensor P-FU-070 + P-FU-080 = (2850, 15975, 15975) kg*m^2, used by the moment budget P-SYS-420 (C3).'
+    status: TBR
+    source: L1-AER-220; L0-CON-140; L2-AER-FU-170, -180, -190, -330; MS-DYN mass-properties model (C2 content, work/C2/ms_dyn_s6_s7_fu.md §6.3); DD-120, DD-C2-07
   - id: P-FU-090
-    name: FU computation agreement tolerance
-    description: Largest relative difference between an FU output (fuel mass flow, principal moment of inertia) and its independent computation from the recorded inputs, in the FU analyses and tests (AN-FU-040, -050, -170; DM-FU-010). Floating-point agreement only.
-    unit: '1'
-    value: 1.0e-9
-    tolerance: null
-    note: 'Range: greater than zero. A verification tolerance, kept in the database like P-FU-060 because the requirements cite it.'
-    status: TBR
-    source: L2-AER-FU-010, -040, -050, -170; C2 proposal
-    owner: Martin
-  - id: P-FU-100
-    name: Hover endurance consumption margin
-    description: Fraction by which the fuel mass flow in a still-air hold may exceed the translational term that balances the weight, used to size the fuel capacity P-FU-010 (L2-AER-FU-290). Covers the regulation of the hold, the attitude-holding moments and the transient at the start of the hold (FUNCTIONAL_ANALYSIS §7.3).
-    unit: '1'
-    value: 0.05
-    tolerance: null
-    note: 'Range: zero or more. Confirmed or resized at G2 from a prototype hover run (FC and EF).'
-    status: TBR
-    source: L1-AER-360; FUNCTIONAL_ANALYSIS §7.3; L2-AER-FU-290; C2 proposal
-    owner: Martin
+    description: Largest relative difference between an FU output (fuel mass flow, principal moment of inertia) and its independent computation from the recorded inputs, in the FU analyses and tests (AN-FU-040, -050, -170; DM-FU-010), and between a principal moment of P-FU-070 or P-FU-080 in a vehicle parameter set and its value derived from that set (L2-AER-FU-330). Floating-point agreement only.
+    source: L2-AER-FU-010, -040, -050, -170, -330; C2 proposal; D65
+  - id: P-SYS-290
+    description: Time, from full fuel at maximum mass, during which the vehicle sustains the maximum horizontal speed P-SYS-230 at sea level in still air before fuel exhaustion. The anchor from which the consumption coefficients P-FU-040 and P-FU-050 and the hover endurance P-SYS-280 are derived (D66, MS-DYN fuel model, parameter derivation); not a requirement to verify (D72), so no requirement cites it and PARAM-UNUSED is expected. A change of P-DYN-100 re-derives them. 8 h.
 ```
 
-## 3. Register rows proposed for `registers/TBD_TBR.md`
+## 2. Register rows (`registers/TBD_TBR.md`)
 
-| ID (orchestrator assigns) | Item | Type | Location | Owner | Closure date |
-| --- | --- | --- | --- | --- | --- |
-| TT-new-1 | Dry-mass and full-fuel principal moments of inertia, derived in MS-DYN | TBD | P-FU-070, P-FU-080 | Martin | G2 (C1, C2) |
-| TT-new-2 | FU computation agreement tolerance 1e-9 and hover consumption margin 0.05 | TBR | P-FU-090, P-FU-100 | Martin | G2 (C2) |
-| TT-110, TT-120 (update) | Status TBD → TBR with the C2 value set: dry mass 1000 kg, capacity 500 kg, k_t = k_r = 1.09e-5, accounting tolerance 1e-6 kg | TBR | P-FU-010, P-FU-030, P-FU-040, P-FU-050, P-FU-060 | Martin | G2 (I1, with P-SYS-280) |
+| ID | Change | Reason |
+| --- | --- | --- |
+| TT-770 | Item: "Dry-mass and full-fuel principal moments of inertia, derived in the MS-DYN mass-properties model (C2): (1900, 10650, 10650) and (950, 5325, 5325) kg·m²". Type TBD → **TBR**. Closure: "with the body shape (TT-740, 2026-11-30)". | Values proposed (§1); they follow the shape. |
+| TT-110 | Item: append "; P-FU-040, -050 derived from P-SYS-290 with P-DYN-100 (D66); re-derive with TT-750 and TT-800 (D72 Q4)". | G2-F18: link the derivation chain. |
+| TT-750 | Item: append "; a change re-derives P-FU-040, -050 (TT-110) and P-SYS-280 (TT-800), and P-SYS-580 (TT-860)". | G2-F18; B3 P-SYS-580 note. |
+| TT-800 | Item: append "; set from L2-AER-FU-290 with P-FU-040 (TT-110); re-derived after TT-110". | G2-F18. |
+| TT-580 | As B3 proposes ("Annunciations after fuel exhaustion (D68), C5"). L2-AER-FU-230 no longer cites it. | G2-F13. |
+| New, L2 field copies | None needed: each FU TBD/TBR field cites existing rows (TT-070, -110, -120, -130, -600, -680, -720, -740, -770, -780, -790, -800). The two allocation items of L2-AER-FU-310 and -320 close with CR-C2-04. | — |
 
-## 4. Parameters cited but not owned by FU
+## 3. Parameters cited but not owned by FU
 
-P-SYS-300 (simulation step), P-SYS-120 (crew limit), P-SYS-280 (hover endurance), P-SYS-440 (vehicle acceleration), P-SYS-470 (annunciation latency), P-TM-010 (output sample period) and P-DYN-010 (gravity) are cited by ID only; no change is proposed.
+`P-SYS-300` (simulation step), `P-SYS-480` (control-loop latency, L2-AER-FU-300), `P-DYN-010` (gravity), `P-DYN-020`, `P-DYN-030` (body dimensions, L2-AER-FU-190, -330) and `P-SYS-280` (hover endurance) are cited by ID. The rationales also name `P-SYS-230`, `P-SYS-290`, `P-DYN-100`, `P-DYN-040`, `P-DYN-050`, `P-AF-210`, `P-AF-230`, `P-AF-240` and `P-TM-010`, which no FU statement or criterion uses (G2-F20 rule). No change is proposed to them, except the P-SYS-290 description above.
