@@ -12,7 +12,7 @@ This section is the **effector model** of MS-DYN. **Content owner: C3 (EF).** It
 
 #### 7.1.1 The effector set
 
-The effector set has `n` effectors, `i = 1 … n`. `n` is the number of entries in each of the lists `[P-EF-100]` to `[P-EF-130]`, which have the same length. Each effector is a **force emitter** (DD-C3-01): it pushes along a fixed unit direction through a fixed point of the body.
+The effector set has `n` effectors, `i = 1 … n`. `n` is the number of entries in each of the lists `[P-EF-100]` to `[P-EF-130]`, which have the same length. Each effector is a **force emitter** (DD-150): it pushes along a fixed unit direction through a fixed point of the body.
 
 | Symbol | Meaning | Parameter | Kind (L1-AER-100) | Unit |
 | --- | --- | --- | --- | --- |
@@ -42,7 +42,7 @@ The effector command `c_i` and the effector output `u_i` are both forces in N al
 | Input of step `k` | Symbol | Source | Definition |
 | --- | --- | --- | --- |
 | Effector command of effector `i` | `c_i(k)` | Flight control, across the vehicle-model boundary (L2-AER-EF-400) | The command flight control issues for the control frame that contains step `k` (L2-AER-EF-150). Commands are held for the frame (FUNCTIONAL_ANALYSIS §4.2). |
-| Effector activation state | `s(k) ∈ {on, off}` | Flight control, with the effector commands (DD-C3-04) | As for the commands. Before the first effector commands of a run, `s = off`. |
+| Effector activation state | `s(k) ∈ {on, off}` | Flight control, with the effector commands (DD-180) | As for the commands. Before the first effector commands of a run, `s = off`. |
 | Fuel availability | `φ(k) ∈ {available, not available}` | FU (L2-AER-FU-200) | Available when the remaining fuel mass at the start of step `k` is above zero (DD-130). |
 
 No other quantity enters the effector model: in particular no element of the vehicle state, no wind, no air density, no mass and no other effector's command (L2-AER-EF-040). This is what keeps the effector model free of cross-axis and motion-dependent terms (L1-AER-020; the kinematic terms list §4.5 is unchanged by it).
@@ -60,7 +60,7 @@ u_i(k) = u_i(k−1) + β · ( ĉ_i(k) − u_i(k−1) )               otherwise
 β = 1 − exp( −Δt / τ ),        u_i(−1) = 0
 ```
 
-where `u_i(k−1)` is the output of the previous step, or zero if the previous step had `s = off` or `φ = not available` (the lag restarts from zero; DD-C3-02, DD-C3-04).
+where `u_i(k−1)` is the output of the previous step, or zero if the previous step had `s = off` or `φ = not available` (the lag restarts from zero; DD-160, DD-180).
 
 Properties (each is used by a requirement):
 
@@ -89,7 +89,7 @@ or   w(k) = ( F_c^B(k), M_c^B(k) ) = B · u(k)
 ```
 
 - This is the whole of the control force and control moment: no bias, no interaction term, no other source (L1-AER-080, L2-AER-EF-120; §5.1).
-- **One computation, two users (DD-C3-05).** EF gives `F_c^B(k)` and `M_c^B(k)` to DYN (interface I-02; the equations of motion §4.2, §4.3) and the same values, with the outputs `u_i(k)`, to FU (interface I-01; the consumption relationships of §7.2). The fuel used and the motion therefore come from the same control force and moment (IN-C2-11, L2-AER-EF-130, -140).
+- **One computation, two users (DD-190).** EF gives `F_c^B(k)` and `M_c^B(k)` to DYN (interface I-02; the equations of motion §4.2, §4.3) and the same values, with the outputs `u_i(k)`, to FU (interface I-01; the consumption relationships of §7.2). The fuel used and the motion therefore come from the same control force and moment (IN-C2-11, L2-AER-EF-130, -140).
 - One value per step, held over the step from `t_k` to `t_{k+1}` (§10.2, DD-100).
 - With `s = off` or `φ = not available`, `w(k) = 0`, so the consumption rate of §7.2 is zero: no fuel is used with the effectors off on the ground or after exhaustion (D68, D69).
 
@@ -108,7 +108,7 @@ a convex polytope (a zonotope) in the six-dimensional force-and-moment space. It
 | L2-AER-EF-300 (L1-AER-120) | `(0, 0, −[P-SYS-400], 0, 0, 0) ∈ A` | Linear-programming feasibility: find `u` within limits with `B·u` equal to the wrench |
 | L2-AER-EF-310 (L1-AER-130) | `±[P-SYS-410]` along `x_B` and `y_B`, `+[P-SYS-410]` along `z_B`, other components zero, each in `A` | As above, five cases |
 | L2-AER-EF-320 (L1-AER-140) | `±[P-SYS-420]` about each body axis, other components zero, each in `A` | As above, six cases |
-| L2-AER-EF-330 (L1-AER-310 to -350, -380, -460) | The authority box `X, Y ∈ [−P410, P410]`, `Z ∈ [−P400, P410]`, `M_x, M_y, M_z ∈ [−P420, P420]` is contained in `A` (DD-C3-03) | Feasibility at each of the 64 corners of the box; `A` is convex, so the box is inside it |
+| L2-AER-EF-330 (L1-AER-310 to -350, -380, -460) | The authority box `X, Y ∈ [−P410, P410]`, `Z ∈ [−P400, P410]`, `M_x, M_y, M_z ∈ [−P420, P420]` is contained in `A` (DD-170) | Feasibility at each of the 64 corners of the box; `A` is convex, so the box is inside it |
 
 Because each authority is a pure or a box-shaped demand, flight control can allocate each axis demand with the other components at zero and saturate each axis on its own (L1-AER-020 rationale, L1-AER-380). How it allocates, and its priority rule beyond the box, are FC's (FC1).
 
@@ -132,7 +132,7 @@ Because each authority is a pure or a box-shaped demand, flight control can allo
 
 The upward authority is smaller than the other five, as D46 revised by D72 allows. Oversizing an authority costs no fuel: the consumption is charged on the resultant actually produced (DD-110).
 
-#### 7.1.7 Reference layout (DD-C3-06, TBR)
+#### 7.1.7 Reference layout (DD-200, TBR)
 
 The layout is a design decision, not a requirement. This reference layout meets L2-AER-EF-300 to -330 with the proposed values and is the proposed content of `[P-EF-100]` to `[P-EF-130]`. Six effectors in three pairs, each pair parallel to one body axis and offset across the centre of gravity, each pushing both ways:
 
@@ -171,7 +171,7 @@ The credibility checks C-1 to C-5 run with zero fuel or with the effectors off; 
 
 | Item | Owner | Closure |
 | --- | --- | --- |
-| Command response form: first-order lag (DD-C3-02, C3-Q01) | Martin | G2 |
+| Command response form: first-order lag (DD-160, C3-Q01) | Martin | G2 |
 | Values `[P-EF-010]`, `[P-EF-020]`, `[P-EF-030]`, `[P-EF-100]` to `[P-EF-130]`, TBR | Martin | G2 (I1) |
 | `[P-SYS-420]` re-derived when `[P-FU-070]`, `[P-FU-080]` and the body dimensions are set (TT-770, TT-740) | C2, Martin | I1, 2026-11-30 |
-| Effector activation state and who sets it (DD-C3-04; D69, B3) | Martin, C4, C5 | After B3 approval |
+| Effector activation state and who sets it (DD-180; D69, B3) | Martin, C4, C5 | After B3 approval |

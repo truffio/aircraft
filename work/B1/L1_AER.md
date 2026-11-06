@@ -336,15 +336,16 @@ Statement:     While fuel remains, the Aeronef shall be able to produce a contro
   [P-SYS-400] along the negative body z axis with the other control force and control moment
   components at zero.
 Rationale:     Effector authority budget, weight-bearing direction. Pitch and roll are held at zero
-  (D57, which revises D10), so the negative body z axis points up, so this force holds the vehicle up and accelerates it
-  vertically. Budget (FUNCTIONAL_ANALYSIS §7.1): [P-SYS-400] is at least the maximum vehicle
-  mass times the sum of [P-DYN-010] and [P-SYS-440], plus the drag at the climb vertical speed
-  [P-SYS-240]. The zero side components show the independent control of L0-CON-020. The usable
-  force at low mass is capped by the crew limit (L1-AER-290), not by this record. Children must
-  show (D58): (Analysis) the effector set produces the pure force at maximum mass.
+  (D57, which revises D10), so the negative body z axis points up, so this force holds the vehicle
+  up and accelerates it vertically. Budget (FUNCTIONAL_ANALYSIS §7.1): [P-SYS-400] is at least the
+  maximum vehicle mass times the sum of [P-DYN-010] and [P-SYS-440], plus the vertical drag in a
+  climb at [P-SYS-240] at the largest horizontal airspeed (CR-C3-02). The zero side components show
+  the independent control of L0-CON-020. The usable force at low mass is capped by the crew limit
+  (L1-AER-290), not by this record. Children must show (D58): (Analysis) the effector set produces
+  the pure force at maximum mass.
   Sufficiency: with L1-AER-130 (the other five force directions) and L1-AER-140 (moments), this
-  record gives a pure control force or moment in each of the six degrees of freedom, as
-  L0-CON-020 requires.
+  record gives a pure control force or moment in each of the six degrees of freedom, as L0-CON-020
+  requires.
 Parent(s):     L0-CON-020
 Source:        N-170, N-240; D19, D46, D57
 Allocated to:  EF, FC
@@ -356,7 +357,7 @@ TBD/TBR:       P-SYS-400 value TBD (computed when the maximum vehicle mass is kn
   (I1); P-SYS-440 value TBR (TT-040), P-SYS-240 value TBD (TT-010)
 Owner:         Martin
 Status:        Baselined
-Version:       1
+Version:       2
 ```
 
 ### L1-AER-130

@@ -4,9 +4,9 @@ Proposals for `parameters/PARAMETERS.yaml` from task C3 (EF). The orchestrator m
 
 **P-EF number blocks proposed.** 010–090 command response; 100–190 effector set (direction, point of application, output limits), one list entry per effector. 200–990 free.
 
-**Values.** Every value is a C3 proposal, TBR, for the owner to set or confirm at G2. The per-effector lists hold the reference layout DD-C3-06 (six effectors); a different layout is a change of these four lists only. All values computed with the database of commit 63499b8 (`work/C3/ms_dyn_s7_effectors.md` §7.1.6, §7.1.7).
+**Values.** Every value is a C3 proposal, TBR, for the owner to set or confirm at G2. The per-effector lists hold the reference layout DD-200 (six effectors); a different layout is a change of these four lists only. All values computed with the database of commit 63499b8 (`work/C3/ms_dyn_s7_effectors.md` §7.1.6, §7.1.7).
 
-**TBD/TBR register.** P-EF-010 stays on TT-080 (TBD → TBR). P-SYS-400 to -420 stay on TT-020 (TBD → TBR). A new row is proposed for P-EF-020, -030, -100 to -130: "Effector model values and reference layout (DD-C3-02, DD-C3-06)", TBR, Martin, G2 (I1). TT-260 (L0-CON-300 field, per-effector maximum force values, closes at G2 (C3)) can close when P-EF-120 is accepted.
+**TBD/TBR register.** P-EF-010 stays on TT-080 (TBD → TBR). P-SYS-400 to -420 stay on TT-020 (TBD → TBR). A new row is proposed for P-EF-020, -030, -100 to -130: "Effector model values and reference layout (DD-160, DD-200)", TBR, Martin, G2 (I1). TT-260 (L0-CON-300 field, per-effector maximum force values, closes at G2 (C3)) can close when P-EF-120 is accepted.
 
 ## 1. Changes to existing entries
 
@@ -65,13 +65,13 @@ Proposals for `parameters/PARAMETERS.yaml` from task C3 (EF). The orchestrator m
     owner: Martin
   - id: P-EF-020
     name: Effector time constant
-    description: Time constant tau of the first-order lag by which each effector output follows its clipped effector command (MS-DYN effector model, DD-C3-02). Common to the effector set. Command-response kind (L1-AER-100).
+    description: Time constant tau of the first-order lag by which each effector output follows its clipped effector command (MS-DYN effector model, DD-160). Common to the effector set. Command-response kind (L1-AER-100).
     unit: s
     value: 0.015
     tolerance: null
     note: 'C3. Range - greater than zero. Per-step factor exp(-P-SYS-300 / P-EF-020) = 0.513 at 0.01 s. A per-effector list is a later option if a layout needs it.'
     status: TBR
-    source: L1-AER-100, -710; L2-AER-EF-010, -050, -100, -340; DD-C3-02; C3 proposal
+    source: L1-AER-100, -710; L2-AER-EF-010, -050, -100, -340; DD-160; C3 proposal
     owner: Martin
   - id: P-EF-030
     name: Effector response band
@@ -89,9 +89,9 @@ Proposals for `parameters/PARAMETERS.yaml` from task C3 (EF). The orchestrator m
     unit: '1'
     value: [[1.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]]
     tolerance: null
-    note: 'C3 reference layout DD-C3-06 (three pairs, each parallel to one body axis). Range - each entry of unit length. A design value, not a requirement.'
+    note: 'C3 reference layout DD-200 (three pairs, each parallel to one body axis). Range - each entry of unit length. A design value, not a requirement.'
     status: TBR
-    source: L1-AER-090, -100; L2-AER-EF-010, -020, -120, -300 to -330; DD-C3-01, DD-C3-06; C3 proposal
+    source: L1-AER-090, -100; L2-AER-EF-010, -020, -120, -300 to -330; DD-150, DD-200; C3 proposal
     owner: Martin
   - id: P-EF-110
     name: Effector points of application
@@ -99,9 +99,9 @@ Proposals for `parameters/PARAMETERS.yaml` from task C3 (EF). The orchestrator m
     unit: m
     value: [[0.0, 1.5, 0.0], [0.0, -1.5, 0.0], [0.0, 0.0, 1.5], [0.0, 0.0, -1.5], [4.0, 0.0, 0.0], [-4.0, 0.0, 0.0]]
     tolerance: null
-    note: 'C3 reference layout DD-C3-06. Each point inside the capsule of P-DYN-020 x P-DYN-030. A design value, not a requirement.'
+    note: 'C3 reference layout DD-200. Each point inside the capsule of P-DYN-020 x P-DYN-030. A design value, not a requirement.'
     status: TBR
-    source: L1-AER-090, -100; L2-AER-EF-010, -020, -120, -300 to -330; DD-C3-01, DD-C3-06; C3 proposal
+    source: L1-AER-090, -100; L2-AER-EF-010, -020, -120, -300 to -330; DD-150, DD-200; C3 proposal
     owner: Martin
   - id: P-EF-120
     name: Effector maximum force
@@ -109,9 +109,9 @@ Proposals for `parameters/PARAMETERS.yaml` from task C3 (EF). The orchestrator m
     unit: N
     value: [100000, 100000, 100000, 100000, 100000, 100000]
     tolerance: null
-    note: 'C3 reference layout DD-C3-06. Range - each entry greater than zero. Each pair gives 200 kN along its axis; the authority box of L2-AER-EF-330 is met with a 4.5 % margin. Closes TT-260 (L0-CON-300).'
+    note: 'C3 reference layout DD-200. Range - each entry greater than zero. Each pair gives 200 kN along its axis; the authority box of L2-AER-EF-330 is met with a 4.5 % margin. Closes TT-260 (L0-CON-300).'
     status: TBR
-    source: L0-CON-300; L1-AER-100, -110; L2-AER-EF-010, -110, -300 to -330; DD-C3-06; C3 proposal
+    source: L0-CON-300; L1-AER-100, -110; L2-AER-EF-010, -110, -300 to -330; DD-200; C3 proposal
     owner: Martin
   - id: P-EF-130
     name: Effector smallest output
@@ -119,9 +119,9 @@ Proposals for `parameters/PARAMETERS.yaml` from task C3 (EF). The orchestrator m
     unit: N
     value: [-100000, -100000, -100000, -100000, -100000, -100000]
     tolerance: null
-    note: 'C3 reference layout DD-C3-06 (each effector pushes both ways). Range - from minus the P-EF-120 entry to zero, so that zero output is valid.'
+    note: 'C3 reference layout DD-200 (each effector pushes both ways). Range - from minus the P-EF-120 entry to zero, so that zero output is valid.'
     status: TBR
-    source: L1-AER-100, -110; L2-AER-EF-010, -100, -110; CV-330; DD-C3-06; C3 proposal
+    source: L1-AER-100, -110; L2-AER-EF-010, -100, -110; CV-330; DD-200; C3 proposal
     owner: Martin
 ```
 

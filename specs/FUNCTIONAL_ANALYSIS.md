@@ -384,7 +384,7 @@ Each budget is a top-level parameter set at L1, split between the L2 subsystems.
 
 | Parameter | Must be at least | Contributors and owner |
 | --- | --- | --- |
-| P-SYS-400: control force along the negative body z axis (up at level attitude) | m_max · (g + [P-SYS-440]) + D([P-SYS-240]) | Weight at maximum mass (FU, DYN); manoeuvre share (AF, FC); drag in the fastest climb (DYN). There is no vertical wind (L0-ASM-050, D51). |
+| P-SYS-400: control force along the negative body z axis (up at level attitude) | m_max · (g + [P-SYS-440]) + the vertical drag of a climb at [P-SYS-240] at the largest horizontal airspeed [P-SYS-230] + [P-SYS-430] + [P-SYS-560], ½·ρ·[P-DYN-100]·V_a·[P-SYS-240] with V_a the airspeed magnitude (MS-DYN §5.5; CR-C3-01) | Weight at maximum mass (FU, DYN); manoeuvre share (AF, FC); vertical drag in the fastest climb at maximum horizontal airspeed (DYN; isotropic drag, D64). There is no vertical wind (L0-ASM-050, D51). |
 | P-SYS-410: control force along each other body direction | m_max · [P-SYS-440] + D([P-SYS-230] + [P-SYS-430] + [P-SYS-560]) | Manoeuvre share; drag at maximum horizontal speed into the largest instantaneous wind, steady plus gust (D51). |
 | P-SYS-420: control moment about each body axis | J_max · α_req + drag moment + moment to hold pitch and roll at zero against the drag moment (D57) | α_req is the angular acceleration needed to reach [P-SYS-270] within the heading-rate onset time that C4 sets. |
 
@@ -442,11 +442,11 @@ Closure rule: [P-AF-160] + [P-FC-010] ≤ [P-SYS-450], in a wind within the wind
 | Simulation step | [P-SYS-300] | Base of the time line (CV-820). | 0.01 s |
 | Control frame period | [P-SYS-310] | Integer multiple of [P-SYS-300] (L1-AER-680). | 0.02 s |
 | Output sample period | [P-TM-010] | Integer multiple of [P-SYS-300]; proposed equal to [P-SYS-310] so each frame is recorded. | 0.02 s |
-| Effector command response time | [P-EF-010] | EF share of the control-loop latency. | TBD (C3) |
+| Effector command response time | [P-EF-010] | EF share of the control-loop latency. | 0.06 s (C3, D73) |
 | Control-loop latency | [P-SYS-480] | [P-SYS-310] + [P-EF-010] ≤ [P-SYS-480] (L1-AER-710). | 0.1 s |
 | Annunciation latency, aircraft level | [P-SYS-470] | 2·[P-SYS-310] (selection sampled at the next frame, processed in that frame) + [P-TM-010] ≤ [P-SYS-470]; the AF share is [P-AF-060] ≤ [P-SYS-470] − [P-TM-010]; the FCP share is one output sample period [P-TM-010], since FCP presents at each output sample (L1-AER-490). | 0.5 s |
 
-With the proposed values the latencies close with margin: 0.06 s ≤ 0.5 s for annunciation, and 0.02 s + [P-EF-010] ≤ 0.1 s for the control loop, which leaves up to 0.08 s for the effector response.
+With the proposed values the latencies close with margin: 0.06 s ≤ 0.5 s for annunciation, and 0.02 s + [P-EF-010] ≤ 0.1 s for the control loop, which leaves up to 0.08 s for the effector response; C3 proposes 0.06 s, so the loop closes at 0.08 s (D73).
 
 ## 8. L0 → L1 coverage
 

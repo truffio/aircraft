@@ -2,15 +2,15 @@
 
 The effector requirements (task C3). The subject of each statement is the effector subsystem (EF), one of the three subsystems of the vehicle model with the dynamics model (DYN) and the FU subsystem, behind the vehicle-model boundary (D55, L1-AER-430). EF implements function F-AER-01 (FUNCTIONAL_ANALYSIS §6.1). It runs at each simulation step `[P-SYS-300]`. Its inputs are the effector commands of the current control frame (one command per effector and the effector activation state, from flight control across the vehicle-model boundary), the fuel availability (from FU) and the vehicle parameter set. Its outputs are the effector output of each effector and the control force and control moment about the centre of gravity that they produce, given to DYN, to FU and, for the outputs, to the operational data.
 
-**The effector model.** The physics is stated in the **effector model** of MS-DYN (section 7.1, proposed in `work/C3/ms_dyn_s7_effectors.md`); these records point to it by name, because a statement cannot carry a section number. In short: each effector is a force emitter along a fixed unit direction through a fixed point of application in the body frame (DD-C3-01); its command is clipped to its output limits and followed through a first-order lag of time constant `[P-EF-020]` (DD-C3-02); its output is zero while fuel is not available or the effectors are off (DD-C3-04); and EF sums the outputs, once per step, into the one control force and control moment that DYN and FU both use (DD-C3-05). Nothing else defines an effector (L0-CON-080, L1-AER-100).
+**The effector model.** The physics is stated in the **effector model** of MS-DYN (section 7.1, proposed in `work/C3/ms_dyn_s7_effectors.md`); these records point to it by name, because a statement cannot carry a section number. In short: each effector is a force emitter along a fixed unit direction through a fixed point of application in the body frame (DD-150); its command is clipped to its output limits and followed through a first-order lag of time constant `[P-EF-020]` (DD-160); its output is zero while fuel is not available or the effectors are off (DD-180); and EF sums the outputs, once per step, into the one control force and control moment that DYN and FU both use (DD-190). Nothing else defines an effector (L0-CON-080, L1-AER-100).
 
-**Solution-free.** The number of effectors and their layout are a design decision, not a requirement. The records constrain the effector set only through what it must achieve (the authority records L2-AER-EF-300 to -330 and the response record -340) and through the closed list of what defines an effector (-010). A reference layout that meets every record is proposed as DD-C3-06 with TBR values (`work/C3/param_proposals.md`); replacing it is a parameter change, with no change to these records.
+**Solution-free.** The number of effectors and their layout are a design decision, not a requirement. The records constrain the effector set only through what it must achieve (the authority records L2-AER-EF-300 to -330 and the response record -340) and through the closed list of what defines an effector (-010). A reference layout that meets every record is proposed as DD-200 with TBR values (`work/C3/param_proposals.md`); replacing it is a parameter change, with no change to these records.
 
-**Ground operations (D69, pending B3).** The effector commands carry an effector activation state, on or off, set by the flight software. While it is off, each effector output is zero, so the control force, the control moment and, under DD-110, the fuel mass flow are zero: this is how the effectors are off on the ground before Takeoff and after Land. EF does not model the landing gear. Which L1 record the off state traces to is open until the B3 change requests are approved, so L2-AER-EF-210 is Derived (DD-C3-04) for now (`work/C3/issues.md`).
+**Ground operations (D69, D73).** The effector commands carry an effector activation state, on or off, set by the flight software. While it is off, each effector output is zero, so the control force, the control moment and, under DD-110, the fuel mass flow are zero: this is how the effectors are off on the ground before Takeoff and after Land. EF does not model the landing gear. The off state is the EF share of L1-AER-930 (effectors off on the ground, B3, D73), so L2-AER-EF-210 traces to it; the design decision is DD-180.
 
 **Verification.** Each record is a leaf at L2 (`Allocated to: —`): the next layer would describe the implementation (D4), so each record is verified directly by its own method, and the L1 parents are verified by roll-up (D40, D58). Procedure IDs follow the record number (IN-, AN-, TP-, DM-EF-nnn); Phase 5 (V1) writes the procedures. Several analyses read the effector commands, the effector outputs and the control force and moment at every simulation step; the TST records the vehicle-model interfaces at each step for those runs, as for FU (IN-C2-30, IN-C3-31). The tests that drive EF with scripted effector commands use a test command source in place of flight control (IN-C3-33).
 
-**Coverage of the L1 parents.** Every live L1 record allocated to EF has at least one EF child. L1-AER-230 is Deleted (D54) and has none.
+**Coverage of the L1 parents.** Every live L1 record allocated to EF has at least one EF child, except L1-AER-960 and -970 (takeoff and landing capability), added by B3 (D73) after this section was drafted: their EF children are for the C3 rework. L1-AER-230 is Deleted (D54) and has none.
 
 | L1 parent | What EF guarantees, in the parent's terms | EF children |
 | --- | --- | --- |
@@ -37,8 +37,9 @@ The effector requirements (task C3). The subject of each statement is the effect
 | L1-AER-690 | Each effector output depends only on the run's parameter set, commands and fuel availability | -420 |
 | L1-AER-710 | A command is used from the first step of its control frame, and the output reaches it within [P-EF-010], so one control frame plus [P-EF-010] is at most [P-SYS-480] | -100, -150, -340 |
 | L1-AER-720 | MS-DYN states the effector model | -430 |
+| L1-AER-930 | While the effector activation state is off, each effector output, and so the control force and moment, is zero | -210 |
 
-One record is Derived: L2-AER-EF-210 (DD-C3-04, the effector activation state; D69).
+No record is Derived: L2-AER-EF-210 (DD-180, the effector activation state; D69) traces to L1-AER-930 since B3 (D73).
 
 ### L2-AER-EF-010
 
@@ -54,13 +55,13 @@ Rationale:     No physical explanation of the emitter is required (L0-CON-080); 
   vector along which the effector pushes (CV-330). The control effectiveness, the force and moment
   about the centre of gravity per newton of output, follows from the direction and the point of
   application: the force is the direction and the moment is the cross product of the point of
-  application with the direction (DD-C3-01). The centre of gravity is the body origin at every
+  application with the direction (DD-150). The centre of gravity is the body origin at every
   fuel state (L2-AER-FU-150), so the moment arm is constant. The output limits are the smallest
   output [P-EF-130] and the largest output [P-EF-120], which is the maximum force magnitude of
-  L0-CON-300. The command response is the first-order lag of time constant [P-EF-020] (DD-C3-02);
+  L0-CON-300. The command response is the first-order lag of time constant [P-EF-020] (DD-160);
   [P-EF-010] and [P-EF-030] state the response it must achieve (L2-AER-EF-340). The number of
   effectors is the number of entries in these lists; it is part of the layout, which is a design
-  decision (DD-C3-06). The consumption parameters are FU's and common to the effector set
+  decision (DD-200). The consumption parameters are FU's and common to the effector set
   (L2-AER-FU-060, D65).
   Sufficiency (L1-AER-100): this record gives the first four kinds (direction, effectiveness, limits,
   command response), L2-AER-EF-050 takes them from the run's parameter set, and L2-AER-FU-060 makes
@@ -77,7 +78,7 @@ Verification:  Inspection — IN-EF-010; success criteria: each EF parameter in 
   the control force and moment; and no EF parameter enters a consumption relationship.
 Parameters:    P-EF-100, P-EF-110, P-EF-120, P-EF-130, P-EF-020, P-EF-010, P-EF-030
 TBD/TBR:       P-EF-010 value TBR (TT-080), P-EF-020, P-EF-030, P-EF-100, P-EF-110, P-EF-120,
-  P-EF-130 values TBR (new TT row, work/C3/param_proposals.md), Martin, G2 (I1)
+  P-EF-130 values TBR (TT-930), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -95,7 +96,7 @@ Rationale:     Nothing swivels (D19, L0-CON-070): each effector acts along a fix
   body frame (CV-330). The point of application is fixed as well, so the control effectiveness of
   each effector is a constant of the run. A force that turns with the attitude in the local frame
   is the rigid-body resolution of a body-fixed force (MS-DYN kinematic term K-3), not a swivel.
-  The layout of the directions is a design decision (DD-C3-06), not a requirement.
+  The layout of the directions is a design decision (DD-200), not a requirement.
   Sufficiency (L1-AER-090): the effector subsystem is the only place the direction of action is
   defined (L1-AER-090 rationale), and this record makes it constant in the body frame for each
   effector, which is the whole of L1-AER-090.
@@ -108,8 +109,7 @@ Verification:  Inspection — IN-EF-020; success criteria: the MS-DYN effector m
   vehicle parameter set, with no dependence on time, on the effector commands or on the vehicle
   state, and the implementation reads them only at the start of the run.
 Parameters:    P-EF-100, P-EF-110
-TBD/TBR:       P-EF-100, P-EF-110 values TBR (new TT row, work/C3/param_proposals.md), Martin, G2
-  (I1)
+TBD/TBR:       P-EF-100, P-EF-110 values TBR (TT-930), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -209,8 +209,7 @@ Verification:  Demonstration — DM-EF-050; success criteria: two runs from the 
   outputs that equal the independent computation of AN-EF-100 with that run's values, and each
   run outputs the identity of the parameter set it used.
 Parameters:    P-EF-020, P-EF-100, P-EF-110, P-EF-120, P-EF-130
-TBD/TBR:       P-EF-020, P-EF-100, P-EF-110, P-EF-120, P-EF-130 values TBR (new TT row,
-  work/C3/param_proposals.md), Martin, G2 (I1)
+TBD/TBR:       P-EF-020, P-EF-100, P-EF-110, P-EF-120, P-EF-130 values TBR (TT-930), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -229,7 +228,7 @@ Rationale:     The command response is one of the kinds that define an effector 
   effector is part of the control loop whose latency is budgeted (L1-AER-710, DD-020). The MS-DYN
   effector model clips the command to the output limits and follows the clipped command through a
   first-order lag, stepped exactly once per simulation step, with the output of a step already
-  responding to the command of that step (DD-C3-02). It is the minimal actuator dynamics: it gives
+  responding to the command of that step (DD-160). It is the minimal actuator dynamics: it gives
   the control laws a finite response to work against (L0-OBJ-020), it never overshoots, it stays
   within the output limits, and its steady-state gain is one, so a held command is produced
   exactly. The output is zero while fuel is not available or the effectors are off, and before
@@ -253,9 +252,9 @@ Verification:  Analysis — AN-EF-100; success criteria: with the effector comma
   fuel availability and the run's [P-EF-020], [P-EF-120], [P-EF-130] and [P-SYS-300], to
   floating-point rounding.
 Parameters:    P-EF-020, P-EF-120, P-EF-130, P-SYS-300, P-FU-100
-TBD/TBR:       P-EF-020, P-EF-120, P-EF-130 values TBR (new TT row, work/C3/param_proposals.md),
-  P-SYS-300 value TBR (TT-070), P-FU-100 value TBR (TT-790), Martin, G2 (I1); MS-DYN effector
-  model content (TT-780), Martin, G2 (I1)
+TBD/TBR:       P-EF-020, P-EF-120, P-EF-130 values TBR (TT-930), P-SYS-300 value TBR (TT-070),
+  P-FU-100 value TBR (TT-790), Martin, G2 (I1); MS-DYN effector model content (TT-780), Martin, G2
+  (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -291,8 +290,7 @@ Verification:  Test — TP-EF-110; success criteria: (1) with scripted effector 
   the regression campaign, no recorded effector output lies outside the output limits of its
   effector.
 Parameters:    P-EF-120, P-EF-130
-TBD/TBR:       P-EF-120, P-EF-130 values TBR (new TT row, work/C3/param_proposals.md), Martin, G2
-  (I1); per-effector maximum force values (L0-CON-300, TT-260), Martin, G2 (C3)
+TBD/TBR:       P-EF-120, P-EF-130 values TBR (TT-930), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -310,8 +308,8 @@ Statement:     The effector subsystem shall compute the control force and the co
 Rationale:     The effectors are the only source of control force and moment (L0-CON-060,
   L1-AER-080). The control effectiveness of an effector is its direction of action for the force
   and the cross product of its point of application with its direction for the moment, per newton
-  of output (DD-C3-01). EF computes the sum once per step, and DYN and FU both use that one result
-  (DD-C3-05, IN-C2-11), so the motion and the fuel used come from the same control force and
+  of output (DD-150). EF computes the sum once per step, and DYN and FU both use that one result
+  (DD-190, IN-C2-11), so the motion and the fuel used come from the same control force and
   moment. The sum is the whole of the control force and moment: there is no bias, no interaction
   term and no other contribution.
   Sufficiency (L1-AER-080): with L2-AER-EF-130 (given to DYN) and L2-AER-DYN-180 (DYN takes the
@@ -332,8 +330,8 @@ Verification:  Analysis — AN-EF-120; success criteria: with the effector outpu
   from [P-EF-100] and [P-EF-110], to floating-point rounding, and are zero at each step whose
   outputs are zero.
 Parameters:    P-EF-100, P-EF-110
-TBD/TBR:       P-EF-100, P-EF-110 values TBR (new TT row, work/C3/param_proposals.md), Martin, G2
-  (I1); MS-DYN effector model content (TT-780), Martin, G2 (I1)
+TBD/TBR:       P-EF-100, P-EF-110 values TBR (TT-930), Martin, G2 (I1); MS-DYN effector model
+  content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -380,7 +378,7 @@ Statement:     The effector subsystem shall give the FU subsystem, at each simul
 Rationale:     Interface I-01 is internal to the vehicle model. FU charges the fuel on the magnitude
   of the resultant control force and moment (DD-110), so the resultant it uses must be the one DYN
   integrates (IN-C2-11; inspection G2 §4 note to EF). EF computes it once and gives both
-  subsystems the same value (DD-C3-05); it also gives FU the effector outputs, which
+  subsystems the same value (DD-190); it also gives FU the effector outputs, which
   L2-AER-FU-070 names. One value per step, held over the step, so the fuel used in the step is the
   flow times the step exactly (IN-C2-12).
   Sufficiency (L1-AER-160): see L2-AER-EF-120.
@@ -440,15 +438,15 @@ Statement:     While the fuel availability is not available, the effector subsys
   effector output from each effector.
 Rationale:     The output of each effector depends on the availability of fuel (L0-CON-100, I-03).
   Fuel exhaustion is nominal behaviour, not a failure (L0-ASM-070): the vehicle then moves under
-  gravity and drag alone (D68). FU gives not available from the first step whose remaining fuel
-  mass is zero (L2-AER-FU-200, DD-130). In a step that starts with fuel available, EF produces its
+  gravity and drag alone (D68). FU gives not available from the first step whose remaining fuel mass
+  is zero (L2-AER-FU-200, DD-130). In a step that starts with fuel available, EF produces its
   commanded output for the whole step and FU limits the fuel used in that step (IN-C2-20). The
-  output is set to zero at once, not through the lag, and the lag starts again from zero
-  (MS-DYN effector model), so there is no output on fuel that is not there.
-  Sufficiency (L1-AER-200): FU makes fuel not available from the first step with zero fuel
-  (L2-AER-FU-200); this record makes each output, and so the control force and moment
-  (L2-AER-EF-120), zero while it is, so the two give zero control force and moment from that step,
-  as L1-AER-200 requires.
+  output is set to zero at once, not through the lag, and the lag starts again from zero (MS-DYN
+  effector model), so there is no output on fuel that is not there. Sufficiency (L1-AER-200): FU
+  makes fuel not available from the first step with zero fuel (L2-AER-FU-200); this record makes
+  each output, and so the control force and moment (L2-AER-EF-120), zero while it is, so the two
+  give zero control force and moment from that step, as L1-AER-200 requires. A run started with zero
+  fuel stays on the ground (B3, CONOPS SC-130 variation zero fuel).
 Parent(s):     L1-AER-200
 Source:        N-150; CONOPS §4.5, SC-110; L0-ASM-070; D68
 Allocated to:  —
@@ -458,7 +456,7 @@ Verification:  Test — TP-EF-200; success criteria: in the reference mission (S
   each output sample from the first sample whose simulation step has fuel not available to the end
   of the run.
 Parameters:    —
-TBD/TBR:       Zero-fuel run under the ground start (D69, B3), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -472,17 +470,20 @@ Level:         L2
 Type:          Functional
 Statement:     While the effector activation state is off, the effector subsystem shall produce zero
   effector output from each effector.
-Rationale:     Derived from a design decision (DD-C3-04, proposed) that answers D69: runs start on
-  the ground with the effectors off, and after a Land touchdown the effectors switch off so that
-  fuel use stops. The flight software sets the effector activation state, on or off, with the
-  effector commands, so it crosses the vehicle-model boundary as a kind already listed by
-  L1-AER-430. While it is off, each output is zero, so the control force and moment are zero and,
-  under DD-110, the fuel mass flow is zero with no new consumption term. The state is off before
-  the first effector commands of a run (MS-DYN effector model; IN-C1-12). An exactly zero command
-  would not do: the lag decays to zero but does not reach it in a finite time. Which subsystem
-  decides the state, and the L1 record it traces to, wait for the B3 change requests.
-Parent(s):     Derived (DD-C3-04)
-Source:        D69; IN-C1-12; work/C3/issues.md C3-Q06
+Rationale:     D69: runs start on the ground with the effectors off, and after a Land touchdown the
+  effectors switch off so that fuel use stops (L1-AER-930, D73). The design decision DD-180 puts the
+  off state in the effector commands: the flight software sets the effector activation state, on or
+  off, with the effector commands, so it crosses the vehicle-model boundary as a kind already listed
+  by L1-AER-430. While it is off, each output is zero, so the control force and moment are zero and,
+  under DD-110, the fuel mass flow is zero with no new consumption term (L1-AER-940). The state is
+  off before the first effector commands of a run (MS-DYN effector model; IN-C1-12). An exactly zero
+  command would not do: the lag decays to zero but does not reach it in a finite time. Which
+  subsystem decides the state is for C4 and C5 (L1-AER-420 off value of the axis references).
+  Sufficiency (L1-AER-930): AF sets the off value of the axis references and FC sets the effector
+  activation state off (C4, C5); this record makes each output, and so the control force and moment
+  (L2-AER-EF-120), zero while the state is off, which is the EF share of L1-AER-930.
+Parent(s):     L1-AER-930
+Source:        D69, D73; DD-180; IN-C1-12; work/C3/issues.md C3-Q06
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-EF-210; success criteria: in a run that starts with the effector activation
@@ -490,7 +491,7 @@ Verification:  Test — TP-EF-210; success criteria: in a run that starts with t
   recorded effector output is zero at each output sample whose simulation step has the state off,
   and, when the state returns to on, the outputs follow the computation of AN-EF-100 from zero.
 Parameters:    —
-TBD/TBR:       Effector activation state and its L1 parent (D69, B3; DD-C3-04), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -527,8 +528,7 @@ Verification:  Analysis — AN-EF-300; success criteria: from the parameter data
   values.
 Parameters:    P-SYS-400, P-EF-100, P-EF-110, P-EF-120, P-EF-130, P-DYN-010, P-SYS-440, P-SYS-240
 TBD/TBR:       P-SYS-400 value TBR (TT-020), P-SYS-440 value TBR (TT-040), P-SYS-240 value TBR
-  (TT-010), P-EF-100 to P-EF-130 values TBR (new TT row, work/C3/param_proposals.md), Martin, G2
-  (I1)
+  (TT-010), P-EF-100 to P-EF-130 values TBR (TT-930), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -568,8 +568,7 @@ Verification:  Analysis — AN-EF-310; success criteria: from the parameter data
 Parameters:    P-SYS-410, P-EF-100, P-EF-110, P-EF-120, P-EF-130, P-SYS-440, P-SYS-230, P-SYS-430,
   P-SYS-560
 TBD/TBR:       P-SYS-410 value TBR (TT-020), P-SYS-440 value TBR (TT-040), P-SYS-430, P-SYS-560
-  values TBR (TT-030), P-EF-100 to P-EF-130 values TBR (new TT row,
-  work/C3/param_proposals.md), Martin, G2 (I1)
+  values TBR (TT-030), P-EF-100 to P-EF-130 values TBR (TT-930), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -605,9 +604,9 @@ Verification:  Analysis — AN-EF-320; success criteria: from the parameter data
   floating-point rounding; and [P-SYS-420] is at least the largest principal moment of
   [P-FU-070] plus [P-FU-080] times [P-SYS-270] divided by the onset time C4 sets.
 Parameters:    P-SYS-420, P-EF-100, P-EF-110, P-EF-120, P-EF-130, P-SYS-270, P-FU-070, P-FU-080
-TBD/TBR:       P-SYS-420 value TBR (TT-020), P-SYS-270 value TBR (TT-010), P-FU-070, P-FU-080
-  values TBD (TT-770), heading-rate onset time (C4, IN-C3-25), P-EF-100 to P-EF-130 values TBR
-  (new TT row, work/C3/param_proposals.md), Martin, G2 (I1)
+TBD/TBR:       P-SYS-420 value TBR (TT-020), P-SYS-270 value TBR (TT-010), P-FU-070, P-FU-080 values
+  TBD (TT-770), heading-rate onset time (C4, IN-C3-25), P-EF-100 to P-EF-130 values TBR (TT-930),
+  Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -629,13 +628,13 @@ Rationale:     The performance records need the forces and the moment together, 
   186 kN of horizontal drag in any body direction (heading and track are independent, CV-550) and
   turns; in the fastest climb at that airspeed it needs up to 58.6 kN upward with the horizontal
   force. The pure authorities (L2-AER-EF-300 to -320) do not give that. This record asks for the
-  whole authority box (DD-C3-03): each component can take any value in its range whatever the
+  whole authority box (DD-170): each component can take any value in its range whatever the
   others are, so flight control can allocate and saturate each axis on its own, and a change on
   one degree of freedom never forces another (L1-AER-380). The box contains the six pure
   authorities; they stay as their own records because they are the direct children of
   L1-AER-120 to -140, and the box can be revised without them. The achievable set is convex
   (MS-DYN effector model), so the box is inside it when its corners are. The reference layout
-  meets the box with a margin of 4.5 % (DD-C3-06).
+  meets the box with a margin of 4.5 % (DD-200).
   Sufficiency (L1-AER-310): the box covers the drag at [P-SYS-230] into the largest wind plus the
   manoeuvre force in any horizontal direction, with the weight and a heading moment; FC and AF
   regulate within it.
@@ -661,8 +660,8 @@ Verification:  Analysis — AN-EF-330; success criteria: from the parameter data
 Parameters:    P-SYS-400, P-SYS-410, P-SYS-420, P-EF-100, P-EF-110, P-EF-120, P-EF-130, P-SYS-230,
   P-SYS-240, P-SYS-250, P-SYS-270, P-FC-010
 TBD/TBR:       P-SYS-400, P-SYS-410, P-SYS-420 values TBR (TT-020), P-SYS-240, P-SYS-250, P-SYS-270
-  values TBR (TT-010), P-FC-010 value TBR (TT-050), P-EF-100 to P-EF-130 values TBR (new TT row,
-  work/C3/param_proposals.md), Martin, G2 (I1); authority box shape (DD-C3-03, C3-Q03), Martin, G2
+  values TBR (TT-010), P-FC-010 value TBR (TT-050), P-EF-100 to P-EF-130 values TBR (TT-930),
+  Martin, G2 (I1); authority box shape (DD-170, C3-Q03), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -706,9 +705,9 @@ Verification:  Test — TP-EF-340; success criteria: for each effector, with scr
   command is held.
 Parameters:    P-EF-030, P-EF-010, P-EF-020, P-EF-120, P-EF-130, P-SYS-310, P-SYS-480, P-SYS-300,
   P-FC-010
-TBD/TBR:       P-EF-010 value TBR (TT-080), P-EF-020, P-EF-030, P-EF-120, P-EF-130 values TBR (new TT
-  row, work/C3/param_proposals.md), P-SYS-300, P-SYS-310, P-SYS-480 values TBR (TT-070), P-FC-010
-  value TBR (TT-050), Martin, G2 (I1); command response model (DD-C3-02, C3-Q01), Martin, G2
+TBD/TBR:       P-EF-010 value TBR (TT-080), P-EF-020, P-EF-030, P-EF-120, P-EF-130 values TBR
+  (TT-930), P-SYS-300, P-SYS-310, P-SYS-480 values TBR (TT-070), P-FC-010 value TBR (TT-050),
+  Martin, G2 (I1); command response model (DD-160, C3-Q01), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -726,7 +725,7 @@ Statement:     The effector subsystem shall take from the flight software only t
 Rationale:     A fixed vehicle-model boundary lets the control law and the autoflight be replaced
   without modifying the vehicle model (L0-CON-200, -210). EF's share of the boundary is the
   effector commands in. An effector command is a force in N along the effector's direction of
-  action; the effector activation state is on or off (DD-C3-04). EF gives the flight software
+  action; the effector activation state is on or off (DD-180). EF gives the flight software
   nothing: the effector outputs go to the operational data output, which observes the boundary
   without being a party to it (L2-AER-EF-410), and the fuel availability is internal to the
   vehicle model. The home of the boundary ICD is open (IN-B1-01, TT-720).

@@ -2,18 +2,18 @@
 
 Open items in requirements and parameters. Every item has an owner and a closure date.
 
-Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR parameters of `parameters/PARAMETERS.yaml`; the later rows copy the TBD/TBR field of each live L0 and L1 requirement, whose closure is stated in the field itself. IDs are never reused. G1 rework (2026-11-04): field copies refreshed from the records; TT-650 to TT-730 added (`reviews/G1/dispositions.md`). C1/C2 merge (2026-11-05): TT-740 to TT-800 added; rows updated for D64 to D66. B3 applied (2026-11-05, D73): TT-810, TT-820 and TT-560 closed; TT-850 to TT-920 added; field copies refreshed.
+Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR parameters of `parameters/PARAMETERS.yaml`; the later rows copy the TBD/TBR field of each live L0 and L1 requirement, whose closure is stated in the field itself. IDs are never reused. G1 rework (2026-11-04): field copies refreshed from the records; TT-650 to TT-730 added (`reviews/G1/dispositions.md`). C1/C2 merge (2026-11-05): TT-740 to TT-800 added; rows updated for D64 to D66. B3 applied (2026-11-05, D73): TT-810, TT-820 and TT-560 closed; TT-850 to TT-920 added; field copies refreshed. C3 merged (D73): TT-020, TT-080 valued, TT-260 closed, TT-930 added.
 
 | ID | Item | Type (TBD/TBR) | Location (requirement or parameter ID) | Owner | Closure date | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | TT-010 | Performance envelope values (D47, D66, D67) | TBR | P-SYS-200, P-SYS-210, P-SYS-220, P-SYS-240, P-SYS-250, P-SYS-270 | Martin | G2 (I1) | Open |
-| TT-020 | Effector authority values | TBD | P-SYS-400, P-SYS-410, P-SYS-420 | Martin | G2 (I1 budget closure) | Open |
+| TT-020 | Effector authority values 60 kN up, 190 kN in the other five force directions, 2000 N·m per axis (C3, D73) | TBR | P-SYS-400, P-SYS-410, P-SYS-420 | Martin | G2 (I1 budget closure) | Open |
 | TT-030 | Wind: steady 100 kt, gusts 50 kt (D51) | TBR | P-SYS-430, P-SYS-560 | Martin | G2 | Open |
 | TT-040 | Vehicle acceleration limit 1.5 g and its split (D48) | TBR | P-SYS-440, P-AF-200, P-FC-020 | Martin | G2 | Open |
 | TT-050 | Position-holding budget 1 m and its split (D48) | TBR | P-SYS-450, P-AF-160, P-FC-010 | Martin | G2 | Open |
 | TT-060 | Position-hold settling time 30 s (D70) | TBR | P-SYS-460 | Martin | G2 (C5) | Open |
 | TT-070 | Timing budget (D48) | TBR | P-SYS-300, P-SYS-310, P-SYS-470, P-SYS-480, P-TM-010, P-AF-060 | Martin | G2 (I1) | Open |
-| TT-080 | Effector command response time | TBD | P-EF-010 | Martin | G2 (C3) | Open |
+| TT-080 | Effector command response time 0.06 s to the band P-EF-030 (C3, D73) | TBR | P-EF-010 | Martin | G2 (C3) | Open |
 | TT-090 | Landing envelope at the contact step of a gear contact: 2 ft fall, 0.5 m/s (D53) | TBR | P-SYS-500, P-SYS-510 | Martin | G2 | Open |
 | TT-100 | Cross-axis tolerances | TBD | P-SYS-540, P-SYS-550 | Martin | G2 (C4) | Open |
 | TT-110 | Dry mass 1000 kg, consumption coefficients 2.34e-7, accounting tolerance 1e-6 kg (D65, D66) | TBR | P-FU-030, P-FU-040, P-FU-050, P-FU-060 | Martin | G2 (I1) | Open |
@@ -31,7 +31,7 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-230 | Treatment of rigid-body kinematic terms (#81, deferred to L2), Martin, closes at G2 (C1) | TBD/TBR field | L0-CON-030 | Martin | as stated | Closed 2026-11-05: D64, CR-C1-01 |
 | TT-240 | Elongated body shape provisional, TBR, Martin, 2026-11-30 | TBD/TBR field | L0-CON-140 | Martin | as stated | Open |
 | TT-250 | Landing envelope limits TBR (P-SYS-500, P-SYS-510, TT-090), Martin, G2 | TBD/TBR field | L0-CON-290 | Martin | as stated | Open |
-| TT-260 | Per-effector maximum force values TBD (EF level), Martin, closes at G2 (C3) | TBD/TBR field | L0-CON-300 | Martin | as stated | Open |
+| TT-260 | Per-effector maximum force values TBD (EF level), Martin, closes at G2 (C3) | TBD/TBR field | L0-CON-300 | Martin | as stated | Closed 2026-11-05: per-effector maximum force values set as P-EF-120 (C3, D73; TBR under TT-930). The L0-CON-300 field still reads TBD until its next change |
 | TT-270 | — (3 g confirmed by the owner, D45, CR-B1-06) | TBD/TBR field | L0-CON-310 | Martin | as stated | Closed (D45; nothing open in the field) |
 | TT-280 | P-SYS-060 value TBR (proposed 0.8), Martin, 2026-12-31; P-SYS-070 value TBR (proposed 8, the physical core count of the execution host), Martin, 2026-12-31 | TBD/TBR field | L0-SUC-060 | Martin | as stated | Open |
 | TT-290 | Scoring rule TBD in the reverse-engineering requirements (#69), Martin, closes when the plan is extended to RVS (D44) | TBD/TBR field | L0-SUC-100 | Martin | as stated | Open |
@@ -98,3 +98,4 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-900 | P-DYN-030 value TBR (TT-740), P-DYN-040 value TBR (TT-830), Martin, G2 (C1); valid initial mode states (#60), Martin, G2 (C5) | TBD/TBR field | L1-AER-950 | Martin | as stated | Open |
 | TT-910 | P-SYS-580 value TBR (TT-860), P-SYS-450 value TBR (TT-050), P-AF-240 value TBR (TT-830), Martin, G2 | TBD/TBR field | L1-AER-960 | Martin | as stated | Open |
 | TT-920 | P-SYS-500, P-SYS-510 values TBR (TT-090), P-AF-240 value TBR (TT-830), Martin, G2; P-AF-170 value TBD, Martin, G2 (C5) | TBD/TBR field | L1-AER-970 | Martin | as stated | Open |
+| TT-930 | Effector model values and reference layout: time constant 0.015 s, response band 5 %, six effectors of 100 kN (DD-160, DD-200; C3, D73) | TBR | P-EF-020, P-EF-030, P-EF-100, P-EF-110, P-EF-120, P-EF-130 | Martin | G2 (I1) | Open |
