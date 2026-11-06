@@ -2,7 +2,7 @@
 
 Input to the C1/C2 rework that follows the owner's approval of the B3 change requests (TT-840), and to tasks C3 to C8 and I1. The list merges the "D69 impact" of `reviews/G2/inspection_C1_C2.md` §6 (marked **G2 §6**) with what B3 found (marked **B3**). The G2 findings ruled by D72 are cross-referenced where the D69 rework touches the same text. G2 recommends doing the C1/C2 rework together with those findings, "with the gear in view", and re-inspecting it in one delta inspection of DYN, FU and EF.
 
-The CRs are in `change_requests.md`, the new L1 records in `L1_new_records.md` (L1-AER-900 to -970), the terms in `glossary_proposals.md` and the parameters in `param_proposals.md`.
+The CRs are in `change_requests.md`, the new L1 records in `new_L1_records.md` (L1-AER-900 to -970), the terms in `glossary_proposals.md` and the parameters in `param_proposals.md`.
 
 ## 1. DYN (C1) — L2 records
 

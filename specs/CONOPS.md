@@ -1,6 +1,6 @@
 # Aeronef Concept of Operations (Aeronef-relevant)
 
-**Status:** Reviewed at Gate G0 (2026-10-27). Mode material revised for the owner's mode catalogue D56 and attitude rule D57 (2026-11-04). Aligned with L1 and D49 to D62 at the G1 rework (CR-B1-12, 2026-11-04). The mode details (§4.4 and the scenario sequences) remain provisional input for L2 (#89).
+**Status:** Reviewed at Gate G0 (2026-10-27). Mode material revised for the owner's mode catalogue D56 and attitude rule D57 (2026-11-04). Aligned with L1 and D49 to D62 at the G1 rework (CR-B1-12, 2026-11-04). The mode details (§4.4 and the scenario sequences) remain provisional input for L2 (#89). Landing gear, ground start, Takeoff and Land added (D68 to D71, CR-B3-29 to -35, 2026-11-05).
 **Date:** 2026-10-27
 **Owner:** Martin
 **Information class:** Protected design material. This document is not released to the Reverse-Engineering Effort, and it is not operator-facing manual text.
@@ -11,7 +11,7 @@ This document describes how the Aeronef is used, from the point of view of the p
 
 - the stakeholders and their needs, each need with an ID (`N-nnn`) that L0 and L1 requirements cite in their Source attribute;
 - the operational context: the simulated environment, the role of the crew, the autoflight operating concept, and how the Simulation and Testing Platform (TST) and the Reverse-Engineering Effort (RVS) use the Aeronef's operational data;
-- nominal scenarios (`SC-nnn`) that cover the autoflight mode catalogue (AIRCRAFT_REQUIREMENTS_PLAN.md §9, D56), a reference mission to fuel exhaustion, and the platform uses of the Aeronef;
+- nominal scenarios (`SC-nnn`) that cover the autoflight mode catalogue (AIRCRAFT_REQUIREMENTS_PLAN.md §9, D56, with Takeoff and Land added by D69), a reference mission from the ground to fuel exhaustion, and the platform uses of the Aeronef;
 - the parts of the scenarios that are still open, marked **TBR** with the issue that tracks them. The owner decided the plan's questions Q2 to Q4 on 2026-10-25 (D10 to D12) and replaced the mode catalogue on 2026-11-04 (D56, which also answers Q5, #6). The detailed mode logic is defined at L2 (D33), so the mode behaviour in the scenarios is provisional;
 - a traceability table from scenario to needs and modes.
 
@@ -19,14 +19,14 @@ The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the A
 
 **Tailoring.** Hazard and failure analysis is deferred (METHODOLOGY, tailoring note). There are no failure scenarios. Fuel exhaustion is nominal behaviour (SC-110). Effector saturation is nominal behaviour and is not a scenario of its own.
 
-**Not covered.** The Simulation and Testing Platform's and the Reverse-Engineering Effort's own operations, except where they use the Aeronef (Section 6.3). Take-off and ground operations. Landing is covered only as an ideal landing (Section 4.2, D37). Manual control: there is none; the crew acts only through the flight control panel (Section 4.3, D49, D55).
+**Not covered.** The Simulation and Testing Platform's and the Reverse-Engineering Effort's own operations, except where they use the Aeronef (Section 6.3). Movement on the ground (taxiing): the vehicle is stationary on the ground. Takeoff and landing are covered with an ideal landing gear (Section 4.2, D37, D69). Manual control: there is none; the crew acts only through the flight control panel (Section 4.3, D49, D55).
 
 ### 1.1 Conventions used in this document
 
 - Physical quantities in descriptions are in SI units. Crew selections and annunciations use the crew-facing units of D7, D9 and D34: ft (altitude), ft/min (vertical speed), kt (speed), NM (distance), degrees (heading, track), lb (fuel), and hours or minutes (durations). The unit table and the conversions are in `specs/CONVENTIONS.md` (CV-740, CV-750).
 - System and scenario values never appear as numbers in the text; only definitional constants do (for example the 180 degrees between a radial and its reciprocal). System values are parameters `[P-<SUB>-<NNN>]`, held in `parameters/PARAMETERS.yaml` with their status (TBD, TBR or Set). Scenario values (initial altitude, selected targets, durations) are **scenario variables** written in `CODE` font. The test procedures choose their values within the ranges this document states.
 - The frame, axis and angle conventions are those of `specs/CONVENTIONS.md`, which is fixed (D43). Section 4.2 repeats the definitions the scenarios use.
-- Mode names are the D56 names. The short labels (STAT, HDG, ALT, GO ALT, V/S, GO HOVER, HOVER) are **provisional annunciation labels** used to make the scenarios readable. The autoflight mode logic (`specs/AF_MODE_LOGIC.md`, task C5) owns the final labels.
+- Mode names are the D56 names. The short labels (STAT, HDG, ALT, GO ALT, V/S, GO HOVER, HOVER, TAKEOFF, LAND) are **provisional annunciation labels** used to make the scenarios readable. The autoflight mode logic (`specs/AF_MODE_LOGIC.md`, task C5) owns the final labels.
 
 ### 1.2 Reference documents
 
@@ -36,7 +36,7 @@ The document follows the NASA ConOps outline (METHODOLOGY 4.2), trimmed to the A
 | AIRCRAFT_CHARACTERISTICS.md | Vehicle concept and modelling boundaries |
 | TESTING_ENVIRONMENT.md | TST use of the Aeronef |
 | REVERSE_ENGINEERING.md | RVS use of the Aeronef, information separation |
-| AIRCRAFT_REQUIREMENTS_PLAN.md | Decisions D1 to D57 (§9) |
+| AIRCRAFT_REQUIREMENTS_PLAN.md | Decisions D1 to D72 (§9) |
 | METHODOLOGY.md | Stakeholder and ConOps method (Section 4), writing rules (Section 8), worked example (Section 12) |
 
 ## 2. Stakeholders
@@ -90,13 +90,13 @@ Each need is recorded in the stakeholder's words, then restated as what it means
 | N-280 | SH-05 | "Fuel use for translation and for rotation must be configurable, and mass must go down as fuel burns." | Fuel consumption has configurable linear and rotational terms; vehicle mass decreases with fuel used. |
 | N-290 | SH-05 | "We need to check the model against hand calculations." | The Aeronef's behaviour in simple cases (free fall after fuel exhaustion, steady hover) can be compared with independent solutions. |
 | N-300 | SH-06 | "Every requirement should have a test that runs unattended." | Every Aeronef operation can be driven by a script, without a human and without graphics. |
-| N-310 | SH-06 | "I need to set up the whole starting state: position, velocity, attitude, fuel, modes and targets." | The Aeronef accepts a complete initial condition at the start of a run, including the active and armed modes and their targets. |
+| N-310 | SH-06 | "I need to set up the whole starting state: position, velocity, attitude, fuel, landing gear, modes and targets." | The Aeronef accepts a complete initial condition at the start of a run, on the ground (D69) or, for a test, airborne, including the active and armed modes and their targets. |
 | N-320 | SH-06 | "My script must make crew selections at given times." | Crew selections can be applied at a stated simulation time, through the same crew interface a human uses. |
 | N-330 | SH-06 | "The same inputs must give the same results, and many runs must go in parallel without affecting each other." | An Aeronef run is reproducible from its configuration, initial condition and selection script, and instances are independent. |
 | N-340 | SH-06 | "I need the vehicle to report its state, modes, targets and commands at each step, so the test can judge them." | The Aeronef outputs operational data at each output sample, every `[P-TM-010]` (L1-AER-600). |
 | N-350 | SH-06 | "I need to know which version and configuration produced a result." | Each run identifies the vehicle parameter set, the control-law version and the autoflight version it used. |
 | N-360 | SH-06 | "I want to fly it interactively and watch what happens." | The same Aeronef can run in real time and accept selections from a human at any time. |
-| N-370 | SH-06 | "Runs must end in a defined way." | Each run has defined end conditions (Section 4.6). |
+| N-370 | SH-06 | "Runs must end in a defined way." | Each run has defined end conditions (Section 4.6). A crash ends a run; a landing does not. |
 | N-380 | SH-07 | "We need manuals and logs written for people, not for us." | The Aeronef's behaviour is describable in operator terms, and its releasable data uses operator terms and crew-facing units where the crew sees them. |
 | N-390 | SH-07 | "We need to tie a crew action to the mode change and the vehicle's response." | Crew selections, mode changes, annunciations and vehicle state are time-stamped on one time base. |
 | N-400 | SH-07 | "We need to run our own experiments, not just read recorded runs." | The RVS can operate the released Aeronef through the crew interface and record its releasable data. |
@@ -104,6 +104,7 @@ Each need is recorded in the stakeholder's words, then restated as what it means
 | N-420 | SH-08 | "We need scenarios the reverse-engineering team hasn't seen, to test their predictions." | The scenarios in this ConOps, and their variations, can be run as unseen test cases; this document is protected. |
 | N-430 | SH-09 | "I need to know, for each scenario, what the crew selects, what they see and what the vehicle does." | Each scenario states crew selections, annunciations and observable vehicle behaviour. |
 | N-440 | SH-10 | "Each requirement must say why it exists." | Requirements cite a need or a scenario in their Source, and carry a rationale. |
+| N-450 | SH-01 | "I want the craft to sit on the ground with everything off, take off from there, and land again, without burning fuel while it waits." | The Aeronef rests on an extendable landing gear with its effectors off and no fuel use. Runs start there, and it takes off and lands under autoflight (D69). |
 
 ## 4. Operational context
 
@@ -122,20 +123,21 @@ The system of interest is the **Aeronef**: the simulated vehicle (dynamics, effe
 The Aeronef operates in a simulated world. This document assumes the following. Each item is recorded as an interface need on CONVENTIONS (A3) and MS-DYN (C1):
 
 - **Local reference frame.** An Earth-fixed frame with a flat ground plane, north and east axes, and a vertical axis. Position is expressed in this frame.
-- **Altitude** is the height of the centre of gravity above the ground plane, positive up (CV-430). The ground plane is at zero altitude.
+- **Altitude** is the height of the centre of gravity above the ground plane, positive up (CV-430). The ground plane is at zero altitude. The **height above the ground** is the height of the lowest point of the body above the ground plane (CV-400). The hover height `[P-AF-210]` and the minimum operating height `[P-SYS-210]` are heights above the ground (D67, D70). At level attitude the height above the ground is the altitude minus half the body diameter `[P-DYN-030]`. On the ground, on the extended gear, it equals the gear length `[P-DYN-040]`.
 - **North reference.** Heading and track are referenced to the local frame's north axis (true north). There is no magnetic variation.
 - **Gravity** acts toward the ground plane.
 - **Air.** There is wind (D17, #49). When a wind is applied, the same wind velocity exists everywhere at a given time; the TST sets it for each run. It is horizontal, a steady wind of up to 100 kt plus gusts and bursts of up to 50 kt, so up to 150 kt at an instant (L0-ASM-050, D51). A gust builds up over at least `[P-SYS-570]`; there are no instantaneous steps (D62). Drag acts against the vehicle's velocity relative to the air. With wind, the horizontal speed relative to the air differs from the horizontal speed relative to the ground. Stationary and Hover compensate for the wind.
-- **Ground.** The ground plane is at altitude zero, with no terrain (D8). Ground contact is an ideal landing: contact within the landing envelope (limits on the vertical and horizontal speed at contact, D53) is a successful landing, and contact outside it is a crash that ends the run (D37, L0-CON-290). Each run starts with the vehicle airborne. There is no take-off.
-- **Operating volume.** Nominal operations take place between a minimum operating altitude `[P-SYS-210]` and a maximum operating altitude `[P-SYS-200]`, within a horizontal radius `[P-SYS-220]` of the local frame origin.
+- **Ground.** The ground plane is at altitude zero, with no terrain (D8). The Aeronef has an extendable landing gear (D69). It rests on the ground on the extended gear, stationary and at level attitude, with the effectors off and no fuel consumption. A contact of the extended gear with the ground within the landing envelope (limits on the vertical and horizontal speed at contact, D53), with fuel remaining, is a landing: the vehicle comes to rest and the run goes on. Any other ground contact is a crash that ends the run (L0-CON-290): outside the envelope, with the gear not extended, or after fuel exhaustion (D68, D73). Each run starts on the ground (D69). Section 5 covers test runs that start airborne.
+- **Operating volume.** Nominal flight takes place between a minimum operating height above the ground `[P-SYS-210]` and a maximum operating altitude `[P-SYS-200]`, within a horizontal radius `[P-SYS-220]` of the local frame origin. Takeoff and Land fly between the ground and the hover height.
 - **Vehicle state knowledge.** The Aeronef's functions use the exact simulated state (L0-ASM-010).
 
-Definitions used in the scenarios (fixed in the conventions: CV-430, CV-480, CV-490, CV-530, CV-540):
+Definitions used in the scenarios (fixed in the conventions: CV-400, CV-430, CV-480, CV-490, CV-530, CV-540):
 
 - **Heading:** the direction the nose points, projected on the horizontal plane, measured clockwise from north.
 - **Track:** the direction of the horizontal velocity, measured clockwise from north. It is not defined when the horizontal speed is zero.
 - **Horizontal speed:** the magnitude of the horizontal velocity.
 - **Vertical speed:** the rate of change of altitude, positive up.
+- **Height above the ground:** the height of the lowest point of the body above the ground plane (CV-400).
 
 On the Aeronef, heading and track are physically independent: the vehicle can move in any horizontal direction whatever its heading. The D56 modes do not use this: in Heading the craft moves along its heading.
 
@@ -151,9 +153,9 @@ The **crew** is whoever makes crew selections and reads the annunciations: a hum
 | Selected vertical speed (signed, positive up) | ft/min | Vertical speed; Go to altitude, where it replaces the standard vertical speed `[P-AF-220]` |
 | Selected horizontal speed | kt | Heading (from zero to the maximum horizontal speed `[P-SYS-230]`) |
 | Selected heading | degrees | Heading |
-| Mode engage commands: STAT, HDG, ALT, GO ALT, V/S, GO HOVER | — | Mode logic |
+| Mode engage commands: STAT, HDG, ALT, GO ALT, V/S, GO HOVER, TAKEOFF, LAND (D71) | — | Mode logic |
 
-**Annunciations** show the active horizontal and vertical modes, the armed mode and the selected targets (Section 4.4). **Indications** show the vehicle's current altitude (ft), vertical speed (ft/min), horizontal speed (kt), heading and track (degrees), the remaining fuel (lb, D9), and the LOW FUEL and FUEL EXHAUSTED alerts.
+**Annunciations** show the active horizontal and vertical modes, the armed mode, the selected targets and the landing gear position (extended, retracted or in transit) (Section 4.4). **Indications** show the vehicle's current altitude (ft), vertical speed (ft/min), horizontal speed (kt), heading and track (degrees), the remaining fuel (lb, D9), and the LOW FUEL and FUEL EXHAUSTED alerts.
 
 **There is no manual control** (D49, D55): no stick or yoke, and no option for one in this cycle. No scenario uses it.
 
@@ -161,11 +163,11 @@ The **crew** is whoever makes crew selections and reads the annunciations: a hum
 
 ### 4.4 Autoflight operating concept
 
-**Mode groups (D56).** The horizontal and vertical motions are independent. One **horizontal** mode and one **vertical** mode are active at a time, and changing one does not change the other. **Go to hover** and **Hover** are the only modes that govern both axes: while one of them is active it replaces both the horizontal and the vertical mode.
+**Mode groups (D56).** The horizontal and vertical motions are independent. One **horizontal** mode and one **vertical** mode are active at a time, and changing one does not change the other. **Go to hover**, **Hover**, **Takeoff** and **Land** are the only modes that govern both axes: while one of them is active, it replaces both the horizontal and the vertical mode.
 
-**Starting modes.** A run starts with the modes and targets given in its initial condition (TBR, #60, deferred to L2).
+**Starting modes.** A run starts on the ground with the effectors off and, as recommended to C5, no mode active (D69, #60). Takeoff is the mode engaged from there. A test run that starts airborne (Section 5) starts with the modes and targets of its initial condition.
 
-**Armed and active.** As a general rule a selected mode first arms, and engages when its conditions are met; while it is armed, the active mode manoeuvres the vehicle into those conditions within g-limited accelerations (D16). The state terms are TBR (#56). Two modes arm: **Altitude hold** arms with Go to altitude and with Vertical speed, and captures the selected altitude; **Hover** arms with Go to hover and engages once the vehicle is stationary at the hover height `[P-AF-210]`.
+**Armed and active.** As a general rule a selected mode first arms, and engages when its conditions are met; while it is armed, the active mode manoeuvres the vehicle into those conditions within g-limited accelerations (D16). The state terms are TBR (#56). Two modes arm others. **Altitude hold** arms with Go to altitude and with Vertical speed, and captures the selected altitude. **Hover** arms with Go to hover and with Takeoff, and engages once the vehicle is stationary at the hover height `[P-AF-210]`; after a Takeoff, it engages once the gear is retracted (C5 confirms).
 
 **Annunciation.** Each change of an active mode, an armed mode or a target is annunciated within `[P-SYS-470]` (L1-AER-470); `[P-AF-060]` is the autoflight share of that time.
 
@@ -174,7 +176,7 @@ The **crew** is whoever makes crew selections and reads the annunciations: a hum
 **Attitude (D10, D57).** Pitch and roll are held at zero, within `[P-AF-180]`, at all times. The vehicle translates along three axes and rotates about the vertical axis only. Heading:
 
 - in Heading, the heading is the selected heading and the vehicle moves along it; with no horizontal speed, a heading change turns the vehicle in place;
-- in Stationary, Go to hover and Hover, the heading is held at its value when the mode became active.
+- in Stationary, Go to hover, Hover, Takeoff and Land, the heading is held at its value when the mode became active.
 
 The vertical modes do not change the heading.
 
@@ -187,26 +189,28 @@ The vertical modes do not change the heading.
 | Altitude hold | Vertical | None (captured altitude, or altitude at engagement) | Holds the altitude | ALT / ALT | SC-020, SC-040, SC-050, SC-060, SC-090, SC-110 |
 | Go to altitude | Vertical | Selected altitude (ft); optionally a selected vertical speed (ft/min) | Climbs or descends toward the selected altitude at the standard vertical speed `[P-AF-220]`, or at the selected vertical speed if the crew sets one; arms Altitude hold | — / GO ALT | SC-020, SC-050, SC-110 |
 | Vertical speed | Vertical | Selected vertical speed (ft/min), selected altitude (ft) | Climbs or descends at the selected constant rate toward the selected altitude; arms Altitude hold, so it levels off there | — / V/S | SC-040, SC-050, SC-110 |
-| Go to hover | Both | None | From whatever the vehicle is flying, brings it to zero velocity on all axes at the hover height `[P-AF-210]`; arms Hover | — / GO HOVER | SC-100, SC-110 |
-| Hover | Both | None | Holds the hover height and the position over the ground, against the wind | HOVER / HOVER | SC-100, SC-110 |
+| Go to hover | Both | None | From whatever the vehicle is flying, brings it to zero velocity on all axes at the hover height `[P-AF-210]`, descending from above or climbing from below (D70); arms Hover | — / GO HOVER | SC-100, SC-110, SC-130 |
+| Hover | Both | None | Holds the hover height and the position over the ground, against the wind | HOVER / HOVER | SC-100, SC-110, SC-130 |
+| Takeoff | Both | None | Engaged on the ground: switches the effectors on, climbs vertically at `[P-AF-240]` to the hover height `[P-AF-210]` over its ground position, retracts the gear and hands over to Hover (D69) | — / TAKEOFF (HOVER armed) | SC-130, SC-110 |
+| Land | Both | None | Engaged only from Hover: extends the gear, descends vertically at `[P-AF-240]`, lands within the landing envelope, then switches the effectors off, so that no more fuel is used (D69) | — / LAND | SC-130, SC-110 |
 
 In the scenario tables, the active modes are written `horizontal · vertical`, for example `HDG · ALT`. Go to hover and Hover are written alone.
 
 ### 4.5 Fuel concept
 
-The Aeronef carries a finite quantity of fuel, at most `[P-FU-010]`. Fuel is consumed to produce effector forces and moments, with separate configurable terms for translation and rotation. Because the effectors must counter gravity, fuel is consumed in every flight condition, including Hover and Stationary. Vehicle mass decreases as fuel is consumed; the centre of gravity stays fixed.
+The Aeronef carries a finite quantity of fuel, at most `[P-FU-010]`. Fuel is consumed to produce effector forces and moments, with separate configurable terms for translation and rotation. Because the effectors must counter gravity, fuel is consumed in every airborne condition, including Hover and Stationary. On the ground the effectors are off and no fuel is consumed (D69). Vehicle mass decreases as fuel is consumed; the centre of gravity stays fixed.
 
-Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[P-FU-020]` of full capacity, the Aeronef annunciates LOW FUEL. When the fuel is exhausted, the Aeronef annunciates FUEL EXHAUSTED and the effectors produce zero force and zero moment. The vehicle then moves under gravity and drag alone. Fuel exhaustion is nominal behaviour (SC-110). What the autoflight modes do after exhaustion is defined in detailed design (TBR, #59).
+Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[P-FU-020]` of full capacity, the Aeronef annunciates LOW FUEL. When the fuel is exhausted, the Aeronef annunciates FUEL EXHAUSTED and the effectors produce zero force and zero moment. The vehicle then moves under gravity and drag alone, and its ground contact is a crash (D68). Fuel exhaustion is nominal behaviour (SC-110); running out of fuel is the crew's to avoid, with the LOW FUEL alert. What the annunciations show after exhaustion is set by C5 (D68).
 
 ### 4.6 Runs and the use of operational data
 
 **A run** is one execution of the Aeronef in the TST. It is defined by:
 
 - a **configuration**: the vehicle parameter set, the flight-control-law version and the autoflight version;
-- an **initial condition**: position, velocity, attitude, angular rate, fuel quantity, active and armed modes, and selected targets;
+- an **initial condition**: position, velocity, attitude, angular rate, landing gear position, fuel quantity, active and armed modes, and selected targets. A run starts on the ground (D69);
 - a **selection script**: crew selections, each with the simulation time at which it applies (empty for an interactive run, where the selections come from a human).
 
-The run ends when the TST's end condition is met: the scenario's end condition, a maximum run time set by the TST, or ground contact (a landing within the envelope, or a crash; D37).
+The run ends when the TST's end condition is met: the scenario's end condition, a maximum run time set by the TST, or a crash (D37, D68, D69). A landing does not end the run.
 
 **Operational data.** At each output sample, every `[P-TM-010]` (L1-AER-600), the Aeronef outputs data on one time base (simulation time since the start of the run): the crew selections received, the selected targets, the active and armed modes, the annunciations and indications, the vehicle state, the fuel quantity, and the flight-control and effector activity. Whether each signal is **releasable** or **protected** is decided with the RVS (#69, D44; L1-AER-630).
 
@@ -223,7 +227,7 @@ Each flight scenario gives: purpose; initial conditions; crew selections; a sequ
 
 Common to all flight scenarios unless a scenario says otherwise:
 
-- The vehicle is airborne, inside the operating volume, at a position and altitude `H_INIT` at least `[P-SYS-210]` above the ground plane.
+- The vehicle starts on the ground, at rest on its extended gear with the effectors off and no mode active (D69). For the flight scenarios SC-020 to SC-120, a test procedure may instead start the run airborne (D73): the vehicle is then inside the operating volume at `H_INIT`, with a height above the ground of at least `[P-SYS-210]`, the gear retracted, the effectors on and the modes of the scenario active. Otherwise each such scenario begins with a Takeoff and the selections that reach its initial condition.
 - Fuel is `FUEL_INIT`, more than the low-fuel threshold `[P-FU-020]` and enough to complete the scenario.
 - Pitch and roll are zero (D57); the angular rate is zero.
 - The air is still, and no disturbance is applied.
@@ -417,11 +421,46 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Variation SC-100 / wind.** As SC-100 with a wind applied: Hover holds the position against it.
 
+**Variation SC-100 / from below.** GO HOVER is engaged during a Land, below the hover height. The vehicle climbs back to the hover height and Hover engages (D70). Whether the gear retracts is set by C5.
+
 **End conditions.** HOVER active at `[P-AF-210]`; horizontal position held within `[P-SYS-450]`.
 
 **Needs exercised.** N-050, N-060, N-130, N-160, N-200, N-210.
 
-**TBR.** What Go to hover does when engaged below the hover height (#88). How the crew leaves Hover (C5).
+**Answered (D70):** engaged below the hover height, Go to hover climbs to it. **TBR.** How the crew leaves Hover (C5).
+
+#### SC-130 — Take off, hover, land and rest
+
+**Purpose.** Show the ground operations of D69. A run starts on the ground with the effectors off. Takeoff lifts the vehicle to the hover height and retracts the gear. Land extends the gear and touches down within the landing envelope. The vehicle then rests on the ground with no fuel used.
+
+**Initial conditions.** On the ground at rest on the extended gear, effectors off, no mode active, heading `HDG_INIT`, fuel `FUEL_INIT` above the low-fuel threshold. Still air.
+
+**Crew selections.** TAKEOFF at `T_TO`; LAND at `T_LD`, after Hover has engaged.
+
+| Step | Trigger | Active | Armed | Vehicle behaviour |
+| --- | --- | --- | --- | --- |
+| 1 | Crew engages TAKEOFF | TAKEOFF | HOVER | The effectors power up. The vehicle lifts off and climbs vertically at `[P-AF-240]`, heading and horizontal position held, pitch and roll zero. |
+| 2 | Height above the ground reaches `[P-AF-210]` | TAKEOFF | HOVER | The vehicle holds the hover height. The gear retracts within `[P-DYN-050]`, and the gear position is annunciated. |
+| 3 | Gear retracted, vehicle stationary at the hover height | HOVER | — | Holds the hover height and the position over the ground. |
+| 4 | Crew engages LAND | LAND | — | The gear extends within `[P-DYN-050]`; the vehicle then descends vertically at `[P-AF-240]`. |
+| 5 | Ground contact on the extended gear | LAND, then none (C5) | — | Landing event. The vehicle is at rest on the gear; the effectors are off within `[P-SYS-480]`. |
+| 6 | On the ground for `T_REST` | None | — | The vehicle stays at rest; the remaining fuel is constant; the sensed acceleration is 1 g. |
+
+**Expected vehicle behaviour.** The horizontal position stays within `[P-SYS-450]` of its value on the ground. At the contact, the vertical speed magnitude is at most `[P-SYS-500]` and the horizontal speed at most `[P-SYS-510]`, and the gear is extended. From `[P-SYS-480]` after the contact, every effector output is zero and the remaining fuel mass does not change. The heading stays within `[P-AF-130]` of `HDG_INIT`.
+
+**Variation SC-130 / wind.** As SC-130 with a steady wind and gusts within the wind envelope during the hover and the landing. The takeoff is made in a wind of at most `[P-SYS-580]` (D73).
+
+**Variation SC-130 / zero fuel.** The run starts with no fuel. FUEL EXHAUSTED is annunciated; the vehicle stays on the ground. Whether TAKEOFF is accepted is set by C5.
+
+**Variation SC-130 / go to hover during the landing.** GO HOVER is engaged during step 4. The vehicle climbs back to the hover height and Hover engages (D70).
+
+**Variation SC-130 / second takeoff.** After step 6, TAKEOFF is engaged again, and the vehicle repeats steps 1 to 3.
+
+**End conditions.** On the ground at rest, effectors off, for `T_REST`.
+
+**Needs exercised.** N-050, N-060, N-150, N-210, N-310, N-450.
+
+**TBR.** The mode state after the landing, and the selections accepted on the ground (C5, #60). Whether LAND stays annunciated on the ground (C5). The gear labels (C5, C8).
 
 ### 6.4 Reference mission
 
@@ -429,35 +468,38 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Purpose.** Fly a fixed, repeatable profile that uses every mode of the catalogue, with translation and rotation, until the fuel is exhausted. The mission is the common basis for measuring accuracy and fuel used (N-250), and it shows the nominal behaviour at low fuel and at fuel exhaustion.
 
-**Initial conditions.** Fuel at full capacity `[P-FU-010]`, so mass at its maximum. Vehicle at `H_INIT`, stationary, heading `HDG_INIT`. Active `STAT · ALT`.
+**Initial conditions.** On the ground at rest on the extended gear, effectors off, no mode active. Fuel at full capacity `[P-FU-010]`, so mass at its maximum. Heading `HDG_INIT`.
 
 **Profile.** Each leg starts when the previous leg's end condition is met. The scenario variables (altitudes, speeds, headings, vertical speeds and leg durations `T_n`) form one fixed reference set, chosen so that fuel remains at the start of leg 10.
 
 | Leg | Crew selections | Active (after captures) | Armed | Vehicle behaviour | Leg ends when |
 | --- | --- | --- | --- | --- | --- |
-| 1 | None | STAT · ALT | — | Holds position for `T_1`. | `T_1` elapsed |
-| 2 | `HDG_1`, `SPD_1`, HDG engaged; `H_1` above `H_INIT`, GO ALT | HDG · GO ALT, then HDG · ALT | ALT | Turns, accelerates along the heading, climbs at the standard vertical speed, captures `H_1`. | Established on `H_1` |
+| 0 | TAKEOFF | TAKEOFF, then HOVER | HOVER | Powers up, lifts off, climbs vertically at `[P-AF-240]` to the hover height, retracts the gear (as SC-130). | HOVER active |
+| 1 | None | HOVER | — | Holds the hover height and position for `T_1`. | `T_1` elapsed |
+| 2 | `HDG_1`, `SPD_1`, HDG engaged; `H_1` above the hover height, GO ALT | HDG · GO ALT, then HDG · ALT | ALT | Leaves Hover, turns, accelerates along the heading, climbs at the standard vertical speed, captures `H_1`. | Established on `H_1` |
 | 3 | None | HDG · ALT | — | Cruises on `HDG_1`. | `T_3` elapsed |
 | 4 | `H_2` below `H_1`, GO ALT, then `VS_2` | HDG · GO ALT, then HDG · ALT | ALT | Descends, first at the standard vertical speed, then at `VS_2`; captures `H_2`. | Established on `H_2` |
 | 5 | `HDG_2`, `SPD_2` | HDG · ALT | — | Turns to `HDG_2` and changes speed. | `T_5` elapsed |
 | 6 | `H_3` below `H_2`, V/S at a negative `VS_3` | HDG · V/S, then HDG · ALT | ALT | Descends at `VS_3`, captures `H_3`. | Established on `H_3` |
 | 7 | GO HOVER | GO HOVER, then HOVER | HOVER | Stops and descends to the hover height, then hovers (as SC-100). | `T_7` elapsed in HOVER |
-| 8 | STAT, `H_4` above the hover height, V/S at a positive `VS_4` | STAT · V/S, then STAT · ALT | ALT | Climbs vertically and captures `H_4` (as SC-040). | Established on `H_4` |
+| 7a | LAND | LAND | — | Extends the gear, descends at `[P-AF-240]`, lands within the envelope, switches the effectors off; rests on the ground for `T_7A` with the remaining fuel constant (as SC-130). | `T_7A` elapsed on the ground |
+| 7b | TAKEOFF | TAKEOFF, then HOVER | HOVER | As leg 0. | HOVER active |
+| 8 | STAT, `H_4` above the hover height, V/S at a positive `VS_4` | STAT · V/S, then STAT · ALT | ALT | From HOVER (after leg 7b), climbs vertically and captures `H_4` (as SC-040). | Established on `H_4` |
 | 9 | HDG engaged with `SPD` at zero, `HDG_3` | HDG · ALT | — | Turns in place to `HDG_3` (as SC-120). | Heading settled |
 | 10 | STAT | STAT · ALT | — | Holds position until the fuel is exhausted. LOW FUEL is annunciated when the fuel falls below `[P-FU-020]`. | Fuel exhausted |
-| 11 | None | (TBR, #59) | — | FUEL EXHAUSTED annunciated. Effectors produce zero force and zero moment. The vehicle falls under gravity and drag, and keeps the angular rate it had at exhaustion. | Ground contact, or TST maximum run time |
+| 11 | None | (C5, D68) | — | FUEL EXHAUSTED annunciated. Effectors produce zero force and zero moment. The vehicle falls under gravity and drag, keeps the angular rate it had at exhaustion, and its ground contact is a crash (D68). | Crash, or TST maximum run time |
 
-**Expected vehicle behaviour.** Each leg meets the expected behaviour of the scenario it repeats: SC-060 and SC-020 (leg 2), SC-060 (legs 3 and 5), SC-020 (leg 4), SC-040 (legs 6 and 8, vertical part), SC-100 (leg 7), SC-040 (leg 8), SC-120 (leg 9), SC-090 (leg 10). The fuel quantity decreases throughout the mission and never increases. The vehicle mass decreases by the mass of fuel consumed. LOW FUEL is annunciated within `[P-SYS-470]` of the fuel falling below `[P-FU-020]`, and FUEL EXHAUSTED within `[P-SYS-470]` of exhaustion. After exhaustion, the motion is free fall with drag, which can be compared with an independent solution (N-290). The run ends at ground contact, normally a crash, because the vehicle is outside the landing envelope (D37).
+**Expected vehicle behaviour.** Each leg meets the expected behaviour of the scenario it repeats: SC-060 and SC-020 (leg 2), SC-060 (legs 3 and 5), SC-020 (leg 4), SC-040 (legs 6 and 8, vertical part), SC-100 (leg 7), SC-040 (leg 8), SC-120 (leg 9), SC-090 (leg 10). The fuel quantity never increases; it decreases in every airborne leg and is constant during the rest of leg 7a. Leg 0 and leg 7b meet SC-130 (takeoff), and leg 7a meets SC-130 (landing and rest). The vehicle mass decreases by the mass of fuel consumed. LOW FUEL is annunciated within `[P-SYS-470]` of the fuel falling below `[P-FU-020]`, and FUEL EXHAUSTED within `[P-SYS-470]` of exhaustion. After exhaustion, the motion is free fall with drag, which can be compared with an independent solution (N-290). The run ends at the ground contact after exhaustion, which is a crash (D68).
 
-**Variation SC-110 / hover endurance.** From the same initial condition, GO HOVER is engaged at the start and HOVER kept until the fuel is exhausted. The time to exhaustion is at least `[P-SYS-280]`.
+**Variation SC-110 / hover endurance.** From the same initial condition, TAKEOFF is engaged at the start and HOVER kept until the fuel is exhausted. The time from the TAKEOFF engagement to exhaustion is at least `[P-SYS-280]` (L1-AER-360).
 
 **Recorded results.** Total fuel used per leg, mission duration to exhaustion, and the tracking errors per leg against the tolerances above.
 
-**End conditions.** Ground contact, or TST maximum run time.
+**End conditions.** Crash, or TST maximum run time.
 
-**Needs exercised.** N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290.
+**Needs exercised.** N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290, N-450.
 
-**TBR.** As in the scenarios each leg repeats. How the crew leaves Hover in leg 8 (C5). Autoflight state after fuel exhaustion (#59).
+**TBR.** As in the scenarios each leg repeats. How the crew leaves Hover in legs 2 and 8 (C5). Annunciations after fuel exhaustion (C5, D68).
 
 ### 6.5 Platform and evidence scenarios
 
@@ -473,7 +515,7 @@ These scenarios describe how the TST and the RVS use the Aeronef. They exercise 
 2. The TST sets the initial condition, including the active and armed modes and the targets.
 3. The TST runs the simulation without graphics, faster than real time, and applies the crew selections of the selection script at their simulation times. The selections go through the crew interface.
 4. At each output sample, the Aeronef outputs its operational data.
-5. The run ends on the procedure's end condition, the maximum run time or ground contact.
+5. The run ends on the procedure's end condition, the maximum run time or a crash.
 6. The TST assesses the data against the procedure's success criteria and reports the result with the configuration identification.
 
 **Expected behaviour of the Aeronef.** The same configuration, initial condition and selection script give the same pass or fail verdict for each success criterion on each repetition, with the data agreeing within the stated tolerances; the runs need not be bit-identical (D25, D59). The Aeronef needs no input other than the configuration, the initial condition, the selection script and the time steps.
@@ -547,10 +589,10 @@ Each question has a proposed answer, used in the scenarios. They are recorded in
 | ID | Question | Proposed answer |
 | --- | --- | --- |
 | A2-Q01 | Is the air still (no wind) in this cycle? | Yes. Drag is relative to still air; horizontal speed is the same relative to air and ground. **Owner: no.** There is wind, uniform and configurable per run (D17, #49). |
-| A2-Q02 | Are take-off, landing and ground contact in scope? | No. Runs start airborne; reaching the ground plane ends the run. **Owner:** landing is in scope as an ideal landing; contact outside the landing envelope is a crash (D8, D37). |
+| A2-Q02 | Are take-off, landing and ground contact in scope? | No. Runs start airborne; reaching the ground plane ends the run. **Owner:** landing is in scope as an ideal landing; contact outside the landing envelope is a crash (D8, D37). **Revised (D69):** runs start on the ground on a landing gear; Takeoff and Land are modes; a landing does not end the run. |
 | A2-Q03 | In HDG, does the track follow the heading? In TRK and VOR, what does the heading do? | HDG sets the heading, and the track follows it. TRK and VOR hold the heading at its value when the mode became active. Deferred to L2 (D33). **Superseded in part (D56):** no TRK or VOR; in Heading the vehicle moves along its heading. |
-| A2-Q04 | After fuel exhaustion, do the autoflight modes stay engaged? | Yes. The modes stay engaged and annunciated; FUEL EXHAUSTED is annunciated; there is no automatic disengagement. **Owner:** defined in detailed design (#59, deferred). |
-| A2-Q05 | Can a mode group have no active mode? | No. Each group has one active mode, or a hold mode covers it; the run's initial condition sets the starting modes. **Owner:** deferred to L2 (#60). |
+| A2-Q04 | After fuel exhaustion, do the autoflight modes stay engaged? | Yes. The modes stay engaged and annunciated; FUEL EXHAUSTED is annunciated; there is no automatic disengagement. **Owner:** defined in detailed design (#59, deferred). **Owner (D68):** the effectors stop, the vehicle falls and its ground contact is a crash; the annunciations after exhaustion are C5's. |
+| A2-Q05 | Can a mode group have no active mode? | No. Each group has one active mode, or a hold mode covers it; the run's initial condition sets the starting modes. **Owner:** deferred to L2 (#60). On the ground, no mode is active (recommended to C5, D69, #60). |
 | A2-Q06 | What happens when FPA is selected with horizontal speed near zero? | FPA does not engage below `[P-AF-070]`; the active vertical mode stays as it was. **Owner: rejected** (D13, #61). **Withdrawn with the FPA mode (D56).** |
 | A2-Q07 | Do Position Hold and Hover also replace the speed group? | Yes, because both hold zero horizontal speed. **Superseded (D56):** Stationary is horizontal only; Hover governs both axes. |
 | A2-Q08 | What happens when the vehicle passes over a VOR station? | Not covered in this cycle's scenarios. **Withdrawn (D56):** there is no VOR. |
@@ -575,15 +617,16 @@ Each question has a proposed answer, used in the scenarios. They are recorded in
 | SC-080 | — | Withdrawn (D56) |
 | SC-090 | N-050, N-060, N-130, N-140, N-160, N-210 | Stationary, Altitude hold, Heading |
 | SC-100 | N-050, N-060, N-130, N-160, N-200, N-210 | Go to hover, Hover |
-| SC-110 | N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290 | All seven modes |
+| SC-110 | N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290, N-450 | All nine modes |
 | SC-120 | N-050, N-060, N-160, N-190, N-240 | Heading (at zero speed), Altitude hold |
+| SC-130 | N-050, N-060, N-150, N-210, N-310, N-450 | Takeoff, Hover, Land, Go to hover |
 | SC-200 | N-300, N-310, N-320, N-330, N-340, N-350, N-370 | — |
 | SC-210 | N-020, N-300, N-330, N-350 | — |
 | SC-220 | N-220, N-230, N-250, N-350 | — |
 | SC-230 | N-320, N-360, N-390 | — |
 | SC-240 | N-030, N-380, N-390, N-400, N-420 | — |
 
-Each of the seven D56 modes is exercised by at least one scenario of its own and by SC-110.
+Each of the nine modes of D56 and D69 is exercised by at least one scenario of its own and by SC-110.
 
 ### 8.2 Needs not exercised by a scenario
 
@@ -606,7 +649,7 @@ Values, status (TBD, TBR or Set), SI units and crew-facing flags are in `paramet
 | ID | Name |
 | --- | --- |
 | P-SYS-200 | Maximum operating altitude |
-| P-SYS-210 | Minimum operating altitude |
+| P-SYS-210 | Minimum operating height above the ground |
 | P-SYS-220 | Horizontal operating radius |
 | P-SYS-230 | Maximum horizontal speed |
 | P-SYS-240 | Maximum climb vertical speed |
@@ -630,12 +673,19 @@ Values, status (TBD, TBR or Set), SI units and crew-facing flags are in `paramet
 | P-AF-170 | Hover horizontal speed tolerance |
 | P-AF-180 | Level attitude tolerance |
 | P-AF-190 | Settling time |
-| P-AF-210 | Hover height above the ground (D56) |
+| P-AF-210 | Hover height above the ground (D56, D70; CV-400) |
 | P-AF-220 | Standard vertical speed of Go to altitude (D56) |
+| P-AF-240 | Takeoff and landing vertical speed |
+| P-DYN-030 | Body diameter |
+| P-DYN-040 | Landing gear length |
+| P-DYN-050 | Landing gear transit time |
 | P-SYS-450 | Position-holding accuracy, horizontal (Stationary and Hover, D60) |
 | P-SYS-120 | Maximum crew-sensed acceleration magnitude (Set) |
 | P-SYS-430 | Maximum steady wind speed |
 | P-SYS-470 | Annunciation latency, aircraft level |
+| P-SYS-480 | Control-loop latency |
+| P-SYS-500, P-SYS-510 | Landing envelope |
 | P-SYS-560 | Maximum gust speed |
 | P-SYS-570 | Minimum gust rise time (D62) |
+| P-SYS-580 | Maximum wind speed at liftoff (D73) |
 | P-TM-010 | Output sample period |

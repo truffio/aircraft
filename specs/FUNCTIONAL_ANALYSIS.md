@@ -1,10 +1,10 @@
 # Aeronef — Functional Analysis (L1)
 
 **Status:** Draft (task B1), for Gate G1; reworked after the G1 inspection (`reviews/G1/dispositions.md`)
-**Date:** 2026-11-04
+**Date:** 2026-11-04; B3 change requests applied 2026-11-05 (D73)
 **Owner:** Martin
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
-**Related:** [L0](../requirements/L0.md) (tag `L0-baseline-1`), [L1](../requirements/L1.md), [CONOPS](CONOPS.md), [CONVENTIONS](CONVENTIONS.md), [GLOSSARY](GLOSSARY.md), METHODOLOGY §5 and §7, plan §6 (B1) and §9 (D1–D63).
+**Related:** [L0](../requirements/L0.md) (tag `L0-baseline-1`), [L1](../requirements/L1.md), [CONOPS](CONOPS.md), [CONVENTIONS](CONVENTIONS.md), [GLOSSARY](GLOSSARY.md), METHODOLOGY §5 and §7, plan §6 (B1) and §9 (D1–D72).
 
 ## 1. Purpose and scope
 
@@ -22,26 +22,27 @@ This document is the METHODOLOGY step 2 and step 4 work for the Aeronef element 
 
 ## 2. Function list
 
-Functions are verbs. F-AER-01 to 08 are the METHODOLOGY §5 functions, refined. F-AER-09 to 14 are new: navigation (09), crew input (10), operational data (11), ground contact (12), crew presentation (13) and run set-up (14).
+Functions are verbs. F-AER-01 to 08 are the METHODOLOGY §5 functions, refined. F-AER-09 to 15 are new: navigation (09), crew input (10), operational data (11), ground contact (12), crew presentation (13), run set-up (14) and landing gear (15).
 
 | ID | Function | Main inputs → outputs | Refinement relative to METHODOLOGY §5 | Subsystem |
 | --- | --- | --- | --- | --- |
-| F-AER-01 | Generate control forces and control moments with the effectors | Effector commands, fuel availability → effector outputs (body forces, body moments) | Adds fuel availability (zero output at fuel exhaustion, L0-CON-100) and the per-effector maximum force (L0-CON-300). | EF |
-| F-AER-02 | Consume fuel and update mass properties | Effector outputs, initial fuel mass → fuel mass flow, remaining fuel mass, vehicle mass, inertia, fuel state | Separate translational and rotational consumption terms (L0-CON-120); centre of gravity fixed (L0-CON-130); fuel state for the crew alerts. | FU |
-| F-AER-03 | Propagate six-degree-of-freedom rigid-body motion under control forces, gravity and drag | Effector outputs, mass, inertia, wind, simulation step → vehicle state | Drag on the air-relative velocity with wind, steady plus gusts built up over at least [P-SYS-570] (L0-CON-090, D17, D51, D62); principal body axes, zero products of inertia (D61); standard-atmosphere density (D20); sensed acceleration computed for the crew limit (L0-CON-310). | DYN |
+| F-AER-01 | Generate control forces and control moments with the effectors | Effector commands, fuel availability → effector outputs (body forces, body moments) | Adds fuel availability (zero output at fuel exhaustion, L0-CON-100) and the per-effector maximum force (L0-CON-300). Zero output with the effectors off (D69, L1-AER-930). | EF |
+| F-AER-02 | Consume fuel and update mass properties | Effector outputs, initial fuel mass → fuel mass flow, remaining fuel mass, vehicle mass, inertia, fuel state | Separate translational and rotational consumption terms (L0-CON-120); centre of gravity fixed (L0-CON-130); fuel state for the crew alerts. Zero flow at zero effector output (L1-AER-940); none on the ground (D69). | FU |
+| F-AER-03 | Propagate six-degree-of-freedom rigid-body motion under control forces, gravity, drag and, on the ground, the ground reaction | Effector outputs, mass, inertia, wind, gear state, simulation step → vehicle state | Drag on the air-relative velocity with wind, steady plus gusts built up over at least [P-SYS-570] (L0-CON-090, D17, D51, D62); principal body axes, zero products of inertia (D61); standard-atmosphere density (D20); sensed acceleration computed for the crew limit (L0-CON-310). On the ground the ground reaction holds the vehicle at rest on the gear until liftoff (D69, L1-AER-920). | DYN |
 | F-AER-04 | Provide the vehicle state to the navigation and control functions | Vehicle state → vehicle state at the start of each control frame | Perfect knowledge (L0-ASM-010) is now a requirement (L1-AER-440), not a TBR. | DYN |
 | F-AER-05 | Regulate each translational and rotational degree of freedom independently | Axis references, vehicle state, vehicle mass → axis demands | Six separate references; the attitude references hold pitch and roll at zero at all times (D10, D57). | FC |
 | F-AER-06 | Allocate axis demands to the effectors | Axis demands, effector limits, vehicle mass → effector commands | Keeps the sensed acceleration within the crew limit at each fuel state (L0-CON-310, D38); saturation is nominal behaviour. The priority rule is a derived requirement at L3/L4 (C4, FC1). | FC |
-| F-AER-07 | Guide the vehicle according to the active autoflight modes | Mode state, targets, navigation quantities → axis references | Manoeuvres limited in acceleration (D16) within the vehicle acceleration budget (§7.2). The guidance laws are L2/L3. | AF |
-| F-AER-08 | Manage autoflight mode selection, arming, engagement, transitions and annunciation content | Crew selections, navigation quantities, fuel state → mode state (armed and active modes), targets, annunciation content | Failure inputs removed (tailoring). Catalogue D56: one horizontal and one vertical mode at a time, independent; Go to hover and Hover govern both. Arming and transitions are L2 (C5). | AF |
-| F-AER-09 | Compute the navigation quantities | Vehicle state → altitude, horizontal speed, vertical speed, heading, track, validity | New. Definitions CV-430 to CV-550; validity thresholds CV-580. No VOR and no flight path angle (D56). | NAV |
+| F-AER-07 | Guide the vehicle according to the active autoflight modes | Mode state, targets, navigation quantities → axis references, with the off value on the ground (D69) | Manoeuvres limited in acceleration (D16) within the vehicle acceleration budget (§7.2). The guidance laws are L2/L3. | AF |
+| F-AER-08 | Manage autoflight mode selection, arming, engagement, transitions and annunciation content | Crew selections, navigation quantities, fuel state, gear state → mode state (armed and active modes), targets, annunciation content, landing gear command | Failure inputs removed (tailoring). Catalogue D56 with Takeoff and Land (D69): one horizontal and one vertical mode at a time, independent; Go to hover, Hover, Takeoff and Land govern both. Arming and transitions are L2 (C5). | AF |
+| F-AER-09 | Compute the navigation quantities | Vehicle state → altitude, height above the ground, horizontal speed, vertical speed, heading, track, validity | New. Definitions CV-400 to CV-550; validity thresholds CV-580. No VOR and no flight path angle (D56). | NAV |
 | F-AER-10 | Accept the crew selections | Crew interface input (crew-facing units) → selections and selected values converted to SI targets (CV-770) | New. The crew is a human through the TST, a test procedure or an RVS agent (L0-ASM-120). Inputs come through the flight control panel data (L0-CON-180): modes and the heading, horizontal speed, target altitude and vertical speed selectors (D56); the panel layout is #79. | FCP |
 | F-AER-11 | Produce the operational data | Signals of each function, timestamps, configuration identity → time-stamped operational data | New. Relates crew inputs, mode changes, control activity and vehicle responses in time (L0-OBJ-140). The releasable/protected classification is deferred with the RVS (#69, G0-F22). | TM |
-| F-AER-12 | Detect ground contact and classify it as a landing or a crash | Vehicle state (vertical and horizontal speed at the contact sample) → landing or crash event | New. Ideal landing (D37, L0-CON-290); the envelope is two speed limits, with no acceleration limit (D53). The TST ends the run on the event. | DYN |
-| F-AER-13 | Present the annunciations and indications to the crew | Mode state and targets, navigation quantities, fuel state → crew interface output (crew-facing units) | New. Crew-facing units and conversions per CV-740, CV-750, CV-760. | FCP |
-| F-AER-14 | Initialise and configure a run | Configuration (parameter set, flight-control-law design, autoflight implementation), initial condition → initial values of each function, configuration identity | New. Makes the control law and the autoflight implementation replaceable without touching the vehicle model (L0-CON-200, -210). The initial selector values go to the flight control panel (I-28). NAV has no state to initialise. | DYN, FU, FC, AF, FCP |
+| F-AER-12 | Detect ground contact, classify it as a landing or a crash, and hold the vehicle at rest on the ground | Vehicle state, gear position, fuel availability → landing or crash event, gear state (on the ground or not) | New. Ideal landing on an ideal landing gear (D37, D69, L0-CON-290). The envelope is two speed limits (D53); a landing also needs the gear extended and fuel remaining (D68). After a landing the vehicle rests until liftoff. The TST ends the run on a crash. | DYN |
+| F-AER-13 | Present the annunciations and indications to the crew | Mode state and targets, navigation quantities, fuel state, the gear position, as annunciation content → crew interface output (crew-facing units) | New. Crew-facing units and conversions per CV-740, CV-750, CV-760. | FCP |
+| F-AER-14 | Initialise and configure a run | Configuration (parameter set, flight-control-law design, autoflight implementation), initial condition, including the landing gear position (a ground start, D69, or an airborne test start) → initial values of each function, configuration identity | New. Makes the control law and the autoflight implementation replaceable without touching the vehicle model (L0-CON-200, -210). The initial selector values go to the flight control panel (I-28). NAV has no state to initialise. | DYN, FU, FC, AF, FCP |
+| F-AER-15 | Extend and retract the landing gear | Landing gear command → gear position (extended, retracted, in transit) | New (D69). Transit time [P-DYN-050]; on the ground the gear stays extended; the gear changes no mass property and no drag (L1-AER-900, -910). | DYN |
 
-**Functions not on the list, on purpose.** Failure detection and reconfiguration (deferred); manual flight control (excluded by L0-CON-180; no requirement written at L1, D49); sensor and state estimation (perfect knowledge, L0-ASM-010; a later upgrade, #83); electrical power (L0-CON-160, a leaf scope statement; D54).
+**Functions not on the list, on purpose.** Failure detection and reconfiguration (deferred); manual flight control (excluded by L0-CON-180; no requirement written at L1, D49); sensor and state estimation (perfect knowledge, L0-ASM-010; a later upgrade, #83); electrical power (L0-CON-160, a leaf scope statement; D54); movement on the ground (taxiing: the vehicle is stationary on the ground, D69).
 
 ## 3. N² interface matrix
 
@@ -49,23 +50,24 @@ Functions are verbs. F-AER-01 to 08 are the METHODOLOGY §5 functions, refined. 
 
 Read a cell as "row produces, column consumes". Diagonal cells name the function. The interface IDs (I-nn) are listed in §3.2. "TST" includes the crew when the crew acts through the TST interface (L0-ASM-120).
 
-| From \ To | F-01 | F-02 | F-03 | F-04 | F-05 | F-06 | F-07 | F-08 | F-09 | F-10 | F-11 | F-12 | F-13 | F-14 | TST |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **F-01** | **EF out** | I-01 | I-02 | | | | | | | | I-30 | | | | |
-| **F-02** | I-03 | **Fuel** | I-04 | | I-05 | I-05 | | I-06 | | | I-31 | | I-06 | | |
-| **F-03** | | | **Motion** | I-07 | | | | | | | I-32 | I-08 | | | |
-| **F-04** | | | | **State** | I-09 | I-09 | | | I-10 | | | | | | |
-| **F-05** | | | | | **Regulate** | I-11 | | | | | I-33 | | | | |
-| **F-06** | I-12 | | | | | **Allocate** | | | | | I-33 | | | | |
-| **F-07** | | | | | I-13 | | **Guide** | | | | I-34 | | | | |
-| **F-08** | | | | | | | I-14 | **Modes** | | | I-34 | | I-16 | | |
-| **F-09** | | | | | | | I-17 | I-17 | **Nav** | | I-35 | | I-18 | | |
-| **F-10** | | | | | | | | I-19 | | **Crew in** | I-36 | | | | |
-| **F-11** | | | | | | | | | | | **Op data** | | | | I-40 |
-| **F-12** | | | | | | | | | | | I-37 | **Contact** | | | I-41 |
-| **F-13** | | | | | | | | | | | I-38 | | **Present** | | I-42 |
-| **F-14** | I-21 | I-21 | I-21 | | I-22 | I-22 | | I-23 | | I-28 | I-39 | | | **Set-up** | |
-| **TST** | | | I-25 | | | | | | | I-26 | | | | I-27 | **—** |
+| From \ To | F-01 | F-02 | F-03 | F-04 | F-05 | F-06 | F-07 | F-08 | F-09 | F-10 | F-11 | F-12 | F-13 | F-14 | F-15 | TST |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **F-01** | **EF out** | I-01 | I-02 | | | | | | | | I-30 | | | | | |
+| **F-02** | I-03 | **Fuel** | I-04 | | I-05 | I-05 | | I-06 | | | I-31 | I-03 | I-06 | | | |
+| **F-03** | | | **Motion** | I-07 | | | | | | | I-32 | I-08 | | | | |
+| **F-04** | | | | **State** | I-09 | I-09 | | | I-10 | | | | | | | |
+| **F-05** | | | | | **Regulate** | I-11 | | | | | I-33 | | | | | |
+| **F-06** | I-12 | | | | | **Allocate** | | | | | I-33 | | | | | |
+| **F-07** | | | | | I-13 | | **Guide** | | | | I-34 | | | | | |
+| **F-08** | | | | | | | I-14 | **Modes** | | | I-34 | | I-16 | | I-43 | |
+| **F-09** | | | | | | | I-17 | I-17 | **Nav** | | I-35 | | I-18 | | | |
+| **F-10** | | | | | | | | I-19 | | **Crew in** | I-36 | | | | | |
+| **F-11** | | | | | | | | | | | **Op data** | | | | | I-40 |
+| **F-12** | | | I-46 | | | | | I-45 | | | I-37, I-45 | **Contact** | | | | I-41 |
+| **F-13** | | | | | | | | | | | I-38 | | **Present** | | | I-42 |
+| **F-14** | I-21 | I-21 | I-21 | | I-22 | I-22 | | I-23 | | I-28 | I-39 | | | **Set-up** | I-21 | |
+| **F-15** | | | I-44 | | | | | | | | I-45 | I-44 | | | **Gear** | |
+| **TST** | | | I-25 | | | | | | | I-26 | | | | I-27 | | **—** |
 
 Each function has at least one input and one output, and every output has a consumer, so there is no dangling function. TM (F-11) consumes from every function but feeds nothing back: it is an observer (§5).
 
@@ -75,12 +77,12 @@ Each function has at least one input and one output, and every output has a cons
 | --- | --- | --- | --- |
 | I-01 | F-01 → F-02 | Effector outputs (for consumption) | Vehicle-model boundary (internal to the model; MS-DYN) |
 | I-02 | F-01 → F-03 | Control forces and control moments in the body frame | MS-DYN |
-| I-03 | F-02 → F-01 | Fuel availability (remaining fuel mass above zero) | MS-DYN |
-| I-04 | F-02 → F-03 | Vehicle mass, inertia tensor (diagonal: principal body axes, D61), centre-of-gravity position | MS-DYN |
+| I-03 | F-02 → F-01, F-12 | Fuel availability (remaining fuel mass above zero); F-12 uses it to classify a contact (D68) | MS-DYN |
+| I-04 | F-02 → F-03 | Vehicle mass, inertia tensor (diagonal: principal body axes, D61) | MS-DYN |
 | I-05 | F-02 → F-05, F-06 | Current mass properties: vehicle mass (crew acceleration limit, force scaling) and inertia | Vehicle-model boundary (new; `work/B1/interface_needs.md` IN-B1-01; L1-AER-430) |
 | I-06 | F-02 → F-08, F-13 | Fuel state: remaining fuel mass, low-fuel and fuel-exhaustion states | Vehicle-model boundary; ICD-FCP for the panel (L1-AER-880) |
 | I-07 | F-03 → F-04 | Vehicle state: position, velocity, attitude quaternion, body rates, vehicle acceleration, sensed acceleration | MS-DYN |
-| I-08 | F-03 → F-12 | Altitude and velocity at the contact sample (D53) | MS-DYN |
+| I-08 | F-03 → F-12 | Lowest point of the vehicle and velocity at the contact step (D53, CV-400); gear position | MS-DYN |
 | I-09 | F-04 → F-05, F-06 | Vehicle state at the start of the control frame | Vehicle-model boundary |
 | I-10 | F-04 → F-09 | Vehicle state at the start of the control frame | Vehicle-model boundary |
 | I-11 | F-05 → F-06 | Axis demands: three force demands and three moment demands | Internal to FC (L3, C4) |
@@ -91,7 +93,7 @@ Each function has at least one input and one output, and every output has a cons
 | I-17 | F-09 → F-07, F-08 | Navigation quantities and their validity | ICD-NAV-AF (L1-AER-890) |
 | I-18 | F-09 → F-13 | Navigation quantities for the indications | ICD-FCP (L1-AER-880) |
 | I-19 | F-10 → F-08 | Mode selections, targets in SI | ICD-FCP (L1-AER-880) |
-| I-21 | F-14 → F-01, F-02, F-03 | Initial state, initial fuel mass, vehicle parameter set | ICD-AER-TST |
+| I-21 | F-14 → F-01, F-02, F-03, F-15 | Initial state, including the landing gear position; initial fuel mass; vehicle parameter set | ICD-AER-TST |
 | I-22 | F-14 → F-05, F-06 | Flight-control-law design selection | ICD-AER-TST |
 | I-23 | F-14 → F-08 | Initial mode state and targets | ICD-AER-TST |
 | I-25 | TST → F-03 | Simulation step command, wind velocity (L1-AER-670) | ICD-AER-TST |
@@ -100,8 +102,12 @@ Each function has at least one input and one output, and every output has a cons
 | I-28 | F-14 → F-10 | Initial selector values (the targets of the initial condition, L1-AER-660) | ICD-AER-TST |
 | I-30 to I-39 | F-01 … F-14 → F-11 | Signals recorded in the operational data (L1-AER-610 to -640) | ICD-AER-TST (operational data) |
 | I-40 | F-11 → TST | Operational data, one record per output sample | ICD-AER-TST |
-| I-41 | F-12 → TST | Landing or crash event (the TST ends the run) | ICD-AER-TST |
+| I-41 | F-12 → TST | Landing or crash event (the TST ends the run on a crash) | ICD-AER-TST |
 | I-42 | F-13 → TST | Annunciations and indications in crew-facing units | ICD-AER-TST (crew interface) |
+| I-43 | F-08 → F-15 | Landing gear command | Vehicle-model boundary (L1-AER-430) |
+| I-44 | F-15 → F-03, F-12 | Gear position | MS-DYN |
+| I-45 | F-12, F-15 → F-08, F-11 | Gear state: gear position, on the ground or not | Vehicle-model boundary (L1-AER-430); ICD-AER-TST for the operational data |
+| I-46 | F-12 → F-03 | On-ground state, from which the ground reaction applies | MS-DYN |
 
 I-15, I-20 and I-24 (VOR station and course) are withdrawn with the VOR function (D56); their numbers are not reused.
 
@@ -111,11 +117,11 @@ Same convention, after allocation (§6). "×" marks an interface that crosses a 
 
 | From \ To | DYN | FU | EF | FC | AF | FCP | NAV | TM | TST |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **DYN** | — | | | × state | | | × state | × state, events | × events |
-| **FU** | × mass, inertia | — | × fuel availability | × mass properties | × fuel state | × fuel state | | × fuel state | |
+| **DYN** | — | | | × state | × gear state | | × state | × state, events, gear state | × events |
+| **FU** | × mass, inertia, fuel availability | — | × fuel availability | × mass properties | × fuel state | × fuel state | | × fuel state | |
 | **EF** | × forces, moments | × outputs | — | | | | | × outputs | |
 | **FC** | | | × effector commands | — | | | | × refs, demands, commands | |
-| **AF** | | | | × axis references | — | × modes, targets, annunciation content | | × modes, targets | |
+| **AF** | × gear command | | | × axis references | — | × modes, targets, annunciation content | | × modes, targets | |
 | **FCP** | | | | | × selections in SI | — | | × crew selections | × annunciations, indications |
 | **NAV** | | | | | × navigation quantities | × indications | — | × navigation quantities | |
 | **TM** | | | | | | | | — | × operational data |
@@ -154,6 +160,10 @@ flowchart LR
   F11[F-AER-11 Operational data] -. observes every interface .- F05
   F11 --> TSTOUT([TST: recording, assessment])
   F12 -- landing / crash --> TSTOUT
+  F08 -- gear command --> F15[F-AER-15 Landing gear]
+  F15 --> F03
+  F15 --> F12
+  F12 -- gear state --> F08
 ```
 
 ### 4.2 Sequence within one control frame
@@ -168,7 +178,7 @@ The vehicle model advances in simulation steps of `[P-SYS-300]`; the flight soft
 | 4 | F-AER-08 | Selections, navigation quantities, fuel state | Mode state, targets |
 | 5 | F-AER-07 | Mode state, targets, navigation quantities | Axis references |
 | 6 | F-AER-05, F-AER-06 | References, state, mass | Effector commands, held for the frame |
-| 7 | F-AER-01, -02, -03, -12 | Commands, per simulation step, for each step of the frame | State at each step; fuel; events |
+| 7 | F-AER-01, -02, -03, -12, -15 | Commands, per simulation step, for each step of the frame | State at each step; fuel; events |
 | 8 | F-AER-11, F-AER-13 | Signals at each output sample `[P-TM-010]` | Operational data; crew output |
 
 ## 5. Logical architecture
@@ -188,7 +198,7 @@ flowchart TB
   subgraph VM[Vehicle model: unchanged when the software is replaced]
     EF[EF effectors]
     FU[FU fuel and mass properties]
-    DYN[DYN dynamics, environment, ground contact]
+    DYN[DYN dynamics, environment, landing gear, ground contact]
   end
   TM[TM operational data output]
   TST([TST])
@@ -205,6 +215,8 @@ flowchart TB
   FC -- effector commands: vehicle-model boundary --> EF
   DYN -- vehicle state: vehicle-model boundary --> FC
   DYN -- vehicle state --> NAV
+  AF -- gear command: vehicle-model boundary --> DYN
+  DYN -- gear state --> AF
   FU -- mass properties --> FC
   FU -- fuel state --> AF
   EF --> DYN
@@ -219,7 +231,7 @@ Boundaries the architecture fixes (each is an L1 interface requirement):
 
 | Boundary | Crosses | L1 requirement | ICD |
 | --- | --- | --- | --- |
-| Vehicle-model boundary | Effector commands in; vehicle state, mass properties and fuel state out | L1-AER-430, -440 | New: proposed as a section of ICD-AER-TST or `icd/ICD-VM-FS.md` (IN-B1-01, I1) |
+| Vehicle-model boundary | Effector commands and the landing gear command in; vehicle state, gear state, mass properties and fuel state out | L1-AER-430, -440 | New: proposed as a section of ICD-AER-TST or `icd/ICD-VM-FS.md` (IN-B1-01, I1) |
 | Autoflight → flight control | Axis references, the same for any law (D15) | L1-AER-420 | ICD-FC-AF |
 | Navigation → autoflight | Navigation quantities and validity | L1-AER-890 (computation: L1-AER-530) | ICD-NAV-AF |
 | Flight control panel ↔ AF, NAV, FU | Crew selections in SI (FCP → AF); annunciation content (AF → FCP); indicated quantities (NAV → FCP); fuel state (FU → FCP) | L1-AER-880 | New: ICD-FCP (plan §3; D55) |
@@ -231,7 +243,7 @@ Boundaries the architecture fixes (each is an L1 interface requirement):
 2. **Independent degrees of freedom (L0-CON-020, -030, D18).** FC regulates six separate references; AF sets them. Because the axes are uncoupled, AF sets the horizontal motion, the vertical motion and the heading independently (D56); pitch and roll are held at zero (D57).
 3. **One definition of each navigation quantity.** AF, the crew indications and TM read the same NAV outputs, defined once by CV-430 to CV-580. A later sensor model (#83) replaces only the NAV input.
 4. **Observability without interference.** TM taps every interface and feeds nothing back, so the operational data (L0-OBJ-140) cannot change the behaviour it records.
-5. **Physics stays physics.** Fuel exhaustion, saturation and the crew g-limit are handled in the layer that owns them (EF, FC), not as mode logic.
+5. **Physics stays physics.** Fuel exhaustion, saturation, the crew g-limit and the ground reaction are handled in the layer that owns them (EF, FC, DYN), not as mode logic. Autoflight only commands the gear and switches the effectors off through the axis references (D69).
 
 ### 5.3 Alternatives considered
 
@@ -249,13 +261,13 @@ Boundaries the architecture fixes (each is an L1 interface requirement):
 
 | Subsystem | Functions | Owns |
 | --- | --- | --- |
-| DYN — dynamics model | F-AER-03, F-AER-04, F-AER-12, part of F-AER-14 | Equations of motion, gravity, drag, wind, sensed acceleration, ground contact, simulation step, vehicle state, MS-DYN (C1) |
-| FU — fuel and mass properties | F-AER-02, part of F-AER-14 | Fuel mass flow, remaining fuel, vehicle mass, inertia, fixed centre of gravity, fuel state for the alerts |
-| EF — effectors | F-AER-01 | Effector outputs, directions, limits, command response, zero output at fuel exhaustion |
+| DYN — dynamics model | F-AER-03, F-AER-04, F-AER-12, F-AER-15, part of F-AER-14 | Equations of motion, gravity, drag, wind, sensed acceleration, ground contact, landing gear (geometry, movement), ground reaction and rest on the ground, gear state, simulation step, vehicle state, MS-DYN (C1) |
+| FU — fuel and mass properties | F-AER-02, part of F-AER-14 | Fuel mass flow, remaining fuel, vehicle mass, inertia, fixed centre of gravity, fuel state for the alerts, zero flow at zero output |
+| EF — effectors | F-AER-01 | Effector outputs, directions, limits, command response, zero output at fuel exhaustion, zero output with the effectors off |
 | FC — flight control | F-AER-05, F-AER-06, part of F-AER-14 | Six-axis regulation, allocation, crew g-limit as a force limit at the current mass, saturation behaviour |
-| AF — autoflight | F-AER-07, F-AER-08, part of F-AER-14 | Mode logic, guidance, manoeuvre acceleration limit, annunciation content |
+| AF — autoflight | F-AER-07, F-AER-08, part of F-AER-14 | Mode logic (Takeoff and Land included), guidance, landing gear command, effectors off on the ground, manoeuvre acceleration limit, annunciation content (gear position included) |
 | FCP — flight control panel | F-AER-10, F-AER-13, part of F-AER-14 | Crew selections (modes; heading, horizontal speed, target altitude and vertical speed selectors), annunciations and indications, crew-unit conversion (D55, D56) |
-| NAV — navigation | F-AER-09 | Guidance quantities and their validity |
+| NAV — navigation | F-AER-09 | Guidance quantities, height above the ground included, and their validity |
 | TM — operational data output | F-AER-11 | Time-stamped operational data, configuration identity, events |
 
 Every function is allocated, and every subsystem has at least one function. F-AER-14 (run set-up) is shared: each subsystem initialises its own state from the initial condition and configuration (L1-AER-660, -400, -410).
@@ -299,7 +311,7 @@ Every function is allocated, and every subsystem has at least one function. F-AE
 | L1-AER-320 | Performance | climb at each vertical speed up to [P-SYS-240] under autoflight. | L0-OBJ-030 |  |  | ● | ● | ● |  |  |  |
 | L1-AER-330 | Performance | descend at each vertical speed magnitude up to [P-SYS-250] under autoflight. | L0-OBJ-030 |  |  | ● | ● | ● |  |  |  |
 | L1-AER-350 | Performance | change its heading at each heading rate magnitude up to [P-SYS-270] under autofl… | L0-OBJ-030 |  |  | ● | ● | ● |  |  |  |
-| L1-AER-360 | Performance | stay airborne with fuel remaining for at least [P-SYS-280]. | L0-CON-100, L0-OBJ-030 |  | ● | ● |  |  |  |  |  |
+| L1-AER-360 | Performance | stay airborne with fuel remaining for at least [P-SYS-280] from the start of the… | L0-CON-100, L0-OBJ-030 |  | ● | ● |  |  |  |  |  |
 | L1-AER-370 | Functional | regulate each of its six degrees of freedom toward a separate reference for that… | L0-OBJ-020, L0-CON-020 |  |  |  | ● |  |  |  |  |
 | L1-AER-380 | Performance | keep the velocity along each other body axis within [P-SYS-540] of its reference… | L0-CON-020, L0-OBJ-020 |  |  | ● | ● |  |  |  |  |
 | L1-AER-390 | Performance | hold its pitch angle and its roll angle within [P-AF-180] of zero. | L0-OBJ-030, L0-CON-020 |  |  |  | ● | ● |  |  |  |
@@ -310,13 +322,13 @@ Every function is allocated, and every subsystem has at least one function. F-AE
 | L1-AER-440 | Interface | provide its navigation and flight-control functions with the exact simulated veh… | L0-OBJ-020, L0-OBJ-030 | ● |  |  | ● |  |  | ● |  |
 | L1-AER-450 | Functional | guide its translation and its heading toward the targets the crew selects, throu… | L0-OBJ-030 |  |  |  | ● | ● |  | ● |  |
 | L1-AER-460 | Performance | keep its horizontal position within [P-SYS-450] of the reference position at eac… | L0-OBJ-030, L0-OBJ-020 |  |  | ● | ● | ● |  |  |  |
-| L1-AER-470 | Performance | annunciate the new mode state or target to the crew within [P-SYS-470]. | L0-OBJ-030, L0-CON-170 |  |  |  |  | ● | ● |  |  |
+| L1-AER-470 | Performance | annunciate the new mode state, target or gear position to the crew within [P-SYS… | L0-OBJ-030, L0-CON-170 |  |  |  |  | ● | ● |  |  |
 | L1-AER-480 | Interface | accept each crew selection of a mode or a target as a time-stamped data item of … | L0-CON-170, L0-OBJ-030 |  |  |  |  |  | ● |  |  |
 | L1-AER-490 | Interface | output its annunciations and indications as data items of the crew interface def… | L0-CON-170 |  |  |  |  |  | ● |  |  |
 | L1-AER-500 | Constraint | state each crew selection and each annunciated or indicated quantity in the crew… | L0-CON-270 |  |  |  |  |  | ● |  |  |
 | L1-AER-510 | Constraint | define no physical control device and no display format for its crew interface. | L0-CON-170 |  |  |  |  |  |  |  |  |
 | L1-AER-520 | Constraint | take each crew input through the flight control panel data of its crew interface… | L0-CON-180 |  |  |  |  |  |  |  |  |
-| L1-AER-530 | Functional | compute, at each control frame, its altitude, horizontal speed, vertical speed, … | L0-OBJ-030 |  |  |  |  |  |  | ● |  |
+| L1-AER-530 | Functional | compute, at each control frame, its altitude, height above the ground, horizonta… | L0-OBJ-030 |  |  |  |  |  |  | ● |  |
 | L1-AER-560 | Functional | indicate its remaining fuel mass to the crew at each output sample. | L0-CON-100, L0-CON-170 |  | ● |  |  |  | ● |  |  |
 | L1-AER-570 | Functional | annunciate a low-fuel alert within [P-SYS-470]. | L0-CON-100, L0-CON-170 |  | ● |  |  |  | ● |  |  |
 | L1-AER-580 | Functional | annunciate fuel exhaustion within [P-SYS-470]. | L0-CON-100, L0-CON-170 |  | ● |  |  |  | ● |  |  |
@@ -350,11 +362,19 @@ Every function is allocated, and every subsystem has at least one function. F-AE
 | L1-AER-860 | Documentation | trace each of its requirements below L0 to its parent requirements, or, for a de… | L0-OBJ-180 |  |  |  |  |  |  |  |  |
 | L1-AER-870 | Constraint | convert each crew selection to SI, and each annunciated or indicated quantity fr… | L0-CON-270 |  |  |  |  |  | ● |  |  |
 | L1-AER-880 | Interface | exchange data between its flight control panel and its other functions only as c… | L0-CON-170, L0-OBJ-030 |  | ● |  |  | ● | ● | ● |  |
-| L1-AER-890 | Interface | pass its altitude, horizontal speed, vertical speed, heading and track, with the… | L0-OBJ-030 |  |  |  |  | ● |  | ● |  |
+| L1-AER-890 | Interface | pass its altitude, height above the ground, horizontal speed, vertical speed, he… | L0-OBJ-030 |  |  |  |  | ● |  | ● |  |
+| L1-AER-900 | Constraint | have a retractable landing gear whose ground contact points, when extended, lie [P-DYN-040] below … | L0-CON-290, L0-CON-130 | ● |  |  |  |  |  |  |  |
+| L1-AER-910 | Functional | bring its landing gear to the commanded position within [P-DYN-050]. | L0-CON-290, L0-OBJ-030 | ● |  |  |  | ● |  |  |  |
+| L1-AER-920 | Model fidelity | rest on its extended landing gear at level attitude with zero vehicle velocity … | L0-CON-090, L0-CON-290 | ● |  |  |  |  |  |  |  |
+| L1-AER-930 | Functional | produce zero control force and zero control moment … on the ground … | L0-CON-100, L0-OBJ-030 |  |  | ● | ● | ● |  |  |  |
+| L1-AER-940 | Model fidelity | compute a zero fuel mass flow for each simulation step in which its effectors produce zero … | L0-CON-120, L0-CON-100 |  | ● |  |  |  |  |  |  |
+| L1-AER-950 | Functional | start at rest on its extended landing gear … with its effectors off. | L0-OBJ-010, L0-OBJ-030 | ● |  |  | ● | ● |  |  |  |
+| L1-AER-960 | Performance | reach the hover height [P-AF-210] with its landing gear retracted … | L0-OBJ-030 |  |  | ● | ● | ● |  |  |  |
+| L1-AER-970 | Performance | make its ground contact on its extended landing gear within the landing envelope. | L0-OBJ-030, L0-CON-290 |  |  | ● | ● | ● |  |  |  |
 
 | Subsystem | DYN | FU | EF | FC | AF | FCP | NAV | TM | Leaf at L1 (—) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| L1 records allocated | 23 | 22 | 23 | 23 | 20 | 15 | 9 | 10 | 17 |
+| L1 records allocated | 27 | 23 | 26 | 27 | 25 | 15 | 9 | 10 | 17 |
 
 ## 7. Budgets
 
@@ -387,12 +407,15 @@ Closure rule: [P-DYN-010] + [P-SYS-440] ≤ [P-SYS-120], and [P-AF-200] + [P-FC-
 
 **Disturbance share (D62, G1-F08).** A gust builds up over at least [P-SYS-570], so the drag force changes at a bounded rate. The vehicle acceleration it causes before flight control compensates, within the control-loop latency [P-SYS-480], is part of the flight-control transient allowance [P-FC-020]. C4 shows at G2 that the allowance covers a gust of [P-SYS-560] on a steady wind of [P-SYS-430], built up over [P-SYS-570], at the largest drag. L1-AER-300 is stated for winds within the wind envelope, which are the only winds the TST applies.
 
+**Ground and liftoff (D69).** At rest on the ground the sensed acceleration is that of the ground reaction, [P-DYN-010]; the touchdown on the ideal gear is not computed (D53). On the ground the ground reaction holds the vehicle against the drag of the wind. At liftoff that drag acts as a step that the flight software cannot anticipate (L1-AER-670). At dry mass and sea-level density, the takeoff wind limit [P-SYS-580] keeps the step within [P-FC-020] (L1-AER-960, D73).
+
 ### 7.3 Fuel (L1-AER-150, -160, -360)
 
 | Item | Parameter | Rule |
 | --- | --- | --- |
 | Usable fuel at full capacity | [P-FU-010] | Sized so that the hover endurance holds at maximum mass. |
-| Hover endurance at full fuel | [P-SYS-280] | Autoflight holding the horizontal position and the altitude in still air (Stationary with Altitude hold, or Hover; D60): the effectors only counter gravity. |
+| Hover endurance at full fuel | [P-SYS-280] | From a takeoff at full fuel (D69), Hover in still air: the effectors only counter gravity. The takeoff is inside the margin [P-FU-100]. |
+| No consumption on the ground | — | Zero flow at zero control force and moment (L1-AER-940); the effectors are off on the ground (L1-AER-930). |
 | Dry mass | [P-FU-030] | m_dry. |
 | Translational and rotational consumption | [P-FU-040], [P-FU-050] | Form in MS-DYN (C2). |
 | Low-fuel threshold | [P-FU-020] | A crew alert, not a reserve. |
@@ -431,9 +454,9 @@ Every L0 record allocated to AER has at least one L1 child; the table is generat
 
 | L0 ID | Allocated to | L1 children |
 | --- | --- | --- |
-| L0-OBJ-010 | AER | L1-AER-010, L1-AER-660, L1-AER-670, L1-AER-720 |
+| L0-OBJ-010 | AER | L1-AER-010, L1-AER-660, L1-AER-670, L1-AER-720, L1-AER-950 |
 | L0-OBJ-020 | AER | L1-AER-370, L1-AER-380, L1-AER-440, L1-AER-460 |
-| L0-OBJ-030 | AER | L1-AER-310, L1-AER-320, L1-AER-330, L1-AER-350, L1-AER-360, L1-AER-390, L1-AER-440, L1-AER-450, L1-AER-460, L1-AER-470, L1-AER-480, L1-AER-530, L1-AER-660, L1-AER-880, L1-AER-890 |
+| L0-OBJ-030 | AER | L1-AER-310, L1-AER-320, L1-AER-330, L1-AER-350, L1-AER-360, L1-AER-390, L1-AER-440, L1-AER-450, L1-AER-460, L1-AER-470, L1-AER-480, L1-AER-530, L1-AER-660, L1-AER-880, L1-AER-890, L1-AER-910, L1-AER-930, L1-AER-950, L1-AER-960, L1-AER-970 |
 | L0-OBJ-110 | TST, AER | L1-AER-690 |
 | L0-OBJ-140 | AER, TST | L1-AER-590, L1-AER-600, L1-AER-610, L1-AER-620, L1-AER-630, L1-AER-640 |
 | L0-OBJ-150 | AER, TST | L1-AER-840 |
@@ -449,11 +472,11 @@ Every L0 record allocated to AER has at least one L1 child; the table is generat
 | L0-CON-060 | AER | L1-AER-050, L1-AER-080 |
 | L0-CON-070 | AER | L1-AER-090 |
 | L0-CON-080 | AER | L1-AER-100 |
-| L0-CON-090 | AER | L1-AER-050, L1-AER-060, L1-AER-070 |
-| L0-CON-100 | AER | L1-AER-150, L1-AER-160, L1-AER-200, L1-AER-360, L1-AER-560, L1-AER-570, L1-AER-580 |
+| L0-CON-090 | AER | L1-AER-050, L1-AER-060, L1-AER-070, L1-AER-920 |
+| L0-CON-100 | AER | L1-AER-150, L1-AER-160, L1-AER-200, L1-AER-360, L1-AER-560, L1-AER-570, L1-AER-580, L1-AER-930, L1-AER-940 |
 | L0-CON-110 | AER | L1-AER-180, L1-AER-190 |
-| L0-CON-120 | AER | L1-AER-160, L1-AER-170 |
-| L0-CON-130 | AER | L1-AER-210 |
+| L0-CON-120 | AER | L1-AER-160, L1-AER-170, L1-AER-940 |
+| L0-CON-130 | AER | L1-AER-210, L1-AER-900 |
 | L0-CON-140 | AER | L1-AER-220 |
 | L0-CON-150 | AER | L1-AER-240, L1-AER-250 |
 | L0-CON-160 | — | — (leaf, D54) |
@@ -465,7 +488,7 @@ Every L0 record allocated to AER has at least one L1 child; the table is generat
 | L0-CON-260 | AER, TST | L1-AER-730 |
 | L0-CON-270 | AER, TST | L1-AER-500, L1-AER-870 |
 | L0-CON-280 | AER, TST | L1-AER-740 |
-| L0-CON-290 | AER, TST | L1-AER-260, L1-AER-270, L1-AER-280 |
+| L0-CON-290 | AER, TST | L1-AER-260, L1-AER-270, L1-AER-280, L1-AER-900, L1-AER-910, L1-AER-920, L1-AER-970 |
 | L0-CON-300 | AER | L1-AER-110 |
 | L0-CON-310 | AER | L1-AER-290, L1-AER-300 |
 | L0-SUC-010 | AER | L1-AER-800 |

@@ -146,11 +146,11 @@ Type:          Constraint
 Statement:     The Aeronef project shall generate each control force and control moment on the
   Aeronef with fictional force effectors.
 Rationale:     Instead of engines, wings or control surfaces, the Aeronef uses fictional
-  gravity-like force emitters (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §3). A control
-  force or moment (glossary) is any force or moment other than gravity and aerodynamic
-  drag. Children must show (D41): (Inspection) the model specification identifies the
-  force effectors as the only source of force and moment other than gravity and
-  aerodynamic drag.
+  gravity-like force emitters (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §3). A control force or
+  moment (glossary) is any force or moment other than gravity, aerodynamic drag and the ground
+  reaction that holds the Aeronef at rest on its landing gear (D69, L0-CON-090; CR-B3-02). Children
+  must show (D41): (Inspection) the model specification identifies the force effectors as the only
+  source of force and moment other than gravity, aerodynamic drag and the ground reaction.
 Parent(s):     —
 Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §3, §7
 Allocated to:  AER
@@ -161,7 +161,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       2
+Version:       3
 ```
 
 ### L0-CON-070
@@ -228,14 +228,16 @@ Type:          Constraint
 Statement:     The Aeronef project shall limit the external effects on the Aeronef model to gravity,
   aerodynamic drag on the air-relative velocity and ground contact.
 Rationale:     The concept lists gravity and air resistance as the only external effects to be
-  modelled (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §2, §7). The gravity and drag
-  models are defined in the model specification. G0 owner review (2026-10-25): accepted
-  with wind and ground contact. Drag acts on the velocity relative to the air, which
-  includes the wind (L0-ASM-050, D17). Ground contact is the ideal landing of
-  L0-CON-290 (D37). Children must show (D41): (Inspection) the model specification
-  defines gravity and aerodynamic drag on the vehicle velocity relative to the air
-  mass, including wind, as the only external forces and moments, and ground contact
-  (L0-CON-290) as the only other external effect.
+  modelled (OBJECTIVES §2; AIRCRAFT_CHARACTERISTICS §2, §7). The gravity and drag models are defined
+  in the model specification. G0 owner review (2026-10-25): accepted with wind and ground contact.
+  Drag acts on the velocity relative to the air, which includes the wind (L0-ASM-050, D17). Ground
+  contact is the ideal landing of L0-CON-290 (D37, revised by D69): the contact of the airborne
+  vehicle with the ground and, while the Aeronef rests on the ground, the ground reaction that holds
+  it at rest on its landing gear (CR-B3-03). Children must show (D41): (Inspection) the model
+  specification defines gravity and aerodynamic drag on the vehicle velocity relative to the air
+  mass, including wind, as the only external forces and moments in flight, and ground contact
+  (L0-CON-290), with the ground reaction while the Aeronef rests on the ground, as the only other
+  external effect.
 Parent(s):     —
 Source:        OBJECTIVES.md §2; AIRCRAFT_CHARACTERISTICS.md §2, §7
 Allocated to:  AER
@@ -246,7 +248,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       3
+Version:       4
 ```
 
 ### L0-CON-100
@@ -419,10 +421,11 @@ Type:          Constraint
 Statement:     The Aeronef project shall exclude electrical power generation, distribution and
   consumption from the Aeronef model.
 Rationale:     The electrical power system and electrical consumption are outside the initial
-  modelling scope (AIRCRAFT_CHARACTERISTICS §4, §7). The force effectors draw only on
-  fuel (L0-CON-100). This is a scope statement and a leaf: no lower-level requirement is
-  written for a system the Aeronef does not have, so it is checked directly over the whole
-  Aeronef branch (D54, CR-B1-04).
+  modelling scope (AIRCRAFT_CHARACTERISTICS §4, §7). The force effectors draw only on fuel
+  (L0-CON-100). This is a scope statement and a leaf: no lower-level requirement is written for a
+  system the Aeronef does not have, so it is checked directly over the whole Aeronef branch (D54,
+  CR-B1-04). The landing gear (D69, which revises D54 for the gear) moves without an energy model:
+  its movement uses no electrical power and no fuel (CR-B3-04).
 Parent(s):     —
 Source:        AIRCRAFT_CHARACTERISTICS.md §4, §7; METHODOLOGY.md §1
 Allocated to:  —
@@ -434,7 +437,7 @@ Parameters:    —
 TBD/TBR:       —
 Owner:         Martin
 Status:        Baselined
-Version:       3
+Version:       4
 ```
 
 ### L0-CON-170
@@ -802,25 +805,31 @@ Type:          Constraint
 Statement:     The Aeronef project shall model ground contact of the Aeronef as a landing within the
   landing envelope and as a crash outside it.
 Rationale:     G0 owner review (2026-10-25), decision D37: landing has to be modelled. Contact with
-  the ground within a landing envelope is a successful landing; contact outside it is a
-  crash. There is no landing gear, bounce or friction model (L0-ASM-110). The envelope
-  is two limits at the contact sample, on the vertical speed magnitude and on the
-  horizontal speed; there is no acceleration limit, because the ideal landing computes
-  no touchdown shock (D53, CR-B1-07). The limits are parameters set at a lower level.
-  Children must show (D41): (Inspection) the model specification defines ground contact
-  at altitude zero, a landing envelope of vertical and horizontal speed limits at the
-  contact sample, and the landing and crash outcomes.
+  the ground within a landing envelope is a successful landing; contact outside it is a crash. The
+  owner revised D37 with D69 (2026-11-05): the Aeronef has an extendable landing gear. A landing is
+  therefore a contact of the extended gear with the ground within the envelope. After it the Aeronef
+  rests on the ground, stationary on its gear, until it takes off again, and a landing does not end
+  the run. The gear is ideal: it has no spring, damping, bounce, sliding or tipping (L0-ASM-110). A
+  contact with the gear not extended, or after fuel exhaustion (D68), is a crash whatever the speeds
+  (D73), and a crash ends the run. The envelope is two limits at the contact sample, on the vertical
+  speed magnitude and on the horizontal speed. There is no acceleration limit, because the ideal
+  gear computes no touchdown shock (D53, CR-B1-07). The limits are parameters set at a lower level
+  (CR-B3-05). Children must show (D41): (Inspection) the model specification defines the landing
+  gear, ground contact at the lowest point of the vehicle (the extended gear, or the body when the
+  gear is not extended), a landing envelope of vertical and horizontal speed limits at the contact
+  sample, the landing and crash outcomes, and the rest on the gear after a landing.
 Parent(s):     —
-Source:        Owner review at G0, 2026-10-25 (D8, D37, D53)
+Source:        Owner review at G0, 2026-10-25 (D8, D37, D53); owner decisions D68, D69, D73
+  (2026-11-05)
 Allocated to:  AER, TST
 Criticality:   Not assessed
 Verification:  Inspection — TBD; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D41).
 Parameters:    —
-TBD/TBR:       Landing envelope limits TBD (lower level), Martin, closes at G2
+TBD/TBR:       Landing envelope limits TBR (P-SYS-500, P-SYS-510, TT-090), Martin, G2
 Owner:         Martin
 Status:        Baselined
-Version:       3
+Version:       4
 ```
 
 ### L0-CON-300
@@ -859,28 +868,26 @@ Type:          Constraint
 Statement:     While the Aeronef is airborne, the Aeronef project shall limit the magnitude of the
   acceleration sensed by the crew to [P-SYS-120].
 Rationale:     G0 owner review (2026-10-25): the crew must be protected from excessive g load. The
-  limiting factor is the acceleration the crew senses and experiences, not the force
-  itself (D38, #87). The sensed acceleration is the specific force: the sum of the
-  non-gravitational forces on the Aeronef divided by its current mass. Because the mass
-  falls as fuel is consumed (L0-CON-110, L0-ASM-090), the allowed resultant effector
-  force falls with it, and the force has to be compensated for the fuel used. The limit
-  applies to the whole project and lives in the system constants. How the controls
-  handle it when an effector is at its own limit (L0-CON-300) and a manoeuvre is needed
-  is a detailed-design matter. The owner set the limit at plus or minus 3 g for now
-  (2026-10-25): a sensed-acceleration magnitude of at most 3 g in any direction, with g
-  the standard gravity 9.806 65 m/s² (P-SYS-120 = 29.419 95 m/s²). Owner precision
-  (2026-10-25): the limit is on the total load the crew feels, gravity included. The 1
-  g needed to hold the Aeronef up against gravity counts toward the 3 g: hovering is 1
-  g, and free fall is 0 g. The limit applies while the Aeronef is airborne: the ideal
-  landing has no contact dynamics and computes no touchdown shock (L0-CON-290), and the
-  vertical speed limit of the landing envelope stands in for the impact (D53, CR-B1-07).
-  Where on the Aeronef the crew acceleration
-  is evaluated (centre of gravity or crew station) is set at a lower level. The g of
-  the limit is standard gravity whatever value the model gravity P-DYN-010 takes, so
-  the hover figure of 1 g is exact only if P-DYN-010 equals standard gravity. Children
-  must show (D41): (Test) in every automated test run, at every fuel state, while the
-  Aeronef is airborne, the magnitude of the sensed acceleration (specific force) does
-  not exceed [P-SYS-120].
+  limiting factor is the acceleration the crew senses and experiences, not the force itself (D38,
+  #87). The sensed acceleration is the specific force: the sum of the non-gravitational forces on
+  the Aeronef divided by its current mass. Because the mass falls as fuel is consumed (L0-CON-110,
+  L0-ASM-090), the allowed resultant effector force falls with it, and the force has to be
+  compensated for the fuel used. The limit applies to the whole project and lives in the system
+  constants. How the controls handle it when an effector is at its own limit (L0-CON-300) and a
+  manoeuvre is needed is a detailed-design matter. The owner set the limit at plus or minus 3 g for
+  now (2026-10-25): a sensed-acceleration magnitude of at most 3 g in any direction, with g the
+  standard gravity 9.806 65 m/s² (P-SYS-120 = 29.419 95 m/s²). Owner precision (2026-10-25): the
+  limit is on the total load the crew feels, gravity included. The 1 g needed to hold the Aeronef up
+  against gravity counts toward the 3 g: hovering is 1 g, and free fall is 0 g. The limit applies
+  while the Aeronef is airborne: the ideal landing gear has no contact dynamics and computes no
+  touchdown shock (L0-CON-290, D69), and the vertical speed limit of the landing envelope stands in
+  for the impact (D53, CR-B1-07). At rest on the ground the crew feels the ground reaction, 1 g,
+  which is within the limit (CR-B3-06). Where on the Aeronef the crew acceleration is evaluated
+  (centre of gravity or crew station) is set at a lower level. The g of the limit is standard
+  gravity whatever value the model gravity P-DYN-010 takes, so the hover figure of 1 g is exact only
+  if P-DYN-010 equals standard gravity. Children must show (D41): (Test) in every automated test
+  run, at every fuel state, while the Aeronef is airborne, the magnitude of the sensed acceleration
+  (specific force) does not exceed [P-SYS-120].
 Parent(s):     —
 Source:        Owner review at G0, 2026-10-25
 Allocated to:  AER
@@ -891,5 +898,5 @@ Parameters:    P-SYS-120
 TBD/TBR:       — (3 g confirmed by the owner, D45, CR-B1-06)
 Owner:         Martin
 Status:        Baselined
-Version:       6
+Version:       7
 ```

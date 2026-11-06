@@ -153,18 +153,24 @@ Status:        Confirmed
 
 ```asm
 ID:            L0-ASM-110
-Assumption:    Ground contact is an ideal landing. Contact with the ground within the landing
-  envelope (limits on the vertical and horizontal speed at the contact sample, D53) is a successful
-  landing; contact outside the envelope is a crash that ends the run. No landing gear, bounce,
-  friction or ground handling is modelled.
+Assumption:    Ground contact is ideal, and so is the landing gear: it has no spring, damping,
+  bounce, friction, sliding or tipping model and no mass of its own. A contact of the extended gear
+  with the ground within the landing envelope (limits on the vertical and horizontal speed at the
+  contact sample, D53), with fuel remaining, is a successful landing. After it the vehicle comes to
+  rest on the gear, stationary and at level attitude, and stays there until it takes off. Any other
+  ground contact, including a contact with the gear not extended or after fuel exhaustion (D68), is
+  a crash that ends the run.
 Rationale:     Owner decisions D8 and D37: the ground is at altitude zero on a flat Earth, and a
-  landing model is required. An ideal landing keeps it to one envelope check. The envelope limits
-  are parameters, set at a lower level. Revised by the owner at G0, 2026-10-25. Envelope
-  quantities set by the owner at G1 (D53, CR-B1-07): no acceleration limit, because no
-  touchdown shock is computed.
-Affects:       L0-CON-090 (ground reaction), L0-CON-290, L0-CON-310; model specification (ground
-  contact); TST run termination conditions; fuel-exhaustion reference mission;
-  CONVENTIONS CV-420
+  landing model is required. The owner added the landing gear and ground operations on 2026-11-05
+  (D69, revising D37, D53 and D54 for the gear; CR-B3-07): runs start on the ground, and the Aeronef
+  takes off and lands. A contact with the gear retracted or in transit, or any contact after fuel
+  exhaustion, is a crash whatever the speed (D73). An ideal gear reduces the landing to one envelope
+  check and the rest on the ground to a static equilibrium. The envelope limits are parameters, set
+  at a lower level. Revised by the owner at G0, 2026-10-25. Envelope quantities set by the owner at
+  G1 (D53, CR-B1-07): no acceleration limit, because no touchdown shock is computed.
+Affects:       L0-CON-090 (ground reaction), L0-CON-290, L0-CON-310; model specification (landing
+  gear and ground contact); TST run termination conditions (a crash ends the run, a landing does
+  not); fuel-exhaustion reference mission; CONVENTIONS CV-400, CV-420; CONOPS §4.2
 Owner:         Martin
 Status:        Confirmed
 ```

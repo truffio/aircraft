@@ -1,6 +1,6 @@
 # B3 — Change requests for the landing gear and ground operations (D69, D70)
 
-**Status:** Proposed by task B3, 2026-11-05, for owner approval. None is applied.
+**Status:** Proposed by task B3, 2026-11-05. Approved by the owner (D73) and applied 2026-11-05, with the answers B3-1 to B3-3.
 **Against:** L0 (`L0-baseline-1` plus later CRs; source `work/A1/L0_*.md`), L1 (`AER-L1-baseline-1` plus CR-C1-01 and CR-C2-01; source `work/B1/L1_AER.md`), specs/CONOPS.md, specs/CONVENTIONS.md, specs/GLOSSARY.md and specs/FUNCTIONAL_ANALYSIS.md, at branch c1_c2, commit 63499b8.
 **Decisions applied:** D37 as revised by D69, D53, D54 (revised for the gear), D56 (extended with Takeoff and Land), D67, D68, D69, D70, D71, D72.
 
@@ -39,7 +39,7 @@ Terms in *italics* are glossary terms. The new terms are defined in `glossary_pr
 | CR-B3-25 | B3 | L1-AER-640 | Statement: add the height above the ground, the gear state and the landing and crash events to the closed list. | D69. | Proposed | — |
 | CR-B3-26 | B3 | L1-AER-660 | Statement, rationale, TBD/TBR: add the landing gear position to the initial condition; runs start on the ground. | "every scenario starts airborne" (D69). | Proposed | — |
 | CR-B3-27 | B3 | L1-AER-720 | Statement: MS-DYN states the landing gear and ground contact model. | D69. | Proposed | — |
-| CR-B3-28 | B3 | L1 (new records) | Add L1-AER-900 to -970 (`work/B3/L1_new_records.md`). | Gear, ground rest, effectors off, no fuel use, ground start, takeoff and landing capability (D69). | Proposed | — |
+| CR-B3-28 | B3 | L1 (new records) | Add L1-AER-900 to -970 (`work/B3/new_L1_records.md`). | Gear, ground rest, effectors off, no fuel use, ground start, takeoff and landing capability (D69). | Proposed | — |
 | CR-B3-29 | B3 | CONOPS status, §1, §1.1, §1.2 | Scope: takeoff and landing covered; labels TAKEOFF, LAND; decisions D1 to D72. | D69. | Proposed | — |
 | CR-B3-30 | B3 | CONOPS §3 N-310, N-370; new N-450 | Needs: initial gear state; a landing does not end a run; new need for ground operations. | D69. | Proposed | — |
 | CR-B3-31 | B3 | CONOPS §4.2 | Altitude, height above the ground, ground, operating volume. | "Each run starts with the vehicle airborne. There is no take-off." (D69, D70). | Proposed | — |
@@ -286,7 +286,7 @@ Terms in *italics* are glossary terms. The new terms are defined in `glossary_pr
 
 #### CR-B3-28 — New L1 records L1-AER-900 to -970
 
-- **Requested change:** add the eight records of `work/B3/L1_new_records.md` to `work/B1/L1_AER.md`, after L1-AER-890:
+- **Requested change:** add the eight records of `work/B3/new_L1_records.md` to `work/B1/L1_AER.md`, after L1-AER-890:
 
 | ID | Type | Statement (short) | Parents | Allocated to |
 | --- | --- | --- | --- | --- |

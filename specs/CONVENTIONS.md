@@ -1,10 +1,10 @@
 # Aeronef — Conventions
 
-**Status:** Fixed at Gate G0 (D43), 2026-10-27. CV-650 and CV-660, once deferred to L2 (#54), were deleted with the VOR (D56, CR-B1-05). Changes go through a change request (`registers/CHANGE_REQUESTS.md`); the latest is CR-B1-10 (2026-11-04).
+**Status:** Fixed at Gate G0 (D43), 2026-10-27. CV-650 and CV-660, once deferred to L2 (#54), were deleted with the VOR (D56, CR-B1-05). Changes go through a change request (`registers/CHANGE_REQUESTS.md`); the latest is CR-B3-36 (2026-11-05).
 **Date:** 2026-10-27
 **Owner:** Martin
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
-**Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7–D62).
+**Related:** [GLOSSARY.md](GLOSSARY.md), [METHODOLOGY.md](../METHODOLOGY.md) §2 and §8.4 rule 12, [AIRCRAFT_REQUIREMENTS_PLAN.md](../AIRCRAFT_REQUIREMENTS_PLAN.md) §9 (D7–D72).
 
 ## 0. Purpose, scope and how to cite
 
@@ -89,8 +89,8 @@ Frame V has its origin at the body origin `O_B` (CV-160) and axes parallel to L 
 
 The body origin `O_B` is the vehicle centre of gravity (CG). Because the CG is fixed in the body (constraint from AIRCRAFT_CHARACTERISTICS §4), `O_B` is a fixed point of the body. If a later version lets the CG move, `O_B` stays at the nominal CG, defined as a fixed body point, and the CG offset becomes a model quantity.
 
-"Vehicle position", "altitude" and every motion quantity in Section 5 refer to `O_B` unless a requirement explicitly names another point.
-**Status:** Fixed (G0-02: D35).
+"Vehicle position", "altitude" and every motion quantity in Section 5 refer to `O_B` unless a requirement explicitly names another point. The height above the ground (CV-400) is defined at the lowest point of the body.
+**Status:** Changed (D69, CR-B3-36).
 
 ### CV-170 — Body frame B: axes
 
@@ -268,8 +268,8 @@ The **vehicle position** is the position of `O_B` in L: `(x_N, y_E, z_D)`, in me
 
 ### CV-420 — Altitude datum
 
-The altitude datum is the datum plane, `z_L = 0`, which contains `O_L`. It plays the role of mean sea level in the Aeronef world. The datum plane is also the ground: the world is flat with no terrain, and altitude zero is ground level (D8). Ground contact is an ideal landing when it is within the landing envelope and a crash otherwise (D37, L0-CON-290), so altitude is never negative in a run.
-**Status:** Fixed (G0-08: D35).
+The altitude datum is the datum plane, `z_L = 0`, which contains `O_L`. It plays the role of mean sea level in the Aeronef world. The datum plane is also the ground: the world is flat with no terrain, and altitude zero is ground level (D8). The Aeronef rests on the ground on its extended landing gear, and a ground contact of the airborne vehicle is a landing or a crash (D37, D69, L0-CON-290). So no point of the vehicle is below the datum plane in a run, and the height above the ground (CV-400) is never negative.
+**Status:** Changed (D69, CR-B3-36).
 
 ### CV-430 — Altitude
 
@@ -278,8 +278,17 @@ The altitude datum is the datum plane, `z_L = 0`, which contains `O_L`. It plays
 
 ### CV-440 — Height
 
-**Height** is the vertical distance of `O_B` above a stated reference point or surface other than the datum plane, positive up, for example "height above the initial position". A requirement that uses "height" names its reference. "Height" alone is not used. On the flat ground of D8, "height above the ground" equals the altitude; the hover height of D56 (`P-AF-210`) is such a height, and requirements state it as an altitude.
-**Status:** Fixed (D43).
+**Height** is the vertical distance of `O_B` above a stated reference point or surface other than the datum plane, positive up, for example "height above the initial position". A requirement that uses "height" names its reference. "Height" alone is not used. The **height above the ground** is defined separately, at the lowest point of the body rather than at `O_B` (CV-400, D70).
+**Status:** Changed (D70, CR-B3-36).
+
+### CV-400 — Height above the ground
+
+**Height above the ground** `h_G` is the vertical distance from the datum plane up to the lowest point of the body shape, positive up. The body shape is the capsule of the MS-DYN vehicle geometry, of length `P-DYN-020` and diameter `P-DYN-030` along `x_B`; the landing gear is not part of it. With h the altitude (CV-430) and θ the pitch angle (CV-220):
+
+`h_G = h − P-DYN-030/2 − ((P-DYN-020 − P-DYN-030)/2)·|sin θ|`
+
+At level attitude, `h_G = h − P-DYN-030/2`. On the ground, at rest on the extended landing gear, `h_G` equals the gear length `P-DYN-040` (D69). The hover height (`P-AF-210`) and the minimum operating height (`P-SYS-210`) are heights above the ground (D67, D70). Requirements on the altitude of the vehicle use the altitude of CV-430: the selected altitude, Altitude hold, the maximum operating altitude and the atmosphere. Requirements on the clearance of the body above the ground use the height above the ground. Ground contact is detected at the lowest point of the vehicle, which is the extended gear or the body (MS-DYN ground contact model).
+**Status:** Fixed (D69, D70; CR-B3-36, approved D73).
 
 ### CV-450 — Distance
 

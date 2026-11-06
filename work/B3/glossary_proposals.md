@@ -1,6 +1,6 @@
 # B3 — Glossary proposals (landing gear and ground operations, D69)
 
-Format as in `specs/GLOSSARY.md`. §1 lists new terms; no CR is needed for them. §2 lists changes to fixed definitions, made under CR-B3-37. The terms are used by the new L1 records (`L1_new_records.md`), the changed L1 records (`change_requests.md`), CONOPS and CONVENTIONS CV-400.
+Format as in `specs/GLOSSARY.md`. §1 lists new terms; no CR is needed for them. §2 lists changes to fixed definitions, made under CR-B3-37. The terms are used by the new L1 records (`new_L1_records.md`), the changed L1 records (`change_requests.md`), CONOPS and CONVENTIONS CV-400.
 
 ## 1. New terms
 
