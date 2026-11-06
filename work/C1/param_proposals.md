@@ -164,3 +164,20 @@ Proposals for `parameters/PARAMETERS.yaml` from task C1 (DYN, MS-DYN). The orche
 | No aerodynamic moment, drag form (DD-050, -02, C1-Q03) | TBR | MS-DYN §5.5; L2-AER-DYN-110, -130, -160 | Martin | G2 |
 | Evaluation instant of the acceleration quantities (DD-080) | TBR | MS-DYN §3.3; L2-AER-DYN-300, -310 | Martin | G2 |
 | Contact-step altitude reported as zero (DD-070) | TBR | MS-DYN §9; L2-AER-DYN-540 | Martin | G2 |
+
+## 4. Rework for G2 and D69 (version 2, 2026-11-06)
+
+No new parameter is proposed. The C-2 release altitude (3 000 m) and checked band (from 1 500 m) are definitions of the check configuration in MS-DYN §11, not design parameters (D32, G2-F02). The gear transit time P-DYN-050 and the liftoff wind limit P-SYS-580 are B3's (approved, D73); the gear length P-DYN-040 description is B3's.
+
+| ID | Change | Reason |
+| --- | --- | --- |
+| P-DYN-270 | Description, new: "Simulation time over which the tolerances P-DYN-220 and P-DYN-250 of the torque-free rotation and rotation-during-translation credibility checks apply, in their gravity-free check configuration (MS-DYN §5.2, §11; D72). No check runs for the duration of a long hold." Value 600 s and status TBR unchanged (D72). Source add "D72; G2-F01, G2-F09". | G2-F09: "at least the longest run; raised to P-SYS-280" is wrong since D72 (and a run with a rest on the ground has no longest duration). |
+| P-DYN-250 | Description, add: "Also bounds, in radian, the pitch and roll angles, and relative to the initial yaw rate, the yaw rate in the same check." | G2-F14: the pitch and roll angles start at zero, so a relative bound is undefined. |
+| P-DYN-200 | Description, add: "Also the tolerance of the motion after liftoff in check C-9 (b). The relative error is defined from step one against the largest change of the expected value so far (MS-DYN §11)." | G2-F14; C-9. |
+| P-DYN-210 | Description: "Also bounds the horizontal velocity error relative to the wind speed in the same check" stays; add "in the checked band of C-2 (MS-DYN §11)". | G2-F02. |
+| P-DYN-010 | Description, add: "Zero only in the gravity-free check configuration of checks C-3 and C-5 (D72)." | G2-F01. |
+| P-DYN-100 | Note: "confirmed at I1" stays; add "D46 revised (D72): the authority in the five non-weight directions is set by this drag at the largest airspeed." | G2-F04 (D72 Q2). |
+| P-DYN-030, P-DYN-040 | Source, add "L2-AER-DYN-250, -450 (rest altitude P-DYN-030/2 + P-DYN-040)". | D69. |
+| P-DYN-050 | Source, add "L2-AER-DYN-270; MS-DYN §9.1". | D69. |
+
+TBD/TBR register: no new row. TT-760 keeps P-DYN-200 to -270; TT-830 (P-DYN-040) and TT-850 (P-DYN-050) are B3's. The proposals DD-C1-07 to -11 (`issues.md` §7) need no TT row: they are decided at the G2 delta inspection like DD-C1-01 to -06 were; L2-AER-DYN-540 carries the DD-070 revision in its TBD/TBR field.

@@ -155,3 +155,58 @@ Local IDs; the orchestrator assigns register numbers. Only DD-C1-03 has a derive
 - The derived record (L2-AER-DYN-540) is flagged with DD-C1-03 for review at G2.
 - The physics-as-requirement rule is met: the equations live in MS-DYN; the records point to its named sections; the credibility checks of METHODOLOGY §10.3 are records L2-AER-DYN-600 to -640 with tolerances, plus the fuel-mass integral, which is FU's (C-8, L1-AER-190).
 - Manual sections affected: none directly (DYN behaviour reaches the operator only through the ground-contact outcome and fuel exhaustion, described by the operational manuals after the baseline).
+
+## 7. Rework for G2 and D69 (version 2, 2026-11-06)
+
+Sections 1 to 6 above record the first draft, the input to G2; the owner answered C1-Q01 to -Q06 in D64, and CR-C1-01 and -02 are applied. The rework disposition, finding by finding and change by change, is `work/C1/rework_G2_D69.md`.
+
+### 7.1 Summary
+
+| Item | Count |
+| --- | --- |
+| L2 DYN records | 59: 35 changed (version 2), 14 new, 10 unchanged, 0 deleted |
+| Types | Model fidelity 20, Functional 14, Constraint 12, Interface 12, Documentation 1 |
+| Methods | Inspection 23, Test 21, Analysis 14, Demonstration 1 |
+| L1 parents covered | 27 of 27 live L1 records allocated to DYN, including the new L1-AER-900, -910, -920 and -950 (D73) |
+| Derived records | 1: L2-AER-DYN-540 (DD-070, revised by DD-C1-10) |
+| G2 findings closed by C1 | 18: G2-F01, -F02, -F03 (DYN share), -F04 (no DYN change), -F05, -F06, -F07, -F08, -F09, -F12, -F14, -F15, -F16, -F19, -F20, -F22, -F23 (DYN share), -F25 |
+| New parameters | None. The C-2 configuration values are definitions of the check (D32). Description changes are proposed for P-DYN-010, -100, -200, -210, -250, -270 (param_proposals §4) |
+| Design decisions proposed | 5: DD-C1-07 to -11 (§7.2) |
+| Lint | 0 errors, 35 COMPOUND warnings (§7.4) |
+| Owner questions | None (§7.3) |
+
+### 7.2 Design decisions proposed (for `registers/DECISIONS.md`)
+
+| ID | Decision | Alternatives considered | Rationale | Requirements |
+| --- | --- | --- | --- | --- |
+| DD-C1-07 | The atmosphere model uses the seven layers of the U.S. Standard Atmosphere, 1976, up to 84 852 m geopotential. Layer 0 is continued below zero, and the density is zero above the top. This extends the range clause of DD-090 (G2-F08). | Reject initial conditions above 47 km only, which does not cover ballistic arcs or integrator evaluations. Extend to 86 km and stop, which leaves the density undefined above. | The density is defined at every altitude an integrator can evaluate. The operating volume (up to 45 720 m) is unaffected. The density at the top is 7·10⁻⁶ kg/m³, so the cut-off has no practical effect. | — (choice inside L2-AER-DYN-150) |
+| DD-C1-08 | Landing gear geometry and movement. Four contact points at (±a, ±R/2, λ·(R + [P-DYN-040])) in body axes; retracted at z = 0, inside the body. While airborne, λ moves toward the command at one full travel per [P-DYN-050]; on the ground it is held at 1. A command given on the ground takes effect at the first airborne step. | One contact point under the CG; a step change of position after the transit time; gear points at the capsule ends. | The footprint lies under the cylindrical part and comes from the existing dimensions, so no new parameter is needed. A continuous transit makes contacts "in transit" well defined. Beyond a tilt of a few tens of degrees the body touches first, which is a crash. | — (choice inside L2-AER-DYN-250, -270, -280) |
+| DD-C1-09 | The gear position of the initial condition decides the kind of start. Extended: a start on the ground, with the rest state taken from the horizontal position and the heading, and the altitude replaced by the rest altitude; a non-zero velocity, body rate, pitch or roll is rejected. Retracted: an airborne test start, rejected if the body is at or below the ground. | An explicit "on the ground" item in the initial condition; inferring the start from the altitude, which needs a floating-point equality. | Airborne starts have the gear retracted (CONOPS §5 as revised, B3-1), so no extra item is needed and no equality test on a computed altitude. | — (choice inside L2-AER-DYN-430, -450 to -470) |
+| DD-C1-10 | Revision of DD-070 for the gear. At a landing, the contact step reports the rest state at the propagated horizontal position and heading. At a crash, the propagated state is raised so that the lowest point of the vehicle is on the datum plane, with everything else as propagated. The classification uses the propagated state, with no interpolation. | Keep "altitude zero", which puts the CG on the ground; interpolate to the crossing instant, which is off the CV-820 grid. | With the gear, the CG is never at altitude zero. CV-420 as revised keeps every point of the vehicle at or above the datum plane. | L2-AER-DYN-540 (Derived); -560 |
+| DD-C1-11 | On the ground the integrated state is held at the rest state, not integrated, under the ground reaction `R = −(m·g + D + C_LB·F_c)`, `M_R = −M_c`. Liftoff is evaluated at each step on the ground with that step's inputs, the contact step of a landing included; the liftoff step is the last step on the ground. The acceleration quantities of a contact step are those of the propagated state (a supplement to DD-080). | Integrate a zero total force, which drifts with rounding; a ground hysteresis on liftoff; a computed touchdown arrest acceleration. | The static equilibrium is exact (L1-AER-920, check C-9); there is no touchdown shock (D53); the ground only pushes, never pulls. | — (choice inside L2-AER-DYN-300, -310, -570 to -590) |
+
+### 7.3 Owner questions
+
+None: D69, D72 and D73 settle the rework. Two points are recorded for I1 and the other tasks rather than for the owner.
+
+- **G2-F05 wording in the C1 brief.** The brief suggested that FU provides the CG across I-04. The G2 recommendation accepted by D72, the approved CR-B3-39 (FA I-04) and the C2 rework (IN-C2-19) all say that it does not cross. C1 follows the approved text. Nothing depends on the other reading, because the CG is the body origin either way.
+- **Touch-and-go at a landing (IN-C1-43).** Liftoff is evaluated at the contact step, so an upward control force above the weight at touchdown lifts the vehicle off again and produces a second landing event. Keeping the force at or below the weight during the Land touchdown is for FC and AF (C4, C5).
+
+### 7.4 Self-check (METHODOLOGY §13.1, §13.2), new and changed records
+
+- One "shall", with the dynamics model as subject, in an EARS pattern (ubiquitous, event-driven "When", state-driven "While", complex "While … when …"): lint gives 0 errors over 59 records. There are no numbers in statements; parameters are cited by ID and listed under Parameters; MS-DYN sections are cited by name.
+- COMPOUND warnings (35), each judged one thought (D30); none forms a tree of cases:
+  - closed lists of one object;
+  - the inputs of one computation or interface item;
+  - one geometry with its two end positions (-250);
+  - one prohibition (-170, -260);
+  - one condition set and its complement (-460, -470, -510);
+  - one check (-610, -620, -640).
+- Terms: each term is a glossary term, a B3 term (CR-B3-37, approved) or one of the new terms in `glossary_proposals.md` §3. "Weight" is written "the vehicle mass times [P-DYN-010]".
+- Each record has a rationale with a sufficiency argument per parent: the full argument in one child per parent, "see …" in its siblings. Only -540 is Derived, from DD-070.
+- Verification: each record has a direct method, a procedure ID and executable success criteria. No criterion tests TST behaviour: the -460 criterion says that the dynamics model produces no state, in line with G2-F11.
+- Each TBD/TBR field lists exactly the TBR or TBD parameters that the statement and the criteria use, with their TT rows, and refers to no answered question (G2-F20).
+- Set level:
+  - Each L1 parent allocated to DYN is covered (coverage table).
+  - There is no duplicate or conflict between the landing records (-510, -560) and the crash records (-520, -540, -550), or between the rest (-570 to -590) and the airborne equations (-010 to -040).
+  - Each DYN interface has a home (`interface_needs.md` §3).
