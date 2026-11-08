@@ -454,7 +454,7 @@ parameters:
     unit: s
     value: 600.0
     tolerance: null
-    note: 'Short horizon for checks C-3 and C-5 in a gravity-free check configuration; no check runs for the 48 h hover duration (D72, G2-F01).'
+    note: 'Short horizon for checks C-3 and C-5 in a gravity-free check configuration; no check runs for the 48 h hover duration (D72, G2-F01). Also the duration of the hover hold that confirms the endurance analysis of L2-AER-FU-290 (D74).'
     status: TBR
     source: L1-AER-010; L2-AER-DYN-620, -640; MS-DYN §10.3, §11
     owner: Martin

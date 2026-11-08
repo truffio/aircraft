@@ -302,8 +302,8 @@ Every function is allocated, and every subsystem has at least one function. F-AE
 | L1-AER-220 | Model fidelity | derive, at each fuel state, a diagonal inertia tensor in the body frame from the… | L0-CON-140 | ● | ● |  |  |  |  |  |  |
 | L1-AER-240 | Constraint | have its nose on the positive body x axis. | L0-CON-150 | ● |  |  |  |  |  |  |  |
 | L1-AER-250 | Constraint | have its crew station at the body-frame position [P-DYN-400]. | L0-CON-150 | ● |  |  |  |  |  |  |  |
-| L1-AER-260 | Functional | report a landing in its operational data. | L0-CON-290 | ● |  |  |  |  |  |  | ● |
-| L1-AER-270 | Functional | report a crash in its operational data. | L0-CON-290 | ● |  |  |  |  |  |  | ● |
+| L1-AER-260 | Functional | report a landing in its operational data. | L0-CON-290 | ● | ● |  |  |  |  |  | ● |
+| L1-AER-270 | Functional | report a crash in its operational data. | L0-CON-290 | ● | ● |  |  |  |  |  | ● |
 | L1-AER-280 | Functional | classify a ground contact as within the landing envelope when the vertical speed… | L0-CON-290 | ● |  |  |  |  |  |  |  |
 | L1-AER-290 | Performance | keep the magnitude of the sensed acceleration at the centre of gravity at most [… | L0-CON-310 | ● | ● |  | ● | ● |  |  |  |
 | L1-AER-300 | Performance | keep the magnitude of its vehicle acceleration at most [P-SYS-440]. | L0-CON-310 |  |  |  | ● | ● |  |  |  |
@@ -363,7 +363,7 @@ Every function is allocated, and every subsystem has at least one function. F-AE
 | L1-AER-870 | Constraint | convert each crew selection to SI, and each annunciated or indicated quantity fr… | L0-CON-270 |  |  |  |  |  | ● |  |  |
 | L1-AER-880 | Interface | exchange data between its flight control panel and its other functions only as c… | L0-CON-170, L0-OBJ-030 |  | ● |  |  | ● | ● | ● |  |
 | L1-AER-890 | Interface | pass its altitude, height above the ground, horizontal speed, vertical speed, he… | L0-OBJ-030 |  |  |  |  | ● |  | ● |  |
-| L1-AER-900 | Constraint | have a retractable landing gear whose ground contact points, when extended, lie [P-DYN-040] below … | L0-CON-290, L0-CON-130 | ● |  |  |  |  |  |  |  |
+| L1-AER-900 | Constraint | have a retractable landing gear whose ground contact points, when extended, lie [P-DYN-040] below … | L0-CON-290, L0-CON-130 | ● | ● |  |  |  |  |  |  |
 | L1-AER-910 | Functional | bring its landing gear to the commanded position within [P-DYN-050]. | L0-CON-290, L0-OBJ-030 | ● |  |  |  | ● |  |  |  |
 | L1-AER-920 | Model fidelity | rest on its extended landing gear at level attitude with zero vehicle velocity … | L0-CON-090, L0-CON-290 | ● |  |  |  |  |  |  |  |
 | L1-AER-930 | Functional | produce zero control force and zero control moment … on the ground … | L0-CON-100, L0-OBJ-030 |  |  | ● | ● | ● |  |  |  |
@@ -374,7 +374,7 @@ Every function is allocated, and every subsystem has at least one function. F-AE
 
 | Subsystem | DYN | FU | EF | FC | AF | FCP | NAV | TM | Leaf at L1 (—) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| L1 records allocated | 27 | 23 | 26 | 27 | 25 | 15 | 9 | 10 | 17 |
+| L1 records allocated | 27 | 26 | 26 | 27 | 25 | 15 | 9 | 10 | 17 |
 
 ## 7. Budgets
 

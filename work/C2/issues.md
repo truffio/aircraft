@@ -53,7 +53,7 @@ L1-AER-210 lost L2-AER-FU-120 as a child (G2-F05: the centre of gravity no longe
 
 ## 2. Questions for the project owner
 
-The first-draft questions C2-Q1 to C2-Q6 are answered (D65, D66; C2-Q5 by D68). One question is new.
+The first-draft questions C2-Q1 to C2-Q6 are answered (D65, D66; C2-Q5 by D68). C2-Q7 is answered too: CR-C2-04 approved (D74, 2026-11-08).
 
 | ID | Question | Recommended answer | Affects |
 | --- | --- | --- | --- |
@@ -88,7 +88,7 @@ The first-draft questions C2-Q1 to C2-Q6 are answered (D65, D66; C2-Q5 by D68). 
 | N-C2-04 | *FU subsystem* as the subject: merged in the glossary. | Closed. |
 | N-C2-05 | Expected checks after assembly: lint 0 errors, 18 COMPOUND warnings on FU (each judged, §5); trace: NO-PARENT for L1-AER-900 and -940 until the B3 records are merged, then none; param_check: PARAM-UNUSED for P-SYS-290 (expected, D72 Q4). | Orchestrator. |
 | N-C2-06 | Several FU tests read outputs that the operational data do not carry (centre of gravity, inertia, fuel availability, per-step values). They use the TST recording of IN-C2-30. | TST plan extension. |
-| N-C2-07 | **L2-AER-FU-290 criterion 2 is a long run.** D72 rules out long *credibility checks*. The simulated hover from a takeoff to exhaustion (about 47 h) is the performance test that L1-AER-360 v2 asks its children to show, not a credibility check, so C2 keeps it. If the owner wants no run of that length at all, the alternative is an analysis: the per-step fuel accounting checked over a short hold (C-8) plus the closed form. | Owner informed; no change unless asked. |
+| N-C2-07 | **L2-AER-FU-290 criterion 2 is a long run.** D72 rules out long *credibility checks*. The simulated hover from a takeoff to exhaustion (about 47 h) is the performance test that L1-AER-360 v2 asks its children to show, not a credibility check, so C2 keeps it. If the owner wants no run of that length at all, the alternative is an analysis: the per-step fuel accounting checked over a short hold (C-8) plus the closed form. | Owner chose the analysis (D74, CR-C2-05): L2-AER-FU-290 v3 confirms the closed form over a hold of [P-DYN-270]. |
 | N-C2-08 | **L2-AER-EF-140** still gives FU "the effector outputs … with the control force and the control moment". FU uses only the resultant (L2-AER-FU-070 v2). | C3 may drop the effector outputs from L2-AER-EF-140 at I1 (editorial, IN-C2-21). |
 | N-C2-09 | B3 impact list §2 suggested adding the fuel availability for DYN to L2-AER-FU-120. C2 made it a separate record, L2-AER-FU-320, because it crosses I-03, not I-04, and has different parents. | Information for I1. |
 | N-C2-10 | B3's P-SYS-280 note ("about 0.7 s of climb and one gear transit") and P-FU-100 description (the takeoff) agree with L2-AER-FU-290 v2: the climb lasts about 0.7 s, and the gear transit is flown at the hover height, inside the hold. | None. |
