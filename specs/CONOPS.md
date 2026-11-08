@@ -155,7 +155,7 @@ The **crew** is whoever makes crew selections and reads the annunciations: a hum
 | Selected heading | degrees | Heading |
 | Mode engage commands: STAT, HDG, ALT, GO ALT, V/S, GO HOVER, TAKEOFF, LAND (D71) | — | Mode logic |
 
-**Annunciations** show the active horizontal and vertical modes, the armed mode, the selected targets and the landing gear position (extended, retracted or in transit) (Section 4.4). **Indications** show the vehicle's current altitude (ft), vertical speed (ft/min), horizontal speed (kt), heading and track (degrees), the remaining fuel (lb, D9), and the LOW FUEL and FUEL EXHAUSTED alerts.
+**Annunciations** show the active horizontal and vertical modes, the armed mode, the selected targets, the landing gear position (extended, retracted or in transit) and the fuel alert (LOW FUEL, FUEL EXHAUSTED) (Section 4.4). **Indications** show the vehicle's current altitude (ft), vertical speed (ft/min), horizontal speed (kt), heading and track (degrees) and the remaining fuel (lb, D9).
 
 **There is no manual control** (D49, D55): no stick or yoke, and no option for one in this cycle. No scenario uses it.
 
@@ -167,7 +167,7 @@ The **crew** is whoever makes crew selections and reads the annunciations: a hum
 
 **Starting modes.** A run starts on the ground with the effectors off and, as recommended to C5, no mode active (D69, #60). Takeoff is the mode engaged from there. A test run that starts airborne (Section 5) starts with the modes and targets of its initial condition.
 
-**Armed and active.** As a general rule a selected mode first arms, and engages when its conditions are met; while it is armed, the active mode manoeuvres the vehicle into those conditions within g-limited accelerations (D16). The state terms are TBR (#56). Two modes arm others. **Altitude hold** arms with Go to altitude and with Vertical speed, and captures the selected altitude. **Hover** arms with Go to hover and with Takeoff, and engages once the vehicle is stationary at the hover height `[P-AF-210]`; after a Takeoff, it engages once the gear is retracted (C5 confirms).
+**Armed and active.** A mode that waits for its conditions is armed; while it is armed, the active mode manoeuvres the vehicle into those conditions within g-limited accelerations (D16). Only two modes are armed, and each is armed by the mode that precedes it; a crew selection arms no mode (AF_MODE_LOGIC, D76). **Altitude hold** is armed by Go to altitude and by Vertical speed, and captures the selected altitude. **Hover** is armed by Go to hover and by Takeoff, and engages once the vehicle is stationary at the hover height `[P-AF-210]`; after a Takeoff, it engages once the gear is retracted. The state terms are defined in the glossary.
 
 **Annunciation.** Each change of an active mode, an armed mode or a target is annunciated within `[P-SYS-470]` (L1-AER-470); `[P-AF-060]` is the autoflight share of that time.
 
@@ -182,7 +182,7 @@ The vertical modes do not change the heading.
 
 **Mode catalogue (D56).**
 
-| Mode | Axes | Crew selection | What it does | Provisional labels (armed / active) | Scenarios |
+| Mode | Axes | Crew selection | What it does | Labels (armed / active; AF_MODE_LOGIC §2) | Scenarios |
 | --- | --- | --- | --- | --- | --- |
 | Stationary | Horizontal | None | Stops the horizontal motion within the acceleration limits (D16) and holds the horizontal position over the ground, against the wind | — / STAT | SC-040, SC-090, SC-110 |
 | Heading | Horizontal | Selected heading (degrees), selected horizontal speed (kt) | Turns to the selected heading and moves along it at the selected horizontal speed; at zero speed, a heading change turns the vehicle in place | — / HDG | SC-050, SC-060, SC-120, SC-110 |
@@ -200,7 +200,7 @@ In the scenario tables, the active modes are written `horizontal · vertical`, f
 
 The Aeronef carries a finite quantity of fuel, at most `[P-FU-010]`. Fuel is consumed to produce effector forces and moments, with separate configurable terms for translation and rotation. Because the effectors must counter gravity, fuel is consumed in every airborne condition, including Hover and Stationary. On the ground the effectors are off and no fuel is consumed (D69). Vehicle mass decreases as fuel is consumed; the centre of gravity stays fixed.
 
-Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[P-FU-020]` of full capacity, the Aeronef annunciates LOW FUEL. When the fuel is exhausted, the Aeronef annunciates FUEL EXHAUSTED and the effectors produce zero force and zero moment. The vehicle then moves under gravity and drag alone, and its ground contact is a crash (D68). Fuel exhaustion is nominal behaviour (SC-110); running out of fuel is the crew's to avoid, with the LOW FUEL alert. What the annunciations show after exhaustion is set by C5 (D68).
+Fuel is shown to the crew in pounds (D9). When the remaining fuel falls below `[P-FU-020]` of full capacity, the Aeronef annunciates LOW FUEL. When the fuel is exhausted, the Aeronef annunciates FUEL EXHAUSTED and the effectors produce zero force and zero moment. The vehicle then moves under gravity and drag alone, and its ground contact is a crash (D68). Fuel exhaustion is nominal behaviour (SC-110); running out of fuel is the crew's to avoid, with the LOW FUEL alert. After exhaustion autoflight disengages and shows no active mode; the panel shows FUEL EXHAUSTED (D68, C5-Q04).
 
 ### 4.6 Runs and the use of operational data
 
@@ -232,7 +232,7 @@ Common to all flight scenarios unless a scenario says otherwise:
 - Pitch and roll are zero (D57); the angular rate is zero.
 - The air is still, and no disturbance is applied.
 - Every selected value is within the performance envelope: horizontal speed up to `[P-SYS-230]`, climb vertical speed up to `[P-SYS-240]`, descent vertical speed up to `[P-SYS-250]`, heading rate up to `[P-SYS-270]`. The acceleration sensed by the crew stays within `[P-SYS-120]` (gravity included; L0-CON-310). Selected values are multiples of the selection resolutions `[P-AF-010]` to `[P-AF-040]`.
-- "Settled" means within the stated tolerance, reached within `[P-AF-190]` s of the capture onset or target change, and kept until the end of the scenario. Each tolerance is a placeholder until the per-mode requirements (Phase 4) fix it.
+- "Settled" means within the stated tolerance a time `[P-AF-190]` after the reference reaches its target, and kept until the end of the scenario. Each tolerance is a placeholder until the per-mode requirements (Phase 4) fix it.
 - Each annunciation change in the sequence tables occurs within `[P-SYS-470]` of its trigger.
 - The scenario ends when the stated end condition holds for an observation time `T_OBS`, chosen by the test procedure.
 
@@ -270,7 +270,7 @@ Climb on flight path angle. Withdrawn with the flight path angle mode (D56). The
 
 **Needs exercised.** N-050, N-060, N-070, N-080, N-090, N-170, N-210.
 
-**TBR.** The capture label, if any (C5).
+**Answered (C5):** the capture has no label of its own; the armed and active label of Altitude hold is ALT, and the capture is the change of the mode state (AF_MODE_LOGIC §2).
 
 #### SC-030 — Withdrawn
 
@@ -297,7 +297,7 @@ Descent on flight path angle. Withdrawn with the flight path angle mode (D56). T
 
 **Needs exercised.** N-050, N-060, N-070, N-080, N-100, N-190, N-240.
 
-**TBR.** What V/S does with no selected altitude, or one behind the direction of motion (C5).
+**Answered (C5-Q06):** the altitude selector always holds a value; a selected altitude behind the direction of the selected vertical speed, or a selected vertical speed of zero, ends in Altitude hold at once.
 
 #### SC-050 — Change targets and modes in flight
 
@@ -321,7 +321,7 @@ Descent on flight path angle. Withdrawn with the flight path angle mode (D56). T
 
 **Needs exercised.** N-060, N-090, N-100, N-170, N-200, N-210.
 
-**TBR.** Which altitude ALT holds in step 5: the altitude at engagement, or where the vertical speed reaches zero (C5).
+**Answered (C5-Q06):** in step 5 ALT holds the level-off altitude, where the vertical speed reference reaches zero; a heading change takes the shorter direction, clockwise on an exact half turn (AF_MODE_LOGIC HD-1).
 
 ### 6.2 Horizontal scenarios
 
@@ -346,7 +346,7 @@ Descent on flight path angle. Withdrawn with the flight path angle mode (D56). T
 
 **Needs exercised.** N-050, N-060, N-070, N-090, N-160, N-170.
 
-**TBR.** Whether the selected speed and the heading are over the ground or through the air when there is wind (C5).
+**Answered (D72, C5):** over the ground; the selected speed is a ground speed and the vehicle moves along its heading over the ground.
 
 #### SC-070 — Withdrawn
 
@@ -375,7 +375,7 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Needs exercised.** N-050, N-060, N-160, N-190, N-240.
 
-**TBR.** Whether Heading at zero speed holds the position against the wind, as Stationary does (C5).
+**Answered (C5-Q07):** Heading at zero speed holds the reference position against the wind, as Stationary does.
 
 ### 6.3 Hold scenarios
 
@@ -402,7 +402,7 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Needs exercised.** N-050, N-060, N-130, N-140, N-160, N-210.
 
-**TBR.** The reference position: where the vehicle stops, or its position at `T_ENG` (C5).
+**Answered (C5-Q05):** the reference position is the stopping position, where the vehicle stops under the horizontal acceleration limit.
 
 #### SC-100 — Go to hover, then hover
 
@@ -427,7 +427,7 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Needs exercised.** N-050, N-060, N-130, N-160, N-200, N-210.
 
-**Answered (D70):** engaged below the hover height, Go to hover climbs to it. **TBR.** How the crew leaves Hover (C5).
+**Answered (D70):** engaged below the hover height, Go to hover climbs to it. **Answered (C5-Q01, D76):** the crew leaves Hover by selecting a horizontal or a vertical mode, the other axis taking its hold mode.
 
 #### SC-130 — Take off, hover, land and rest
 
@@ -460,7 +460,7 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Needs exercised.** N-050, N-060, N-150, N-210, N-310, N-450.
 
-**TBR.** The mode state after the landing, and the selections accepted on the ground (C5, #60). Whether LAND stays annunciated on the ground (C5). The gear labels (C5, C8).
+**Answered (C5-Q03, Q04, Q11; C8-Q03):** after the landing no mode is active (the mode state is empty) and LAND is not annunciated on the ground; only Takeoff is accepted on the ground, and not with no fuel; the gear labels belong to the flight control panel; the gear stays extended after a go-around.
 
 ### 6.4 Reference mission
 
@@ -499,7 +499,7 @@ Intercept and track a VOR radial. Withdrawn with the VOR function (D56). The ID 
 
 **Needs exercised.** N-050, N-060, N-080, N-100, N-130, N-140, N-150, N-170, N-200, N-250, N-280, N-290, N-450.
 
-**TBR.** As in the scenarios each leg repeats. How the crew leaves Hover in legs 2 and 8 (C5). Annunciations after fuel exhaustion (C5, D68).
+**Answered (C5, D76):** as in the scenarios each leg repeats. In legs 2 and 8 the crew leaves Hover by selecting a group mode, the other group taking its hold mode. After fuel exhaustion autoflight disengages and the mode state is empty; the panel shows FUEL EXHAUSTED (C5-Q04, D68).
 
 ### 6.5 Platform and evidence scenarios
 

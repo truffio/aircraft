@@ -280,7 +280,7 @@ parameters:
     owner: Martin
   - id: P-SYS-540
     name: Cross-axis velocity tolerance
-    description: Largest departure of the velocity along each body axis from its reference while the reference of another degree of freedom changes.
+    description: Largest departure of the velocity along each translational axis of the axis references from its reference while the reference of another degree of freedom changes.
     unit: m/s
     value: null
     tolerance: null
