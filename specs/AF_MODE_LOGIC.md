@@ -1,14 +1,14 @@
 # Autoflight mode logic (AF_MODE_LOGIC)
 
-**Status:** Draft by task C5 (draft of `specs/AF_MODE_LOGIC.md`). Written at branch c1_c2, commit 0b19af0 (D1 to D75). Not baselined; the owner questions C5-Q01 to C5-Q13 (`work/C5/issues.md`) are open, and the text follows the recommended answer of each.
+**Status:** Draft by task C5, moved here at integration (I1, 2026-11-08). The owner answered the questions C5-Q01 to C5-Q13 as recommended (D76), so the text stands. Baselined with L2 at G2.
 **Binds:** every autoflight implementation (L2-AER-AF-010, D15). Any implementation pairs with any control-law design, because only the axis references cross to flight control (L1-AER-420).
-**Not here:** the guidance laws, the shape of a capture and the gains (design, D4); the per-mode requirements (Phase 4, tasks M0 to M8); the selector ranges and unit conversion (FCP, `work/C8/L2_FCP.md`); the navigation quantities (NAV, `work/C6/L2_NAV.md`).
+**Not here:** the guidance laws, the shape of a capture and the gains (design, D4); the per-mode requirements (Phase 4, tasks M0 to M8); the selector ranges and unit conversion (FCP, `requirements/L2.md`, section FCP); the navigation quantities (NAV, `requirements/L2.md`, section NAV).
 
 ## 1. How to read this document
 
 Row IDs (DT-nn decisions, TR-nn transitions, TG-nn target rules, HD-nn heading rules, GR-nn gear rules, IC-nn initial states) are cited by the L2 records and by the test procedures. A test that covers a row names it. SI units throughout; a crew unit appears only in a comment. Parameters are cited by ID.
 
-**Terms** (GLOSSARY, with the refinements proposed in `work/C5/glossary_proposals.md`). *Active*: producing the references of its group. *Armed*: waiting to become active by a *capture* or a *handover*; produces no reference; armed by the mode that precedes it, never selected on its own. *Engaged* (autoflight): at least one mode is active. A *both-axes mode* is Go to hover, Hover, Takeoff or Land. A *mode selection* is one of the eight that the panel offers: STAT, HDG, ALT, GO ALT, V/S, GO HOVER, TAKEOFF, LAND (there is no Hover selection and no disengage selection, D71).
+**Terms** (GLOSSARY). *Active*: producing the references of its group. *Armed*: waiting to become active by a *capture* or a *handover*; produces no reference; armed by the mode that precedes it, never selected on its own. *Engaged* (autoflight): at least one mode is active. A *both-axes mode* is Go to hover, Hover, Takeoff or Land. A *mode selection* is one of the eight that the panel offers: STAT, HDG, ALT, GO ALT, V/S, GO HOVER, TAKEOFF, LAND (there is no Hover selection and no disengage selection, D71).
 
 ## 2. The catalogue
 
@@ -56,7 +56,7 @@ AF executes once per control frame, after FCP and NAV and before FC (DD-010). In
 | --- | --- |
 | F1 | Read the inputs of the frame. |
 | F2 | Evaluate the transitions TR-01 (fuel exhaustion) and TR-02 (end of Land), in that order. |
-| F3 | Decide the mode selections, in the order given, each against the mode state that the previous one left (§6). Selector targets are those of the end of the frame's intake (DD-C8-01). |
+| F3 | Decide the mode selections, in the order given, each against the mode state that the previous one left (§6). Selector targets are those of the end of the frame's intake (DD-520). |
 | F4 | Evaluate the transitions TR-03 to TR-05, once. No chain follows from them. |
 | F5 | Advance the references (§11, §12) and the gear command (§13). Give the off value if ENG does not hold. |
 | F6 | Output: axis references to FC; annunciation content to FCP; mode state, targets and gear command to TM. |
@@ -205,11 +205,11 @@ On leaving HDG for a mode of HD-2, the heading reference stops where it is and i
 | Horizontal speed reference | zero to [P-SYS-230] | HDG |
 | Vertical speed reference | minus [P-SYS-250] to [P-SYS-240] | GOALT, VS |
 
-a_H is the part of [P-AF-200] that the vertical limit leaves, so that the acceleration of the translational velocity reference in three dimensions never exceeds [P-AF-200] (DD-C5-07). The heading-rate bound is the D72 Q1 bound: the horizontal speed times the heading rate stays within a_H, hence within [P-AF-200]; at [P-SYS-230] it gives about 3.62 deg/s, a little above [P-SYS-270] (3.6 deg/s), so [P-SYS-270] governs at the highest speed and the speed bound governs only when a tailwind or an overshoot lets the speed reference exceed the selected speed. When a speed change and a turn go together, the turn takes its share first and the speed change gets what is left of a_H (DD-C5-07).
+a_H is the part of [P-AF-200] that the vertical limit leaves, so that the acceleration of the translational velocity reference in three dimensions never exceeds [P-AF-200] (DD-420). The heading-rate bound is the D72 Q1 bound: the horizontal speed times the heading rate stays within a_H, hence within [P-AF-200]; at [P-SYS-230] it gives about 3.62 deg/s, a little above [P-SYS-270] (3.6 deg/s), so [P-SYS-270] governs at the highest speed and the speed bound governs only when a tailwind or an overshoot lets the speed reference exceed the selected speed. When a speed change and a turn go together, the turn takes its share first and the speed change gets what is left of a_H (DD-420).
 
 ## 12. Axis references and the off value
 
-AF gives FC six axis references, one per degree of freedom, each made of a reference value, its rate and an indication of whether FC regulates the value (DD-C5-01; ICD-FC-AF is I1's with C4):
+AF gives FC six axis references, one per degree of freedom, each made of a reference value, its rate and an indication of whether FC regulates the value (DD-360; ICD-FC-AF is I1's with C4):
 
 | Degree of freedom | Reference value | Rate | Value regulated |
 | --- | --- | --- | --- |

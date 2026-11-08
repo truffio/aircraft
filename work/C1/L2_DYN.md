@@ -38,7 +38,7 @@ The dynamics model requirements (task C1). The subject of each statement is the 
 | L1-AER-920 | On the ground the vehicle is held at the rest state on its extended gear, under the ground reaction, with a sensed acceleration of [P-DYN-010], until the upward control force exceeds the weight | -280, -300, -560, -570, -580, -590 |
 | L1-AER-950 | A start on the ground is the rest state at the given horizontal position and heading, with the gear extended and the vehicle on the ground; an inconsistent ground initial condition is rejected | -450, -460 |
 
-One record is Derived: L2-AER-DYN-540 (DD-070, as revised by the proposal DD-C1-10).
+One record is Derived: L2-AER-DYN-540 (DD-070, as revised by DD-240).
 
 ### L2-AER-DYN-010
 
@@ -439,8 +439,7 @@ Rationale:     The density follows the standard atmosphere (D20) and depends on 
   (L0-ASM-060). MS-DYN names it: the U.S. Standard Atmosphere, 1976, with the geopotential altitude
   taken equal to the altitude (DD-090). Its seven layers are used up to the top of the standard's
   lower atmosphere, layer 0 is continued below the datum plane, and the density is zero above the
-  top, so that the density is defined at every altitude an integrator can evaluate (DD-C1-07,
-  proposed; G2-F08). Its constants are constants of the named standard, not parameters. The check
+  top, so that the density is defined at every altitude an integrator can evaluate (DD-210; G2-F08). Its constants are constants of the named standard, not parameters. The check
   reads the standard by geopotential altitude, because the published table is indexed by geometric
   altitude and would fail a correct model by up to 4.8·10⁻² at 47 km (G2-F07).
   Sufficiency (L1-AER-070): see L2-AER-DYN-130.
@@ -526,7 +525,7 @@ Statement:     The dynamics model shall take the control force and the control m
   about the centre of gravity.
 Rationale:     The effectors are the only source of control force and moment (L0-CON-060,
   L1-AER-080). EF computes the resultant once from its effector outputs through their control
-  effectiveness (L1-AER-100; DD-C3-05, D73) and gives one force and one moment per step (I-02,
+  effectiveness (L1-AER-100; DD-190, D73) and gives one force and one moment per step (I-02,
   MS-DYN §7.1); DYN holds them over the step (MS-DYN §10.2). With the effectors off on the ground,
   and at fuel exhaustion, EF gives zero (L1-AER-930, -200). The interface is internal to the
   vehicle model.
@@ -730,7 +729,7 @@ Statement:     The dynamics model shall place the contact points of the landing 
 Rationale:     L1-AER-900: the gear contact points of the extended gear lie [P-DYN-040] below the
   lowest point of the body at level attitude, and the retracted gear has no part below the body.
   MS-DYN §2.5 fixes four contact points under the cylindrical part of the capsule, a C1 geometry
-  choice (DD-C1-08, proposed), with the positions in transit between the two. On the ground at
+  choice (DD-220), with the positions in transit between the two. On the ground at
   level attitude the centre of gravity is then at [P-DYN-030]/2 plus [P-DYN-040], the rest
   altitude, and the height above the ground is [P-DYN-040] (CV-400). The record is one geometry
   with its two end positions (D30).
@@ -796,7 +795,7 @@ Statement:     While the vehicle is airborne, when the landing gear command chan
   gear model of MS-DYN.
 Rationale:     L1-AER-910: Takeoff retracts the gear at the hover height and Land extends it before
   the descent (D69). The MS-DYN landing gear model moves the gear at a constant rate, one full
-  travel in [P-DYN-050] (DD-C1-08, proposed), with the gear position in transit meanwhile, so the
+  travel in [P-DYN-050] (DD-220), with the gear position in transit meanwhile, so the
   transit is observable (L2-AER-DYN-290). A reversal in transit returns from where the gear is, so
   it takes less time. A command given on the ground takes effect from the first airborne step,
   because the gear is held extended on the ground (L2-AER-DYN-280). The time is counted in
@@ -894,7 +893,7 @@ Statement:     The dynamics model shall compute, at each simulation step, the se
 Rationale:     The crew limit is on the sensed acceleration, evaluated at the centre of gravity
   (D38, D45). DYN computes it from its definition (glossary as revised by CR-B3-37; MS-DYN §8), so
   that the limit FC enforces can be measured in every run. The ground reaction is zero while
-  airborne. The instant at which it is evaluated is MS-DYN §3.4 (DD-080 with DD-C1-11): the inputs
+  airborne. The instant at which it is evaluated is MS-DYN §3.4 (DD-080 with DD-250): the inputs
   of the step that produced the state, and at a contact step the propagated state. With the
   rotation-during-translation term retained (D64) it equals the vehicle acceleration minus gravity,
   resolved in the body frame. At rest on the ground it is [P-DYN-010] upward (L1-AER-920).
@@ -939,7 +938,7 @@ Rationale:     The vehicle acceleration is part of the vehicle state (glossary) 
   on the inputs; MS-DYN §3.4 fixes the instant at which it is evaluated (DD-080): the inputs of the
   step that produced the state. On the ground the total force includes the ground reaction, so
   the vehicle acceleration is zero; at a contact step it is the value of the propagated state,
-  because the arrest on the ideal gear computes no shock (DD-C1-11, proposed; D53). The inputs of
+  because the arrest on the ideal gear computes no shock (DD-250; D53). The inputs of
   the previous step are not in the operational data, so the analysis uses per-step records of the
   vehicle-model interfaces (G2-F12, IN-C1-26).
   Sufficiency (L1-AER-640): see L2-AER-DYN-350.
@@ -1236,8 +1235,7 @@ Statement:     When a run starts with the landing gear retracted, the dynamics m
   initial condition that the TST gives.
 Rationale:     A run may start airborne only for test runs and credibility checks (D73, B3-1;
   L1-AER-660 as revised by CR-B3-26). An airborne start has the gear retracted (CONOPS §5 as revised
-  by CR-B3-33), so the gear position of the initial condition marks the kind of start (DD-C1-09,
-  proposed). The list is the kinematic part of the initial condition; the fuel mass is FU's, the
+  by CR-B3-33), so the gear position of the initial condition marks the kind of start (DD-230). The list is the kinematic part of the initial condition; the fuel mass is FU's, the
   mode state and targets are AF's and FCP's. The attitude is given as a unit quaternion (IN-C1-21).
   A start on the ground is L2-AER-DYN-450.
   Sufficiency (L1-AER-660): DYN takes the position, velocity, attitude, body rates and landing gear
@@ -1299,7 +1297,7 @@ Statement:     When a run starts with the landing gear extended, the dynamics mo
   vehicle state of step zero to the rest state at the horizontal position and the heading of the
   initial condition, with the vehicle on the ground.
 Rationale:     D69: runs start on the ground, on the extended gear, with the effectors off. An
-  initial condition with the gear extended is a start on the ground (DD-C1-09, proposed), since an
+  initial condition with the gear extended is a start on the ground (DD-230), since an
   airborne start has the gear retracted (L2-AER-DYN-430). The rest state of the MS-DYN ground
   contact model is the centre of gravity at the rest altitude, [P-DYN-030]/2 plus [P-DYN-040], over
   the given horizontal position, zero velocity and body rates, and level attitude at the given
@@ -1538,8 +1536,7 @@ Type:          Functional
 Statement:     When the dynamics model classifies a ground contact as a crash, the dynamics model
   shall report the vehicle state of the contact step with its altitude raised so that the lowest
   point of the vehicle lies on the datum plane.
-Rationale:     Derived from a design decision: DD-070, as revised for the landing gear by the
-  proposal DD-C1-10. With a fixed step the propagated lowest point at the contact step is at or
+Rationale:     Derived from a design decision: DD-070, as revised for the landing gear by DD-240. With a fixed step the propagated lowest point at the contact step is at or
   slightly below the datum plane. CV-420 (as revised by CR-B3-36) states that no point of the
   vehicle is below the datum plane in a run, so the reported state is raised onto it; the
   horizontal position, the velocity, the attitude and the body rates stay as propagated, and the
@@ -1547,8 +1544,8 @@ Rationale:     Derived from a design decision: DD-070, as revised for the landin
   crossing instant, puts a state off the CV-820 time grid. With the gear, the centre of gravity is
   no longer at altitude zero at contact, so the earlier "altitude of zero" no longer applies; a
   landing reports the rest state instead (L2-AER-DYN-560).
-Parent(s):     Derived (DD-070)
-Source:        CV-420, CV-820; DD-070; MS-DYN §9.5
+Parent(s):     Derived (DD-240)
+Source:        CV-420, CV-820; DD-070, DD-240; MS-DYN §9.5
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-DYN-540; success criteria: in each crash test of L2-AER-DYN-520, the
@@ -1556,7 +1553,7 @@ Verification:  Test — TP-DYN-540; success criteria: in each crash test of L2-A
   rounding, its horizontal position, velocity, attitude and body rates equal the propagated values,
   and no recorded state of the run has a point of the vehicle below the datum plane.
 Parameters:    —
-TBD/TBR:       DD-070 revision (DD-C1-10) proposed, Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -1603,7 +1600,7 @@ Rationale:     L1-AER-920: the gear is ideal, so at the contact step of a landin
   the MS-DYN ground contact model is the centre of gravity at the rest altitude over the given
   horizontal position, zero velocity and body rates, and level attitude at the given heading. The
   propagated horizontal position and heading are kept, so the vehicle does not jump sideways or
-  turn at the touchdown (DD-C1-10, proposed). The vehicle is on the ground from this step and the
+  turn at the touchdown (DD-240). The vehicle is on the ground from this step and the
   run goes on (L1-AER-260 as revised). The acceleration quantities of the contact step are those of
   the propagated state (L2-AER-DYN-300, -310), so the arrest itself adds no acceleration.
   Sufficiency (L1-AER-920): see L2-AER-DYN-570. Sufficiency (L1-AER-260): see L2-AER-DYN-500.
@@ -1635,7 +1632,7 @@ Statement:     While the vehicle is on the ground, the dynamics model shall hold
 Rationale:     D69 and L1-AER-920: the Aeronef rests on the ground, stable and stationary, whatever
   the wind. With the ideal gear the rest is a static equilibrium, so the state is held, not
   integrated: the position, the level attitude and the heading stay those of the rest state, and
-  the velocity and the body rates stay zero (DD-C1-11, proposed). Holding the state, rather than
+  the velocity and the body rates stay zero (DD-250). Holding the state, rather than
   integrating a zero total force, keeps the rest exact, without a drift from rounding. The hold
   ends at the liftoff step (L2-AER-DYN-590).
   Sufficiency (L1-AER-920): L1-AER-920 asks the children to show, after a landing and in a ground

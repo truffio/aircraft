@@ -90,7 +90,7 @@ The shape gives the mass properties (§6) and the lowest point of the body for t
 
 ### 2.5 Landing gear geometry
 
-The Aeronef has a retractable **landing gear** (D69, L1-AER-900). Its geometry is a C1 choice (DD-C1-08, proposed):
+The Aeronef has a retractable **landing gear** (D69, L1-AER-900). Its geometry is a C1 choice (DD-220):
 
 - **Contact points.** The gear touches the ground at four contact points. At extension fraction `λ` (§9.1) they are at the body-frame positions
 
@@ -162,14 +162,14 @@ The **gear state** is a DYN item separate from the vehicle state (L1-AER-430, -6
 
 The extension fraction `λ` itself is internal to the model.
 
-### 3.4 Evaluation instant of the acceleration quantities (DD-080, with DD-C1-11)
+### 3.4 Evaluation instant of the acceleration quantities (DD-080, with DD-250)
 
 An acceleration depends on the inputs (control force, mass, wind), and the inputs change at step boundaries (§10.2). The acceleration quantities reported with step `k` are therefore defined as follows (DD-080, accepted, D64):
 
 - for `k ≥ 1`: evaluated at `t_k` from the state of step `k` and the inputs held over the step from `t_{k−1}` to `t_k` (the value at the end of the step that produced the state);
 - for `k = 0`: evaluated at `t_0` from the initial state and the inputs held over the first step, from `t_0` to `t_1`. These values become known when the TST commands the first step.
 
-Additions for the ground operations (DD-C1-11, proposed):
+Additions for the ground operations (DD-250):
 
 - **At a contact step** (§9.3), the acceleration quantities are evaluated from the propagated state of that step, before the landing arrest or the crash adjustment of §9.5, with the inputs of the step that produced it. They are airborne values: the arrest on the ideal gear is not an acceleration, and no touchdown shock is computed (D53, D69).
 - **On the ground** (`G` true over the step from `t_{k−1}` to `t_k`, and no liftoff at step `k − 1`), the total force and moment include the ground reaction (§9.6). The vehicle acceleration is then zero and the sensed acceleration is `−C_BL·g^L`, of magnitude `[P-DYN-010]`, upward. This holds for step 0 of a start on the ground.
@@ -310,7 +310,7 @@ This section is the **atmosphere model** of MS-DYN. The air density is that of t
 | Universal gas constant, `R*` | 8.314 32 J/(mol·K) |
 | Molar mass of air, `M_0` | 0.028 964 4 kg/mol |
 
-The seven layers of the standard up to 84 852 m geopotential (86 km geometric) are used (DD-C1-07, proposed, which extends the range of DD-090; G2-F08):
+The seven layers of the standard up to 84 852 m geopotential (86 km geometric) are used (DD-210, which extends the range of DD-090; G2-F08):
 
 | Layer `b` | Base altitude `h_b` (m) | Base temperature `T_b` (K) | Lapse rate `L_b` (K/m) | Base pressure `p_b` (Pa) |
 | --- | --- | --- | --- | --- |
@@ -416,7 +416,7 @@ This section is the **effector and fuel models** of MS-DYN. **Content owners: C3
 
 What DYN needs from EF, for each step (IN-C1-10):
 
-- the control force `F_c^B` and the control moment `M_c^B` about the CG, in body axes, computed once by EF from the effector outputs through their control effectiveness (L1-AER-100; DD-C3-05, D73);
+- the control force `F_c^B` and the control moment `M_c^B` about the CG, in body axes, computed once by EF from the effector outputs through their control effectiveness (L1-AER-100; DD-190, D73);
 - one value per step, held over the step (§10.2);
 - zero force and zero moment at fuel exhaustion (L1-AER-200) and with the effectors off (L1-AER-930; IN-C3-03);
 - zero at step 0 of a start on the ground, where the effectors are off (L1-AER-950; IN-C1-12 answered by C3).
@@ -453,7 +453,7 @@ This section holds the **landing gear model** (§9.1) and the **ground contact m
 
 - **Gear position and extension fraction.** The gear has an extension fraction `λ ∈ [0, 1]`. The gear position (§3.3) is extended at `λ = 1`, retracted at `λ = 0` and in transit otherwise.
 - **Landing gear command.** Autoflight commands the gear to extend or to retract across the vehicle-model boundary (L1-AER-430 as revised by CR-B3-19; L1-AER-910). The command is issued once per control frame and held over the steps of the frame, like the effector commands (§10.2). Before the first landing gear command of a run, the commanded position is the gear position of the initial condition.
-- **Movement while airborne.** While the vehicle is airborne, whenever the gear position differs from the commanded position, the gear moves toward it at the constant rate of one full travel in `[P-DYN-050]` (DD-C1-08):
+- **Movement while airborne.** While the vehicle is airborne, whenever the gear position differs from the commanded position, the gear moves toward it at the constant rate of one full travel in `[P-DYN-050]` (DD-220):
 
   ```
   λ(k+1) = min(1, λ(k) + Δt/[P-DYN-050])     if the command of step k is "extend"
@@ -492,7 +492,7 @@ At the contact step, with the propagated state of that step: the vertical speed 
 
 There is no acceleration limit (D53). The speeds are not interpolated to the crossing instant: the classification uses the propagated state of the contact step, which keeps it exact on the CV-840 time base.
 
-### 9.5 State reported at the contact step (DD-070, revised by DD-C1-10)
+### 9.5 State reported at the contact step (DD-070, revised by DD-240)
 
 - **Landing.** The state of the contact step is reported as the **rest state** (§9.6) at the propagated horizontal position and the propagated heading. The vehicle is on the ground from this step (L1-AER-920). The run goes on.
 - **Crash.** The propagated state is reported with its altitude raised by `−h_low`, so that the lowest point of the vehicle is on the datum plane; the horizontal position, the velocity, the attitude and the body rates stay as propagated (CV-420: no point of the vehicle below the datum plane, CR-B3-36).
@@ -501,7 +501,7 @@ There is no acceleration limit (D53). The speeds are not interpolated to the cro
 ### 9.6 On the ground: rest state, ground reaction and liftoff
 
 - **Rest state.** The rest state at a horizontal position `(x_N, y_E)` and a heading `ψ_r` is: position `r^L = (x_N, y_E, −h_r)` with `h_r = [P-DYN-030]/2 + [P-DYN-040]` (§2.5); velocity zero; attitude level at heading `ψ_r`, that is `q = (cos(ψ_r/2), 0, 0, sin(ψ_r/2))`, sign as CV-250; body rates zero; gear extended (L1-AER-920). At level attitude the extended gear contact points are then on the datum plane.
-- **Held.** While the vehicle is on the ground, the integrated state of each step is the rest state of the step before: it is held, not integrated (DD-C1-11). The heading is held too: a control moment about `z_B` does not turn the vehicle on the ground.
+- **Held.** While the vehicle is on the ground, the integrated state of each step is the rest state of the step before: it is held, not integrated (DD-250). The heading is held too: a control moment about `z_B` does not turn the vehicle on the ground.
 - **Ground reaction.** Over each step from `t_k` that the vehicle spends on the ground (step `k` on the ground and not its liftoff step), the ground applies through the gear the force and moment
 
   ```
@@ -529,7 +529,7 @@ At each contact step the model outputs one event record, with the classification
 
 ### 9.9 Start on the ground
 
-An initial condition with the landing gear extended is a start on the ground (§10.3; DD-C1-09, proposed). The vehicle is on the ground from step 0, in the rest state at the horizontal position and the heading of the initial condition (L1-AER-950).
+An initial condition with the landing gear extended is a start on the ground (§10.3; DD-230). The vehicle is on the ground from step 0, in the rest state at the horizontal position and the heading of the initial condition (L1-AER-950).
 
 ## 10. Simulation step and integration
 
@@ -558,7 +558,7 @@ The state-dependent quantities (gravity resolved in body axes, the air-relative 
 - The integration method is a design choice (D4). It is constrained only by the accuracy that the credibility checks of §11 state and by reproducibility.
 - **Accuracy.** The model meets the tolerances of the credibility checks of §11 in their configurations: C-1, C-2 and C-4 at each step of their run to the contact step or to their end; C-3 and C-5 over the accuracy horizon `[P-DYN-270]` (600 s, D72) in the gravity-free check configuration; C-6 at each step of C-3, C-5 and the reference mission; C-9 at each step on the ground. No check runs for the duration of a long hold (D72, G2-F01). These tolerances bound the numerical error of the integration. Numerical integration error is not a share of any performance budget (FUNCTIONAL_ANALYSIS §7.4).
 - **Reproducibility.** The state of step `k + 1` depends only on the state of step `k`, the inputs of step `k` and the vehicle parameter set (L1-AER-690, D59). It does not depend on wall-clock time, on the execution host's scheduling or on a random number.
-- **Initial state** (L1-AER-660 as revised by CR-B3-26, L1-AER-950; D73, B3-1). The parameters come from the vehicle parameter set of the run. The landing gear position of the initial condition decides the kind of start (DD-C1-09):
+- **Initial state** (L1-AER-660 as revised by CR-B3-26, L1-AER-950; D73, B3-1). The parameters come from the vehicle parameter set of the run. The landing gear position of the initial condition decides the kind of start (DD-230):
   - **Start on the ground** (gear extended): the operational start, and the start of the reference mission SC-110 and of SC-130. Step 0 is the rest state (§9.6) at the horizontal position and the heading of the initial condition; the vehicle is on the ground. The altitude of the initial condition is replaced by the rest altitude `h_r` (I1 decides whether ICD-AER-TST carries it for a ground start; IN-C1-21). The model raises an initial-condition error naming each item if the initial velocity, the initial body rates, the initial pitch angle or the initial roll angle is not zero, and the run does not start.
   - **Airborne start** (gear retracted): allowed only for test runs and credibility checks (D73, B3-1). Step 0 is the position, velocity, attitude and body rates of the initial condition; the vehicle is airborne. The model raises an initial-condition error if the lowest point of the body is at or below the datum plane (`h_G ≤ 0`, §2.6).
   - A gear position other than extended or retracted is not a valid initial condition item (ICD-AER-TST, IN-C1-21).
@@ -633,7 +633,7 @@ C-4 and C-8 together check the mass decrease end to end: FU integrates the flow 
 | --- | --- | --- | --- |
 | Body dimensions with the provisional shape (L0-CON-140 TBR; TT-740) | §2.1, §12 | Martin | 2026-11-30 |
 | Gear length `[P-DYN-040]` (TT-830) and transit time `[P-DYN-050]` (TT-850) | §2.5, §9.1, §12 | Martin | G2 |
-| Gear geometry, ground start, crash adjustment and ground reaction (DD-C1-07 to -11, proposed) | §2.5, §3.4, §5.3, §9, §10.3 | Martin | G2 (delta inspection) |
+| Gear geometry, ground start, crash adjustment and ground reaction (DD-210 to DD-250) | §2.5, §3.4, §5.3, §9, §10.3 | Martin | G2 (delta inspection) |
 | Ground-start altitude item in ICD-AER-TST (IN-C1-21) | §10.3 | I1 | I1 |
 | `[P-SYS-570]` confirmed against the FC budgets (TT-650) | §5.4 | C4 | I1 |
 | Content of §6 and §7 (TT-780) | §6, §7 | C2, C3 | I1 |

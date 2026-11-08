@@ -4,7 +4,7 @@ Proposals for `parameters/PARAMETERS.yaml` from task C4 (FC). The orchestrator m
 
 **P-FC number blocks proposed.** 010–020 existing (position share, transient allowance); 030–090 tracking tolerances and settling times; 100–110 allocation accuracy; 120 ground descent; 130–990 free.
 
-**Values.** Every value is a C4 proposal, TBR, for the owner to set or confirm at G2. They are first estimates from the authority and inertia of the C3 reference layout and the C1/C2 masses; the confirmation is a prototype run of the reference law (a hover, a gust, a step set; `work/C4/issues.md` §5). They are requirement values, not model inputs: the control-law gains are design (DD-C4-07) and are not in this database.
+**Values.** Every value is a C4 proposal, TBR, for the owner to set or confirm at G2. They are first estimates from the authority and inertia of the C3 reference layout and the C1/C2 masses; the confirmation is a prototype run of the reference law (a hover, a gust, a step set; `work/C4/issues.md` §5). They are requirement values, not model inputs: the control-law gains are design (DD-350) and are not in this database.
 
 **TBD/TBR register.** A new row is proposed: "FC tracking tolerances, settling times, allocation accuracy and ground-force margin" (TT-C4-1, to be numbered by the orchestrator), TBR, P-FC-030 to P-FC-120, Martin, G2 (I1). TT-100 (cross-axis tolerances, P-SYS-540, P-SYS-550) moves from TBD to TBR with the values below. P-FC-010 stays on TT-050 and P-FC-020 on TT-040. TT-860 (liftoff wind) and TT-650 (gust rise time): the C4 checks are in `work/C4/issues.md` §5; neither value needs to change.
 
@@ -57,7 +57,7 @@ Proposals for `parameters/PARAMETERS.yaml` from task C4 (FC). The orchestrator m
     unit: m/s
     value: 0.3
     tolerance: null
-    note: 'C4 proposal. Closure: P-FC-040 is at most P-AF-170 (the AF tolerance on the horizontal speed once stopped), which is at most P-SYS-510 (0.5 m/s, the landing envelope). The gust response with a disturbance estimate driven by the measured acceleration is about 0.2 m/s (DD-C4-07); without it about 0.5 m/s.'
+    note: 'C4 proposal. Closure: P-FC-040 is at most P-AF-170 (the AF tolerance on the horizontal speed once stopped), which is at most P-SYS-510 (0.5 m/s, the landing envelope). The gust response with a disturbance estimate driven by the measured acceleration is about 0.2 m/s (DD-350); without it about 0.5 m/s.'
     status: TBR
     source: L3-AER-FC-TR-020; L1-AER-310, L1-AER-970; C4 proposal
     owner: Martin
@@ -77,7 +77,7 @@ Proposals for `parameters/PARAMETERS.yaml` from task C4 (FC). The orchestrator m
     unit: s
     value: 3.0
     tolerance: null
-    note: 'C4 proposal. Position loop of about 1.5 rad/s over a velocity loop of about 4 rad/s (DD-C4-07). Smaller than the position-hold settling time P-SYS-460, which includes the capture (AF).'
+    note: 'C4 proposal. Position loop of about 1.5 rad/s over a velocity loop of about 4 rad/s (DD-350). Smaller than the position-hold settling time P-SYS-460, which includes the capture (AF).'
     status: TBR
     source: L3-AER-FC-TR-060; L1-AER-370; C4 proposal
     owner: Martin
@@ -107,7 +107,7 @@ Proposals for `parameters/PARAMETERS.yaml` from task C4 (FC). The orchestrator m
     unit: s
     value: 4.0
     tolerance: null
-    note: 'C4 proposal. Longer than the heading-rate onset time of 0.5 s that sizes P-SYS-420 (IN-C3-25), so the sizing holds; the heading loop is about 1 rad/s (DD-C4-07).'
+    note: 'C4 proposal. Longer than the heading-rate onset time of 0.5 s that sizes P-SYS-420 (IN-C3-25), so the sizing holds; the heading loop is about 1 rad/s (DD-350).'
     status: TBR
     source: L3-AER-FC-RO-050; L1-AER-370; IN-C3-25; C4 proposal
     owner: Martin

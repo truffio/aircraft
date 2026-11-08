@@ -44,7 +44,7 @@ There is no Hover selection (Hover is armed by Go to hover and by Takeoff), no a
 | L1-AER-870 | Selected values convert to SI by the exact CV-750 factor without rounding; shown values convert from SI by the same factor, then round once | -200, -210, -220 |
 | L1-AER-880 | FCP gives AF only the crew selections in SI, and takes only the annunciation content, the navigation quantities and the fuel state | -050, -060 |
 
-No record is Derived. The design choices inside the records (the intake order of one frame, the rejection of an invalid selected value, the rounding rule, the single fuel alert, the initial selected values in crew units) are proposed as DD-C8-01 to -05 (`work/C8/issues.md` §4).
+No record is Derived. The design choices inside the records (the intake order of one frame, the rejection of an invalid selected value, the rounding rule, the single fuel alert, the initial selected values in crew units) are proposed as DD-520 to -05 (`work/C8/issues.md` §4).
 
 ### L2-AER-FCP-010
 
@@ -346,12 +346,12 @@ Rationale:     Several selections can fall in one frame: a script sets a target 
   the frame has been checked and applied, so that a mode engaged in the same frame as its target
   uses the new target, whatever the order of the two in the frame. A frame lasts [P-SYS-310], so
   the crew cannot tell the two orders apart. Two selected values of one selector in one frame:
-  the last one accepted holds. This is design decision DD-C8-01 (proposed), inside this record.
+  the last one accepted holds. This is design decision DD-520 (proposed), inside this record.
   Sufficiency (L1-AER-690): with -150 and -540, this record makes the panel output a function of
   the selections and their order only, which is the FCP share of L1-AER-690.
   Sufficiency (L1-AER-480): see L2-AER-FCP-010.
 Parent(s):     L1-AER-690, L1-AER-480
-Source:        N-330; CONOPS SC-060, SC-110; DD-C8-01 (proposed)
+Source:        N-330; CONOPS SC-060, SC-110; DD-520 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-090; success criteria: with two mode selections, and with a selected
@@ -360,7 +360,7 @@ Verification:  Test — TP-FCP-090; success criteria: with two mode selections, 
   and the targets of the selected values of the frame; with two selected values of one selector
   in one frame, the target is that of the later one.
 Parameters:    P-SYS-310
-TBD/TBR:       P-SYS-310 value TBR (TT-070), Martin, G2 (I1); DD-C8-01 owner acceptance, Martin, G2
+TBD/TBR:       P-SYS-310 value TBR (TT-070), Martin, G2 (I1); DD-520 owner acceptance, Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -537,11 +537,11 @@ Rationale:     A selected value outside its selectable range or not a multiple o
   the test procedure asked for (D59; the same choice as DD-140 for the initial fuel). The refusal
   is visible: the selector readout keeps its value, autoflight is not told of a new selection
   (L2-AER-FCP-050), and the operational data record the selection as not accepted
-  (L2-AER-FCP-500). This is design decision DD-C8-02 (proposed; C8-Q01).
+  (L2-AER-FCP-500). This is design decision DD-530 (proposed; C8-Q01).
   Sufficiency (L1-AER-480): see L2-AER-FCP-010; this record defines the outcome of a selection the
   panel does not accept.
 Parent(s):     L1-AER-480
-Source:        CV-770; D59; DD-140; DD-C8-02 (proposed)
+Source:        CV-770; D59; DD-140; DD-530 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-140; success criteria: for each selector, a selected value above its
@@ -549,7 +549,7 @@ Verification:  Test — TP-FCP-140; success criteria: for each selector, a selec
   selector readout and the target given to autoflight at the accepted value, and the operational
   data record each refused selection as not accepted.
 Parameters:    —
-TBD/TBR:       Refusal rather than clamping or rounding (C8-Q01, DD-C8-02), Martin, G2
+TBD/TBR:       Refusal rather than clamping or rounding (C8-Q01, DD-530), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -642,12 +642,12 @@ Rationale:     The display resolution and the rounding rule are FCP requirement 
   removes, because each selection resolution is a multiple of the display resolution of its
   quantity. The selector readouts are not converted (L2-AER-FCP-350). A remaining fuel mass below
   half of [P-FCP-010] shows as zero before fuel exhaustion; the fuel alert, not the shown value,
-  marks the exhaustion (L2-AER-FCP-400). This is design decision DD-C8-03 (proposed; C8-Q06).
+  marks the exhaustion (L2-AER-FCP-400). This is design decision DD-540 (proposed; C8-Q06).
   Sufficiency (L1-AER-870): see L2-AER-FCP-200.
   Sufficiency (L1-AER-500): see L2-AER-FCP-230; this record gives each shown value in its CV-740
   unit.
 Parent(s):     L1-AER-870, L1-AER-500
-Source:        N-070; D7, D9, D71; CV-750, CV-780; #55; DD-C8-03 (proposed)
+Source:        N-070; D7, D9, D71; CV-750, CV-780; #55; DD-540 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-210; success criteria: with a test source at ICD-FCP (IN-C8-40), for SI
@@ -679,7 +679,7 @@ Rationale:     A heading or track just below a full turn (for example 359.6°) r
   Sufficiency (L1-AER-870): see L2-AER-FCP-200.
   Sufficiency (L1-AER-500): see L2-AER-FCP-230.
 Parent(s):     L1-AER-870, L1-AER-500
-Source:        CV-520, CV-920; DD-C8-03 (proposed)
+Source:        CV-520, CV-920; DD-540 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-220; success criteria: with a test source at ICD-FCP (IN-C8-40),
@@ -1045,12 +1045,12 @@ Rationale:     The crew needs a warning before the fuel runs out (N-150); runnin
   starts below it shows LOW FUEL from its first sample, on the ground included. The label is the
   CONOPS one (§4.5, SC-110); the alert label is L2 and the panel's (L1-AER-570, IN-C2-43). The
   fuel alert is one annunciation item with one label at a time: at fuel exhaustion FUEL EXHAUSTED
-  replaces LOW FUEL (L2-AER-FCP-400), as C2 suggested. This is design decision DD-C8-04 (proposed).
+  replaces LOW FUEL (L2-AER-FCP-400), as C2 suggested. This is design decision DD-550 (proposed).
   Sufficiency (L1-AER-570): FU sets the low-fuel indication at the step at which the fuel falls
   below the threshold; this record annunciates LOW FUEL while it is set; -410 clears the alert
   while it is not; -310 bounds the delay so that the alert comes within [P-SYS-470].
 Parent(s):     L1-AER-570
-Source:        N-150; CONOPS §4.5, SC-110; D68; IN-C2-43; DD-C8-04 (proposed)
+Source:        N-150; CONOPS §4.5, SC-110; D68; IN-C2-43; DD-550 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-390; success criteria: in the reference mission (SC-110), the fuel alert
@@ -1077,7 +1077,7 @@ Rationale:     The crew needs to know when the fuel has run out and what follows
   fuel-exhaustion indication is set by FU from the first step with zero fuel to the end of the run
   (L2-AER-FU-230), so the alert holds to the end of the run; in a run that starts on the ground
   with no fuel it holds from the first sample (SC-130 zero-fuel variation). The label is the
-  CONOPS one (§4.5, SC-110). It replaces LOW FUEL in the one fuel-alert item (DD-C8-04, proposed),
+  CONOPS one (§4.5, SC-110). It replaces LOW FUEL in the one fuel-alert item (DD-550, proposed),
   because the more severe state is the one the crew must see; the low-fuel indication stays set
   in the fuel state (L2-AER-FU-220). What the mode annunciations show after exhaustion is AF's
   (D68, TT-580).
@@ -1085,7 +1085,7 @@ Rationale:     The crew needs to know when the fuel has run out and what follows
   this record annunciates FUEL EXHAUSTED while it is set; -310 bounds the delay so that it comes
   within [P-SYS-470].
 Parent(s):     L1-AER-580
-Source:        N-150; CONOPS §4.5, SC-110, SC-130; D68; IN-C2-43; DD-C8-04 (proposed)
+Source:        N-150; CONOPS §4.5, SC-110, SC-130; D68; IN-C2-43; DD-550 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-400; success criteria: in the reference mission (SC-110) and in a run
@@ -1111,12 +1111,12 @@ Rationale:     An alert that stayed on when its condition does not hold would ma
   meaningless (N-150). FU never refuels the vehicle during a run (L2-AER-FU-100), so in practice
   the alert clears only at the start of a run with fuel at or above the threshold; the record
   still closes the decision table of the fuel alert: no label, LOW FUEL (-390) or FUEL EXHAUSTED
-  (-400), one at a time (DD-C8-04, proposed).
+  (-400), one at a time (DD-550, proposed).
   Sufficiency (L1-AER-570, L1-AER-580): with -390 and -400 this record makes the fuel alert follow
   the fuel state in each of its three cases, so each alert appears for its condition and for no
   other.
 Parent(s):     L1-AER-570, L1-AER-580
-Source:        N-150; CONOPS §4.5; DD-C8-04 (proposed)
+Source:        N-150; CONOPS §4.5; DD-550 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-410; success criteria: in the reference mission (SC-110), the fuel alert
@@ -1207,7 +1207,7 @@ Statement:     When a run starts, the flight control panel shall set each select
 Rationale:     The targets of the initial condition are the initial selector values, which the
   panel holds (L1-AER-660 v2, FUNCTIONAL_ANALYSIS I-28). They are given in crew-facing units, as
   a crew selection is, so that the same checks and the same exact conversion apply and each
-  readout starts exact (C8-Q05, DD-C8-05 proposed). The four initial selected values are the FCP
+  readout starts exact (C8-Q05, DD-560 proposed). The four initial selected values are the FCP
   item of the initial condition; the mode state and the targets that autoflight sets for itself
   are AF's, the kinematic items DYN's and the fuel mass FU's (L2-AER-DYN-430, L2-AER-FU-020). On
   a ground start no mode is active (recommended to C5, #60), and the selectors simply hold the
@@ -1216,7 +1216,7 @@ Rationale:     The targets of the initial condition are the initial selector val
   Sufficiency (L1-AER-660): this record and -530 take the initial selected values; with the DYN,
   FU and AF children, the initial condition of L1-AER-660 is accepted in full.
 Parent(s):     L1-AER-660
-Source:        N-310; CONOPS §4.6, SC-200; FUNCTIONAL_ANALYSIS I-28; DD-C8-05 (proposed)
+Source:        N-310; CONOPS §4.6, SC-200; FUNCTIONAL_ANALYSIS I-28; DD-560 (proposed)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-520; success criteria: for a ground start and an airborne start, each
@@ -1245,10 +1245,10 @@ Rationale:     An initial selected value outside its selectable range or off its
   (DD-140): the run stays what the test procedure asked for (D59). The initial-condition error is
   the data item by which the Aeronef tells the TST that an item of the initial condition is out of
   range; the run does not start (glossary). There is no previous value to keep at the start, so
-  the refusal rule of L2-AER-FCP-140 cannot apply. Part of DD-C8-05 (proposed).
+  the refusal rule of L2-AER-FCP-140 cannot apply. Part of DD-560 (proposed).
   Sufficiency (L1-AER-660): see L2-AER-FCP-520.
 Parent(s):     L1-AER-660
-Source:        N-310; DD-140; DD-C8-05 (proposed); ICD-AER-TST (initial-condition error)
+Source:        N-310; DD-140; DD-560 (proposed); ICD-AER-TST (initial-condition error)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-530; success criteria: for each selector, an initial condition with an

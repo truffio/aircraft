@@ -2,11 +2,11 @@
 
 **Status:** proposal by task C2 for merge into `specs/MS-DYN.md` at I1. C1 owns MS-DYN; C2 does not edit it (plan §5, §7). This file fills the two C2 content slots, "§6 C2 content slot" and "§7.2 C2 content slot", and proposes the C2 wording of check C-8 and of the FU rows of §12 and §13. It replaces the equations that `interface_needs.md` IN-C2-10 to -16 gave in the first C2 draft.
 
-**Basis:** DD-110, DD-120, DD-130, DD-140 (accepted, D65); D66, D68, D69, D72, D73; DD-C3-05 (EF computes the resultant once); proposed DD-C2-05 to DD-C2-07 (`issues.md` §4). **Requirements:** L2-AER-FU-040, -050, -080, -110, -150 to -200, -300 to -340 (`L2_FU.md`).
+**Basis:** DD-110, DD-120, DD-130, DD-140 (accepted, D65); D66, D68, D69, D72, D73; DD-190 (EF computes the resultant once); DD-260 to DD-280 (`issues.md` §4). **Requirements:** L2-AER-FU-040, -050, -080, -110, -150 to -200, -300 to -340 (`L2_FU.md`).
 
 **Structure (G2-F16).** One subsection per model listed in L2-AER-FU-280, so that the MS-DYN slots and that record match: §6.1 vehicle mass and centre of gravity, §6.2 and §6.3 inertia (with the mass distributions it rests on), §7.2.1 consumption relationships, §7.2.2 fuel accounting, §7.2.3 fuel availability. §6.4, §6.5 and §7.2.4 are supporting text.
 
-**Notation.** Step index `k`, step `Δt = [P-SYS-300]`. `m_f(k)`: remaining fuel mass at the start of step `k` (CV-840). `F_c^B(k)`, `M_c^B(k)`: the control force and the control moment about the centre of gravity, in body axes, that EF gives for step `k` (§7.1, DD-C3-05). `‖·‖`: Euclidean norm. `fl(·)`: the floating-point result of an expression.
+**Notation.** Step index `k`, step `Δt = [P-SYS-300]`. `m_f(k)`: remaining fuel mass at the start of step `k` (CV-840). `F_c^B(k)`, `M_c^B(k)`: the control force and the control moment about the centre of gravity, in body axes, that EF gives for step `k` (§7.1, DD-190). `‖·‖`: Euclidean norm. `fl(·)`: the floating-point result of an expression.
 
 ---
 
@@ -34,14 +34,14 @@ r_CG   = (0, 0, 0)  in body axes, for every m_f(k)         (L2-AER-FU-150)
 
 Both distributions of §6.2 have their centre of mass at `O_B`, so the centre of gravity of the vehicle stays at `O_B` as the fuel is consumed (L0-CON-130, L1-AER-210). The maximum vehicle mass is `m_max = [P-FU-030] + [P-FU-010]`; the vehicle mass at fuel exhaustion is `[P-FU-030]`.
 
-### 6.2 Mass distributions (DD-120, DD-C2-07)
+### 6.2 Mass distributions (DD-120, DD-280)
 
 - **Dry mass.** `[P-FU-030]` distributed with uniform density over the solid capsule of §2.1 (length `[P-DYN-020]`, diameter `[P-DYN-030]`).
 - **Fuel.** The remaining fuel `m_f` distributed with uniform density over the same capsule, a fixed fuel volume equal to the body shape. The density is `m_f` divided by the capsule volume, so the fuel depletes uniformly (DD-120) and its centre of mass stays at `O_B`. There is no slosh (L0-ASM-080).
 - **Symmetry.** Both distributions are symmetric under reflection in each body coordinate plane and axisymmetric about `x_B`, so the tensor is diagonal and `I_yy = I_zz`.
 - **Landing gear.** The landing gear has no mass and no inertia (L1-AER-900, glossary *Landing gear*). It is in neither distribution, and the gear position enters no mass property (L2-AER-FU-310).
 
-The choice of the capsule as the fuel volume (DD-C2-07) needs no fuel-volume parameter (G2-F16). Any other fuel volume centred on `O_B` and symmetric about the body axes would also meet L2-AER-FU-160; it would add dimension parameters and change `[P-FU-080]` only.
+The choice of the capsule as the fuel volume (DD-280) needs no fuel-volume parameter (G2-F16). Any other fuel volume centred on `O_B` and symmetric about the body axes would also meet L2-AER-FU-160; it would add dimension parameters and change `[P-FU-080]` only.
 
 ### 6.3 Inertia model
 
@@ -50,7 +50,7 @@ The choice of the capsule as the fuel volume (DD-C2-07) needs no fuel-volume par
 ```
 [P-FU-070] = ( I_xx([P-FU-030]), I_yy([P-FU-030]), I_zz([P-FU-030]) )     dry mass
 [P-FU-080] = ( I_xx([P-FU-010]), I_yy([P-FU-010]), I_zz([P-FU-010]) )     fuel at full capacity
-           = [P-FU-070] · [P-FU-010] / [P-FU-030]                         (same shape, DD-C2-07)
+           = [P-FU-070] · [P-FU-010] / [P-FU-030]                         (same shape, DD-280)
 ```
 
 **Values** (12 m × 4 m capsule, TBR with the shape, TT-740; dry mass 1000 kg, capacity 500 kg, TBR): `R = 2 m`, `H = 8 m`; the cylinder holds `H/(H + 4R/3) = 0.75` of the mass and each hemisphere `0.125`.
@@ -71,7 +71,7 @@ J(k) = diag([P-FU-070]) + diag([P-FU-080]) · m_f(k) / [P-FU-010]
 
 It runs linearly from `[P-FU-070]` at fuel exhaustion to `[P-FU-070] + [P-FU-080]` at full capacity. The equations of motion use `m(k)` and `J(k)` with no thrust term and no `J̇·ω` term (§4.1 assumption 4, L0-ASM-090). The fuel leaves with the local body velocity from a centroid at `O_B`, so this is exact (G2 §3.1).
 
-### 6.4 Consistency of each parameter set (L2-AER-FU-330, DD-C2-05)
+### 6.4 Consistency of each parameter set (L2-AER-FU-330, DD-260)
 
 At the start of each run, FU recomputes the two tensors of §6.3 from `[P-DYN-020]`, `[P-DYN-030]`, `[P-FU-030]` and `[P-FU-010]` of the run's vehicle parameter set. If any principal moment of the set's `[P-FU-070]` or `[P-FU-080]` differs from its recomputed value by more than the relative tolerance `[P-FU-090]`, FU rejects the parameter set with an initial-condition error (ICD-AER-TST) and produces no output. FU checks; it does not substitute the recomputed values, so the run uses only what its parameter set states (L1-AER-650).
 
@@ -87,7 +87,7 @@ Replace the paragraph "What DYN needs: nothing directly …" and the "C2 content
 
 ### 7.2.1 Consumption relationships (L1-AER-160, -170, -940; DD-110)
 
-EF gives FU, over interface I-01, the control force and the control moment it computed once for step `k` from its effector outputs, the same values it gives DYN (§7.1, DD-C3-05, L2-AER-FU-070). FU uses no per-effector output. The **consumption rate** of step `k` is
+EF gives FU, over interface I-01, the control force and the control moment it computed once for step `k` from its effector outputs, the same values it gives DYN (§7.1, DD-190, L2-AER-FU-070). FU uses no per-effector output. The **consumption rate** of step `k` is
 
 ```
 q(k) = [P-FU-040] · ‖F_c^B(k)‖ + [P-FU-050] · ‖M_c^B(k)‖
@@ -101,7 +101,7 @@ Properties used by the requirements:
 - `q(k) = 0` exactly when `F_c^B(k) = 0` and `M_c^B(k) = 0` (L1-AER-940, L2-AER-FU-300). No fuel is used with the effectors off on the ground (L1-AER-930, D69), in the free fall after exhaustion, or in the credibility checks that run with no effector output (C-1 to C-5).
 - `q` is frame-invariant and does not depend on the effector layout.
 
-### 7.2.2 Fuel accounting (L1-AER-190; DD-130 as revised by DD-C2-06)
+### 7.2.2 Fuel accounting (L1-AER-190; DD-130 as revised by DD-270)
 
 Let `c(k) = fl(q(k) · Δt)`: the fuel that step `k` would use at its consumption rate. Step `k` is an **exhaustion step** when `m_f(k) > 0` and `c(k) ≥ m_f(k)`. Then:
 
@@ -158,8 +158,8 @@ Setting `T = [P-SYS-290]` gives `k_t = 2.3467 × 10⁻⁷ kg/(N·s)` with the cu
 | `[P-FU-030]` | 1000 kg | TBR | Owner (D65) |
 | `[P-FU-040]`, `[P-FU-050]` | 2.34 × 10⁻⁷ | TBR | Derived from `[P-SYS-290]` (§7.2.4, D66) |
 | `[P-FU-060]` | 1 × 10⁻⁶ kg | TBR | Rounding of per-step sums (D65) |
-| `[P-FU-070]` | (1 900, 10 650, 10 650) kg·m² | TBR | Derived, §6.3 (DD-C2-07) |
-| `[P-FU-080]` | (950, 5 325, 5 325) kg·m² | TBR | Derived, §6.3 (DD-C2-07) |
+| `[P-FU-070]` | (1 900, 10 650, 10 650) kg·m² | TBR | Derived, §6.3 (DD-280) |
+| `[P-FU-080]` | (950, 5 325, 5 325) kg·m² | TBR | Derived, §6.3 (DD-280) |
 | `[P-FU-090]` | 1 × 10⁻⁹ | TBR | Floating-point agreement |
 | `[P-FU-100]` | 0.05 | TBR | Regulation, attitude moments and takeoff (L2-AER-FU-290) |
 | `[P-SYS-280]` | 165 600 s | TBR | Derived, §7.2.4 |

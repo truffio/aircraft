@@ -4,11 +4,11 @@ The operational data output requirements (task C7). The subject of each statemen
 
 **What TM does, and what it does not do.** TM records; it computes no quantity of its own. Each signal is the value its source gives, defined once by the source's requirement: the dynamics model (L2-AER-DYN-350, -530), FU (L2-AER-FU-250, -260), the effector subsystem (L2-AER-EF-410), and the FC, AF, FCP and NAV children that C4, C5, C8 and C6 write (`work/C7/interface_needs.md`). TM observes and feeds nothing back (FUNCTIONAL_ANALYSIS §5.2 item 4; L2-AER-TM-810), so recording cannot change the run it records.
 
-**Releasable or protected (#69, D44).** TM does not decide, and does not enforce, which signals reach the Reverse-Engineering Effort (RVS). The owner deleted L0-CON-220 at G0: the system itself protects nothing, and the owner chooses what is released when the reverse-engineering work starts. The classification of each signal is decided with the RVS, once the plan covers that branch (D44, TT-600). TM's share is to keep each signal a separate, named data item, so that a release can contain any subset of the signals without a change to the Aeronef (L2-AER-TM-020, derived, DD-C7-04). A proposed classification of each signal, with its reasons, is in `work/C7/issues.md` (C7-Q01, C7-Q02). It is a proposal for the owner, not a requirement, and nothing in this section depends on it.
+**Releasable or protected (#69, D44).** TM does not decide, and does not enforce, which signals reach the Reverse-Engineering Effort (RVS). The owner deleted L0-CON-220 at G0: the system itself protects nothing, and the owner chooses what is released when the reverse-engineering work starts. The classification of each signal is decided with the RVS, once the plan covers that branch (D44, TT-600). TM's share is to keep each signal a separate, named data item, so that a release can contain any subset of the signals without a change to the Aeronef (L2-AER-TM-020, derived, DD-500). A proposed classification of each signal, with its reasons, is in `work/C7/issues.md` (C7-Q01, C7-Q02). It is a proposal for the owner, not a requirement, and nothing in this section depends on it.
 
 **Record kinds.** The operational data are four kinds of record (L2-AER-TM-010): the **output sample**, one every `[P-TM-010]`, which holds each sampled signal; the **crew selection record**, one per crew selection received; the **event record**, one per ground contact, a landing or a crash; and the **configuration record**, one per run. Crew selections and events keep their own step: they are not delayed to the next output sample.
 
-**Sampling (DD-C7-01, DD-C7-02).** Output samples start at step zero and fall on a fixed grid of the step index (L2-AER-TM-140). `[P-TM-010]` is an integer multiple of the control frame period `[P-SYS-310]` (L2-AER-TM-150, derived), and the first control frame starts at step zero (FUNCTIONAL_ANALYSIS §4.2), so each output sample is taken at the first step of a control frame. A sample of step k holds, for each signal, the value that its source gives for step k, and, for a flight software signal, the value of the control frame that starts at step k (L2-AER-TM-130). One output sample therefore relates a cause to its response on one record: the vehicle state at `t_k`, what the flight software decided from it in that frame, and what the effectors and the fuel did over the step from `t_k` (MS-DYN §3.4, §10.2).
+**Sampling (DD-470, DD-480).** Output samples start at step zero and fall on a fixed grid of the step index (L2-AER-TM-140). `[P-TM-010]` is an integer multiple of the control frame period `[P-SYS-310]` (L2-AER-TM-150, derived), and the first control frame starts at step zero (FUNCTIONAL_ANALYSIS §4.2), so each output sample is taken at the first step of a control frame. A sample of step k holds, for each signal, the value that its source gives for step k, and, for a flight software signal, the value of the control frame that starts at step k (L2-AER-TM-130). One output sample therefore relates a cause to its response on one record: the vehicle state at `t_k`, what the flight software decided from it in that frame, and what the effectors and the fuel did over the step from `t_k` (MS-DYN §3.4, §10.2).
 
 **Signals beyond the L1 closed lists.** Three TM records depend on change requests to L1 (`work/C7/issues.md` §3): the targets of the armed and active modes and the indications (L2-AER-TM-320, -330; CR-C7-01 against L1-AER-620, C7-Q04) and the landing gear command (L2-AER-TM-450; CR-C7-02 against L1-AER-630, C7-Q05). They are written for the recommended answers. If a change request is rejected, the record it supports is deleted.
 
@@ -29,7 +29,7 @@ The operational data output requirements (task C7). The subject of each statemen
 | L1-AER-650 | One configuration record per run names the vehicle parameter set, the flight-control-law design and the autoflight implementation, with their versions | -010, -700 |
 | L1-AER-690 | TM's records depend only on the run, and the run does not depend on TM | -800, -810 |
 
-Three records are Derived: L2-AER-TM-020 (DD-C7-04, each signal a separate data item), -150 (DD-C7-02, samples on control-frame starts) and -610 (DD-C7-03, the contact values in each event record). The design decisions are proposed in `work/C7/issues.md` §4.
+Three records are Derived: L2-AER-TM-020 (DD-500, each signal a separate data item), -150 (DD-480, samples on control-frame starts) and -610 (DD-490, the contact values in each event record). The design decisions are proposed in `work/C7/issues.md` §4.
 
 ### L2-AER-TM-010
 
@@ -79,7 +79,7 @@ Type:          Constraint
 Statement:     The operational data output shall output each signal of its operational data as a
   separate data item, named in ICD-AER-TST, that can be read without any other signal of the same
   record.
-Rationale:     Derived from a design decision: DD-C7-04 (proposed). Whether each signal is releasable
+Rationale:     Derived from a design decision: DD-500 (proposed). Whether each signal is releasable
   or protected is decided with the RVS (#69, D44, TT-600). The system itself protects nothing
   (L0-CON-220 deleted at the G0 owner review), so a release is assembled outside the Aeronef, from
   the operational data of a run (recommended answer to C7-Q02). For any classification to be
@@ -88,7 +88,7 @@ Rationale:     Derived from a design decision: DD-C7-04 (proposed). Whether each
   scale or frame is given by a second signal. The timestamp is a signal of each record, so a subset
   keeps the common time base (L1-AER-590). The proposed classification of each signal is in
   `work/C7/issues.md` (C7-Q01); it is not settled and this record does not depend on it.
-Parent(s):     Derived (DD-C7-04)
+Parent(s):     Derived (DD-500)
 Source:        N-030, N-400; REVERSE_ENGINEERING.md §3C, §7; CONOPS SC-240; L0-CON-220 (deleted)
 Allocated to:  —
 Criticality:   Not assessed
@@ -98,7 +98,7 @@ Verification:  Demonstration — DM-TM-020; success criteria: ICD-AER-TST define
   the signals proposed releasable in C7-Q01 is read, by a reader written from ICD-AER-TST, with no
   error, and each kept signal has the value it has in the full operational data.
 Parameters:    —
-TBD/TBR:       DD-C7-04 proposed, Martin, G2; releasable or protected classification of each signal
+TBD/TBR:       DD-500 proposed, Martin, G2; releasable or protected classification of each signal
   (#69, TT-600), Martin, closes when the plan is extended to the RVS (D44); ICD-AER-TST not yet
   written (TT-680), Martin, G2 (I1)
 Owner:         Martin
@@ -250,7 +250,7 @@ Rationale:     CV-840: a value timestamped k is the value at t_k. For quantities
   and the fuel mass flow of step k, held over the step from t_k to t_(k+1) (MS-DYN §10.2, DD-100); the
   masses of step k; and the flight software values, computed once per control frame and held over
   its steps (L1-AER-680). TM takes each value as its source defines it and does not interpolate,
-  filter or re-sample (DD-C7-01, proposed). With L2-AER-TM-150 the sample step is the first step of
+  filter or re-sample (DD-470, proposed). With L2-AER-TM-150 the sample step is the first step of
   its control frame, so a sample holds the state from which the flight software computed that
   frame's values, and the effector and fuel response to them over the step. The values of step k
   are complete when the TST commands the step from step k (IN-C1-38), which is when TM can output
@@ -269,7 +269,7 @@ Verification:  Test — TP-TM-130; success criteria: in a run of SC-130, at each
   its value for the control frame that contains that step in the recording of the flight software
   interfaces (IN-C7-40), with no difference other than floating-point representation.
 Parameters:    —
-TBD/TBR:       DD-C7-01 proposed, Martin, G2; TST recording of the vehicle-model and flight software
+TBD/TBR:       DD-470 proposed, Martin, G2; TST recording of the vehicle-model and flight software
   interfaces (IN-C1-26, IN-C7-40), Martin, when the plan is extended to the TST (D44)
 Owner:         Martin
 Status:        Draft
@@ -319,7 +319,7 @@ Level:         L2
 Type:          Constraint
 Statement:     The operational data output shall use an output sample period [P-TM-010] that is an
   integer multiple of the control frame period [P-SYS-310].
-Rationale:     Derived from a design decision: DD-C7-02 (proposed). The first control frame starts at
+Rationale:     Derived from a design decision: DD-480 (proposed). The first control frame starts at
   step zero (FUNCTIONAL_ANALYSIS §4.2) and the frame period is a whole number of steps (L1-AER-680),
   so each sample step is then the first step of a control frame. The sample holds the state that the
   flight software used in that frame and the values it computed from it (L2-AER-TM-130). A period
@@ -330,7 +330,7 @@ Rationale:     Derived from a design decision: DD-C7-02 (proposed). The first co
   period, so that each control frame is recorded (C7-Q03); the per-step data that the analyses need
   come from the TST recording of the vehicle-model interfaces, not from the operational data
   (IN-C2-30, IN-C3-31).
-Parent(s):     Derived (DD-C7-02)
+Parent(s):     Derived (DD-480)
 Source:        FUNCTIONAL_ANALYSIS §4.2, §7.5; CV-830; L1-AER-680
 Allocated to:  —
 Criticality:   Not assessed
@@ -338,7 +338,7 @@ Verification:  Inspection — IN-TM-150; success criteria: in the parameter data
   by [P-SYS-310] is a whole number of at least one, and the step index of each output sample of a
   run of SC-130 is that of the first step of a control frame.
 Parameters:    P-TM-010, P-SYS-310
-TBD/TBR:       DD-C7-02 proposed, Martin, G2; P-TM-010, P-SYS-310 values TBR (TT-070, TT-590), Martin,
+TBD/TBR:       DD-480 proposed, Martin, G2; P-TM-010, P-SYS-310 values TBR (TT-070, TT-590), Martin,
   G2 (I1)
 Owner:         Martin
 Status:        Draft
@@ -394,7 +394,7 @@ Statement:     The operational data output shall record in each crew selection r
 Rationale:     L1-AER-610: each target that results from a crew selection. The target is the selected
   value converted by the exact CV-750 factor without rounding (CV-770), within the selectable range
   and resolution that C8 sets. What the panel passes across ICD-FCP is what autoflight flies, so TM
-  records the passed value, not a recomputation of it (DD-C7-05, proposed). "None" covers a mode
+  records the passed value, not a recomputation of it (DD-510, proposed). "None" covers a mode
   engage command, which carries no selected value, and a selection that the panel does not pass. The
   pair of the selected value (L2-AER-TM-200) and the target shows the conversion and the acceptance
   of each selection.
@@ -409,7 +409,7 @@ Verification:  Test — TP-TM-210; success criteria: in the run of TP-TM-200, ea
   panel does not pass, holds the indication that none was passed; each SI target equals the target
   that crosses ICD-FCP to autoflight in the recording of the flight software interfaces (IN-C7-40).
 Parameters:    —
-TBD/TBR:       DD-C7-05 proposed, Martin, G2; ICD-FCP not yet written (TT-680), Martin, G2 (I1);
+TBD/TBR:       DD-510 proposed, Martin, G2; ICD-FCP not yet written (TT-680), Martin, G2 (I1);
   releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes when the
   plan is extended to the RVS (D44)
 Owner:         Martin
@@ -980,7 +980,7 @@ Type:          Functional
 Statement:     The operational data output shall record in each event record the vertical speed and
   the horizontal speed by which the dynamics model classified the contact, and the vehicle state
   and the gear state that the dynamics model reports for the contact step.
-Rationale:     Derived from a design decision: DD-C7-03 (proposed). The contact step usually falls
+Rationale:     Derived from a design decision: DD-490 (proposed). The contact step usually falls
   between two output samples, and a crash ends the run, often before the next sample
   (L2-AER-TM-140), so without these values the operational data would not show the contact itself.
   The speeds are those of the propagated state, by which the contact is classified against the
@@ -990,7 +990,7 @@ Rationale:     Derived from a design decision: DD-C7-03 (proposed). The contact 
   the contact step would break the fixed spacing of L1-AER-600, so the values go in the event record
   instead. The dynamics model gives the classification speeds with the event (C1, IN-C7-01); the
   record kind is one closed list of the contact values (D30).
-Parent(s):     Derived (DD-C7-03)
+Parent(s):     Derived (DD-490)
 Source:        N-370, N-390; MS-DYN §9.4, §9.5, §9.8; L2-AER-DYN-530, -540, -560
 Allocated to:  —
 Criticality:   Not assessed
@@ -1000,7 +1000,7 @@ Verification:  Test — TP-TM-610; success criteria: in each contact test of L2-
   recording of the vehicle-model interfaces (IN-C1-26), and the vehicle state and gear state that
   the dynamics model reports for the contact step.
 Parameters:    P-SYS-500, P-SYS-510
-TBD/TBR:       DD-C7-03 proposed (C7-Q07), Martin, G2; classification speeds with the DYN event
+TBD/TBR:       DD-490 proposed (C7-Q07), Martin, G2; classification speeds with the DYN event
   (IN-C7-01), Martin, G2 (I1); P-SYS-500, P-SYS-510 values TBR (TT-090), Martin, G2; releasable or
   protected classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended
   to the RVS (D44)

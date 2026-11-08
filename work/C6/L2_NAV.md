@@ -4,7 +4,7 @@ The navigation requirements (task C6). The subject of each statement is the navi
 
 **What NAV computes.** Seven quantities, each by its CONVENTIONS definition and nothing else: the altitude (CV-430), the height above the ground (CV-400), the horizontal position (CV-410), the horizontal speed (CV-480), the vertical speed (CV-490), the heading (CV-530, by CV-260) and the track (CV-540). The first six are the navigation quantities of L1-AER-530 and -890. The horizontal position is added because the modes that hold a position over the ground (Stationary, Hover, Takeoff, Land) need it and autoflight receives no vehicle state (L1-AER-440 gives the state to NAV and FC only); it traces to L1-AER-450, and CR-C6-01 proposes adding it to L1-AER-530, -890 and the glossary (`work/C6/issues.md`). Each quantity is in SI (CV-720, CV-730); the crew-facing units stay in the panel (CV-760, L1-AER-870).
 
-**Validity (CV-580).** The track is valid while the horizontal speed is at least `[P-NAV-010]`, and its value is zero while it is invalid (DD-C6-01). The heading is valid while the magnitude of the pitch angle is at most `[P-NAV-030]`; its value stays the CV-260 yaw angle, which is defined at every attitude. The other five quantities are defined at every state and the state is exact, so they are valid at each frame; they carry a validity all the same, so that each quantity crosses the interfaces in one form and a later sensor model (#83) changes values and flags, not the interfaces. Pitch and roll are held at zero in every mode (D57, L1-AER-390), so the heading is valid in nominal flight; the threshold matters for airborne test starts and after fuel exhaustion, when the vehicle keeps its angular rate and can tumble. On the ground, and in Stationary, Hover, Takeoff and Land, the horizontal speed is below `[P-NAV-010]` and the track is invalid.
+**Validity (CV-580).** The track is valid while the horizontal speed is at least `[P-NAV-010]`, and its value is zero while it is invalid (DD-430). The heading is valid while the magnitude of the pitch angle is at most `[P-NAV-030]`; its value stays the CV-260 yaw angle, which is defined at every attitude. The other five quantities are defined at every state and the state is exact, so they are valid at each frame; they carry a validity all the same, so that each quantity crosses the interfaces in one form and a later sensor model (#83) changes values and flags, not the interfaces. Pitch and roll are held at zero in every mode (D57, L1-AER-390), so the heading is valid in nominal flight; the threshold matters for airborne test starts and after fuel exhaustion, when the vehicle keeps its angular rate and can tumble. On the ground, and in Stationary, Hover, Takeoff and Land, the horizontal speed is below `[P-NAV-010]` and the track is invalid.
 
 **Altitude and height above the ground (TT-820, D69, D70, D73).** The altitude is that of the centre of gravity above the datum plane (CV-430): the selected altitude, Altitude hold, the operating ceiling and the atmosphere use it. The height above the ground is that of the lowest point of the body shape, the capsule of MS-DYN §2.6, with the landing gear not part of it (CV-400, CR-B3-36, which closed TT-820): the hover height `[P-AF-210]` and the minimum operating height `[P-SYS-210]` are heights above the ground (D67, D70), and Go to hover, Hover, Takeoff and Land guide on it. NAV uses the expression of MS-DYN §2.6 with the body dimensions `[P-DYN-020]` and `[P-DYN-030]` of the run's vehicle parameter set, the same expression the dynamics model uses for the ground contact (IN-C1-45). At rest on the extended gear the height above the ground is the gear length `[P-DYN-040]`; at the hover height the extended gear clears the ground by `[P-AF-210]` − `[P-DYN-040]`, which is an autoflight matter (MS-DYN §2.5). NAV gives no height of the gear itself (C6-Q08).
 
@@ -12,7 +12,7 @@ The navigation requirements (task C6). The subject of each statement is the navi
 
 **No VOR and no flight path angle (D56).** L1-AER-340, -540 and -550 are Deleted and have no NAV children; P-NAV-020, -040 and -050 are withdrawn; CV-560 and CV-610 to CV-670 are deleted.
 
-**Depth and verification.** Each record is a leaf at L2 (`Allocated to: —`): the next layer would be the implementation (D4). NAV computes each quantity in closed form from the exact state; there is no estimator, filter or predictor, and any estimation algorithm introduced with a sensor model (#83) is a design decision, not a requirement (DD-C6-03). The L1 parents are verified by roll-up (D40, D58). Procedure IDs follow the record number (IN-, AN-, TP-NAV-nnn); Phase 5 (V3) writes the procedures. The analyses compare the NAV outputs of each control frame with an independent computation from the recorded frame-start state, within the agreement tolerances `[P-NAV-060]` (lengths), `[P-NAV-070]` (speeds) and `[P-NAV-080]` (angles, differenced by CV-930); they need the operational data, or a per-frame record, at the frame-start steps (IN-C6-50). The **tumbling test run** used by several records is an airborne test start (D73, B3-1) at an altitude well above the ground, with zero fuel, level attitude and a pitch rate, so that the vehicle falls while its pitch angle passes through its whole CV-230 range.
+**Depth and verification.** Each record is a leaf at L2 (`Allocated to: —`): the next layer would be the implementation (D4). NAV computes each quantity in closed form from the exact state; there is no estimator, filter or predictor, and any estimation algorithm introduced with a sensor model (#83) is a design decision, not a requirement (DD-450). The L1 parents are verified by roll-up (D40, D58). Procedure IDs follow the record number (IN-, AN-, TP-NAV-nnn); Phase 5 (V3) writes the procedures. The analyses compare the NAV outputs of each control frame with an independent computation from the recorded frame-start state, within the agreement tolerances `[P-NAV-060]` (lengths), `[P-NAV-070]` (speeds) and `[P-NAV-080]` (angles, differenced by CV-930); they need the operational data, or a per-frame record, at the frame-start steps (IN-C6-50). The **tumbling test run** used by several records is an airborne test start (D73, B3-1) at an altitude well above the ground, with zero fuel, level attitude and a pitch rate, so that the vehicle falls while its pitch angle passes through its whole CV-230 range.
 
 **Coverage of the L1 parents.** Every live L1 record allocated to NAV has at least one NAV child.
 
@@ -28,7 +28,7 @@ The navigation requirements (task C6). The subject of each statement is the navi
 | L1-AER-880 | NAV gives the panel the navigation quantities with their validity, in SI, the same values autoflight receives, as ICD-FCP defines them | -240, -260, -270 |
 | L1-AER-890 | NAV passes the six quantities with their validity to autoflight through ICD-NAV-AF, in SI, with a defined value and validity rule for each, and ICD-NAV-AF defines each item | -100 to -150, -220, -260, -270, -400 |
 
-No record is Derived. The choices inside the records are proposed as DD-C6-01 to DD-C6-04 (`work/C6/issues.md` §4).
+No record is Derived. The choices inside the records are proposed as DD-430 to DD-460 (`work/C6/issues.md` §4).
 
 ### L2-AER-NAV-010
 
@@ -288,7 +288,7 @@ Statement:     While the horizontal speed of the frame-start state is at least [
 Rationale:     CV-580 bounds the validity of the track by the minimum horizontal speed [P-NAV-010],
   inclusive ("minimum horizontal speed for which track is valid"). Autoflight, the panel and the
   operational data read the validity with the value (L1-AER-890 "with their validity"). The
-  threshold has no hysteresis (DD-C6-02): with an exact state the validity is a function of the
+  threshold has no hysteresis (DD-440): with an exact state the validity is a function of the
   frame-start state alone, and a speed that stays near the threshold is a hold, in which the track
   is not used. The proposed value, one knot (C6-Q02), is the horizontal speed selection resolution
   [P-AF-030], and it is above the landing envelope speed [P-SYS-510], so the track is invalid in a
@@ -354,7 +354,7 @@ Rationale:     At and near a pitch angle of plus or minus a right angle the head
   angle [P-NAV-030], inclusive. Pitch is held within [P-AF-180] of zero in every mode (D57,
   L1-AER-390), far inside the threshold, so the heading is valid in nominal flight. The threshold
   matters in an airborne test start at a large pitch angle and after fuel exhaustion, when the
-  vehicle keeps the angular rate it had and can tumble (L1-AER-200). No hysteresis (DD-C6-02).
+  vehicle keeps the angular rate it had and can tumble (L1-AER-200). No hysteresis (DD-440).
   Sufficiency (L1-AER-890): see L2-AER-NAV-100.
 Parent(s):     L1-AER-890, L1-AER-530
 Source:        CV-260, CV-580; D57
@@ -410,7 +410,7 @@ Rationale:     At zero horizontal speed the track has no defined value (CV-540),
   makes the output a function of the frame-start state alone, so repeated runs agree (L1-AER-690,
   D59), and keeps NAV without memory: it has no state to initialise (FUNCTIONAL_ANALYSIS F-AER-14).
   Holding the last valid track would carry state across frames and make the value depend on the
-  history of the run (DD-C6-01, C6-Q04). Consumers read the validity before the value (IN-C6-10,
+  history of the run (DD-430, C6-Q04). Consumers read the validity before the value (IN-C6-10,
   IN-C6-30, IN-C6-40). The heading needs no counterpart, because CV-260 defines it at every
   attitude (-130).
   Sufficiency (L1-AER-890): see L2-AER-NAV-100. Sufficiency (L1-AER-690): see L2-AER-NAV-320.
@@ -767,7 +767,7 @@ Statement:     The navigation subsystem shall compute the navigation quantities 
   the run.
 Rationale:     Perfect state knowledge (L0-ASM-010, L1-AER-440): NAV uses the exact state as it is,
   with no filter, estimate or prediction, and carries nothing from one frame to the next. Each
-  quantity is then the closed form of its CONVENTIONS definition (DD-C6-03); an estimator is a
+  quantity is then the closed form of its CONVENTIONS definition (DD-450); an estimator is a
   design matter that a later sensor model would bring (#83, D4). Without memory, NAV has no state
   to initialise (FUNCTIONAL_ANALYSIS F-AER-14), and its outputs repeat exactly when the state
   repeats.

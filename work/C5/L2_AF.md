@@ -2,7 +2,7 @@
 
 The autoflight requirements (task C5). The subject of each statement is the autoflight subsystem (AF), one of the four flight-software subsystems with FCP, NAV and FC (D55). AF implements F-AER-07 and F-AER-08 and part of F-AER-14 (FUNCTIONAL_ANALYSIS §6.1): it decides which modes are armed and active, turns the crew's selections into references for the six degrees of freedom (guidance), commands the landing gear and gives the annunciation content. It runs once per control frame, after NAV and before FC (DD-010). Inputs: the mode selections, the selector targets and the accepted selectors from FCP; the navigation quantities from NAV; the gear state from DYN and the fuel state from FU; the initial mode state. Outputs: the axis references to FC, the landing gear command to DYN, the annunciation content to FCP, and the mode state, targets and gear command to TM.
 
-**The mode logic is a specification of its own.** The state, the decisions on the eight mode selections in each state, the arming and the captures, the handovers, the target rules, the heading behaviour in each mode, the gear rules, the fuel exhaustion and the valid initial states are in `specs/AF_MODE_LOGIC.md` (draft `work/C5/AF_MODE_LOGIC.md`), as tables with row IDs (DT, TR, TG, PR, HD, GR, IC). METHODOLOGY §8.3 prescribes this for mode logic: a short requirement that references a decision table. These records point to it by name, because a statement cannot carry a section number, and L2-AER-AF-010 makes it binding on every autoflight implementation (D15). The catalogue is D56 extended by D69: Stationary, Heading, Altitude hold, Go to altitude, Vertical speed, Go to hover, Hover, Takeoff and Land; one horizontal and one vertical mode are active at a time, and the last four govern both axes. Pitch and roll stay at zero (D57).
+**The mode logic is a specification of its own.** The state, the decisions on the eight mode selections in each state, the arming and the captures, the handovers, the target rules, the heading behaviour in each mode, the gear rules, the fuel exhaustion and the valid initial states are in `specs/AF_MODE_LOGIC.md`, as tables with row IDs (DT, TR, TG, PR, HD, GR, IC). METHODOLOGY §8.3 prescribes this for mode logic: a short requirement that references a decision table. These records point to it by name, because a statement cannot carry a section number, and L2-AER-AF-010 makes it binding on every autoflight implementation (D15). The catalogue is D56 extended by D69: Stationary, Heading, Altitude hold, Go to altitude, Vertical speed, Go to hover, Hover, Takeoff and Land; one horizontal and one vertical mode are active at a time, and the last four govern both axes. Pitch and roll stay at zero (D57).
 
 **What AF guarantees and what FC guarantees.** AF shapes the references (position and velocity, altitude and vertical speed, heading and heading rate, level pitch and roll) within the acceleration limits, and FC tracks them (L2-AER-AF-090; the L1 budgets split this way: [P-AF-160] and [P-FC-010]). The records of AF's own outputs are therefore about the references and the mode state. The tolerances of the vehicle in each mode ([P-AF-090] to [P-AF-130], [P-AF-170]) are vehicle-level statements with `Allocated to: FC, EF`; the split of each between the AF reference and the FC tracking is for Phase 4.
 
@@ -42,7 +42,7 @@ The autoflight requirements (task C5). The subject of each statement is the auto
 | L1-AER-960 | Takeoff is selected on the ground with fuel, climbs at the takeoff speed to the hover height holding the position, retracts the gear and hands over to Hover | -150, -200, -250, -510, -660, -720, -760 |
 | L1-AER-970 | Land is selected from Hover, extends the gear, descends only when it is extended at the landing speed over the Hover position, with the horizontal speed within the Hover tolerance, and ends at the contact | -160, -210, -260, -270, -650, -670, -700, -710 |
 
-Two records are Derived: L2-AER-AF-860 and -870 (DD-C5-05, the fuel exhaustion rule of D68). The design decisions proposed for AF are DD-C5-01 to DD-C5-07 (`work/C5/issues.md` §5). The records in this draft: 73 (Constraint 5, Functional 46, Interface 10, Performance 12); verification: Analysis 3, Demonstration 1, Inspection 5, Test 64.
+Two records are Derived: L2-AER-AF-860 and -870 (DD-400, the fuel exhaustion rule of D68). The design decisions proposed for AF are DD-360 to DD-420 (`work/C5/issues.md` §5). The records in this draft: 73 (Constraint 5, Functional 46, Interface 10, Performance 12); verification: Analysis 3, Demonstration 1, Inspection 5, Test 64.
 
 ### L2-AER-AF-010
 
@@ -284,10 +284,10 @@ Rationale:     The glossary leaves "which quantity each reference is" to C4 and 
   is why the position-holding budget splits into an AF share [P-AF-160] and an FC share [P-FC-010]
   (FUNCTIONAL_ANALYSIS §7.4). The indication separates a hold (the value is regulated) from a motion
   at a rate (only the rate is regulated, as in a climb at a selected vertical speed). The frame and
-  the exact items are for ICD-FC-AF (DD-C5-01, C5-Q12).
+  the exact items are for ICD-FC-AF (DD-360, C5-Q12).
   Sufficiency (L1-AER-420): with L2-AER-AF-030 this defines what crosses the one interface.
 Parent(s):     L1-AER-420
-Source:        D15, D56; FUNCTIONAL_ANALYSIS §7.4; DD-C5-01
+Source:        D15, D56; FUNCTIONAL_ANALYSIS §7.4; DD-360
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-AF-090; success criteria: ICD-FC-AF defines, for each of the six
@@ -674,12 +674,12 @@ Statement:     When the capture condition of AF_MODE_LOGIC for the armed Altitud
 Rationale:     The capture is the engagement of the armed Altitude hold (glossary: capture). The
   condition is that the altitude still to go is within the tolerance [P-AF-110], or is at most the
   distance in which the vertical speed reference stops at the vertical acceleration [P-AF-230]
-  (AF_MODE_LOGIC §5; DD-C5-03); the onset of the level-off then needs no separate selection. The
+  (AF_MODE_LOGIC §5; DD-380); the onset of the level-off then needs no separate selection. The
   target is the selected altitude at the frame of the capture (L2-AER-AF-350 for the other cases).
   Sufficiency (L1-AER-450): the capture is the automatic transition Go to altitude to Altitude hold
   and Vertical speed to Altitude hold of the catalogue.
 Parent(s):     L1-AER-450
-Source:        D16, D56; DD-C5-03; CONOPS SC-020, SC-040
+Source:        D16, D56; DD-380; CONOPS SC-020, SC-040
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-AF-230; success criteria: in SC-020 and SC-040 and their variations, the
@@ -912,12 +912,12 @@ Rationale:     What "the position held" is when a hold is entered with the vehic
   it stops can. The modes that hold the horizontal position are Stationary, Go to hover, Hover,
   Takeoff, Land and Heading at a selected speed of zero. From the ground the velocity is zero, so the
   reference is the ground position (L1-AER-960). The limit is the part of [P-AF-200] that
-  [P-AF-230] leaves (DD-C5-07, AF_MODE_LOGIC §11); the stopping position is the horizontal position
-  plus the velocity times its magnitude over twice that limit (DD-C5-04, C5-Q05).
+  [P-AF-230] leaves (DD-420, AF_MODE_LOGIC §11); the stopping position is the horizontal position
+  plus the velocity times its magnitude over twice that limit (DD-390, C5-Q05).
   Sufficiency (L1-AER-460): with L2-AER-AF-340 and -510, the reference position is defined for every
   entry to a hold, and its accuracy is the share [P-AF-160].
 Parent(s):     L1-AER-460
-Source:        #78, D16, D56; DD-C5-04; CONOPS SC-090
+Source:        #78, D16, D56; DD-390; CONOPS SC-090
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Analysis — AN-AF-330; success criteria: for Stationary engaged from Heading at
@@ -945,7 +945,7 @@ Rationale:     The hold modes hand over to one another without a new capture: Go
   counts from the start of the hold, not from each handover (PR-4).
   Sufficiency (L1-AER-460): with L2-AER-AF-330, every hold has one reference position from its start.
 Parent(s):     L1-AER-460
-Source:        D56, D60; DD-C5-04
+Source:        D56, D60; DD-390
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-AF-340; success criteria: at each handover between modes that hold the
@@ -970,13 +970,13 @@ Statement:     When Altitude hold becomes active other than by the capture of th
   reaches zero under [P-AF-230].
 Rationale:     SC-050 step 5 TBR: with Altitude hold selected during a climb, the vehicle "holds the
   altitude reached". The target is the altitude where the vertical speed reference stops at the
-  vertical acceleration (the level-off altitude, DD-C5-03): a target at the altitude of the selection
+  vertical acceleration (the level-off altitude, DD-380): a target at the altitude of the selection
   would need an instantaneous stop and a return (C5-Q06). It applies to ALT selected directly, to
   the group selections over Hover and Go to hover (rule TG-5) and to the start of an airborne initial
   mode state. At zero vertical speed it is the present altitude.
   Sufficiency (L1-AER-450): with L2-AER-AF-230, every Altitude hold has a defined target.
 Parent(s):     L1-AER-450
-Source:        D56; CONOPS SC-050; DD-C5-03
+Source:        D56; CONOPS SC-050; DD-380
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-AF-350; success criteria: with ALT selected during a climb and during a
@@ -1089,11 +1089,11 @@ Rationale:     Manoeuvres are g-limited (D16): this is the autoflight share of t
   budget, [P-AF-200] plus the flight-control allowance [P-FC-020] at most [P-SYS-440]
   (FUNCTIONAL_ANALYSIS §7.2, L1-AER-300), which in turn keeps the sensed acceleration under
   [P-SYS-120] (L1-AER-290). The acceleration is that of the reference in three dimensions: the
-  horizontal part, a turning velocity reference included, and the vertical part (DD-C5-07 splits
+  horizontal part, a turning velocity reference included, and the vertical part (DD-420 splits
   [P-AF-200] into a horizontal limit and the vertical one [P-AF-230]).
   Sufficiency (L1-AER-300, -290): the AF share is bounded; FC's child bounds its transients.
 Parent(s):     L1-AER-300, L1-AER-290
-Source:        D16, D38; FUNCTIONAL_ANALYSIS §7.2; DD-C5-07
+Source:        D16, D38; FUNCTIONAL_ANALYSIS §7.2; DD-420
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-AF-420; success criteria: in every test run, the magnitude of the change of
@@ -1117,7 +1117,7 @@ Statement:     The autoflight subsystem shall change its vertical speed referenc
 Rationale:     The vertical speed ramps rather than steps (D70): about ten seconds to reach the
   standard speed, and a level-off over about 170 ft. The same limit applies to an engagement, a new
   selection, a reversal and a level-off (P-AF-230 description). It is the vertical component of the
-  manoeuvre acceleration, so the horizontal limit is derived from it (DD-C5-07).
+  manoeuvre acceleration, so the horizontal limit is derived from it (DD-420).
   Sufficiency (L1-AER-320, -330): the climb and descent are reached by a bounded ramp.
 Parent(s):     L1-AER-320, L1-AER-330, L1-AER-300
 Source:        D70
@@ -1151,7 +1151,7 @@ Rationale:     Owner ruling D72 Q1: [P-SYS-230] is a ground speed, and the later
   Sufficiency (L1-AER-350, -300): AF commands rates up to [P-SYS-270] where the acceleration budget
   allows, and the budget is closed by the second bound.
 Parent(s):     L1-AER-350, L1-AER-300
-Source:        D64, D72 (Q1); IN-C1-32; IN-C6-12; DD-C5-07
+Source:        D64, D72 (Q1); IN-C1-32; IN-C6-12; DD-420
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-AF-440; success criteria: in heading changes at selected horizontal speeds
@@ -1296,7 +1296,7 @@ Rationale:     In Heading the vehicle moves along its heading at the selected ho
   ground speed (D56, D72): "its motion turns with" the heading (SC-050 step 2). The velocity
   direction follows the heading reference, not the final heading, so a turn bends the path. The
   selected speed runs from zero to [P-SYS-230], the capability of L1-AER-310. A speed change and a
-  turn share the horizontal limit (AF_MODE_LOGIC §11, DD-C5-07). The track follows the heading
+  turn share the horizontal limit (AF_MODE_LOGIC §11, DD-420). The track follows the heading
   (CV-550 reading, SC-060); its tolerance [P-AF-140] is for the mode section M5.
   Sufficiency (L1-AER-310): the horizontal speeds up to [P-SYS-230] are commanded in Heading; the
   vehicle sustains them by the FC and EF children.
@@ -2022,9 +2022,9 @@ Rationale:     Derived from the owner ruling D68 (answer to #59): at exhaustion 
   state. Disengagement shows the truth, FUEL EXHAUSTED comes from FCP (L2-AER-FCP-400), and the off
   value follows (L2-AER-AF-410). There is no recovery and no crew disengage selection. The state is
   reached in the frame in which the fuel state shows exhaustion, before the selections (TR-01).
-  Sufficiency: DD-C5-05 is the one decision; with L2-AER-AF-870 the post-exhaustion state is
+  Sufficiency: DD-400 is the one decision; with L2-AER-AF-870 the post-exhaustion state is
   fully defined.
-Parent(s):     Derived (DD-C5-05)
+Parent(s):     Derived (DD-400)
 Source:        D68; TT-580; CONOPS SC-110 leg 11
 Allocated to:  —
 Criticality:   Not assessed
@@ -2047,11 +2047,11 @@ Level:         L2
 Type:          Functional
 Statement:     While the fuel state indicates fuel exhaustion, the autoflight subsystem shall refuse
   each mode selection.
-Rationale:     Derived with L2-AER-AF-860 (DD-C5-05): after exhaustion nothing can fly the vehicle, so
+Rationale:     Derived with L2-AER-AF-860 (DD-400): after exhaustion nothing can fly the vehicle, so
   a mode that engaged would be annunciated without acting. It also answers the zero-fuel variation of
   SC-130: a ground start with no fuel refuses Takeoff and shows FUEL EXHAUSTED only.
   Sufficiency: with L2-AER-AF-860, the post-exhaustion state is empty and stays empty.
-Parent(s):     Derived (DD-C5-05)
+Parent(s):     Derived (DD-400)
 Source:        D68; CONOPS SC-130 zero-fuel variation
 Allocated to:  —
 Criticality:   Not assessed

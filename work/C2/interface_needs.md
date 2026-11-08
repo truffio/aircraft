@@ -6,7 +6,7 @@ What the FU requirements (`work/C2/L2_FU.md`, reworked) need from EF (C3), DYN a
 
 | Interface | Direction | Data (SI) | Rate | Defined in | FU record |
 | --- | --- | --- | --- | --- | --- |
-| I-01 | EF → FU | Control force `F_c^B` and control moment `M_c^B` about the centre of gravity, computed once by EF from its effector outputs (DD-C3-05) | Each simulation step, held over the step | MS-DYN | L2-AER-FU-070 |
+| I-01 | EF → FU | Control force `F_c^B` and control moment `M_c^B` about the centre of gravity, computed once by EF from its effector outputs (DD-190) | Each simulation step, held over the step | MS-DYN | L2-AER-FU-070 |
 | I-03 | FU → EF, DYN (ground contact) | Fuel availability (available / not available) | Each simulation step | MS-DYN | L2-AER-FU-200, -320 |
 | I-04 | FU → DYN | Vehicle mass (kg); inertia tensor as three principal moments (kg·m², body axes, zero products). **No centre-of-gravity item** (G2-F05) | Each simulation step | MS-DYN | L2-AER-FU-120 |
 | I-05 | FU → FC | Mass properties: vehicle mass, centre-of-gravity position (the body-frame origin), inertia tensor | Each step; read at the first step of each control frame | Boundary ICD | L2-AER-FU-130, -140, -150 |
@@ -22,9 +22,9 @@ FU takes nothing from the flight software (neither the effector commands nor the
 | ID | Need | Why | FU records | Status |
 | --- | --- | --- | --- | --- |
 | IN-C2-10 | Consumption relationships in the MS-DYN fuel model. | DD-110. | -040, -060, -290 | **Superseded by IN-C2-52** (text in `ms_dyn_s6_s7_fu.md` §7.2.1). |
-| IN-C2-11 | One mapping from effector outputs to control force and moment, used by DYN and FU. | Fuel and motion from the same forces. | -070 | **Answered by C3** (DD-C3-05: EF computes the resultant once and gives it to DYN and FU). |
-| IN-C2-12 | Fuel accounting. | DD-130. | -050, -080, -090 | **Superseded by IN-C2-52** (§7.2.2, with the exhaustion step set to zero, DD-C2-06). |
-| IN-C2-13 | Mass distributions and inertia derivation. | L1-AER-220. | -160 to -190 | **Superseded by IN-C2-52.** The derivation is C2's content (G2-F16); C2 chose the fuel volume equal to the capsule (DD-C2-07) and gives the values (§6.3). |
+| IN-C2-11 | One mapping from effector outputs to control force and moment, used by DYN and FU. | Fuel and motion from the same forces. | -070 | **Answered by C3** (DD-190: EF computes the resultant once and gives it to DYN and FU). |
+| IN-C2-12 | Fuel accounting. | DD-130. | -050, -080, -090 | **Superseded by IN-C2-52** (§7.2.2, with the exhaustion step set to zero, DD-270). |
+| IN-C2-13 | Mass distributions and inertia derivation. | L1-AER-220. | -160 to -190 | **Superseded by IN-C2-52.** The derivation is C2's content (G2-F16); C2 chose the fuel volume equal to the capsule (DD-280) and gives the values (§6.3). |
 | IN-C2-14 | Mass properties in the equations of motion, with no thrust and no `J̇·ω` term. | L0-ASM-090. | -110, -120, -170 | **Confirmed** by MS-DYN §4.1 and G2 §3.1; restated in §6.3. |
 | IN-C2-15 | Fuel availability: available when `m_f(k) > 0`. | L1-AER-200. | -200 | **Extended by IN-C2-50** (also to the ground contact model). |
 | IN-C2-16 | Fuel content of the credibility checks. | METHODOLOGY §10.3. | -040, -080, -290 | **Superseded by IN-C2-51.** Item (b), the steady-hover closed form, is dropped as a credibility check (D72: no long checks); the hover endurance is a performance test (L2-AER-FU-290). |
@@ -42,7 +42,7 @@ FU takes nothing from the flight software (neither the effector commands nor the
 | ID | Need | FU records | Status |
 | --- | --- | --- | --- |
 | IN-C2-20 | EF produces zero control force and moment while fuel is not available, from the first step at which FU gives not available; full commanded output in a step that starts available, FU limiting the fuel. | -200 | **Answered yes** by C3 (L2-AER-EF-200; zero at once, without the lag). |
-| IN-C2-21 | EF gives FU its effector outputs at each step (I-01). | -070 | **Superseded:** FU now takes the control force and moment that EF computes once (DD-C3-05, L2-AER-EF-140). FU uses no per-effector output; EF may keep giving them (L2-AER-EF-140), but no FU requirement reads them. C3 may drop "the effector outputs of that step with" from L2-AER-EF-140 at I1 (editorial). |
+| IN-C2-21 | EF gives FU its effector outputs at each step (I-01). | -070 | **Superseded:** FU now takes the control force and moment that EF computes once (DD-190, L2-AER-EF-140). FU uses no per-effector output; EF may keep giving them (L2-AER-EF-140), but no FU requirement reads them. C3 may drop "the effector outputs of that step with" from L2-AER-EF-140 at I1 (editorial). |
 | IN-C2-22 | EF defines no consumption parameter. | -060 | **Confirmed** by C3 (IN-EF-010). |
 | IN-C2-23 | EF's child of L1-AER-360: a hold at no more than the weight within [P-FU-100]. | -290 | **Answered** by C3: EF's share is zero (unit steady-state gain, no overshoot, resultant exactly the sum); FC holds the commanded resultant at the weight within [P-FU-100] (IN-C3-24). With D69, the same applies after the takeoff. |
 | IN-C2-24 | **Effectors off gives exactly zero.** With the effectors off on the ground, EF gives `F_c^B = 0` and `M_c^B = 0` exactly (not a lagged decay), so that L2-AER-FU-300 holds exactly and the remaining fuel is constant over a rest on the ground. C3's effector model property 5 already says so ("each output is exactly zero … without passing through the lag", L2-AER-EF-210). | -300 | **Answered yes** by C3 (`work/C3/ms_dyn_s7_effectors.md` §7.1, property 5). Recorded for I1. |

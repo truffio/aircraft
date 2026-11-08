@@ -35,6 +35,13 @@
 #   -100 to -130 added (reference layout DD-200). P-EF blocks: 010-090 command response; 100-190 effector set
 #   (one list entry per effector, in the same order in P-EF-100 to -130); 200-990 free.
 
+# I1 merge (2026-11-08, owner D76): C4 to C8 proposals merged. P-FC-030 to -120, P-NAV-060 to -080 and P-FCP-010, -020 added;
+#   P-SYS-540, -550, P-AF-060, -090, -100, -110, -120, -130, -170, -180, -190, P-NAV-010, -030 valued (TBR); P-SYS-230 stored as
+#   154.33333333333334 m/s, the nearest double to 300 kt (C8-Q07). I1 closure of the C4 and C5 tolerances: P-AF-110 0.07 m and
+#   P-AF-170 0.4 m/s (were 0.05 m and 0.25 m/s). P-FC blocks: 010-020 position share and transient allowance; 030-090 tracking
+#   tolerances and settling times; 100-110 allocation accuracy; 120 ground descent. P-FCP blocks: 010-090 display and conversion.
+#   P-NAV blocks: 010-050 validity thresholds (020, 040, 050 withdrawn); 060-090 verification agreement tolerances.
+
 parameters:
 
   # --- SYS ---
@@ -100,8 +107,9 @@ parameters:
     name: Maximum horizontal speed
     description: Highest horizontal speed (ground speed, CV-480) reached in autoflight. Upper limit of the selected horizontal speed (crew-facing kt). 300 kt; in still air it is also the airspeed of the endurance anchor P-SYS-290 (D66, D72).
     unit: m/s
-    value: 154.333
+    value: 154.33333333333334
     tolerance: null
+    note: '300 kt exactly by the CV-750 factor (300 x 1852/3600 = 463/3 m/s), stored as the nearest double, which is above the exact value; the earlier 154.333 is 299.9994 kt and would make 300 kt unselectable (L2-AER-FCP-110, C8-Q07). The value is unchanged in intent (D66, D72).'
     status: Set
     source: CONOPS §5, N-170; owner (D66, D72)
     owner: Martin
@@ -233,7 +241,7 @@ parameters:
     owner: Martin
   - id: P-SYS-460
     name: Position-hold settling time
-    description: Time from the start of a hold of the horizontal position (Stationary or Hover) after which the position-holding error budget P-SYS-450 applies. When the hold starts is set by the mode logic (#78, C5).
+    description: 'Time from the start of a hold of the horizontal position (Stationary or Hover) after which the position-holding error budget P-SYS-450 applies. The hold starts as rule PR-4 of AF_MODE_LOGIC defines it: at the frame in which a mode that holds the horizontal position becomes active from a mode that does not, or from autoflight not engaged; a handover between holding modes does not restart it.'
     unit: s
     value: 30
     tolerance: null
@@ -280,21 +288,23 @@ parameters:
     owner: Martin
   - id: P-SYS-540
     name: Cross-axis velocity tolerance
-    description: Largest departure of the velocity along each translational axis of the axis references from its reference while the reference of another degree of freedom changes.
+    description: Largest departure of the velocity along each translational axis of the axis references (north, east, vertical of the local frame V) from its reference rate while the reference of another degree of freedom changes and no axis demand is limited (L2-AER-FC-120).
     unit: m/s
-    value: null
+    value: 0.1
     tolerance: null
-    status: TBD
-    source: L1-AER-380
+    note: 'C4 proposal. At zero heading the translational axes are the body axes (CR-C4-03).'
+    status: TBR
+    source: L1-AER-380; L2-AER-FC-120; C4 proposal
     owner: Martin
   - id: P-SYS-550
     name: Cross-axis body rate tolerance
-    description: Largest departure of the body rate about each rotational axis from its reference while the reference of another degree of freedom changes.
+    description: Largest departure of the body rate about each rotational axis from its reference rate while the reference of another degree of freedom changes and no axis demand is limited (L2-AER-FC-120).
     unit: rad/s
-    value: null
+    value: 0.005
     tolerance: null
-    status: TBD
-    source: L1-AER-380
+    note: 'C4 proposal. Equal to P-FC-080.'
+    status: TBR
+    source: L1-AER-380; L2-AER-FC-120; C4 proposal
     owner: Martin
   - id: P-SYS-560
     name: Maximum gust speed
@@ -662,115 +672,221 @@ parameters:
     status: TBR
     source: L1-AER-300; FUNCTIONAL_ANALYSIS §7.2
     owner: Martin
+  - id: P-FC-030
+    name: Vertical position tracking tolerance
+    description: Largest difference between the altitude and the reference altitude while the vertical axis regulates position, outside the settling time of a reference step (L3-AER-FC-TR-050). FC share of the altitude-hold tolerance P-AF-110.
+    unit: m
+    value: 0.05
+    tolerance: null
+    note: 'C4 proposal. Smaller than the gear clearance at the hover height, P-AF-210 - P-DYN-040 = 0.124 m (IN-C1-44). P-AF-110 is at least this value plus the AF share.'
+    status: TBR
+    source: L3-AER-FC-TR-050; L2-AER-FC-100; C4 proposal
+    owner: Martin
+  - id: P-FC-040
+    name: Horizontal velocity tracking tolerance
+    description: Largest magnitude of the difference between the horizontal velocity and the reference velocity of the horizontal axes, outside the settling time of a reference step, in a wind within the wind envelope with gusts (L3-AER-FC-TR-020).
+    unit: m/s
+    value: 0.3
+    tolerance: null
+    note: 'C4 proposal. Closure: P-FC-040 is at most P-AF-170 (the AF tolerance on the horizontal speed once stopped), which is at most P-SYS-510 (0.5 m/s, the landing envelope). The gust response with a disturbance estimate driven by the measured acceleration is about 0.2 m/s (DD-350); without it about 0.5 m/s.'
+    status: TBR
+    source: L3-AER-FC-TR-020; L1-AER-310, L1-AER-970; C4 proposal
+    owner: Martin
+  - id: P-FC-050
+    name: Vertical velocity tracking tolerance
+    description: Largest difference between the vertical speed and the reference rate of the vertical axis, outside the settling time of a reference step (L3-AER-FC-TR-030). FC share of the vertical speed tracking tolerance P-AF-090.
+    unit: m/s
+    value: 0.1
+    tolerance: null
+    note: 'C4 proposal. P-AF-240 (0.305 m/s) plus this value is far inside P-SYS-500 (3.458 m/s).'
+    status: TBR
+    source: L3-AER-FC-TR-030; L1-AER-320, L1-AER-330, L1-AER-970; C4 proposal
+    owner: Martin
+  - id: P-FC-060
+    name: Translational settling time
+    description: Longest time from a step of the reference of a translational axis (that limits no axis demand) until the axis is within its tracking tolerance (L3-AER-FC-TR-060); also the interval after a liftoff for which the liftoff records apply (L2-AER-FC-220, L3-AER-FC-TR-100).
+    unit: s
+    value: 3.0
+    tolerance: null
+    note: 'C4 proposal. Position loop of about 1.5 rad/s over a velocity loop of about 4 rad/s (DD-350). Smaller than the position-hold settling time P-SYS-460, which includes the capture (AF).'
+    status: TBR
+    source: L3-AER-FC-TR-060; L1-AER-370; C4 proposal
+    owner: Martin
+  - id: P-FC-070
+    name: Heading tracking tolerance
+    description: Largest difference between the heading and the reference heading (shortest angle, CV-930), outside the settling time of a reference step (L3-AER-FC-RO-020). FC share of the heading tolerance P-AF-130.
+    unit: rad
+    value: 0.0087
+    tolerance: null
+    note: 'C4 proposal. 0.5 degree, below the heading selection resolution P-AF-040 (1 degree).'
+    status: TBR
+    source: L3-AER-FC-RO-020; L1-AER-370; C4 proposal
+    owner: Martin
+  - id: P-FC-080
+    name: Heading rate tracking tolerance
+    description: Largest difference between the body rate about the body z axis (the heading rate at level attitude) and the reference rate, outside the settling time of a reference step (L3-AER-FC-RO-030).
+    unit: rad/s
+    value: 0.005
+    tolerance: null
+    note: 'C4 proposal. About 8 % of P-SYS-270.'
+    status: TBR
+    source: L3-AER-FC-RO-030; L1-AER-350; C4 proposal
+    owner: Martin
+  - id: P-FC-090
+    name: Rotational settling time
+    description: Longest time from a step of the reference of a rotational axis (that limits no axis demand) until the axis is within its tracking tolerance (L3-AER-FC-RO-050).
+    unit: s
+    value: 4.0
+    tolerance: null
+    note: 'C4 proposal. Longer than the heading-rate onset time of 0.5 s that sizes P-SYS-420 (IN-C3-25), so the sizing holds; the heading loop is about 1 rad/s (DD-350).'
+    status: TBR
+    source: L3-AER-FC-RO-050; L1-AER-370; IN-C3-25; C4 proposal
+    owner: Martin
+  - id: P-FC-100
+    name: Allocation force tolerance
+    description: Largest difference, along each body axis, between the force that the commanded effectors give through the control effectiveness and the demanded force, for a demand within the authority box (L3-AER-FC-AL-010, -020).
+    unit: N
+    value: 0.1
+    tolerance: null
+    note: 'C4 proposal. The arithmetic of the allocation, far below the regulation tolerances (about 1e-5 of the weight).'
+    status: TBR
+    source: L3-AER-FC-AL-010; L2-AER-FC-150; C4 proposal
+    owner: Martin
+  - id: P-FC-110
+    name: Allocation moment tolerance
+    description: Largest difference, about each body axis, between the moment that the commanded effectors give through the control effectiveness and the demanded moment, for a demand within the authority box (L3-AER-FC-AL-010, -020).
+    unit: N*m
+    value: 0.1
+    tolerance: null
+    note: 'C4 proposal.'
+    status: TBR
+    source: L3-AER-FC-AL-010; L2-AER-FC-150; C4 proposal
+    owner: Martin
+  - id: P-FC-120
+    name: Ground-descent upward-force margin
+    description: Fraction of the weight (vehicle mass times P-DYN-010) by which flight control keeps its commanded upward control force below the weight while the gear is extended and the vertical reference rate is below zero (L2-AER-FC-210).
+    unit: '1'
+    value: 0.001
+    tolerance: null
+    note: 'C4 proposal. Range: zero or more. Keeps the cap below the liftoff condition of the ground contact model (MS-DYN §9.6) at the rounding of the model; the steady descent needs a force below the weight by the drag only (about 3e-5 of the weight at P-AF-240), so the cap binds by about 1e-3 g at most.'
+    status: TBR
+    source: L2-AER-FC-210; IN-C1-43; C4 proposal
+    owner: Martin
 
   # --- AF ---
   - id: P-AF-010
     name: Altitude selection resolution
-    description: Smallest step of the selected altitude.
+    description: Smallest step of the selected altitude. The selectable altitudes are the multiples of P-AF-010 whose exact conversion is from P-SYS-210 + P-DYN-030/2 to P-SYS-200 (L2-AER-FCP-120); 20 ft to 150 000 ft with the present values. A multiple of the altitude display resolution P-TM-020.
     note: 'Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.'
     unit: ft
     crew_facing: true
     value: 10
     tolerance: null
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-120
     owner: Martin
   - id: P-AF-020
     name: Vertical speed selection resolution
-    description: Smallest step of the selected vertical speed.
+    description: Smallest step of the selected vertical speed (signed, positive when climbing). The selectable vertical speeds are the multiples of P-AF-020 whose exact conversion is from -P-SYS-250 to P-SYS-240, zero included (L2-AER-FCP-130). A multiple of the vertical speed display resolution P-TM-030.
     note: 'Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.'
     unit: ft/min
     crew_facing: true
     value: 100
     tolerance: null
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-130
     owner: Martin
   - id: P-AF-030
     name: Horizontal speed selection resolution
-    description: Smallest step of the selected horizontal speed.
+    description: Smallest step of the selected horizontal speed (a ground speed, CV-480, D72). The selectable horizontal speeds are the multiples of P-AF-030 from zero whose exact conversion is at most P-SYS-230 (L2-AER-FCP-110). A multiple of the speed display resolution P-TM-040.
     note: 'Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.'
     unit: kt
     crew_facing: true
     value: 1
     tolerance: null
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-110
     owner: Martin
   - id: P-AF-040
     name: Heading selection resolution
-    description: Smallest step of the selected heading.
+    description: Smallest step of the selected heading. The selectable headings are the multiples of P-AF-040 in [0, 360) deg, north selected as 0 (L2-AER-FCP-100, CV-520). A multiple of the direction angle display resolution P-TM-050.
     note: 'Owned by the flight control panel (FCP, D55), which takes the crew selections; the ID keeps its AF prefix because CONOPS and the TBD register cite it.'
     unit: deg
     crew_facing: true
     value: 1
     tolerance: null
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-100
     owner: Martin
   - id: P-AF-060
     name: Annunciation latency
     description: 'AF share of the aircraft-level annunciation latency P-SYS-470: at most P-SYS-470 minus P-TM-010.'
     unit: s
-    value: null
+    value: 0.04
     tolerance: null
-    status: TBD
-    source: L1-AER-470; FUNCTIONAL_ANALYSIS §7.5; CONOPS §4.4, N-060
+    note: 'C5. Two control frames (2 x P-SYS-310): the selection is taken at the next frame and processed in that frame (FUNCTIONAL_ANALYSIS §7.5). With P-TM-010 the total is 0.06 s, within P-SYS-470.'
+    status: TBR
+    source: L1-AER-470; L2-AER-AF-810; FUNCTIONAL_ANALYSIS §7.5; CONOPS §4.4, N-060
     owner: Martin
   - id: P-AF-090
     name: Vertical speed tracking tolerance
-    description: Largest settled difference between vertical speed and selected vertical speed in Vertical speed mode, or in Go to altitude at a selected vertical speed.
+    description: Largest settled difference between vertical speed and selected vertical speed in Vertical speed mode, or in Go to altitude at a selected vertical speed. Also the largest vertical speed magnitude of a vehicle that is stationary at the hover height (L2-AER-AF-260).
     unit: m/s
-    value: null
+    value: 0.1
     tolerance: null
-    status: TBD
-    source: CONOPS SC-020, SC-040, SC-050
+    note: 'C5. About 20 ft/min. Refined at G3 (M2, M3, M8).'
+    status: TBR
+    source: CONOPS SC-020, SC-040, SC-050; L2-AER-AF-260, -600
     owner: Martin
   - id: P-AF-100
     name: Altitude capture maximum overshoot
     description: Largest overshoot of the selected altitude when Altitude hold captures it from Go to altitude or Vertical speed.
     unit: m
-    value: null
+    value: 1.0
     tolerance: null
-    status: TBD
-    source: CONOPS SC-020
+    note: 'C5. Tracking overshoot of the vehicle; the vertical reference itself does not overshoot (L2-AER-AF-560). Refined at G3 (M3).'
+    status: TBR
+    source: CONOPS SC-020; L2-AER-AF-590
     owner: Martin
   - id: P-AF-110
     name: Altitude hold tolerance
     description: Largest altitude error while Altitude hold or Hover holds an altitude.
     unit: m
-    value: null
+    value: 0.07
     tolerance: null
-    note: 'In Hover with the landing gear extended (before Land descends, after Takeoff reaches the hover height), the altitude error must stay below P-AF-210 - P-DYN-040 (0.124 m), or the gear touches the ground (C5, B3).'
-    status: TBD
-    source: CONOPS SC-020 to SC-120
+    note: 'C5, reconciled with C4 at I1 (value 0.05 m before). Budget: at least P-FC-030 (0.05 m, the FC share) plus the AF share (0.02 m, the residual of the reference at a capture). In Hover with the landing gear extended (before Land descends, after Takeoff reaches the hover height, after a go-around) the altitude error plus the tilt effect must stay below P-AF-210 - P-DYN-040 (0.124 m): 0.07 m + 4 m x sin(P-AF-180) = 0.105 m, margin 0.019 m (IN-C1-44).'
+    status: TBR
+    source: CONOPS SC-020 to SC-120; L2-AER-AF-260, -580, -720
     owner: Martin
   - id: P-AF-120
     name: Horizontal speed tracking tolerance
-    description: Largest settled difference between horizontal speed and selected horizontal speed in Heading (there is no separate speed mode, D56).
+    description: Largest settled difference between horizontal speed (ground speed) and selected horizontal speed in Heading (there is no separate speed mode, D56).
     unit: m/s
-    value: null
+    value: 0.5
     tolerance: null
-    status: TBD
-    source: CONOPS SC-040, SC-050, SC-060
+    note: 'C5. One selection step (P-AF-030, 1 kt = 0.514 m/s). Refined at G3 (M5).'
+    status: TBR
+    source: CONOPS SC-040, SC-050, SC-060; L2-AER-AF-610
     owner: Martin
   - id: P-AF-130
     name: Heading tolerance
     description: Largest settled difference between heading and the selected or held heading.
     unit: rad
-    value: null
+    value: 0.0175
     tolerance: null
-    status: TBD
+    note: 'C5. 1 deg, one selection step (P-AF-040). Refined at G3 (M0, M5).'
+    status: TBR
     source: CONOPS SC-060, SC-090
     owner: Martin
   - id: P-AF-140
     name: Track tolerance in Heading
-    description: Largest difference between the track and the selected heading once Heading has settled at a non-zero horizontal speed.
+    description: Largest difference between the track and the selected heading once Heading has settled at a non-zero horizontal speed. Applies only at a horizontal speed of at least P-NAV-010, where the track is valid.
     unit: rad
     value: null
     tolerance: null
+    note: 'C5. Stays TBD for the mode section M5: an angular tolerance is meaningless at low speed (a lateral velocity error of P-AF-120 is 44 deg at 1 kt); M5 may replace it by a cross-track velocity tolerance.'
     status: TBD
-    source: CONOPS SC-060
+    source: CONOPS SC-060; L2-AER-AF-530
     owner: Martin
   - id: P-AF-160
     name: Autoflight position-holding share
@@ -785,29 +901,31 @@ parameters:
     name: Hover horizontal speed tolerance
     description: Largest horizontal speed once Go to hover or Hover has stopped the vehicle.
     unit: m/s
-    value: null
+    value: 0.4
     tolerance: null
-    note: 'At most P-SYS-510, so that a Land from Hover meets the landing envelope (L1-AER-970).'
-    status: TBD
-    source: CONOPS SC-100
+    note: 'C5, reconciled with C4 at I1 (value 0.25 m/s before). Budget: at least P-FC-040 (0.3 m/s, the FC tracking tolerance of the horizontal velocity in the wind envelope with gusts; the AF share is zero, the reference velocity being zero) and at most P-SYS-510 (0.5 m/s), so that a Land from Hover meets the landing envelope (L1-AER-970); below P-NAV-010 (0.514 m/s), so the track is invalid in a hold.'
+    status: TBR
+    source: CONOPS SC-100; L2-AER-AF-260, -650
     owner: Martin
   - id: P-AF-180
     name: Level attitude tolerance
     description: Largest pitch or roll angle magnitude; pitch and roll are held at zero at all times (D10, D57).
     unit: rad
-    value: null
+    value: 0.008727
     tolerance: null
+    note: 'C5. 0.5 deg. Moves the height above the ground by at most 4 m x sin(0.5 deg) = 0.035 m (CV-400). FC confirms at I1.'
     status: TBR
-    source: CONOPS §4.4, Q2
+    source: CONOPS §4.4, Q2; L2-AER-AF-400
     owner: Martin
   - id: P-AF-190
     name: Settling time
-    description: Longest time from a capture onset or target change until the controlled quantity is within its tolerance.
+    description: Longest time from the instant the reference of a mode reaches its target until the controlled quantity is within its tolerance and stays there.
     unit: s
-    value: null
+    value: 5
     tolerance: null
-    status: TBD
-    source: CONOPS §5
+    note: 'C5. Changed from "from a capture onset or target change" (conflict C5-C01): the manoeuvre time depends on its size; the settling after the reference arrives does not. CONOPS §5 needs the matching change (CR-C5-03). Refined at G3.'
+    status: TBR
+    source: CONOPS §5; L2-AER-AF-580, -600, -610
     owner: Martin
   - id: P-AF-200
     name: Autoflight manoeuvre acceleration limit
@@ -815,7 +933,7 @@ parameters:
     unit: m/s^2
     value: 9.80665
     tolerance: null
-    note: '1.0 g'
+    note: '1.0 g. The horizontal part of the manoeuvre acceleration is limited to the square root of (P-AF-200 squared minus P-AF-230 squared), 9.757 m/s2, so that the three-dimensional acceleration of the velocity reference stays within P-AF-200 (DD-420).'
     status: TBR
     source: L1-AER-300; D16; FUNCTIONAL_ANALYSIS §7.2
     owner: Martin
@@ -860,35 +978,91 @@ parameters:
     source: owner (D69, D70); L1-AER-960, -970
     owner: Martin
 
+  # --- FCP ---
+  - id: P-FCP-010
+    name: Fuel display resolution
+    description: Resolution of the remaining fuel mass shown to the crew, in pounds (L2-AER-FCP-210, -380). The shown value is the remaining fuel mass divided by the CV-750 factor and rounded half away from zero to a multiple of this resolution.
+    unit: lb
+    crew_facing: true
+    value: 1
+    tolerance: null
+    note: 'C8 proposal (C8-Q06). The full capacity P-FU-010 (500 kg) is 1102.3 lb, so 1 lb is about 0.1 % of it, finer than the low-fuel threshold P-FU-020 (110.2 lb) by two orders of magnitude. A remaining fuel below 0.5 lb shows as 0 before exhaustion; the FUEL EXHAUSTED alert marks the exhaustion.'
+    status: TBR
+    source: L1-AER-560; L2-AER-FCP-210, -380; CV-780; C8 proposal
+    owner: Martin
+  - id: P-FCP-020
+    name: Crew-unit conversion agreement tolerance
+    description: Largest relative difference between a target or shown value that the flight control panel computes and its independent computation by the exact CV-750 factor, in the FCP tests (TP-FCP-200, -210). Floating-point agreement only; not a rounding allowance.
+    unit: '1'
+    value: 1.0e-12
+    tolerance: null
+    note: 'C8 proposal. One multiplication or division by an exact factor in double precision differs from the exact result by at most about 1.1e-16 relative, a few rounding steps if the factor is itself computed (1852/3600, 0.3048/60, pi/180); 1e-12 leaves four orders of magnitude of margin and is far below each display resolution relative to its range (1 ft in 150 000 ft is 6.7e-6).'
+    status: TBR
+    source: L1-AER-870; L2-AER-FCP-200; CV-750, CV-770; C8 proposal
+    owner: Martin
+
   # --- NAV ---
   - id: P-NAV-010
     name: Track validity speed
-    description: Minimum horizontal speed for which track is valid
+    description: Minimum horizontal speed for which the track is valid. The track is valid while the horizontal speed of the frame-start state is at least this value (inclusive, CV-580) and invalid below it; its value is zero while invalid (L2-AER-NAV-100, -110, -140).
     unit: m/s
-    value: null
+    value: 0.514444
     tolerance: null
-    status: TBD
-    source: CV-540, CV-580; NAV (C6)
+    note: 'C6. 1 kt = 1852/3600 m/s, rounded down to 6 decimals so that a selected 1 kt is a valid track. Equal to the horizontal speed selection resolution P-AF-030 and display resolution P-TM-040; above the landing envelope speed P-SYS-510, so the track is invalid on the ground and in a hold. Range - greater than zero.'
+    status: TBR
+    source: CV-540, CV-580; L2-AER-NAV-070, -100, -110, -330; C6 proposal (C6-Q02)
     owner: Martin
   - id: P-NAV-030
     name: Heading validity pitch limit
-    description: Maximum absolute pitch angle for which heading and roll angle are valid
+    description: Maximum magnitude of the pitch angle for which the heading and the roll angle are valid. The heading is valid while the magnitude of the pitch angle of the frame-start state is at most this value (inclusive, CV-580) and invalid above it (L2-AER-NAV-120, -130).
     unit: rad
-    value: null
+    value: 1.396263
     tolerance: null
-    status: TBD
-    source: CV-260, CV-580; NAV (C6)
+    note: 'C6. 80 deg. Heading sensitivity to a small roll perturbation is about tan(theta), 5.7 at 80 deg. Pitch is held within P-AF-180 of zero in every mode (D57); the limit acts in airborne test starts and after fuel exhaustion. Range - greater than zero, less than pi/2.'
+    status: TBR
+    source: CV-260, CV-580; L2-AER-NAV-060, -120, -130, -330; C6 proposal (C6-Q03)
+    owner: Martin
+  - id: P-NAV-060
+    name: NAV length agreement tolerance
+    description: Largest difference between a NAV length output (altitude, height above the ground, north or east component of the horizontal position) and its independent computation from the recorded frame-start state, in the NAV analyses and tests (AN-NAV-010, -020, -030; TP-NAV-330). Floating-point agreement only.
+    unit: m
+    value: 1.0e-6
+    tolerance: null
+    note: 'C6. Positions reach P-SYS-220 = 4.4e6 m, where double precision gives about 1e-9 m. A verification tolerance, kept in the database like P-FU-090 because the requirements cite it. Range - greater than zero.'
+    status: TBR
+    source: L2-AER-NAV-010, -020, -030, -330; C6 proposal
+    owner: Martin
+  - id: P-NAV-070
+    name: NAV speed agreement tolerance
+    description: Largest difference between a NAV speed output (horizontal speed, vertical speed) and its independent computation from the recorded frame-start state, in the NAV analyses (AN-NAV-040, -050). Floating-point agreement only.
+    unit: m/s
+    value: 1.0e-9
+    tolerance: null
+    note: 'C6. Speeds reach P-SYS-230 = 154 m/s (and the free-fall speed in the tumbling test), where double precision gives about 1e-13 m/s. A verification tolerance. Range - greater than zero.'
+    status: TBR
+    source: L2-AER-NAV-040, -050; C6 proposal
+    owner: Martin
+  - id: P-NAV-080
+    name: NAV angle agreement tolerance
+    description: Largest CV-930 difference between a NAV direction angle output (heading, track) and its independent computation from the recorded frame-start state, in the NAV analyses (AN-NAV-060, -070), where the quantity is valid. Floating-point agreement only.
+    unit: rad
+    value: 1.0e-9
+    tolerance: null
+    note: 'C6. Within the validity range (pitch magnitude at most P-NAV-030, horizontal speed at least P-NAV-010) the conditioning keeps the difference near 1e-15 rad. A verification tolerance. Range - greater than zero.'
+    status: TBR
+    source: L2-AER-NAV-060, -070; C6 proposal
     owner: Martin
 
   # --- TM ---
   - id: P-TM-010
     name: Output sample period
-    description: Period of one operational data record
+    description: Period of the output samples of the operational data. An integer multiple of P-SYS-310 (L2-AER-TM-150), so of P-SYS-300; one output sample at step 0 and one at each simulation step whose simulation time is a whole multiple of P-TM-010 (L2-AER-TM-140). Each output sample is then taken at the first step of a control frame.
     unit: s
     value: 0.02
     tolerance: null
+    note: 'C7 (C7-Q03, DD-480). Equal to P-SYS-310, so that each control frame is recorded; the value follows P-SYS-310. A period equal to P-SYS-300 would put half the samples in mid-frame and is not allowed by L2-AER-TM-150. The per-step data that analyses need come from the TST recording of the vehicle-model interfaces, not from the operational data. FCP share of P-SYS-470 (FUNCTIONAL_ANALYSIS §7.5).'
     status: TBR
-    source: CV-830; L1-AER-470, -600; B1 proposal (equal to P-SYS-310)
+    source: CV-830; L1-AER-470, -600; L2-AER-TM-140, -150; DD-480; B1 proposal (equal to P-SYS-310); C7 proposal
     owner: Martin
   - id: P-TM-020
     name: Altitude display resolution
@@ -899,7 +1073,7 @@ parameters:
     tolerance: null
     note: 'Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.'
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-210; L2-AER-TM-320, -330
     owner: Martin
   - id: P-TM-030
     name: Vertical speed display resolution
@@ -910,7 +1084,7 @@ parameters:
     tolerance: null
     note: 'Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.'
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-210; L2-AER-TM-320, -330
     owner: Martin
   - id: P-TM-040
     name: Speed display resolution
@@ -921,16 +1095,16 @@ parameters:
     tolerance: null
     note: 'Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.'
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-210; L2-AER-TM-320, -330
     owner: Martin
   - id: P-TM-050
     name: Direction angle display resolution
-    description: Resolution of heading and track values shown to the crew.
+    description: Resolution of heading and track values shown to the crew. A value that rounds to 360 deg is shown as 0 (L2-AER-FCP-220).
     unit: deg
     crew_facing: true
     value: 1
     tolerance: null
     note: 'Owned by the flight control panel (FCP, D55), which presents the indications; the ID keeps its TM prefix because CONVENTIONS CV-780 cites it.'
     status: TBR
-    source: D71
+    source: D71; L2-AER-FCP-210, -220; L2-AER-TM-320, -330
     owner: Martin
