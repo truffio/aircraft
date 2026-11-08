@@ -93,7 +93,7 @@ No layout, graphics or symbology (L1-AER-510). The values are rounded as CV-780 
 | --- | --- | --- | --- |
 | Configuration record | Once per run, before the first output sample | Identifier and version of the vehicle parameter set, the flight-control-law design and the autoflight implementation | L2-AER-TM-700 |
 | Output sample | Each sample step | The sampled signals of §6.2 | L2-AER-TM-100, -130, -140 |
-| Crew selection record | Each crew selection, at its own timestamp | The selection as received, with its selected value and crew unit, whether the panel accepted it, and the SI target passed to autoflight, or `none` | L2-AER-TM-110, -200, -210 |
+| Crew selection record | Each crew selection, at its own timestamp | The selection as received, with its selected value and crew unit, whether the panel accepted it, and the SI target passed to autoflight, or `none`; for a selected value, the SI target that autoflight takes; for a mode selection, autoflight's decision, `accepted` or `refused` (IN-C5-40) | L2-AER-TM-110, -200, -210, -220, -230 |
 | Event record | Each ground contact, at the contact step | The classification (`landing` or `crash`), the vertical and horizontal speed of the propagated state by which it was classified, and the vehicle state and gear state reported for the contact step (DD-490). A run can hold several landing events and at most one crash | L2-AER-TM-120, -600, -610; L2-AER-DYN-530 |
 
 ### 6.2 Signal catalogue
@@ -106,9 +106,10 @@ Each signal is a separate, named data item, readable without any other signal of
 | S-02 | Configuration: identifier and version of the vehicle parameter set, flight-control-law design and autoflight implementation | strings, opaque | Run set-up (I-39) | Once per run | -700 | Releasable if opaque |
 | S-03 | Crew selection as received: mode engage command, or selector with its selected value | command set of §4.1; ft, ft/min, kt, deg | FCP (I-36) | Each selection | -200 | Releasable |
 | S-04 | SI target passed to autoflight from the selection, or `none` | m, m/s, rad; or none | FCP (I-19, I-36) | With S-03 | -210 | Releasable |
-| S-05 | Mode state: the five fields, with the decision on each mode selection of the frame (accepted or refused) | AF_MODE_LOGIC §3 | AF (I-34) | Per frame | -300 | Protected |
+| S-04b | SI target that autoflight takes from the selector, with the control frame that takes it (IN-C5-40) | m, m/s, rad | AF (I-34), L2-AER-AF-830 | With S-03 | -230 | Releasable |
+| S-05 | Mode state: the five fields | AF_MODE_LOGIC §3 | AF (I-34) | Per frame | -300 | Protected |
 | S-06 | Annunciations presented | §4.2 | FCP (I-38) | Each output sample | -310 | Releasable |
-| S-07 | Target of each armed and active mode, and the SI target taken from each selector (CR-C7-01) | m, m/s, rad | AF (I-34) | Per frame | -320 | Protected |
+| S-07 | Target of each armed and active mode (CR-C7-01) | m, m/s, rad | AF (I-34) | Per frame | -320 | Protected |
 | S-08 | Indications presented (CR-C7-01) | §4.2, crew units | FCP (I-38) | Each output sample | -330 | Releasable |
 | S-09 | Axis references (six), or the off value | as ICD-FC-AF | FC, as received from AF (I-13, I-33) | Per frame | -400 | Protected |
 | S-10 | Axis demands: three forces, three moments, body frame | N, N·m | FC (I-11, I-33) | Per frame | -410 | Protected |
@@ -134,7 +135,7 @@ These are not operational data. They are TST requirements for when the plan cove
 | Need | Content | Source |
 | --- | --- | --- |
 | Per-step recording of the vehicle-model interfaces | Control force and moment, vehicle mass, wind, ground reaction, gear state, landing gear command, vehicle acceleration and sensed acceleration at each simulation step, without changing the configuration | IN-C1-26, IN-C2-30, IN-C3-31, IN-C4-31, IN-C7-03 |
-| Recording of the flight software interfaces | At each control frame, the values on ICD-FC-AF, ICD-NAV-AF and ICD-FCP and the signals S-04, S-05, S-07, S-09 to S-11, S-14, S-16 at their interface | IN-C7-40, IN-C5-70, IN-C8-40 |
+| Recording of the flight software interfaces | At each control frame, the values on ICD-FC-AF, ICD-NAV-AF and ICD-FCP and the signals S-04, S-04b, S-05, S-07, S-09 to S-11, S-14, S-16 at their interface | IN-C7-40, IN-C5-70, IN-C8-40 |
 | Test sources | A test autoflight variant sending scripted axis references; a test flight-control-law design; a way to run the panel with scripted annunciation content, navigation quantities and fuel state | IN-C4-30, IN-C3-33, IN-C7-44, IN-C8-40 |
 | Test runs | Airborne test starts (tumbling run, credibility checks), a run with a crosswind, a run through the track validity speed, runs with modified vehicle parameter sets, a second effector layout | IN-C6-51, IN-C1-47, IN-C4-36 |
 | Interactive interface | Shows the crew interface output to a human and takes the selections into the same data items as a script | IN-C8-41 |

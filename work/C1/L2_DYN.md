@@ -439,10 +439,10 @@ Rationale:     The density follows the standard atmosphere (D20) and depends on 
   (L0-ASM-060). MS-DYN names it: the U.S. Standard Atmosphere, 1976, with the geopotential altitude
   taken equal to the altitude (DD-090). Its seven layers are used up to the top of the standard's
   lower atmosphere, layer 0 is continued below the datum plane, and the density is zero above the
-  top, so that the density is defined at every altitude an integrator can evaluate (DD-210; G2-F08). Its constants are constants of the named standard, not parameters. The check
-  reads the standard by geopotential altitude, because the published table is indexed by geometric
-  altitude and would fail a correct model by up to 4.8·10⁻² at 47 km (G2-F07).
-  Sufficiency (L1-AER-070): see L2-AER-DYN-130.
+  top, so that the density is defined at every altitude an integrator can evaluate (DD-210; G2-F08).
+  Its constants are constants of the named standard, not parameters. The check reads the standard by
+  geopotential altitude, because the published table is indexed by geometric altitude and would fail
+  a correct model by up to 4.8·10⁻² at 47 km (G2-F07). Sufficiency (L1-AER-070): see L2-AER-DYN-130.
 Parent(s):     L1-AER-070
 Source:        D20; L0-ASM-060; DD-090; MS-DYN §5.3, §11 (C-7)
 Allocated to:  —
@@ -985,7 +985,7 @@ Verification:  Inspection — IN-DYN-320; success criteria: each element of the 
   the gear state that DYN provides is defined in the vehicle-model boundary ICD with its frame and
   SI unit, or its set of values.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -1102,7 +1102,7 @@ Verification:  Inspection — IN-DYN-360; success criteria: the only input that 
   is the landing gear command of the vehicle-model boundary ICD, held over the steps of its control
   frame, and DYN reads no other flight software data.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1235,14 +1235,14 @@ Statement:     When a run starts with the landing gear retracted, the dynamics m
   initial condition that the TST gives.
 Rationale:     A run may start airborne only for test runs and credibility checks (D73, B3-1;
   L1-AER-660 as revised by CR-B3-26). An airborne start has the gear retracted (CONOPS §5 as revised
-  by CR-B3-33), so the gear position of the initial condition marks the kind of start (DD-230). The list is the kinematic part of the initial condition; the fuel mass is FU's, the
-  mode state and targets are AF's and FCP's. The attitude is given as a unit quaternion (IN-C1-21).
-  A start on the ground is L2-AER-DYN-450.
-  Sufficiency (L1-AER-660): DYN takes the position, velocity, attitude, body rates and landing gear
-  position of the initial condition: an airborne start (this record), a start on the ground
-  (L2-AER-DYN-450), and an airborne start with the body at or below the ground rejected
-  (L2-AER-DYN-470). FU, AF and FCP take the rest (their children). Together the initial condition
-  of L1-AER-660 is accepted in full, for a ground start and for an airborne start.
+  by CR-B3-33), so the gear position of the initial condition marks the kind of start (DD-230). The
+  list is the kinematic part of the initial condition; the fuel mass is FU's, the mode state and
+  targets are AF's and FCP's. The attitude is given as a unit quaternion (IN-C1-21). A start on the
+  ground is L2-AER-DYN-450. Sufficiency (L1-AER-660): DYN takes the position, velocity, attitude,
+  body rates and landing gear position of the initial condition: an airborne start (this record), a
+  start on the ground (L2-AER-DYN-450), and an airborne start with the body at or below the ground
+  rejected (L2-AER-DYN-470). FU, AF and FCP take the rest (their children). Together the initial
+  condition of L1-AER-660 is accepted in full, for a ground start and for an airborne start.
 Parent(s):     L1-AER-660
 Source:        N-310; CONOPS §4.6, §5; D73; MS-DYN §10.3
 Allocated to:  —
@@ -1353,7 +1353,7 @@ Verification:  Test — TP-DYN-460; success criteria: initial conditions with th
   model produces no vehicle state for that run; a consistent ground initial condition gives
   none.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1382,7 +1382,7 @@ Verification:  Test — TP-DYN-470; success criteria: airborne initial condition
   non-zero pitch angle, each give one initial-condition error naming the altitude; a height above
   the ground just above zero gives none.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1502,26 +1502,29 @@ ID:            L2-AER-DYN-530
 Level:         L2
 Type:          Interface
 Statement:     When the dynamics model classifies a ground contact, the dynamics model shall output
-  one event record with the classification and the timestamp of the contact step, as ICD-AER-TST
-  defines it.
+  one event record with the classification, the vertical speed and the horizontal speed of the
+  propagated state by which it classified the contact, the vehicle state and the gear state that it
+  reports for the contact step, and the timestamp of the contact step, as ICD-AER-TST defines it.
 Rationale:     The event goes to TM for the operational data (I-37) and to the TST, which ends the
   run on a crash; a landing does not end the run (I-41, CONOPS §4.6 as revised by CR-B3-33). A run
   can therefore hold several landing events and at most one crash event. The timestamp is the step
-  index and the simulation time of the contact step (CV-840). An event record is not tied to an
-  output sample, so the classification instant is the contact step even when it falls between
-  output samples.
-  Sufficiency (L1-AER-260, L1-AER-270): see L2-AER-DYN-500. Sufficiency (L1-AER-640): see
-  L2-AER-DYN-350.
+  index and the simulation time of the contact step (CV-840). The speeds and the reported state are
+  the contact values of DD-490 (IN-C7-01): a landing reports the rest state, so neither the reported
+  state nor an output sample shows the speeds that decided the classification. An event record is
+  not tied to an output sample, so the classification instant is the contact step even when it falls
+  between output samples. Sufficiency (L1-AER-260, L1-AER-270): see L2-AER-DYN-500. Sufficiency
+  (L1-AER-640): see L2-AER-DYN-350.
 Parent(s):     L1-AER-260, L1-AER-270, L1-AER-640
 Source:        I-37, I-41; CV-840
 Allocated to:  —
 Criticality:   Not assessed
-Verification:  Test — TP-DYN-530; success criteria: in each contact test of L2-AER-DYN-510 and
-  -520, and at each landing of a run of SC-130 with a second takeoff and landing, one event record
-  is output per contact, with the expected classification and the step index and simulation time
-  of the contact step, in the ICD-AER-TST format.
+Verification:  Test — TP-DYN-530; success criteria: in each contact test of L2-AER-DYN-510 and -520,
+  and at each landing of a run of SC-130 with a second takeoff and landing, one event record is
+  output per contact, with the expected classification, the propagated vertical and horizontal
+  speeds of the contact step, the reported vehicle state and gear state, and the step index and
+  simulation time of the contact step, in the ICD-AER-TST format.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -1536,14 +1539,15 @@ Type:          Functional
 Statement:     When the dynamics model classifies a ground contact as a crash, the dynamics model
   shall report the vehicle state of the contact step with its altitude raised so that the lowest
   point of the vehicle lies on the datum plane.
-Rationale:     Derived from a design decision: DD-070, as revised for the landing gear by DD-240. With a fixed step the propagated lowest point at the contact step is at or
-  slightly below the datum plane. CV-420 (as revised by CR-B3-36) states that no point of the
-  vehicle is below the datum plane in a run, so the reported state is raised onto it; the
-  horizontal position, the velocity, the attitude and the body rates stay as propagated, and the
-  classification uses the propagated state. The alternative, interpolating the state to the
-  crossing instant, puts a state off the CV-820 time grid. With the gear, the centre of gravity is
-  no longer at altitude zero at contact, so the earlier "altitude of zero" no longer applies; a
-  landing reports the rest state instead (L2-AER-DYN-560).
+Rationale:     Derived from a design decision: DD-070, as revised for the landing gear by DD-240.
+  With a fixed step the propagated lowest point at the contact step is at or slightly below the
+  datum plane. CV-420 (as revised by CR-B3-36) states that no point of the vehicle is below the
+  datum plane in a run, so the reported state is raised onto it; the horizontal position, the
+  velocity, the attitude and the body rates stay as propagated, and the classification uses the
+  propagated state. The alternative, interpolating the state to the crossing instant, puts a state
+  off the CV-820 time grid. With the gear, the centre of gravity is no longer at altitude zero at
+  contact, so the earlier "altitude of zero" no longer applies; a landing reports the rest state
+  instead (L2-AER-DYN-560).
 Parent(s):     Derived (DD-240)
 Source:        CV-420, CV-820; DD-070, DD-240; MS-DYN §9.5
 Allocated to:  —
@@ -1860,9 +1864,9 @@ ID:            L2-AER-DYN-640
 Level:         L2
 Type:          Model fidelity
 Statement:     While the fuel mass is zero in the gravity-free check configuration and the
-  vacuum-equivalent configuration with a non-zero yaw rate, the dynamics model shall match the horizontal velocity of the
-  rotation-during-translation check of MS-DYN, with the rotation-during-translation term
-  retained, within [P-DYN-250] over [P-DYN-270].
+  vacuum-equivalent configuration with a non-zero yaw rate, the dynamics model shall match the
+  horizontal velocity of the rotation-during-translation check of MS-DYN, with the
+  rotation-during-translation term retained, within [P-DYN-250] over [P-DYN-270].
 Rationale:     The rotation-during-translation term (K-2) is retained (D64, #81.1). Check C-5
   states the expected horizontal velocity with the term retained: with no force the velocity
   stays fixed in the local reference frame while the body turns, which shows that the model

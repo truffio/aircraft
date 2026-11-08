@@ -77,7 +77,7 @@ Opened by task B2 (2026-11-04). Rows TT-010 to TT-220 group the TBD and TBR para
 | TT-690 | Verification procedure IDs ("Inspection — TBD") of the L1 records, roll-up and leaf | TBD | requirements/L1.md, every live record | Martin | G4 (Phase 5, V4) | Open |
 | TT-700 | Reading of L0-CON-100 (initial fuel quantity: capacity parameter plus the initial fuel of each run's initial condition; N-B1-08) | TBR | L0-CON-100; L1-AER-150 | Martin | G1 (owner question Q3, `reviews/G1/dispositions.md`) | Closed (D63) |
 | TT-710 | P-DYN-010 value TBR (TT-150), P-SYS-440 value TBR (TT-040), P-SYS-570 value TBD (TT-650), Martin, G2 | TBD/TBR field | L1-AER-290 | Martin | as stated | Open |
-| TT-720 | Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1) | TBD/TBR field | L1-AER-430 | Martin | as stated | Closed 2026-11-08: the vehicle-model boundary has its own ICD, icd/ICD-VM-FS.md (I1, DD-570) |
+| TT-720 | Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1) | TBD/TBR field | L1-AER-430 | Martin | as stated | Closed 2026-11-08: the vehicle-model boundary has its own ICD, icd/ICD-VM-FS.md (I1, DD-570); the L1-AER-430 field keeps its text until its next change |
 | TT-730 | Abnormal and emergency procedures deferred with the hazard analysis, Martin, closes when failures are introduced (#85) | TBD/TBR field | L1-AER-840 | Martin | as stated | Open |
 | TT-740 | Body dimensions 12 m × 4 m with the provisional shape (L0-CON-140, D64) | TBR | P-DYN-020, P-DYN-030 | Martin | 2026-11-30 | Open |
 | TT-750 | Drag area 5 m² (D64) | TBR | P-DYN-100 | Martin | G2 (I1 budget closure) | Open |

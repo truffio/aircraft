@@ -2,7 +2,7 @@
 
 The flight control requirements (task C4). The subject of each statement is the flight control subsystem (FC), part of the flight software with AF, NAV and FCP. FC implements the functions F-AER-05 (regulate each degree of freedom) and F-AER-06 (allocate the axis demands to the effectors) and its share of F-AER-14 (FUNCTIONAL_ANALYSIS §6.1). It runs once per control frame `[P-SYS-310]`. Its inputs are the axis references of autoflight (ICD-FC-AF), the vehicle state of the first simulation step of the frame, the gear state and the mass properties (vehicle-model boundary), the vehicle parameter set (effector layout and limits) and the flight-control-law design of the configuration. Its outputs are the effector commands and the effector activation state, given to EF across the vehicle-model boundary, and the signals for the operational data. FC takes no mode information from AF (L1-AER-420), no fuel state, no wind and no navigation quantity.
 
-**Decomposition.** FC has three sub-functions, which `work/C4/L3_FC.md` specifies as L3 sections: translational regulation (TR: three axes, from references to force demands), rotational regulation (RO: three axes, from references to moment demands) and control allocation (AL: from the six axis demands to the effector commands). The six axis demands are the force along and the moment about each body axis (glossary *Axis demand*; I-11). An L2 record that has L3 children is allocated to them and is verified by roll-up (D40); the others are leaves, each verified directly by its own method. Gains and algorithms are design decisions, not requirements (D4): they are proposed as DD-300 to DD-350 in `work/C4/issues.md`.
+**Decomposition.** FC has three sub-functions, which the FC section of `requirements/L3.md` specifies as L3 sections: translational regulation (TR: three axes, from references to force demands), rotational regulation (RO: three axes, from references to moment demands) and control allocation (AL: from the six axis demands to the effector commands). The six axis demands are the force along and the moment about each body axis (glossary *Axis demand*; I-11). An L2 record that has L3 children is allocated to them and is verified by roll-up (D40); the others are leaves, each verified directly by its own method. Gains and algorithms are design decisions, not requirements (D4): they are the decisions DD-300 to DD-350 of the register.
 
 **The axis references (DD-290).** L1-AER-370 leaves to C4 which quantity each axis regulates and in which frame. The decision: each of the six axes has one axis reference made of a reference value, a reference rate and a reference acceleration. The translational axes are the north, east and vertical axes of the vehicle-carried local frame V (CV-150, CV-950); the vertical axis is expressed as altitude and vertical speed, positive up (CV-430, CV-490). Each translational axis reference states which quantity is regulated: the position (the reference value, with the rate and the acceleration as feed-forward) or the velocity (the reference rate, with the acceleration as feed-forward). The rotational axes are roll, pitch and heading, each regulated to its reference angle, with the body rate about the axis as the reference rate; with pitch and roll held at zero (D57) the reference rate of the heading is the heading rate. Autoflight supplies absolute references and never a command such as "hold the present position" (that would put a latched state and the mode logic into FC, L1-AER-420). In place of the six references, autoflight can send the **off value**, which carries no mode information (L1-AER-420).
 
@@ -18,7 +18,7 @@ The flight control requirements (task C4). The subject of each statement is the 
 
 **Not in this section.** Manual control (D49, L0-CON-180), failure handling (deferred) and a sensor model (#83): FC uses the exact vehicle state (L2-AER-FC-040). After fuel exhaustion FC does nothing special: the effector outputs are zero whatever it commands (L2-AER-EF-200, D68).
 
-**Coverage of the L1 parents.** Every live L1 record allocated to FC in FUNCTIONAL_ANALYSIS §6.2 has at least one FC child. L1-AER-360 is not allocated to FC; its FC child (L2-AER-FC-240) needs CR-C4-01. The L2 children are in the table; the L3 children are in `work/C4/L3_FC.md`.
+**Coverage of the L1 parents.** Every live L1 record allocated to FC in FUNCTIONAL_ANALYSIS §6.2 has at least one FC child. L1-AER-360 is allocated to FC since CR-C4-01 (D76); its FC child is L2-AER-FC-240. The L2 children are in the table; the L3 children are in the FC section of `requirements/L3.md`.
 
 | L1 parent | What FC guarantees, in the parent's terms | FC children |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ The flight control requirements (task C4). The subject of each statement is the 
 | L1-AER-950 | A ground start has the off value, so FC commands zero from the first control frame | -190 |
 | L1-AER-960 | FC powers up with the takeoff and keeps the horizontal position in the liftoff wind | -200, -220 |
 | L1-AER-970 | FC tracks the touchdown speeds and does not lift the vehicle off again | -100, -210 |
-| L1-AER-360 | (CR-C4-01) FC's hold commands use at most the fuel margin | -240 |
+| L1-AER-360 | FC's hold commands use at most the fuel margin | -240 |
 
 Records that are Derived: L3-AER-FC-AL-020 (the priority rule, DD-310). No L2 record is Derived.
 
@@ -101,18 +101,15 @@ Type:          Interface
 Statement:     The flight control subsystem shall take from autoflight, at the start of each control
   frame, only the six axis references, or the off value in their place, as ICD-FC-AF defines them.
 Rationale:     Modes and controllers are decoupled (D15): the one interface is what lets any
-  autoflight implementation pair with any control-law design (L1-AER-420). Only the axis
-  references cross it, so flight control receives no mode information and no control law can depend
-  on the mode logic (G1-F04). The content that DD-290 proposes for ICD-FC-AF is: for each axis a
-  reference value, a reference rate and a reference acceleration, in SI and with the angle and
-  altitude conventions of CONVENTIONS; for each translational axis, which quantity is regulated
-  (position or velocity); and the off value, a single value that replaces the six references and
-  means that the effectors are off (D69). The reference value is absolute, so FC latches nothing
-  at an engagement (DD-290). ICD-FC-AF is written at integration (I1) from this record and the
-  AF counterpart (C5).
+  autoflight implementation pair with any control-law design (L1-AER-420). Only the axis references
+  cross it, so flight control receives no mode information and no control law can depend on the mode
+  logic (G1-F04). ICD-FC-AF defines the content (DD-290, DD-580): for each axis a reference value, a
+  reference rate and a reference acceleration, in SI and with the angle and altitude conventions of
+  CONVENTIONS; for each translational axis, which quantity is regulated (the value or the rate); and
+  the off value, a single value that replaces the six references and means that the effectors are
+  off (D69). The reference value is absolute, so FC latches nothing at an engagement (DD-290).
   Sufficiency (L1-AER-420): this record is FC's side of the one interface; AF's side is its own
-  child, and the two cite ICD-FC-AF as their only mutual interface, which is what L1-AER-420
-  asks.
+  child, and the two cite ICD-FC-AF as their only mutual interface, which is what L1-AER-420 asks.
   Sufficiency (L1-AER-370): the interface carries a separate reference for each of the six degrees
   of freedom, which is what the six regulations of L2-AER-FC-010 need.
 Parent(s):     L1-AER-420, L1-AER-370
@@ -125,7 +122,7 @@ Verification:  Inspection — IN-FC-020; success criteria: ICD-FC-AF defines, fo
   ICD-FC-AF as the only interface with AF; and the FC implementation reads no other data item
   from AF.
 Parameters:    —
-TBD/TBR:       ICD-FC-AF home and content (IN-B1-03), Martin, G2 (I1, C5)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -143,16 +140,15 @@ Statement:     The flight control subsystem shall exchange data with the vehicle
 Rationale:     A fixed vehicle-model boundary lets the control law be replaced without modifying the
   vehicle model (L0-CON-200, L1-AER-430). FC's share is the closed list: the vehicle state (I-09:
   position, velocity, attitude, body rates and vehicle acceleration of the frame-start step), the
-  gear state (the gear position and whether the vehicle is on the ground, I-45), the mass
-  properties (vehicle mass and the principal moments of inertia, I-05) and, out, the effector
-  commands and the effector activation state (I-12). The gear state is needed for the descent
-  guard of L2-AER-FC-210; FUNCTIONAL_ANALYSIS I-45 lists AF as its user, so CR-C4-02 adds FC.
-  FC takes no fuel state (the fuel is FU's and the effects of exhaustion are EF's, D68), no wind
-  (L1-AER-670), no sensed acceleration (it goes to the operational data, IN-C1-35) and no
-  navigation quantity (IN-C6-20).
-  Sufficiency (L1-AER-430): FC's data items are all of the listed kinds (vehicle state, gear
-  state, mass properties in; effector commands out), and none else, so FC's share of the boundary
-  is covered.
+  gear state (the gear position and whether the vehicle is on the ground, I-45), the mass properties
+  (vehicle mass and the principal moments of inertia, I-05) and, out, the effector commands and the
+  effector activation state (I-12). The gear state is needed for the descent guard of L2-AER-FC-210;
+  FUNCTIONAL_ANALYSIS I-45 lists FC among its users since CR-C4-02 (D76). FC takes no fuel state
+  (the fuel is FU's and the effects of exhaustion are EF's, D68), no wind (L1-AER-670), no sensed
+  acceleration (it goes to the operational data, IN-C1-35) and no navigation quantity (IN-C6-20).
+  Sufficiency (L1-AER-430): FC's data items are all of the listed kinds (vehicle state, gear state,
+  mass properties in; effector commands out), and none else, so FC's share of the boundary is
+  covered.
 Parent(s):     L1-AER-430
 Source:        FUNCTIONAL_ANALYSIS §3.2 I-05, I-09, I-12, I-45, §5.1; D55
 Allocated to:  —
@@ -162,7 +158,7 @@ Verification:  Inspection — IN-FC-030; success criteria: each FC data item cro
   effector command or the effector activation state, defined in the vehicle-model boundary ICD
   with its unit and frame, and the FC implementation reads no other vehicle-model output.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -372,8 +368,8 @@ Verification:  Inspection — IN-FC-100; success criteria: each child requiremen
   verification and the decomposition has been reviewed (D40).
 Parameters:    P-FC-010, P-FC-040, P-FC-050, P-SYS-230, P-SYS-240, P-SYS-250, P-AF-160, P-SYS-450,
   P-AF-170, P-AF-240, P-SYS-500, P-SYS-510
-TBD/TBR:       P-FC-040, P-FC-050 values TBR (TT-C4-1), P-FC-010 value TBR (TT-050), P-AF-160 value
-  TBR (TT-050), P-AF-170 value TBD (C5), Martin, G2
+TBD/TBR:       P-FC-040, P-FC-050 values TBR (TT-940), P-FC-010 value TBR (TT-050), P-AF-160 value
+  TBR (TT-050), P-AF-170 value TBR (TT-180), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -411,7 +407,7 @@ Criticality:   Not assessed
 Verification:  Inspection — IN-FC-110; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D40).
 Parameters:    P-FC-070, P-FC-080, P-SYS-270, P-AF-180
-TBD/TBR:       P-FC-070, P-FC-080 values TBR (TT-C4-1), P-AF-180 value TBR (TT-190), P-SYS-270 value
+TBD/TBR:       P-FC-070, P-FC-080 values TBR (TT-940), P-AF-180 value TBR (TT-190), P-SYS-270 value
   TBR (TT-010), Martin, G2
 Owner:         Martin
 Status:        Draft
@@ -430,17 +426,16 @@ Statement:     While no axis demand is limited, when the axis reference of one a
   [P-SYS-550] of its reference rate.
 Rationale:     The measurable form of independent control (L0-CON-020) and of the absence of
   cross-axis coupling (L0-CON-030, D18): a manoeuvre on one axis leaves the other five where they
-  were. The translational axes are those of the references, the axes of the vehicle-carried
-  local frame V (DD-290); with the heading at zero they are the body axes, and at another
-  heading the body components of a steady reference turn with the heading, which the force
-  resolution of TR follows (DD-300). L1-AER-380 says "body axis" and CR-C4-03 aligns the
-  wording. The tolerances are the cross-axis budget that FC shares with EF; EF adds no cross
-  response of its own (L2-AER-EF-040), so they depend on FC alone. The statement is limited to
-  steps that no demand limit touches: a limited axis demand is the nominal saturation of
-  L2-AER-FC-170.
-  Sufficiency (L1-AER-380): the six axes of L2-AER-FC-010 are regulated separately
-  (L3-AER-FC-TR-010, L3-AER-FC-RO-010) and this record bounds the departure of the other five from
-  their references for a step on each in turn, which is the L1 test.
+  were. The translational axes are those of the references, the axes of the vehicle-carried local
+  frame V (DD-290); with the heading at zero they are the body axes, and at another heading the body
+  components of a steady reference turn with the heading, which the force resolution of TR follows
+  (DD-300). L1-AER-380 names these axes since CR-C4-03 (D76). The tolerances are the cross-axis
+  budget that FC shares with EF; EF adds no cross response of its own (L2-AER-EF-040), so they
+  depend on FC alone. The statement is limited to steps that no demand limit touches: a limited axis
+  demand is the nominal saturation of L2-AER-FC-170. Sufficiency (L1-AER-380): the six axes of
+  L2-AER-FC-010 are regulated separately (L3-AER-FC-TR-010, L3-AER-FC-RO-010) and this record bounds
+  the departure of the other five from their references for a step on each in turn, which is the L1
+  test.
 Parent(s):     L1-AER-380
 Source:        N-240; D18; L1-AER-380 rationale
 Allocated to:  —
@@ -453,7 +448,7 @@ Verification:  Test — TP-FC-120; success criteria: in still air, for a step of
   the body rate about each other rotational axis stays within [P-SYS-550] of its reference rate
   at each control frame, at full fuel and near dry mass.
 Parameters:    P-SYS-540, P-SYS-550, P-SYS-230
-TBD/TBR:       P-SYS-540, P-SYS-550 values TBR (TT-100, TT-C4-1), Martin, G2
+TBD/TBR:       P-SYS-540, P-SYS-550 values TBR (TT-100), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -663,7 +658,7 @@ Criticality:   Not assessed
 Verification:  Inspection — IN-FC-180; success criteria: each child requirement has passed its
   verification and the decomposition has been reviewed (D40).
 Parameters:    P-FC-060, P-FC-090
-TBD/TBR:       P-FC-060, P-FC-090 values TBR (TT-C4-1), Martin, G2
+TBD/TBR:       P-FC-060, P-FC-090 values TBR (TT-940), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -785,7 +780,7 @@ Verification:  Test — TP-FC-210; success criteria: in each landing from Hover 
   vertical speed error that would call for more than the weight, the recorded upward component
   of the commanded control force never exceeds the cap.
 Parameters:    P-DYN-010, P-FC-120, P-SYS-430, P-SYS-560, P-SYS-570
-TBD/TBR:       P-FC-120 value TBR (TT-C4-1), P-SYS-430, P-SYS-560 values TBR (TT-030), P-SYS-570
+TBD/TBR:       P-FC-120 value TBR (TT-940), P-SYS-430, P-SYS-560 values TBR (TT-030), P-SYS-570
   value TBR (TT-650), Martin, G2
 Owner:         Martin
 Status:        Draft
@@ -824,7 +819,7 @@ Verification:  Test — TP-FC-220; success criteria: from ground starts at full 
   [P-SYS-450] at each output sample from the liftoff until [P-FC-060] after it.
 Parameters:    P-SYS-580, P-SYS-450, P-FC-060, P-AF-240, P-FC-020
 TBD/TBR:       P-SYS-580 value TBR (TT-860), P-SYS-450 value TBR (TT-050), P-AF-240 value TBR
-  (TT-830), P-FC-060 value TBR (TT-C4-1), P-FC-020 value TBR (TT-040), Martin, G2
+  (TT-830), P-FC-060 value TBR (TT-940), P-FC-020 value TBR (TT-040), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -846,13 +841,13 @@ Rationale:     Fuel budget (FUNCTIONAL_ANALYSIS §7.3, L1-AER-360, CR-C4-01). Th
   regulation of the hold, the moments that keep the attitude, the transient at the start and the
   takeoff (L2-AER-FU-290). EF adds nothing to it (the lag has unit gain and no overshoot, the
   resultant is the sum of the outputs: IN-C3-24). FC's commanded resultant is therefore the quantity
-  that spends the margin, and this record states that it stays inside it. The consumption relationship
-  is on the magnitude of the resultant force and of the resultant moment (DD-110), so the allocation
-  of the resultant to the effectors changes nothing. The share of the margin the takeoff uses is
-  a few hundredths of a second of hover (L2-AER-FU-290).
-  Sufficiency (L1-AER-360): FU sizes the capacity for the margin (L2-AER-FU-290) and EF produces the
-  commanded resultant exactly; this record keeps the commanded resultant inside the margin, so
-  the endurance holds. It is FC's child once CR-C4-01 allocates L1-AER-360 to FC.
+  that spends the margin, and this record states that it stays inside it. The consumption
+  relationship is on the magnitude of the resultant force and of the resultant moment (DD-110), so
+  the allocation of the resultant to the effectors changes nothing. The share of the margin the
+  takeoff uses is a few hundredths of a second of hover (L2-AER-FU-290). Sufficiency (L1-AER-360):
+  FU sizes the capacity for the margin (L2-AER-FU-290) and EF produces the commanded resultant
+  exactly; this record keeps the commanded resultant inside the margin, so the endurance holds. It
+  is FC's child since CR-C4-01 (D76) allocated L1-AER-360 to FC.
 Parent(s):     L1-AER-360
 Source:        IN-C2-23, IN-C3-24; FUNCTIONAL_ANALYSIS §7.3; L2-AER-FU-290; D74
 Allocated to:  —

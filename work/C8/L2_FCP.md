@@ -21,13 +21,13 @@ There is no Hover selection (Hover is armed by Go to hover and by Takeoff), no a
 
 **Verification.** Each record is a leaf at L2 (`Allocated to: —`): the next layer would be the implementation of the panel software (D4), so each record is verified directly by its own method, and the L1 parents by roll-up (D40, D58). Procedure IDs follow the record number (IN-, AN-, TP-, DM-FCP-nnn); Phase 5 (V3) writes the procedures. Most tests drive the panel through the crew interface with a selection script and read the crew interface output and the operational data. The tests of the output mapping (-210, -220, -320 to -410) can also run the panel alone, with a test source of annunciation content, navigation quantities and fuel state at the ICD-FCP boundary (IN-C8-40), as EF does with a test command source (IN-C3-33).
 
-**Coverage of the L1 parents.** Every L1 record allocated to FCP (15, FUNCTIONAL_ANALYSIS §6.2) has at least one FCP child. L1-AER-310, -320 and -330 (the envelope) are not allocated to FCP, but their rationales make the panel the place where the selectable range ends (L2, C8); CR-C8-01 adds FCP to their allocation, and the selector records trace to them.
+**Coverage of the L1 parents.** Every L1 record allocated to FCP (18, FUNCTIONAL_ANALYSIS §6.2) has at least one FCP child. L1-AER-310, -320 and -330 (the envelope) are allocated to FCP since CR-C8-01 (D76): their rationales make the panel the place where the selectable range ends, and the selector records trace to them.
 
 | L1 parent | What FCP guarantees, in the parent's terms | FCP children |
 | --- | --- | --- |
-| L1-AER-310 (with CR-C8-01) | The selectable horizontal speed runs from zero to [P-SYS-230], and the selectable altitude up to [P-SYS-200] | -110, -120 |
-| L1-AER-320 (with CR-C8-01) | The selectable climb vertical speed runs up to [P-SYS-240] | -130 |
-| L1-AER-330 (with CR-C8-01) | The selectable descent vertical speed runs down to minus [P-SYS-250], and the selectable altitude down to the altitude at which the height above the ground is [P-SYS-210] at level attitude | -120, -130 |
+| L1-AER-310 | The selectable horizontal speed runs from zero to [P-SYS-230], and the selectable altitude up to [P-SYS-200] | -110, -120 |
+| L1-AER-320 | The selectable climb vertical speed runs up to [P-SYS-240] | -130 |
+| L1-AER-330 | The selectable descent vertical speed runs down to minus [P-SYS-250], and the selectable altitude down to the altitude at which the height above the ground is [P-SYS-210] at level attitude | -120, -130 |
 | L1-AER-430 | FCP exchanges with the vehicle model only the fuel state, by its boundary definition | -070 |
 | L1-AER-470 | A change of mode state, target or gear position that AF gives, and a change of a selected value, reaches the crew interface output within the FCP share [P-TM-010]; the mode state, targets, gear position and selector readouts are annunciated | -040, -300, -310, -320, -330, -340, -350 |
 | L1-AER-480 | Each crew selection is a time-stamped data item of the crew interface, from a closed list, taken at the next control frame, checked and held | -010, -020, -080, -090, -100 to -150 |
@@ -44,7 +44,7 @@ There is no Hover selection (Hover is armed by Go to hover and by Takeoff), no a
 | L1-AER-870 | Selected values convert to SI by the exact CV-750 factor without rounding; shown values convert from SI by the same factor, then round once | -200, -210, -220 |
 | L1-AER-880 | FCP gives AF only the crew selections in SI, and takes only the annunciation content, the navigation quantities and the fuel state | -050, -060 |
 
-No record is Derived. The design choices inside the records (the intake order of one frame, the rejection of an invalid selected value, the rounding rule, the single fuel alert, the initial selected values in crew units) are proposed as DD-520 to -05 (`work/C8/issues.md` §4).
+No record is Derived. The design choices inside the records (the intake order of one frame, the rejection of an invalid selected value, the rounding rule, the single fuel alert, the initial selected values in crew units) are DD-520 to DD-560 of the register.
 
 ### L2-AER-FCP-010
 
@@ -76,7 +76,7 @@ Verification:  Test — TP-FCP-010; success criteria: a run driven by a selectio
   item, selected value, acceptance, target) and the same verdict on each success criterion of
   SC-050 (D59).
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -110,8 +110,7 @@ Verification:  Inspection — IN-FCP-020; success criteria: ICD-AER-TST defines 
   crew-selection items, the eight mode selections and the four selected values listed, and the
   FCP implementation defines no other crew-selection item.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); no Hover and no disengage
-  selection (C8-Q04), Martin, G2
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -144,8 +143,7 @@ Verification:  Test — TP-FCP-030; success criteria: each output sample of the 
   (SC-110) holds each crew-interface output data item of ICD-AER-TST, with its unit as defined
   there, and the samples are spaced by [P-TM-010].
 Parameters:    P-TM-010
-TBD/TBR:       P-TM-010 value TBR (TT-070), Martin, G2 (I1); ICD-AER-TST not yet written (TT-680),
-  Martin, G2 (I1)
+TBD/TBR:       P-TM-010 value TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -180,7 +178,7 @@ Verification:  Inspection — IN-FCP-040; success criteria: ICD-AER-TST defines 
   indications), each with its unit, and the FCP implementation outputs no other crew-interface
   item.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -216,7 +214,7 @@ Verification:  Inspection — IN-FCP-050; success criteria: ICD-FCP defines the 
   selectors and the set of selectors accepted in the frame, each with its SI unit, and the FCP
   implementation gives autoflight nothing else.
 Parameters:    —
-TBD/TBR:       ICD-FCP not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -249,7 +247,7 @@ Verification:  Inspection — IN-FCP-060; success criteria: ICD-FCP defines the 
   quantities with their validity and the fuel state (by reference to its vehicle-model boundary
   definition), each in SI, and the FCP implementation reads no other input during a run.
 Parameters:    —
-TBD/TBR:       ICD-FCP not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -283,7 +281,7 @@ Verification:  Inspection — IN-FCP-070; success criteria: the only FCP data it
   requirement or implementation item reads the vehicle state, the gear state or the mass
   properties, or writes to the vehicle model.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -346,12 +344,12 @@ Rationale:     Several selections can fall in one frame: a script sets a target 
   the frame has been checked and applied, so that a mode engaged in the same frame as its target
   uses the new target, whatever the order of the two in the frame. A frame lasts [P-SYS-310], so
   the crew cannot tell the two orders apart. Two selected values of one selector in one frame:
-  the last one accepted holds. This is design decision DD-520 (proposed), inside this record.
+  the last one accepted holds. This is design decision DD-520, inside this record.
   Sufficiency (L1-AER-690): with -150 and -540, this record makes the panel output a function of
   the selections and their order only, which is the FCP share of L1-AER-690.
   Sufficiency (L1-AER-480): see L2-AER-FCP-010.
 Parent(s):     L1-AER-690, L1-AER-480
-Source:        N-330; CONOPS SC-060, SC-110; DD-520 (proposed)
+Source:        N-330; CONOPS SC-060, SC-110; DD-520
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-090; success criteria: with two mode selections, and with a selected
@@ -360,7 +358,7 @@ Verification:  Test — TP-FCP-090; success criteria: with two mode selections, 
   and the targets of the selected values of the frame; with two selected values of one selector
   in one frame, the target is that of the later one.
 Parameters:    P-SYS-310
-TBD/TBR:       P-SYS-310 value TBR (TT-070), Martin, G2 (I1); DD-520 owner acceptance, Martin, G2
+TBD/TBR:       P-SYS-310 value TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -390,8 +388,7 @@ Verification:  Test — TP-FCP-100; success criteria: selected headings of zero,
   shows them); 360°, a negative value and a value that is not a multiple of [P-AF-040] are not
   accepted (the readout keeps the previous value).
 Parameters:    P-AF-040
-TBD/TBR:       P-AF-040 value TBR (TT-170), Martin, G2 (C8); north selected as zero (C8-Q02),
-  Martin, G2
+TBD/TBR:       P-AF-040 value TBR (TT-170), Martin, G2 (C8)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -415,7 +412,7 @@ Rationale:     The horizontal speed selector of Heading mode, from zero to the v
   limit that is an exact crew value is selectable whatever the order of the operations (the same
   rule in -120 and -130). [P-SYS-230] is 300 kt (D66); for 300 kt to be accepted, the database
   value of [P-SYS-230] must be at least the exact conversion of 300 kt, which its present
-  three-decimal value (299.9994 kt) is not (C8-Q07, `work/C8/param_proposals.md`). The resolution
+  three-decimal value (299.9994 kt) is not (C8-Q07, D76). The resolution
   [P-AF-030] is 1 kt (D71, TBR).
   Sufficiency (L1-AER-310): the vehicle can sustain each horizontal speed up to [P-SYS-230] under
   autoflight only if the crew can select it; this record and -120 (the altitude range of the
@@ -425,13 +422,12 @@ Parent(s):     L1-AER-480, L1-AER-500, L1-AER-310
 Source:        D56, D66, D71, D72; CONOPS §4.3, SC-060, SC-120; CV-480
 Allocated to:  —
 Criticality:   Not assessed
-Verification:  Test — TP-FCP-110; success criteria: selected horizontal speeds of zero, of [P-AF-030]
-  and of the largest multiple of [P-AF-030] whose exact CV-750 conversion is at most [P-SYS-230]
-  (300 kt with the proposed database value) are accepted; the next multiple, a negative value and a value
-  that is not a multiple of [P-AF-030] are not accepted.
+Verification:  Test — TP-FCP-110; success criteria: selected horizontal speeds of zero, of
+  [P-AF-030] and of the largest multiple of [P-AF-030] whose exact CV-750 conversion is at most
+  [P-SYS-230] (300 kt with the proposed database value) are accepted; the next multiple, a negative
+  value and a value that is not a multiple of [P-AF-030] are not accepted.
 Parameters:    P-AF-030, P-SYS-230
-TBD/TBR:       P-AF-030 value TBR (TT-170), Martin, G2 (C8); P-SYS-230 stored precision (C8-Q07),
-  Martin, G2 (I1); FCP allocation of L1-AER-310 (CR-C8-01), Martin, G2
+TBD/TBR:       P-AF-030 value TBR (TT-170), Martin, G2 (C8)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -473,8 +469,7 @@ Verification:  Test — TP-FCP-120; success criteria: the lowest multiple of [P-
   of [P-AF-010] are not accepted.
 Parameters:    P-AF-010, P-SYS-210, P-DYN-030, P-SYS-200
 TBD/TBR:       P-AF-010 value TBR (TT-170), Martin, G2 (C8); P-SYS-200, P-SYS-210 values TBR
-  (TT-010), Martin, G2 (I1); P-DYN-030 value TBR (TT-740), Martin, 2026-11-30; FCP allocation of
-  L1-AER-310, -330 (CR-C8-01), Martin, G2
+  (TT-010), Martin, G2 (I1); P-DYN-030 value TBR (TT-740), Martin, 2026-11-30
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -515,8 +510,7 @@ Verification:  Test — TP-FCP-130; success criteria: selected vertical speeds o
   [P-AF-020] are not accepted.
 Parameters:    P-AF-020, P-SYS-240, P-SYS-250, P-AF-220
 TBD/TBR:       P-AF-020 value TBR (TT-170), Martin, G2 (C8); P-SYS-240, P-SYS-250 values TBR
-  (TT-010), Martin, G2 (I1); zero selectable (C8-Q08), Martin, G2; FCP allocation of L1-AER-320,
-  -330 (CR-C8-01), Martin, G2
+  (TT-010), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -537,11 +531,11 @@ Rationale:     A selected value outside its selectable range or not a multiple o
   the test procedure asked for (D59; the same choice as DD-140 for the initial fuel). The refusal
   is visible: the selector readout keeps its value, autoflight is not told of a new selection
   (L2-AER-FCP-050), and the operational data record the selection as not accepted
-  (L2-AER-FCP-500). This is design decision DD-530 (proposed; C8-Q01).
+  (L2-AER-FCP-500). This is design decision DD-530 (C8-Q01).
   Sufficiency (L1-AER-480): see L2-AER-FCP-010; this record defines the outcome of a selection the
   panel does not accept.
 Parent(s):     L1-AER-480
-Source:        CV-770; D59; DD-140; DD-530 (proposed)
+Source:        CV-770; D59; DD-140; DD-530
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-140; success criteria: for each selector, a selected value above its
@@ -617,7 +611,7 @@ Verification:  Test — TP-FCP-200; success criteria: for each selector and for 
   autoflight equals the selected value times the CV-750 factor, computed independently, within the
   relative tolerance [P-FCP-020].
 Parameters:    P-FCP-020
-TBD/TBR:       P-FCP-020 new, value TBR (`work/C8/param_proposals.md`), Martin, G2 (I1)
+TBD/TBR:       P-FCP-020 value TBR (TT-960), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -642,12 +636,12 @@ Rationale:     The display resolution and the rounding rule are FCP requirement 
   removes, because each selection resolution is a multiple of the display resolution of its
   quantity. The selector readouts are not converted (L2-AER-FCP-350). A remaining fuel mass below
   half of [P-FCP-010] shows as zero before fuel exhaustion; the fuel alert, not the shown value,
-  marks the exhaustion (L2-AER-FCP-400). This is design decision DD-540 (proposed; C8-Q06).
+  marks the exhaustion (L2-AER-FCP-400). This is design decision DD-540 (C8-Q06).
   Sufficiency (L1-AER-870): see L2-AER-FCP-200.
   Sufficiency (L1-AER-500): see L2-AER-FCP-230; this record gives each shown value in its CV-740
   unit.
 Parent(s):     L1-AER-870, L1-AER-500
-Source:        N-070; D7, D9, D71; CV-750, CV-780; #55; DD-540 (proposed)
+Source:        N-070; D7, D9, D71; CV-750, CV-780; #55; DD-540
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-210; success criteria: with a test source at ICD-FCP (IN-C8-40), for SI
@@ -655,8 +649,8 @@ Verification:  Test — TP-FCP-210; success criteria: with a test source at ICD-
   a resolution step from it, and at negative vertical speeds, the shown value equals the
   independently computed quotient rounded half away from zero to the display resolution.
 Parameters:    P-TM-020, P-TM-030, P-TM-040, P-TM-050, P-FCP-010
-TBD/TBR:       P-TM-020 to P-TM-050 values TBR (TT-210), Martin, G2 (C8); P-FCP-010 new, value TBR
-  (C8-Q06), Martin, G2 (I1)
+TBD/TBR:       P-TM-020 to P-TM-050 values TBR (TT-210), Martin, G2 (C8); P-FCP-010 value TBR
+  (TT-960), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -679,7 +673,7 @@ Rationale:     A heading or track just below a full turn (for example 359.6°) r
   Sufficiency (L1-AER-870): see L2-AER-FCP-200.
   Sufficiency (L1-AER-500): see L2-AER-FCP-230.
 Parent(s):     L1-AER-870, L1-AER-500
-Source:        CV-520, CV-920; DD-540 (proposed)
+Source:        CV-520, CV-920; DD-540
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-220; success criteria: with a test source at ICD-FCP (IN-C8-40),
@@ -687,8 +681,7 @@ Verification:  Test — TP-FCP-220; success criteria: with a test source at ICD-
   below by more than half of [P-TM-050] and of half a turn are shown as zero, zero, the largest
   multiple of [P-TM-050] below a full turn and 180°.
 Parameters:    P-TM-050
-TBD/TBR:       P-TM-050 value TBR (TT-210), Martin, G2 (C8); north shown as zero (C8-Q02), Martin,
-  G2
+TBD/TBR:       P-TM-050 value TBR (TT-210), Martin, G2 (C8)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -723,7 +716,7 @@ Verification:  Inspection — IN-FCP-230; success criteria: each crew-selection 
   crew-facing output, names the CV-740 unit of its quantity; no FCP item at ICD-FCP or at the
   vehicle-model boundary is in a crew-facing unit.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST and ICD-FCP not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -798,7 +791,7 @@ Verification:  Test — TP-FCP-310; success criteria: in the mode-transition tes
   annunciation is within [P-SYS-310] plus [P-TM-010] of the first simulation step at which its
   fuel-state condition holds.
 Parameters:    P-TM-010, P-SYS-310, P-SYS-470, P-AF-060
-TBD/TBR:       P-TM-010, P-SYS-310, P-SYS-470 values TBR (TT-070), P-AF-060 value TBD (TT-070),
+TBD/TBR:       P-TM-010, P-SYS-310, P-SYS-470 values TBR (TT-070), P-AF-060 value TBR (TT-070),
   Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
@@ -833,7 +826,7 @@ Verification:  Test — TP-FCP-320; success criteria: in the mode-transition tes
   annunciation content of the latest control frame, the AF_MODE_LOGIC label of that item, and no
   other mode label.
 Parameters:    —
-TBD/TBR:       AF_MODE_LOGIC not yet written (TT-670), Martin, G2 (C5)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -865,7 +858,7 @@ Verification:  Test — TP-FCP-330; success criteria: in SC-020, SC-050 and the 
   (SC-110), at each output sample, the target annunciation holds each target of the annunciation
   content of the latest control frame, with its quantity, as its shown value per -210 and -220.
 Parameters:    —
-TBD/TBR:       Annunciated targets per mode (AF_MODE_LOGIC, TT-670), Martin, G2 (C5)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -897,8 +890,7 @@ Verification:  Test — TP-FCP-340; success criteria: in the takeoff and landing
   gear position in the annunciation content of the latest control frame is extended, retracted or
   in transit, and each change of gear position appears within [P-TM-010] of its control frame.
 Parameters:    P-TM-010
-TBD/TBR:       Gear-position labels (C8-Q03), Martin, G2; P-TM-010 value TBR (TT-070), Martin, G2
-  (I1)
+TBD/TBR:       P-TM-010 value TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -996,7 +988,7 @@ Verification:  Test — TP-FCP-370; success criteria: in SC-040 and SC-120 (zero
   with no shown value at each output sample, and as a shown value at each sample at which it is
   valid.
 Parameters:    P-NAV-010, P-NAV-030
-TBD/TBR:       P-NAV-010, P-NAV-030 values TBD (TT-200), Martin, G2 (C6)
+TBD/TBR:       P-NAV-010, P-NAV-030 values TBR (TT-200), Martin, G2 (C6)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1025,7 +1017,7 @@ Verification:  Test — TP-FCP-380; success criteria: at each output sample of t
   (SC-110), the fuel indication equals the remaining fuel mass of the fuel state of the latest
   control frame divided by 0.453 592 37 and rounded half away from zero to [P-FCP-010].
 Parameters:    P-FCP-010
-TBD/TBR:       P-FCP-010 new, value TBR (C8-Q06), Martin, G2 (I1)
+TBD/TBR:       P-FCP-010 value TBR (TT-960), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1045,12 +1037,12 @@ Rationale:     The crew needs a warning before the fuel runs out (N-150); runnin
   starts below it shows LOW FUEL from its first sample, on the ground included. The label is the
   CONOPS one (§4.5, SC-110); the alert label is L2 and the panel's (L1-AER-570, IN-C2-43). The
   fuel alert is one annunciation item with one label at a time: at fuel exhaustion FUEL EXHAUSTED
-  replaces LOW FUEL (L2-AER-FCP-400), as C2 suggested. This is design decision DD-550 (proposed).
+  replaces LOW FUEL (L2-AER-FCP-400), as C2 suggested. This is design decision DD-550.
   Sufficiency (L1-AER-570): FU sets the low-fuel indication at the step at which the fuel falls
   below the threshold; this record annunciates LOW FUEL while it is set; -410 clears the alert
   while it is not; -310 bounds the delay so that the alert comes within [P-SYS-470].
 Parent(s):     L1-AER-570
-Source:        N-150; CONOPS §4.5, SC-110; D68; IN-C2-43; DD-550 (proposed)
+Source:        N-150; CONOPS §4.5, SC-110; D68; IN-C2-43; DD-550
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-390; success criteria: in the reference mission (SC-110), the fuel alert
@@ -1077,7 +1069,7 @@ Rationale:     The crew needs to know when the fuel has run out and what follows
   fuel-exhaustion indication is set by FU from the first step with zero fuel to the end of the run
   (L2-AER-FU-230), so the alert holds to the end of the run; in a run that starts on the ground
   with no fuel it holds from the first sample (SC-130 zero-fuel variation). The label is the
-  CONOPS one (§4.5, SC-110). It replaces LOW FUEL in the one fuel-alert item (DD-550, proposed),
+  CONOPS one (§4.5, SC-110). It replaces LOW FUEL in the one fuel-alert item (DD-550),
   because the more severe state is the one the crew must see; the low-fuel indication stays set
   in the fuel state (L2-AER-FU-220). What the mode annunciations show after exhaustion is AF's
   (D68, TT-580).
@@ -1085,7 +1077,7 @@ Rationale:     The crew needs to know when the fuel has run out and what follows
   this record annunciates FUEL EXHAUSTED while it is set; -310 bounds the delay so that it comes
   within [P-SYS-470].
 Parent(s):     L1-AER-580
-Source:        N-150; CONOPS §4.5, SC-110, SC-130; D68; IN-C2-43; DD-550 (proposed)
+Source:        N-150; CONOPS §4.5, SC-110, SC-130; D68; IN-C2-43; DD-550
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-400; success criteria: in the reference mission (SC-110) and in a run
@@ -1111,12 +1103,12 @@ Rationale:     An alert that stayed on when its condition does not hold would ma
   meaningless (N-150). FU never refuels the vehicle during a run (L2-AER-FU-100), so in practice
   the alert clears only at the start of a run with fuel at or above the threshold; the record
   still closes the decision table of the fuel alert: no label, LOW FUEL (-390) or FUEL EXHAUSTED
-  (-400), one at a time (DD-550, proposed).
+  (-400), one at a time (DD-550).
   Sufficiency (L1-AER-570, L1-AER-580): with -390 and -400 this record makes the fuel alert follow
   the fuel state in each of its three cases, so each alert appears for its condition and for no
   other.
 Parent(s):     L1-AER-570, L1-AER-580
-Source:        N-150; CONOPS §4.5; DD-550 (proposed)
+Source:        N-150; CONOPS §4.5; DD-550
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-410; success criteria: in the reference mission (SC-110), the fuel alert
@@ -1158,8 +1150,8 @@ Verification:  Test — TP-FCP-500; success criteria: each scripted selection of
   selected value and unit, its acceptance, and for an accepted selected value its SI target equal
   to the target given to autoflight.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600), Martin, closes when the plan is extended to the RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600), Martin, closes when the plan is
+  extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1207,7 +1199,7 @@ Statement:     When a run starts, the flight control panel shall set each select
 Rationale:     The targets of the initial condition are the initial selector values, which the
   panel holds (L1-AER-660 v2, FUNCTIONAL_ANALYSIS I-28). They are given in crew-facing units, as
   a crew selection is, so that the same checks and the same exact conversion apply and each
-  readout starts exact (C8-Q05, DD-560 proposed). The four initial selected values are the FCP
+  readout starts exact (C8-Q05, DD-560). The four initial selected values are the FCP
   item of the initial condition; the mode state and the targets that autoflight sets for itself
   are AF's, the kinematic items DYN's and the fuel mass FU's (L2-AER-DYN-430, L2-AER-FU-020). On
   a ground start no mode is active (recommended to C5, #60), and the selectors simply hold the
@@ -1216,7 +1208,7 @@ Rationale:     The targets of the initial condition are the initial selector val
   Sufficiency (L1-AER-660): this record and -530 take the initial selected values; with the DYN,
   FU and AF children, the initial condition of L1-AER-660 is accepted in full.
 Parent(s):     L1-AER-660
-Source:        N-310; CONOPS §4.6, SC-200; FUNCTIONAL_ANALYSIS I-28; DD-560 (proposed)
+Source:        N-310; CONOPS §4.6, SC-200; FUNCTIONAL_ANALYSIS I-28; DD-560
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-520; success criteria: for a ground start and an airborne start, each
@@ -1224,8 +1216,7 @@ Verification:  Test — TP-FCP-520; success criteria: for a ground start and an 
   to its initial selected value, and the first control frame gives autoflight their SI targets
   and no accepted selection.
 Parameters:    —
-TBD/TBR:       Initial selected values in crew units (C8-Q05), Martin, G2; ICD-AER-TST not yet
-  written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1245,10 +1236,10 @@ Rationale:     An initial selected value outside its selectable range or off its
   (DD-140): the run stays what the test procedure asked for (D59). The initial-condition error is
   the data item by which the Aeronef tells the TST that an item of the initial condition is out of
   range; the run does not start (glossary). There is no previous value to keep at the start, so
-  the refusal rule of L2-AER-FCP-140 cannot apply. Part of DD-560 (proposed).
+  the refusal rule of L2-AER-FCP-140 cannot apply. Part of DD-560.
   Sufficiency (L1-AER-660): see L2-AER-FCP-520.
 Parent(s):     L1-AER-660
-Source:        N-310; DD-140; DD-560 (proposed); ICD-AER-TST (initial-condition error)
+Source:        N-310; DD-140; DD-560; ICD-AER-TST (initial-condition error)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-FCP-530; success criteria: for each selector, an initial condition with an
@@ -1256,7 +1247,7 @@ Verification:  Test — TP-FCP-530; success criteria: for each selector, an init
   initial-condition error naming that selector and value, and the run does not start; an initial
   condition with each value valid starts.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1

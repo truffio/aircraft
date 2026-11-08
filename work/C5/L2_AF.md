@@ -24,7 +24,7 @@ The autoflight requirements (task C5). The subject of each statement is the auto
 | L1-AER-350 | Heading commands each heading rate up to the maximum where the speed allows, by the shorter way, and the bound keeps the lateral acceleration in budget | -440, -520 |
 | L1-AER-390 | AF gives zero pitch and roll references in every mode while engaged; FC holds the angles within the tolerance | -400 |
 | L1-AER-410 | The implementation is the one the configuration names | -020 |
-| L1-AER-420 | Only the axis references and the off value cross to FC, each reference with a value, a rate and a regulation indication | -030, -090, -410 |
+| L1-AER-420 | Only the axis references and the off value cross to FC, each reference with a value, a rate, an acceleration and the regulated quantity | -030, -090, -410 |
 | L1-AER-430 | AF gives the gear command and takes the gear state and the fuel state, and nothing else crosses | -060 |
 | L1-AER-450 | Every mode of the catalogue (nine) has a mode record; the mode state, the exclusivity, the decisions on selections, the arming, the capture, the handovers, the targets and the heading behaviour are stated; the logic is in AF_MODE_LOGIC | -010, -100, -110, -120, -130, -170, -180, -190, -220, -230, -240, -260, -300, -310, -350, -360, -450, -500, -520, -530, -540, -560, -580, -590, -620, -630, -640 |
 | L1-AER-460 | The reference position is acquired (stopping position) or carried over, and held within the AF share; FC and EF give the other share | -330, -340, -500, -510, -640 |
@@ -42,7 +42,7 @@ The autoflight requirements (task C5). The subject of each statement is the auto
 | L1-AER-960 | Takeoff is selected on the ground with fuel, climbs at the takeoff speed to the hover height holding the position, retracts the gear and hands over to Hover | -150, -200, -250, -510, -660, -720, -760 |
 | L1-AER-970 | Land is selected from Hover, extends the gear, descends only when it is extended at the landing speed over the Hover position, with the horizontal speed within the Hover tolerance, and ends at the contact | -160, -210, -260, -270, -650, -670, -700, -710 |
 
-Two records are Derived: L2-AER-AF-860 and -870 (DD-400, the fuel exhaustion rule of D68). The design decisions proposed for AF are DD-360 to DD-420 (`work/C5/issues.md` §5). The records in this draft: 73 (Constraint 5, Functional 46, Interface 10, Performance 12); verification: Analysis 3, Demonstration 1, Inspection 5, Test 64.
+Two records are Derived: L2-AER-AF-860 and -870 (DD-400, the fuel exhaustion rule of D68). The design decisions for AF are DD-360 to DD-420 of the register. The records in this draft: 73 (Constraint 5, Functional 46, Interface 10, Performance 12); verification: Analysis 3, Demonstration 1, Inspection 5, Test 64.
 
 ### L2-AER-AF-010
 
@@ -125,7 +125,7 @@ Criticality:   Not assessed
 Verification:  Inspection — IN-AF-030; success criteria: ICD-FC-AF lists the axis references and the
   off value as the only items from AF to FC, and the AF implementation writes no other data to FC.
 Parameters:    —
-TBD/TBR:       ICD-FC-AF content, Martin, G2 (I1 with C4)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -139,10 +139,10 @@ Level:         L2
 Type:          Interface
 Statement:     The autoflight subsystem shall take the navigation quantities, with their validity,
   from navigation only through the interface that ICD-NAV-AF defines.
-Rationale:     L1-AER-890 and I-17. AF uses the altitude, the height above the ground, the horizontal
-  position, the horizontal velocity, the horizontal speed, the vertical speed and the heading; it
-  does not use the track (IN-C6-10). It receives no vehicle state (L1-AER-440). The horizontal
-  position and velocity are not yet in L1-AER-530 and -890 (CR-C5-01, extending CR-C6-01).
+Rationale:     L1-AER-890 and I-17. AF uses the altitude, the height above the ground, the
+  horizontal position, the horizontal velocity, the horizontal speed, the vertical speed and the
+  heading; it does not use the track (IN-C6-10). It receives no vehicle state (L1-AER-440).
+  L1-AER-530 and -890 list the horizontal position and velocity since CR-C6-01 and CR-C5-01 (D76).
   Sufficiency (L1-AER-890): NAV has the matching record; this record is the AF side of the one
   interface.
 Parent(s):     L1-AER-890
@@ -153,7 +153,7 @@ Verification:  Inspection — IN-AF-040; success criteria: each navigation quant
   implementation reads is an item of ICD-NAV-AF, and the AF implementation reads no other source of
   vehicle motion.
 Parameters:    —
-TBD/TBR:       ICD-NAV-AF content (CR-C5-01), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -209,7 +209,7 @@ Verification:  Inspection — IN-AF-060; success criteria: the boundary ICD list
   command as the only item from AF into the vehicle model, and the gear state and the fuel state as
   the only items from the vehicle model to AF.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -276,25 +276,26 @@ ID:            L2-AER-AF-090
 Level:         L2
 Type:          Constraint
 Statement:     The autoflight subsystem shall give flight control, for each of the six degrees of
-  freedom, one axis reference made of a reference value, the rate of that value and an indication of
-  whether flight control regulates the value.
-Rationale:     The glossary leaves "which quantity each reference is" to C4 and C5. Autoflight shapes
-  the reference (position and velocity for the horizontal and vertical axes, heading and heading
-  rate, and level pitch and roll) within the acceleration limits, and flight control tracks it; this
-  is why the position-holding budget splits into an AF share [P-AF-160] and an FC share [P-FC-010]
-  (FUNCTIONAL_ANALYSIS §7.4). The indication separates a hold (the value is regulated) from a motion
-  at a rate (only the rate is regulated, as in a climb at a selected vertical speed). The frame and
-  the exact items are for ICD-FC-AF (DD-360, C5-Q12).
-  Sufficiency (L1-AER-420): with L2-AER-AF-030 this defines what crosses the one interface.
+  freedom, one axis reference made of a reference value, a reference rate, a reference acceleration
+  and the regulated quantity.
+Rationale:     The glossary leaves "which quantity each reference is" to C4 and C5. Autoflight
+  shapes the reference (position and velocity for the horizontal and vertical axes, heading and
+  heading rate, and level pitch and roll) within the acceleration limits, and flight control tracks
+  it; this is why the position-holding budget splits into an AF share [P-AF-160] and an FC share
+  [P-FC-010] (FUNCTIONAL_ANALYSIS §7.4). The regulated quantity separates a hold (the value is
+  regulated) from a motion at a rate (only the rate is regulated, as in a climb at a selected
+  vertical speed). The reference acceleration lets flight control track a shaped reference without
+  lag (DD-290). ICD-FC-AF defines the frame and the items (DD-360, DD-580). Sufficiency
+  (L1-AER-420): with L2-AER-AF-030 this defines what crosses the one interface.
 Parent(s):     L1-AER-420
-Source:        D15, D56; FUNCTIONAL_ANALYSIS §7.4; DD-360
+Source:        D15, D56; FUNCTIONAL_ANALYSIS §7.4; DD-360, DD-580
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-AF-090; success criteria: ICD-FC-AF defines, for each of the six
-  degrees of freedom, a reference value, its rate and the regulation indication, and the AF
-  implementation gives each of the three at each control frame.
+  degrees of freedom, a reference value, a reference rate, a reference acceleration and the
+  regulated quantity, and the AF implementation gives each of the four at each control frame.
 Parameters:    P-AF-160, P-FC-010
-TBD/TBR:       ICD-FC-AF content (C5-Q12), Martin, G2 (I1 with C4)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -756,12 +757,12 @@ Type:          Functional
 Statement:     The autoflight subsystem shall judge the vehicle stationary at the hover height only
   while the height above the ground is within [P-AF-110] of [P-AF-210], the horizontal speed is at
   most [P-AF-170] and the magnitude of the vertical speed is at most [P-AF-090].
-Rationale:     "Stationary at the hover height" is the engagement condition of Hover (D56) and needs a
-  definition (glossary proposal). The three tolerances are the altitude hold tolerance, the hover
+Rationale:     "Stationary at the hover height" is the engagement condition of Hover (D56) and needs
+  a definition (glossary). The three tolerances are the altitude hold tolerance, the hover
   horizontal speed tolerance and the vertical speed tolerance already in the database; no new
   parameter. [P-AF-170] is at most the landing envelope horizontal speed [P-SYS-510], so that Land
-  from Hover meets the envelope (L1-AER-970).
-  Sufficiency (L1-AER-450, -970): the one definition used by L2-AER-AF-240 and -250.
+  from Hover meets the envelope (L1-AER-970). Sufficiency (L1-AER-450, -970): the one definition
+  used by L2-AER-AF-240 and -250.
 Parent(s):     L1-AER-450, L1-AER-970
 Source:        D56, D70
 Allocated to:  —
@@ -1930,15 +1931,16 @@ Type:          Interface
 Statement:     At each control frame, the autoflight subsystem shall give the operational data output
   the mode state, the target of each active and armed mode in SI, and the landing gear command.
 Rationale:     The mode changes are what the RVS reconstructs (L1-AER-620, L0-SUC-100) and what the
-  mode-transition tests assess. The targets in SI and the gear command are the CR-C7-01 and CR-C7-02
-  additions, and are what the tests need to compare a mode's behaviour with its target and the gear
-  with its command (IN-C7-30). The mode state has the fixed set of values of AF_MODE_LOGIC §3 for
-  every implementation (IN-C7-31). TM classifies each signal as releasable or protected with the RVS
-  (#69, D44).
-  Sufficiency (L1-AER-620): AF gives the armed and active modes, FCP the annunciations, TM records
-  both at each output sample.
-Parent(s):     L1-AER-620
-Source:        L0-OBJ-140; IN-C7-30, -31
+  mode-transition tests assess. The targets in SI and the gear command are the additions of CR-C7-01
+  and CR-C7-02 (D76), and are what the tests need to compare a mode's behaviour with its target and
+  the gear with its command (IN-C7-30). The mode state has the fixed set of values of AF_MODE_LOGIC
+  §3 for every implementation (IN-C7-31). TM classifies each signal as releasable or protected with
+  the RVS (#69, D44). Sufficiency (L1-AER-620): AF gives the armed and active modes, FCP the
+  annunciations, TM records both at each output sample.
+  Sufficiency (L1-AER-630): AF gives the landing gear command to TM at each control frame, and TM
+  records it (L2-AER-TM-450).
+Parent(s):     L1-AER-620, L1-AER-630
+Source:        L0-OBJ-140; IN-C7-30, -31; L1-AER-630 (CR-C7-02)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-AF-820; success criteria: each mode change in the mode-transition tests

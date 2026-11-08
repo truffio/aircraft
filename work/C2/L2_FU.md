@@ -120,8 +120,7 @@ Verification:  Test — TP-FU-030; success criteria: ground initial conditions w
   times [P-FU-010] each give one initial-condition error that names the fuel mass and its value,
   and FU produces no output for that run.
 Parameters:    P-FU-010
-TBD/TBR:       P-FU-010 value TBR (TT-120), Martin, G2 (I1); initial-condition error item in
-  ICD-AER-TST (IN-C2-31, TT-680), Martin, G2 (I1)
+TBD/TBR:       P-FU-010 value TBR (TT-120), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -494,7 +493,7 @@ Verification:  Inspection — IN-FU-130; success criteria: each FU data item cro
   vehicle-model boundary ICD with its unit and frame, and no FU requirement takes an input from
   the flight software.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -561,7 +560,7 @@ Verification:  Inspection — IN-FU-150; success criteria: the MS-DYN mass-prope
   the centre of gravity at the body-frame origin with no dependence on the remaining fuel mass,
   and the vehicle-model boundary ICD defines the centre-of-gravity item as the body-frame origin.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD (TT-680, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -854,28 +853,28 @@ Version:       2
 ID:            L2-AER-FU-240
 Level:         L2
 Type:          Interface
-Statement:     The FU subsystem shall give the fuel state to the flight control panel through
-  ICD-FCP, as the one fuel-state item that the vehicle-model boundary ICD defines.
+Statement:     The FU subsystem shall give the fuel state, as the one fuel-state item that the
+  vehicle-model boundary ICD defines, to the flight control panel through ICD-FCP and to autoflight.
 Rationale:     The flight control panel presents the fuel indication and the two alerts (D55), and
   L1-AER-880 closes the list of what crosses its boundary. The fuel state is defined once, at the
-  vehicle-model boundary, and ICD-FCP refers to that definition (L1-AER-880 rationale), so the
-  panel and autoflight read the same item. The fuel state is in SI; the crew-facing units stay in
-  the panel (CV-760).
-  Sufficiency (L1-AER-880): FU gives only the fuel state into the panel and takes nothing from it,
-  which is FU's share of the closed list.
-  Sufficiency (L1-AER-560, L1-AER-570, L1-AER-580): with L2-AER-FU-210, -220 and -230 (the
-  content), this record carries the fuel state to the panel that presents it, which is the FU
-  side of each of the three records.
-Parent(s):     L1-AER-880, L1-AER-560, L1-AER-570, L1-AER-580
+  vehicle-model boundary, and ICD-FCP refers to that definition (L1-AER-880 rationale), so the panel
+  and autoflight read the same item. Autoflight needs the fuel-exhaustion indication to disengage at
+  fuel exhaustion (DD-400, D68; FUNCTIONAL_ANALYSIS I-06), and FUNCTIONAL_ANALYSIS I-06 and §3.3
+  give the fuel state to AF as well as to the panel. The fuel state is in SI; the crew-facing units
+  stay in the panel (CV-760). Sufficiency (L1-AER-880): FU gives only the fuel state into the panel
+  and takes nothing from it, which is FU's share of the closed list. Sufficiency (L1-AER-560,
+  L1-AER-570, L1-AER-580): with L2-AER-FU-210, -220 and -230 (the content), this record carries the
+  fuel state to the panel that presents it, which is the FU side of each of the three records.
+Parent(s):     L1-AER-880, L1-AER-430, L1-AER-560, L1-AER-570, L1-AER-580
 Source:        D55; FUNCTIONAL_ANALYSIS §3.2 I-06, §5.1
 Allocated to:  —
 Criticality:   Not assessed
-Verification:  Inspection — IN-FU-240; success criteria: ICD-FCP lists the fuel state as the only
-  FU item crossing the panel boundary, by reference to its vehicle-model boundary definition (the
-  remaining fuel mass in kg, the low-fuel indication and the fuel-exhaustion indication), and no
-  FU requirement takes an input from the panel.
+Verification:  Inspection — IN-FU-240; success criteria: ICD-FCP lists the fuel state as the only FU
+  item crossing the panel boundary, ICD-VM-FS gives the same item to autoflight, by reference to its
+  vehicle-model boundary definition (the remaining fuel mass in kg, the low-fuel indication and the
+  fuel-exhaustion indication), and no FU requirement takes an input from the panel.
 Parameters:    —
-TBD/TBR:       ICD-FCP and the vehicle-model boundary ICD not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1131,8 +1130,7 @@ Verification:  Inspection — IN-FU-310; success criteria: the MS-DYN mass-prope
   states that the landing gear has no mass; no FU requirement and no FU interface of MS-DYN takes
   the gear position, the gear state or the landing gear command as an input.
 Parameters:    —
-TBD/TBR:       MS-DYN mass-properties model content (TT-780), Martin, G2 (I1); FU allocation of
-  L1-AER-900 (CR-C2-04), Martin, G2 (I1)
+TBD/TBR:       MS-DYN mass-properties model content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1168,8 +1166,7 @@ Verification:  Inspection — IN-FU-320; success criteria: MS-DYN defines interf
   simulation step that both use, and the ground contact model classifies a contact with fuel not
   available as a crash.
 Parameters:    —
-TBD/TBR:       MS-DYN fuel model and ground contact model content (TT-780), Martin, G2 (I1); FU
-  allocation of L1-AER-260, -270 (CR-C2-04), Martin, G2 (I1)
+TBD/TBR:       MS-DYN fuel model and ground contact model content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1211,8 +1208,7 @@ Verification:  Test — TP-FU-330; success criteria: a run with the database par
 Parameters:    P-FU-070, P-FU-080, P-FU-090, P-DYN-020, P-DYN-030, P-FU-030, P-FU-010
 TBD/TBR:       P-FU-070, P-FU-080 values TBR (TT-770), P-FU-030 value TBR (TT-110), P-FU-010 value
   TBR (TT-120), Martin, G2 (I1); P-FU-090 value TBR (TT-790), Martin, G2; P-DYN-020, P-DYN-030
-  values TBR (TT-740), Martin, 2026-11-30; initial-condition error item in ICD-AER-TST (IN-C2-31,
-  TT-680), Martin, G2 (I1)
+  values TBR (TT-740), Martin, 2026-11-30
 Owner:         Martin
 Status:        Draft
 Version:       1

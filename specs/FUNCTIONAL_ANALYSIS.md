@@ -168,7 +168,7 @@ flowchart LR
 
 ### 4.2 Sequence within one control frame
 
-The vehicle model advances in simulation steps of `[P-SYS-300]`; the flight software (FCP, NAV, AF, FC) runs once per control frame of `[P-SYS-310]`, an integer multiple of the step (L1-AER-680, DD-010 proposed). Whether an input timestamped k first affects step k or k + 1 is fixed in ICD-AER-TST (CV-840).
+The vehicle model advances in simulation steps of `[P-SYS-300]`; the flight software (FCP, NAV, AF, FC) runs once per control frame of `[P-SYS-310]`, an integer multiple of the step (L1-AER-680, DD-010). Whether an input timestamped k first affects step k or k + 1 is fixed in ICD-AER-TST (CV-840).
 
 | Order | Function | Uses | Produces |
 | --- | --- | --- | --- |
@@ -448,6 +448,31 @@ Closure rule: [P-AF-160] + [P-FC-010] ≤ [P-SYS-450], in a wind within the wind
 
 With the proposed values the latencies close with margin: 0.06 s ≤ 0.5 s for annunciation, and 0.02 s + [P-EF-010] ≤ 0.1 s for the control loop, which leaves up to 0.08 s for the effector response; C3 proposes 0.06 s, so the loop closes at 0.08 s (D73).
 
+### 7.6 Closure at integration (I1, 2026-11-08)
+
+The budgets of §7.1 to §7.5 are checked against the parameter database after the merge of C1 to C8 (D76). All values are TBR; the check says whether the TBR values are consistent with each other, and the owner confirms them at G2. Constants: sea-level density 1.225 kg/m³ (the largest drag), drag area [P-DYN-100] 5 m², dry mass [P-FU-030] 1000 kg, maximum mass 1500 kg.
+
+| Budget | Closure rule | Values | Result |
+| --- | --- | --- | --- |
+| Upward authority (§7.1) | [P-SYS-400] ≥ m_max · ([P-DYN-010] + [P-SYS-440]) + ½·ρ·[P-DYN-100]·V_a·[P-SYS-240], V_a = [P-SYS-230] + [P-SYS-430] + [P-SYS-560] | 36.8 kN + 21.6 kN = 58.4 kN against 60 kN | Closes, margin 1.6 kN |
+| Other force directions (§7.1) | [P-SYS-410] ≥ m_max · [P-SYS-440] + ½·ρ·[P-DYN-100]·V_a² | 22.1 kN + 164.1 kN = 186.2 kN against 190 kN | Closes, margin 3.8 kN |
+| Crew limit (§7.2, CR-C4-05) | [P-DYN-010] + [P-SYS-440] ≤ [P-SYS-120]; FC limits the acceleration demand to [P-SYS-440] | 24.5 m/s² against 29.4 m/s² | Closes, margin 0.5 g |
+| Acceleration split (§7.2) | [P-AF-200] + [P-FC-020] ≤ [P-SYS-440] | 9.807 + 4.903 = 14.710 m/s² | Closes exactly |
+| Gust rise time (§7.2, TT-650) | The drag changes at ρ·[P-DYN-100]·V_a·dV_a/dt; the compensation delay times that rate must stay within [P-FC-020] | In a hover in the largest wind the peak is 8.1 m/s³, so the delay may be 0.60 s. At [P-SYS-230] into the wind it is 27.1 m/s³, so the delay may be 0.18 s. The delay is the control-loop latency [P-SYS-310] + [P-EF-010] = 0.08 s plus the response of the disturbance estimate, about 0.05 s (DD-350): 0.13 s | Closes, margin 0.05 s. A rise time below about 1.5 s would break it |
+| Liftoff wind (§7.2, TT-860) | Drag at [P-SYS-580] on the dry mass ≤ [P-FC-020] | 4.56 m/s² against 4.90 m/s² | Closes, margin 7 % (little room: a larger wind limit or a smaller dry mass breaks it) |
+| Horizontal position (§7.4) | [P-AF-160] + [P-FC-010] ≤ [P-SYS-450] | 0.5 + 0.5 = 1.0 m | Closes exactly |
+| Position-hold settling (§7.4) | Deceleration from [P-SYS-230] at the horizontal limit, plus [P-FC-060], within [P-SYS-460] | 154.3 / 9.757 = 15.8 s, plus 3 s | Closes, margin about 11 s |
+| Control-loop latency (§7.5) | [P-SYS-310] + [P-EF-010] ≤ [P-SYS-480] | 0.08 s against 0.1 s | Closes, margin 0.02 s |
+| Annunciation latency (§7.5) | 2·[P-SYS-310] + [P-TM-010] ≤ [P-SYS-470]; [P-AF-060] ≤ [P-SYS-470] − [P-TM-010]; for the fuel alerts [P-SYS-310] + [P-TM-010] | 0.06 s, 0.04 s ≤ 0.48 s, 0.04 s against 0.5 s | Closes |
+| Altitude hold (L1-AER-310 to -330, C4/C5) | [P-AF-110] ≥ [P-FC-030] + the AF share; [P-AF-110] + 4 m · sin [P-AF-180] ≤ [P-AF-210] − [P-DYN-040] | 0.07 m ≥ 0.05 m + 0.02 m; 0.07 + 0.035 = 0.105 m against 0.124 m | Closes, margin 0.019 m. [P-AF-110] was 0.05 m before the C4/C5 reconciliation (the AF share was zero) |
+| Horizontal speed once stopped (L1-AER-970) | [P-FC-040] ≤ [P-AF-170] ≤ [P-SYS-510], and [P-AF-170] < [P-NAV-010] | 0.3 ≤ 0.4 ≤ 0.5 m/s; 0.4 < 0.514 m/s | Closes. [P-AF-170] was 0.25 m/s, below [P-FC-040] |
+| Vertical speed, heading (C4/C5) | [P-AF-090] ≥ [P-FC-050]; [P-AF-130] ≥ [P-FC-070] | 0.1 ≥ 0.1 m/s; 0.0175 ≥ 0.0087 rad | Closes (AF share zero for the vertical speed) |
+| Cross-axis (L1-AER-380) | [P-SYS-550] = [P-FC-080] | 0.005 rad/s | Closes |
+| Turn at speed (D72) | [P-SYS-230] · [P-SYS-270] ≤ [P-AF-200] | 154.3 × 0.0628 = 9.70 against 9.81 m/s² | Closes, margin 1 % |
+| Heading-rate onset (C3 IN-C3-25) | [P-SYS-270] reached within 0.5 s at [P-SYS-420] | 2000 N·m / 15 975 kg·m² = 0.125 rad/s²: 0.50 s | Closes |
+| Fuel (§7.3) | The capacity covers [P-SYS-280] with the margin [P-FU-100], which the FC hold spends (L2-AER-FC-240) | Capacity 500 kg; margin 5 % | Closes by analysis (L2-AER-FU-290, D74) |
+
+
 ## 8. L0 → L1 coverage
 
 Every L0 record allocated to AER has at least one L1 child; the table is generated from the Parent(s) fields. The 18 L0 records allocated only to TST or RVS have none by design (D44). L0-OBJ-110 and L0-CON-190 were allocated to the TST only; CR-B1-01 and CR-B1-02 added AER (D50). L0-CON-160 is a leaf checked directly (D54).
@@ -502,5 +527,5 @@ Every L0 record allocated to AER has at least one L1 child; the table is generat
 - The owner questions raised at the G1 rework are answered (D63).
 - Design decisions DD-010 and DD-020 (L1-AER-680, -710) are in `registers/DECISIONS.md`.
 - Open values and deliverables: `registers/TBD_TBR.md` (the budgets of §7 are TBR and close at G2, D48; the gust rise time [P-SYS-570] is TBD, D62).
-- Interface needs for the ICDs and the L2 agents (C1 to C8): `work/B1/interface_needs.md`, refreshed for D55 and D56.
+- The interface control documents are in `icd/`: ICD-AER-TST, ICD-FC-AF, ICD-NAV-AF, ICD-FCP and ICD-VM-FS (the vehicle-model boundary, DD-570). The interface needs of the agents are in `work/*/interface_needs.md`.
 - The mode catalogue is D56. The B1 Q5 (#6) proposal in `work/B1/issues.md` §3 is superseded by D56 and kept for the record only; it is not an input to C5.

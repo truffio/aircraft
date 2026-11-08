@@ -2,7 +2,7 @@
 
 The navigation requirements (task C6). The subject of each statement is the navigation subsystem (NAV), one of the four flight software subsystems with flight control (FC), autoflight (AF) and the flight control panel (FCP) (glossary *Flight software*, D55). NAV implements function F-AER-09 (FUNCTIONAL_ANALYSIS §6.1). It runs once per control frame `[P-SYS-310]`, after the flight control panel and before autoflight (DD-010). Its only input is the **frame-start state**, the vehicle state of the first simulation step of the control frame, which the dynamics model gives it exactly (L1-AER-440, L2-AER-DYN-330). Its outputs are the navigation quantities of the frame, each with its validity, to autoflight (ICD-NAV-AF), to the flight control panel (ICD-FCP) and to the operational data output.
 
-**What NAV computes.** Seven quantities, each by its CONVENTIONS definition and nothing else: the altitude (CV-430), the height above the ground (CV-400), the horizontal position (CV-410), the horizontal speed (CV-480), the vertical speed (CV-490), the heading (CV-530, by CV-260) and the track (CV-540). The first six are the navigation quantities of L1-AER-530 and -890. The horizontal position is added because the modes that hold a position over the ground (Stationary, Hover, Takeoff, Land) need it and autoflight receives no vehicle state (L1-AER-440 gives the state to NAV and FC only); it traces to L1-AER-450, and CR-C6-01 proposes adding it to L1-AER-530, -890 and the glossary (`work/C6/issues.md`). Each quantity is in SI (CV-720, CV-730); the crew-facing units stay in the panel (CV-760, L1-AER-870).
+**What NAV computes.** Eight quantities, each by its CONVENTIONS definition and nothing else: the altitude (CV-430), the height above the ground (CV-400), the horizontal position (CV-410), the north and east components of the horizontal velocity (CV-460), the horizontal speed (CV-480), the vertical speed (CV-490), the heading (CV-530, by CV-260) and the track (CV-540). They are the navigation quantities of L1-AER-530 and -890. The horizontal position and the horizontal velocity components are there because the modes that hold a position over the ground (Stationary, Hover, Takeoff, Land) need them and autoflight receives no vehicle state (L1-AER-440 gives the state to NAV and FC only); the owner approved them with CR-C6-01 and CR-C5-01 (D76). Each quantity is in SI (CV-720, CV-730); the crew-facing units stay in the panel (CV-760, L1-AER-870).
 
 **Validity (CV-580).** The track is valid while the horizontal speed is at least `[P-NAV-010]`, and its value is zero while it is invalid (DD-430). The heading is valid while the magnitude of the pitch angle is at most `[P-NAV-030]`; its value stays the CV-260 yaw angle, which is defined at every attitude. The other five quantities are defined at every state and the state is exact, so they are valid at each frame; they carry a validity all the same, so that each quantity crosses the interfaces in one form and a later sensor model (#83) changes values and flags, not the interfaces. Pitch and roll are held at zero in every mode (D57, L1-AER-390), so the heading is valid in nominal flight; the threshold matters for airborne test starts and after fuel exhaustion, when the vehicle keeps its angular rate and can tumble. On the ground, and in Stationary, Hover, Takeoff and Land, the horizontal speed is below `[P-NAV-010]` and the track is invalid.
 
@@ -20,15 +20,15 @@ The navigation requirements (task C6). The subject of each statement is the navi
 | --- | --- | --- |
 | L1-AER-430 | NAV takes only the vehicle state from the vehicle model, at the boundary as its ICD defines it, and gives the vehicle model nothing | -200, -210 |
 | L1-AER-440 | NAV receives the exact frame-start state and computes the frame's quantities from it, unmodified, before autoflight runs in that frame | -200, -310, -320 |
-| L1-AER-450 | NAV gives autoflight each quantity the mode catalogue guides on, the horizontal position of the position-holding modes included | -030, -220, -230 |
-| L1-AER-530 | At each control frame NAV computes the altitude, the height above the ground, the horizontal speed, the vertical speed, the heading and the track by CV-400 to CV-550, with the CV-580 validity, from the frame-start state and the run's parameter values | -010, -020, -040, -050, -060, -070, -100, -110, -120, -130, -330 |
+| L1-AER-450 | NAV gives autoflight each quantity the mode catalogue guides on, the horizontal position and velocity of the position-holding modes included | -030, -080, -220, -230, -280 |
+| L1-AER-530 | At each control frame NAV computes the altitude, the height above the ground, the horizontal position, the horizontal velocity components, the horizontal speed, the vertical speed, the heading and the track by CV-400 to CV-550, with the CV-580 validity, from the frame-start state and the run's parameter values | -010, -020, -030, -040, -050, -060, -070, -080, -100, -110, -120, -130, -330 |
 | L1-AER-640 | NAV gives the operational data output the navigation quantities of each frame, with their validity and the timestamp of the frame-start step | -250 |
 | L1-AER-680 | NAV computes one set of quantities per control frame, ready before autoflight executes in that frame | -300, -310 |
 | L1-AER-690 | NAV's outputs depend only on the frame-start state and the run's parameter values, and an invalid track has a fixed value, so NAV adds no variation between repeated runs | -140, -320, -330 |
 | L1-AER-880 | NAV gives the panel the navigation quantities with their validity, in SI, the same values autoflight receives, as ICD-FCP defines them | -240, -260, -270 |
-| L1-AER-890 | NAV passes the six quantities with their validity to autoflight through ICD-NAV-AF, in SI, with a defined value and validity rule for each, and ICD-NAV-AF defines each item | -100 to -150, -220, -260, -270, -400 |
+| L1-AER-890 | NAV passes the eight quantities with their validity to autoflight through ICD-NAV-AF, in SI, with a defined value and validity rule for each, and ICD-NAV-AF defines each item | -100 to -150, -220, -230, -260, -270, -280, -400 |
 
-No record is Derived. The choices inside the records are proposed as DD-430 to DD-460 (`work/C6/issues.md` §4).
+No record is Derived. The choices inside the records are DD-430 to DD-460 (accepted, D76).
 
 ### L2-AER-NAV-010
 
@@ -56,7 +56,7 @@ Verification:  Analysis — AN-NAV-010; success criteria: at each control frame 
   reference mission (SC-110) and of the tumbling test run, the altitude NAV outputs differs by at
   most [P-NAV-060] from minus the down component of the recorded position of the frame-start step.
 Parameters:    P-NAV-060, P-DYN-040
-TBD/TBR:       P-NAV-060 value TBR (new TT row, IN-C6-60), Martin, G2 (I1)
+TBD/TBR:       P-NAV-060 value TBR (TT-950), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -97,7 +97,7 @@ Verification:  Analysis — AN-NAV-020; success criteria: (a) at each control fr
   [P-NAV-060] of [P-DYN-040].
 Parameters:    P-DYN-020, P-DYN-030, P-DYN-040, P-AF-210, P-SYS-210, P-NAV-060
 TBD/TBR:       P-DYN-020, P-DYN-030 values TBR (TT-740), P-DYN-040 value TBR (TT-830), Martin,
-  2026-11-30 and G2 (C1); P-NAV-060 value TBR (new TT row, IN-C6-60), Martin, G2 (I1)
+  2026-11-30 and G2 (C1); P-NAV-060 value TBR (TT-950), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -117,19 +117,18 @@ Rationale:     Stationary and Hover hold the horizontal position over the ground
   autoflight share of the position-holding budget [P-AF-160] is measured on it (FUNCTIONAL_ANALYSIS
   §7.4). Autoflight receives no vehicle state (L1-AER-440 gives the state to NAV and FC only), and
   NAV derives every guidance quantity from the true state (FUNCTIONAL_ANALYSIS §5.1), so the
-  horizontal position reaches autoflight through NAV. The north and east components are in the
-  local reference frame, in m (CV-120, CV-410). L1-AER-530 and -890 do not list the horizontal
-  position, although the glossary *Navigation* does; CR-C6-01 proposes adding it (C6-Q01). The NAV
-  share of the position budget is zero, because the state is exact (L1-AER-440).
-  Sufficiency (L1-AER-450): NAV's share of the guidance capability is to give autoflight each
-  quantity the mode catalogue guides on: the altitude (Altitude hold, Go to altitude, Vertical
-  speed), the vertical speed (Vertical speed, Go to altitude, Takeoff, Land), the horizontal speed
-  and the heading (Heading), the track (Heading in a wind, [P-AF-140]), the height above the
-  ground (Go to hover, Hover, Takeoff, Land) and the horizontal position (Stationary, Hover,
-  Takeoff, Land). This record and -230 compute and pass the horizontal position; -220 passes the
-  other six. Together they give autoflight what it needs to guide through each mode of the
+  horizontal position reaches autoflight through NAV. The north and east components are in the local
+  reference frame, in m (CV-120, CV-410). L1-AER-530 and -890 list the horizontal position since
+  CR-C6-01 (D76). The NAV share of the position budget is zero, because the state is exact
+  (L1-AER-440). Sufficiency (L1-AER-450): NAV's share of the guidance capability is to give
+  autoflight each quantity the mode catalogue guides on: the altitude (Altitude hold, Go to
+  altitude, Vertical speed), the vertical speed (Vertical speed, Go to altitude, Takeoff, Land), the
+  horizontal speed and the heading (Heading), the track (Heading in a wind, [P-AF-140]), the height
+  above the ground (Go to hover, Hover, Takeoff, Land) and the horizontal position (Stationary,
+  Hover, Takeoff, Land). This record and -230 compute and pass the horizontal position; -220 passes
+  the other six. Together they give autoflight what it needs to guide through each mode of the
   catalogue.
-Parent(s):     L1-AER-450
+Parent(s):     L1-AER-530, L1-AER-450
 Source:        N-130, N-140; D56, D60, D69; CV-410; glossary *Navigation*, *Reference position*
 Allocated to:  —
 Criticality:   Not assessed
@@ -138,8 +137,7 @@ Verification:  Analysis — AN-NAV-030; success criteria: at each control frame 
   outputs each differ by at most [P-NAV-060] from the north and east components of the recorded
   position of the frame-start step.
 Parameters:    P-AF-160, P-AF-140, P-NAV-060
-TBD/TBR:       P-NAV-060 value TBR (new TT row, IN-C6-60), Martin, G2 (I1); horizontal position in
-  L1-AER-530 and -890 (CR-C6-01, C6-Q01), Martin, G2 (I1)
+TBD/TBR:       P-NAV-060 value TBR (TT-950), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -171,7 +169,7 @@ Verification:  Analysis — AN-NAV-040; success criteria: at each control frame 
   horizontal speed NAV outputs differs by at most [P-NAV-070] from the square root of the sum of
   the squares of the north and east components of the recorded velocity of the frame-start step.
 Parameters:    P-SYS-230, P-AF-200, P-NAV-070
-TBD/TBR:       P-NAV-070 value TBR (new TT row, IN-C6-60), Martin, G2 (I1)
+TBD/TBR:       P-NAV-070 value TBR (TT-950), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -200,8 +198,8 @@ Verification:  Analysis — AN-NAV-050; success criteria: at each control frame 
   by at most [P-NAV-070] from minus the down component of the recorded velocity of the frame-start
   step.
 Parameters:    P-AF-220, P-AF-240, P-NAV-070
-TBD/TBR:       P-AF-240 value TBR (TT-830), Martin, G2 (C5); P-NAV-070 value TBR (new TT row,
-  IN-C6-60), Martin, G2 (I1)
+TBD/TBR:       P-AF-240 value TBR (TT-830), Martin, G2 (C5); P-NAV-070 value TBR (TT-950), Martin,
+  G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -237,8 +235,8 @@ Verification:  Analysis — AN-NAV-060; success criteria: at each control frame 
   [P-NAV-030] the yaw angle is ill-conditioned, so two correct computations may differ by more
   than rounding; there the value is only checked for its range.)
 Parameters:    P-NAV-080, P-NAV-030
-TBD/TBR:       P-NAV-080 value TBR (new TT row, IN-C6-60), Martin, G2 (I1); P-NAV-030 value TBD
-  (TT-200; 80° proposed, C6-Q03), Martin, G2 (C6)
+TBD/TBR:       P-NAV-080 value TBR (TT-950), Martin, G2 (I1); P-NAV-030 value TBR (TT-200), Martin,
+  G2 (C6)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -270,8 +268,43 @@ Verification:  Analysis — AN-NAV-070; success criteria: at each control frame 
   outputs lies in [0, 2π) rad and differs, by the CV-930 difference, by at most [P-NAV-080] from
   wrap360(atan2(v_E, v_N)) computed independently from the recorded velocity of that step.
 Parameters:    P-NAV-010, P-AF-140, P-NAV-080
-TBD/TBR:       P-NAV-010 value TBD (TT-200; 1 kt proposed, C6-Q02), Martin, G2 (C6); P-NAV-080 value
-  TBR (new TT row, IN-C6-60), Martin, G2 (I1)
+TBD/TBR:       P-NAV-010 value TBR (TT-200), Martin, G2 (C6); P-NAV-080 value TBR (TT-950), Martin,
+  G2 (I1)
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L2-AER-NAV-080
+
+```req
+ID:            L2-AER-NAV-080
+Level:         L2
+Type:          Functional
+Statement:     The navigation subsystem shall compute, at each control frame, the north and east
+  components of the horizontal velocity of CONVENTIONS CV-460 from the vehicle velocity of the
+  frame-start state.
+Rationale:     The stopping position of a hold entered with the vehicle moving, and the initial
+  references of Stationary, Go to hover and Heading at a low speed, need the velocity vector at any
+  speed, including below the validity speed of the track, where the direction of a residual motion
+  is not available from the horizontal speed and the track (C5-Q13, DD-390). Autoflight receives no
+  vehicle state (L1-AER-440), so the components reach it through NAV. They are the components of
+  the ground-referenced vehicle velocity in the local reference frame, in m/s (CV-120, CV-460,
+  CV-480), always valid, and they do not depend on the attitude. L1-AER-530 and -890 list them
+  since CR-C5-01 (D76).
+  Sufficiency (L1-AER-530): the velocity components are among the quantities of the parent; this
+  record computes them from the frame-start state, as the other NAV records compute the others.
+  Sufficiency (L1-AER-450): see L2-AER-NAV-030.
+Parent(s):     L1-AER-530, L1-AER-450
+Source:        N-130, N-140; D56, D60, D69; CV-460, CV-480; CR-C5-01
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Analysis — AN-NAV-080; success criteria: at each control frame of a run of the
+  reference mission (SC-110) and of a run of SC-060 with a steady wind across the heading, the north
+  and east components of the horizontal velocity NAV outputs each differ by at most [P-NAV-070]
+  from the north and east components of the recorded velocity of the frame-start step.
+Parameters:    P-NAV-070
+TBD/TBR:       P-NAV-070 value TBR (TT-950), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -308,7 +341,7 @@ Verification:  Test — TP-NAV-100; success criteria: in a run that accelerates 
   and in a run of the reference mission (SC-110), the track is marked valid at each control frame
   whose recorded frame-start horizontal speed is at least [P-NAV-010].
 Parameters:    P-NAV-010, P-AF-030, P-SYS-510
-TBD/TBR:       P-NAV-010 value TBD (TT-200; 1 kt proposed, C6-Q02), Martin, G2 (C6)
+TBD/TBR:       P-NAV-010 value TBR (TT-200), Martin, G2 (C6)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -334,7 +367,7 @@ Verification:  Test — TP-NAV-110; success criteria: in the runs of TP-NAV-100,
   invalid at each control frame whose recorded frame-start horizontal speed is less than
   [P-NAV-010], including each frame on the ground.
 Parameters:    P-NAV-010
-TBD/TBR:       P-NAV-010 value TBD (TT-200; 1 kt proposed, C6-Q02), Martin, G2 (C6)
+TBD/TBR:       P-NAV-010 value TBR (TT-200), Martin, G2 (C6)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -364,8 +397,8 @@ Verification:  Test — TP-NAV-120; success criteria: in the tumbling test run a
   reference mission (SC-110), the heading is marked valid at each control frame whose recorded
   frame-start pitch angle has a magnitude of at most [P-NAV-030].
 Parameters:    P-NAV-030, P-AF-180
-TBD/TBR:       P-NAV-030 value TBD (TT-200; 80° proposed, C6-Q03), Martin, G2 (C6); P-AF-180 value
-  TBR (TT-190), Martin, G2 (C5)
+TBD/TBR:       P-NAV-030 value TBR (TT-200), Martin, G2 (C6); P-AF-180 value TBR (TT-190), Martin,
+  G2 (C5)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -391,7 +424,7 @@ Verification:  Test — TP-NAV-130; success criteria: in the tumbling test run, 
   invalid at each control frame whose recorded frame-start pitch angle has a magnitude greater than
   [P-NAV-030], and at least one such frame occurs.
 Parameters:    P-NAV-030
-TBD/TBR:       P-NAV-030 value TBD (TT-200; 80° proposed, C6-Q03), Martin, G2 (C6)
+TBD/TBR:       P-NAV-030 value TBR (TT-200), Martin, G2 (C6)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -422,7 +455,7 @@ Verification:  Test — TP-NAV-140; success criteria: in the runs of TP-NAV-100,
   zero at each control frame at which the track is marked invalid, including each frame on the
   ground and in Stationary and Hover.
 Parameters:    —
-TBD/TBR:       Value of an invalid track (C6-Q04), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -484,7 +517,7 @@ Verification:  Test — TP-NAV-200; success criteria: at each control frame of a
   reference mission (SC-110), the vehicle state NAV receives equals, element by element, the
   recorded vehicle state of the frame-start step.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -510,7 +543,7 @@ Criticality:   Not assessed
 Verification:  Inspection — IN-NAV-210; success criteria: the NAV implementation reads no item of
   the vehicle-model boundary ICD other than the vehicle state, and writes no item of it.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -528,8 +561,7 @@ Statement:     The navigation subsystem shall provide autoflight, at each contro
   ICD-NAV-AF.
 Rationale:     The navigation → autoflight boundary of the architecture (FUNCTIONAL_ANALYSIS §5.1,
   I-17; L1-AER-890). One definition of each quantity is used by autoflight, the crew indications
-  and the operational data (-260). The proposed content of ICD-NAV-AF is in
-  `work/C6/interface_needs.md` §2.
+  and the operational data (-260). The content of ICD-NAV-AF is in `icd/ICD-NAV-AF.md`.
   Sufficiency (L1-AER-890): see L2-AER-NAV-100. Sufficiency (L1-AER-450): see L2-AER-NAV-030.
 Parent(s):     L1-AER-890, L1-AER-450
 Source:        N-190; FUNCTIONAL_ANALYSIS I-17, §5.1; IN-B1-04
@@ -539,7 +571,7 @@ Verification:  Inspection — IN-NAV-220; success criteria: the NAV implementati
   the six quantities and its validity to autoflight only as items of ICD-NAV-AF, at each control
   frame, and each item is defined in ICD-NAV-AF.
 Parameters:    —
-TBD/TBR:       ICD-NAV-AF not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -555,11 +587,10 @@ Statement:     The navigation subsystem shall provide autoflight, at each contro
   horizontal position of that frame, with its validity, through ICD-NAV-AF.
 Rationale:     The position-holding modes need the horizontal position (L2-AER-NAV-030), and
   autoflight receives it only from NAV. It crosses the same interface as the other navigation
-  quantities, so ICD-NAV-AF stays the one navigation → autoflight interface (L1-AER-890).
-  CR-C6-01 proposes listing it in L1-AER-890; if the owner prefers, this record merges into -220
-  at I1 (C6-Q01).
-  Sufficiency (L1-AER-450): see L2-AER-NAV-030.
-Parent(s):     L1-AER-450
+  quantities, so ICD-NAV-AF stays the one navigation → autoflight interface (L1-AER-890). L1-AER-890
+  lists it since CR-C6-01 (D76); the record stays apart from -220 so that each item of ICD-NAV-AF
+  has its own record. Sufficiency (L1-AER-450): see L2-AER-NAV-030.
+Parent(s):     L1-AER-890, L1-AER-450
 Source:        D56, D60, D69; FUNCTIONAL_ANALYSIS §5.1
 Allocated to:  —
 Criticality:   Not assessed
@@ -568,8 +599,7 @@ Verification:  Inspection — IN-NAV-230; success criteria: the NAV implementati
   of ICD-NAV-AF, at each control frame, and the items are defined in ICD-NAV-AF in m in the local
   reference frame.
 Parameters:    —
-TBD/TBR:       ICD-NAV-AF not yet written (TT-680), Martin, G2 (I1); horizontal position in
-  L1-AER-890 (CR-C6-01, C6-Q01), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -603,7 +633,7 @@ Verification:  Inspection — IN-NAV-240; success criteria: the NAV implementati
   the six quantities and its validity to the flight control panel only as items of ICD-FCP, at
   each control frame, and each item is defined in ICD-FCP.
 Parameters:    —
-TBD/TBR:       ICD-FCP not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -623,12 +653,11 @@ Rationale:     L1-AER-640 records the altitude, the height above the ground, the
   takeoffs, hovers and landings from the height above the ground (L1-AER-920 to -970). NAV gives
   them at each control frame and the operational data output samples them every [P-TM-010]. The
   timestamp (CV-840) ties each value to the state it was computed from, so a test can compare them
-  with the recorded state. The validity is given so that the data show what autoflight and the
-  panel saw (CR-C6-02 proposes recording it). The horizontal position is part of the recorded
-  vehicle state already.
-  Sufficiency (L1-AER-640): NAV's share of the list is the navigation quantities (this record);
-  DYN gives the vehicle state, the gear state, the sensed acceleration and the events
-  (L2-AER-DYN-350), FU the masses, and TM records them.
+  with the recorded state. The validity is given so that the data show what autoflight and the panel
+  saw (L1-AER-640 asks for it since CR-C6-02, D76). The horizontal position is part of the recorded
+  vehicle state already. Sufficiency (L1-AER-640): NAV's share of the list is the navigation
+  quantities (this record); DYN gives the vehicle state, the gear state, the sensed acceleration and
+  the events (L2-AER-DYN-350), FU the masses, and TM records them.
 Parent(s):     L1-AER-640
 Source:        N-250, N-340, N-390; FUNCTIONAL_ANALYSIS I-35
 Allocated to:  —
@@ -638,8 +667,7 @@ Verification:  Test — TP-NAV-250; success criteria: at each output sample of a
   the frame-start timestamp that NAV provided for the latest control frame starting at or before
   the step of that sample.
 Parameters:    P-TM-010
-TBD/TBR:       P-TM-010 value TBR (TT-070), Martin, G2 (I1); recording of the validity in
-  L1-AER-640 (CR-C6-02), Martin, G2 (I1)
+TBD/TBR:       P-TM-010 value TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -695,7 +723,36 @@ Verification:  Inspection — IN-NAV-270; success criteria: each item that NAV p
   heading and the track are defined in [0, 2π) rad, and the NAV implementation applies no crew-unit
   conversion factor of CV-750.
 Parameters:    —
-TBD/TBR:       ICD-NAV-AF, ICD-FCP and ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L2-AER-NAV-280
+
+```req
+ID:            L2-AER-NAV-280
+Level:         L2
+Type:          Interface
+Statement:     The navigation subsystem shall provide autoflight, at each control frame, with the
+  north and east components of the horizontal velocity of that frame, with their validity, through
+  ICD-NAV-AF.
+Rationale:     The holds of the horizontal position need the velocity vector (L2-AER-NAV-080), and
+  autoflight receives it only from NAV. It crosses the same interface as the other navigation
+  quantities, so ICD-NAV-AF stays the one navigation to autoflight interface (L1-AER-890).
+  Sufficiency (L1-AER-890): see L2-AER-NAV-220.
+  Sufficiency (L1-AER-450): see L2-AER-NAV-030.
+Parent(s):     L1-AER-890, L1-AER-450
+Source:        D56, D60, D69; FUNCTIONAL_ANALYSIS §5.1, I-17; CR-C5-01
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — IN-NAV-280; success criteria: the NAV implementation provides the north
+  and east components of the horizontal velocity and their validity to autoflight only as items of
+  ICD-NAV-AF, at each control frame, and the items are defined in ICD-NAV-AF in m/s in the local
+  reference frame.
+Parameters:    —
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -817,8 +874,7 @@ Verification:  Test — TP-NAV-330; success criteria: in two runs started on the
   TP-NAV-100 with sets that differ in [P-NAV-010], the track validity changes at the [P-NAV-010]
   of each run's set.
 Parameters:    P-DYN-020, P-DYN-030, P-DYN-040, P-NAV-010, P-NAV-030, P-NAV-060
-TBD/TBR:       P-NAV-010, P-NAV-030 values TBD (TT-200), Martin, G2 (C6); home of the NAV parameters
-  in the configuration (C6-Q06), Martin, G2 (I1)
+TBD/TBR:       P-NAV-010, P-NAV-030 values TBR (TT-200), Martin, G2 (C6)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -835,8 +891,7 @@ Statement:     The navigation subsystem shall have each quantity it provides to 
 Rationale:     L1-AER-890 asks its children to show that each quantity is defined in ICD-NAV-AF with
   its unit, frame and validity. The range of values (for example [0, 2π) rad for the heading and
   the track) and the value of an invalid track (-140) complete the definition, so that autoflight
-  implementations read the items in one way (L0-CON-210). The proposed content is in
-  `work/C6/interface_needs.md` §2; I1 writes the ICD (TT-680).
+  implementations read the items in one way (L0-CON-210). The content is in `icd/ICD-NAV-AF.md`.
   Sufficiency (L1-AER-890): see L2-AER-NAV-100.
 Parent(s):     L1-AER-890
 Source:        FUNCTIONAL_ANALYSIS §5.1; IN-B1-04; TT-680
@@ -846,7 +901,7 @@ Verification:  Inspection — IN-NAV-400; success criteria: ICD-NAV-AF defines e
   to autoflight with its SI unit, its frame (or none for a scalar), its range of values, its
   validity rule with the CV-580 parameter it uses, and the value it carries while invalid.
 Parameters:    P-NAV-010, P-NAV-030
-TBD/TBR:       ICD-NAV-AF not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1

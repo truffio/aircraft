@@ -209,14 +209,13 @@ a_H is the part of [P-AF-200] that the vertical limit leaves, so that the accele
 
 ## 12. Axis references and the off value
 
-AF gives FC six axis references, one per degree of freedom, each made of a reference value, its rate and an indication of whether FC regulates the value (DD-360; ICD-FC-AF is I1's with C4):
+AF gives FC six axis references, one per degree of freedom, each made of a reference value, a reference rate, a reference acceleration and, for a translational axis, the regulated quantity (DD-360, DD-580; ICD-FC-AF defines the items):
 
-| Degree of freedom | Reference value | Rate | Value regulated |
-| --- | --- | --- | --- |
-| Horizontal north, east (frame L) | reference position | horizontal velocity reference | in holds; not while HDG moves at a non-zero speed |
-| Vertical | altitude reference (CG altitude) | vertical speed reference | in ALT, HOVER and the holds inside G2H and TAKEOFF; not while climbing or descending at a rate (GOALT, VS, the climb of TAKEOFF, the descent of LAND) |
-| Heading | heading reference | heading rate reference | always |
-| Pitch, roll | zero | zero | always |
+| Degree of freedom | Reference value | Rate | Acceleration | Regulated quantity | | --- | --- | --- | --- | --- |
+| Horizontal north, east (frame L) | reference position | horizontal velocity reference | horizontal acceleration reference | the value in holds; the rate while HDG moves at a non-zero speed |
+| Vertical | altitude reference (CG altitude) | vertical speed reference | vertical acceleration reference | the value in ALT, HOVER and the holds inside G2H and TAKEOFF; the rate while climbing or descending at a rate (GOALT, VS, the climb of TAKEOFF, the descent of LAND) |
+| Heading | heading reference | heading rate reference | heading acceleration reference | the value (always) |
+| Pitch, roll | zero | zero | zero | the value (always) |
 
 The **off value** is a single indication that replaces all six references: autoflight is not engaged. It is given in the frame in which ENG ceases to hold (TR-01, TR-02) and until a Takeoff or an initial mode state engages it. FC sets the effector activation state off exactly while the references are off (IN-C3-26, IN-C3-30; L1-AER-930), so the effectors go off within one control frame of the landing contact (the AF share of [P-SYS-480]). The off value carries no mode information (L1-AER-420).
 
