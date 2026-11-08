@@ -174,8 +174,8 @@ Eight agents run in parallel. Each agent:
 | C1 | **DYN** — dynamics model | Also writes `specs/MS-DYN.md`: 6-DOF rigid-body equations, gravity model, drag model, integration requirements, and the independent analytical checks for credibility (free fall, terminal velocity, torque-free rotation, fuel-mass integral; METHODOLOGY 10.3). | Opus / xhigh |
 | C2 | **FU** — fuel and mass properties | Fuel quantity, consumption for linear and rotational actuation (configurable), mass decrease, fixed CG, inertia assignment and how it changes with fuel. Fuel exhaustion is nominal behaviour, not a failure. | Opus / high |
 | C3 | **EF** — effectors | Fixed-direction emitters: authority per axis, limits, command response, consumption interface to FU. Stays solution-free: the emitter layout is a design decision, not a requirement. | Opus / high |
-| C4 | **FC** — flight control | L2, plus the L3 sections for translational control (TR), rotational control (RO) and control allocation (AL). Includes independent per-axis regulation, saturation handling as nominal behaviour, and the constraint that control laws are swappable without changing the vehicle model (objective: compare control laws). | Opus / xhigh |
-| C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers the catalogue of D56 (one horizontal and one vertical mode, plus Go to hover and Hover), armed versus active states (Go to hover arming Hover), engagement, automatic transitions (for example Go to altitude → Altitude hold, Go to hover → Hover), disengagement, annunciation, target selection, and the heading behaviour in each mode; pitch and roll stay at zero (D57). Per-mode details are left to Phase 4. | Opus / xhigh |
+| C4 | **FC** — flight control | L2, plus the L3 sections for translational control (TR), rotational control (RO) and control allocation (AL). Includes independent per-axis regulation, saturation handling as nominal behaviour, and the constraint that control laws are swappable without changing the vehicle model (objective: compare control laws). | Sonnet / xhigh |
+| C5 | **AF** — autoflight core | Writes the L2 autoflight section and `specs/AF_MODE_LOGIC.md`. The mode logic covers the catalogue of D56 (one horizontal and one vertical mode, plus Go to hover and Hover), armed versus active states (Go to hover arming Hover), engagement, automatic transitions (for example Go to altitude → Altitude hold, Go to hover → Hover), disengagement, annunciation, target selection, and the heading behaviour in each mode; pitch and roll stay at zero (D57). Per-mode details are left to Phase 4. | Sonnet / xhigh |
 | C6 | **NAV** — navigation | Navigation references used by autoflight and the panel: position, altitude, height above the ground, heading, track, horizontal and vertical speed. No VOR and no flight path angle (D56). | Opus / high |
 | C7 | **TM** — operational data output | Signals the Aeronef exposes so inputs, mode changes, control activity and responses can be correlated (REVERSE_ENGINEERING §3C, TESTING_ENVIRONMENT §8). Includes the selected targets, armed and active modes, and annunciations. Whether each signal is *releasable* or *protected* is decided with the RVS (#69, D44), so that telemetry does not leak protected design. | Opus / high |
 | C8 | **FCP** — flight control panel (D55) | The crew interface as data: the mode selections and the heading, horizontal speed, target altitude and vertical speed selectors (D56), the annunciations and indications, and the conversion to and from crew units (CV-740 to CV-770). Defines the panel content (#79). No physical device or display format (L1-AER-510). | Opus / high |
@@ -186,13 +186,13 @@ C1–C3 are closely coupled (mass, inertia, effector forces, consumption), as ar
 
 | ID | Task | Model / effort |
 | --- | --- | --- |
-| I1 | Assemble `requirements/L2.md` from the drafts. Merge all staging proposals: the parameter database, glossary and DD register. Write `icd/ICD-AER-TST.md` (Aeronef side: state vector, effector commands, operational data, frame rate, units), `icd/ICD-FC-AF.md`, `icd/ICD-NAV-AF.md` and `icd/ICD-FCP.md`, and decide the home of the vehicle-model boundary definitions (IN-B1-01). Resolve cross-subsystem conflicts, check that the budgets close, and turn unresolved conflicts into change requests at L1 or questions for the project owner. | Opus / xhigh |
+| I1 | Assemble `requirements/L2.md` from the drafts. Merge all staging proposals: the parameter database, glossary and DD register. Write `icd/ICD-AER-TST.md` (Aeronef side: state vector, effector commands, operational data, frame rate, units), `icd/ICD-FC-AF.md`, `icd/ICD-NAV-AF.md` and `icd/ICD-FCP.md`, and decide the home of the vehicle-model boundary definitions (IN-B1-01). Resolve cross-subsystem conflicts, check that the budgets close, and turn unresolved conflicts into change requests at L1 or questions for the project owner. | Sonnet / xhigh |
 | I2 | Re-run the parameter-reference check and the trace check. | Orchestrator (scripts) |
 
 **Gate G2 — Subsystem requirements review**
 
 - Eight Haiku / low lint agents run in parallel, one per L2 section.
-- Two Opus / high inspectors run in parallel: one for DYN, FU and EF plus MS-DYN (physics consistency), and one for FC, AF, FCP, NAV and TM plus the ICDs (control, guidance, crew interface and data consistency).
+- Two Sonnet / high inspectors run in parallel: one for DYN, FU and EF plus MS-DYN (physics consistency), and one for FC, AF, FCP, NAV and TM plus the ICDs (control, guidance, crew interface and data consistency).
 - The project owner approves.
 - Exit: L2 baselined and tagged `AER-L2-baseline-1`.
 
@@ -202,28 +202,28 @@ There is one L3 section per autoflight mode, plus the flight-control deepening. 
 
 | ID | Mode or branch | Model / effort |
 | --- | --- | --- |
-| M0 | **Stationary** (position hold over the ground, D56), the reference mode and the METHODOLOGY §12 worked example: engagement and position capture, hold accuracy, annunciation, disengagement, and the flow-down to FC and EF. This sets the pattern for the other modes. | Opus / high |
+| M0 | **Stationary** (position hold over the ground, D56), the reference mode and the METHODOLOGY §12 worked example: engagement and position capture, hold accuracy, annunciation, disengagement, and the flow-down to FC and EF. This sets the pattern for the other modes. | Sonnet / high |
 
 These run in parallel after M0:
 
 | ID | Mode or branch | Model / effort |
 | --- | --- | --- |
 | M1 | Withdrawn: no flight path angle mode (D56) | — |
-| M2 | **Vertical speed**: climb or descent at the selected rate (feet per minute), then capture and hold of the selected altitude | Sonnet / high |
-| M3 | **Go to altitude and Altitude hold**: climb or descent at the standard or selected vertical speed, capture of the selected altitude, then hold | Opus / high |
+| M2 | **Vertical speed**: climb or descent at the selected rate (feet per minute), then capture and hold of the selected altitude | Haiku / high |
+| M3 | **Go to altitude and Altitude hold**: climb or descent at the standard or selected vertical speed, capture of the selected altitude, then hold | Sonnet / high |
 | M4 | Withdrawn: horizontal speed is a selector of Heading, not a mode (D56) | — |
-| M5 | **Heading** at the selected horizontal speed, including a heading change in place at zero speed | Sonnet / high |
+| M5 | **Heading** at the selected horizontal speed, including a heading change in place at zero speed | Haiku / high |
 | M6 | Withdrawn: no track hold mode (D56) | — |
 | M7 | Withdrawn: no VOR (D56) | — |
-| M8 | **Go to hover and Hover**: from any mode, stop on all axes at the hover height, arm Hover, engage it when stationary, then hold height and position against the wind | Opus / high |
-| FC1 | **Flight-control deepening**: TR, RO and AL to the last requirement layer, including the allocation priority rule as a derived requirement with its DD entry | Opus / high |
+| M8 | **Go to hover and Hover**: from any mode, stop on all axes at the hover height, arm Hover, engage it when stationary, then hold height and position against the wind | Sonnet / high |
+| FC1 | **Flight-control deepening**: TR, RO and AL to the last requirement layer, including the allocation priority rule as a derived requirement with its DD entry | Sonnet / high |
 
-M3 and M8 use Opus because arming, capture and transition logic is the subtlest part of the catalogue. Any Sonnet mode that departs significantly from the M0 pattern is escalated to Opus / high. The orchestrator then assembles `requirements/L3.md`, and any lower level file.
+M3 and M8 use Sonnet because arming, capture and transition logic is the subtlest part of the catalogue. Any Haiku mode that departs significantly from the M0 pattern is escalated to Sonnet / high. The orchestrator then assembles `requirements/L3.md`, and any lower level file.
 
 **Gate G3 — Lower-level requirements review**
 
 - Haiku / low lints each section.
-- Opus / high runs one inspection across all modes. It checks that the mode sections agree with AF_MODE_LOGIC and with each other: the transitions, compatible combinations and annunciations match, and there are no gaps between climb or descent, capture and hold.
+- Sonnet / high runs one inspection across all modes. It checks that the mode sections agree with AF_MODE_LOGIC and with each other: the transitions, compatible combinations and annunciations match, and there are no gaps between climb or descent, capture and hold.
 - The project owner approves.
 
 ### Phase 5 — Verification planning (third fan-out)
@@ -238,15 +238,15 @@ Physics requirements are verified by analysis against independent solutions, and
 
 | ID | Scope | Model / effort |
 | --- | --- | --- |
-| V1 | DYN, FU, EF and MS-DYN | Sonnet / high |
-| V2 | FC (all levels) | Sonnet / high |
-| V3 | AF, FCP and NAV (all levels, all modes) | Sonnet / high |
-| V4 | TM, ICDs, L1 and L0 | Sonnet / high |
+| V1 | DYN, FU, EF and MS-DYN | Haiku / high |
+| V2 | FC (all levels) | Haiku / high |
+| V3 | AF, FCP and NAV (all levels, all modes) | Haiku / high |
+| V4 | TM, ICDs, L1 and L0 | Haiku / high |
 | V5 | Runs after V1–V4. Generate `verification/VCRM.md` with the script and check that no requirement lacks a method. | Orchestrator (scripts) |
 
 **Gate G4 — Verification plan inspection and requirements baseline**
 
-- Opus / high runs the inspection, which checks that the success criteria are measurable and that the procedures are written from the requirement and not from a design.
+- Sonnet / high runs the inspection, which checks that the success criteria are measurable and that the procedures are written from the requirement and not from a design.
 - The trace checks must pass: no orphans, no childless parents, no requirement without a verification method. L0 requirements allocated only to TST or RVS are not counted as childless (D44).
 - The project owner approves the complete Aeronef requirements baseline, tagged `AER-REQ-baseline-1`.
 
@@ -272,7 +272,7 @@ Each agent prompt contains the following:
 | --- | --- | --- |
 | Lint (METHODOLOGY 13.1 mechanical items) | Script plus Haiku / low | Every gate, per section |
 | Trace and parameter-reference checks | Scripts | Every gate, and after each integration |
-| Inspection (METHODOLOGY 13.2, sufficiency, consistency) | Opus / high, fresh instance, never the author | G0–G4 |
+| Inspection (METHODOLOGY 13.2, sufficiency, consistency) | Sonnet / high, fresh instance, never the author | G0–G4 |
 | Approval | Project owner | Every gate |
 
 Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors rework, and the orchestrator confirms closure before the baseline tag.
@@ -357,6 +357,7 @@ Findings are recorded with the METHODOLOGY 13.4 template in `reviews/`. Authors 
 | D72 | G2 (partial) owner rulings on C1/C2 (reviews/G2/inspection_C1_C2.md Q1–Q4, G2-F01; owner 2026-11-05) | **No long checks (G2-F01):** no credibility check runs for the 48 h hover duration; the torque-free rotation check C-3 and the rotation-during-translation check C-5 run in a check configuration with no ground contact (gravity zero) over a short accuracy horizon [P-DYN-270] of 600 s (TBR). The terminal-speed check C-2 states its release height and checked altitude band (G2-F02). **Q1 (G2-F03):** [P-SYS-230] is a **ground speed** (CV-480, L1-AER-310, the panel selector); D66's 300 kt is the still-air anchor of [P-SYS-290], where ground speed and true airspeed coincide; C5 bounds the commanded heading rate so that horizontal speed times heading rate stays within [P-AF-200]. Owner said 'true airspeed' in D66; this ruling follows the inspector's recommendation, which the owner accepted, and needs no CR on L1. **Q2 (G2-F04):** D46 is revised: the weight is carried along −z_B only; the authority in the other five force directions is set by the drag at maximum speed and may exceed the upward authority. [P-DYN-100] = 5 m² and D66 stand. **Q3 (G2-F06):** isotropic drag meets D18: motion along one axis gives drag along that axis only; the shared airspeed magnitude in oblique flow is accepted (recorded in D64 and MS-DYN §4.5). **Q4 (G2-F18):** [P-SYS-290] is the anchor of [P-FU-040], [P-FU-050] and [P-SYS-280] only, not a requirement; a change of [P-DYN-100] at I1 re-derives them (TT-110, TT-750, TT-800). The Minor and Editorial findings are accepted as recommended; C1 and C2 apply them with the D69 rework after B3. |
 | D73 | B3 and C3 approval (owner 2026-11-05) | The B3 change package is approved as drafted: change requests CR-B3-01 to -41 and the new L1 records L1-AER-900 to -970 (`work/B3/`). **B3-1:** a run may start airborne only for test runs and credibility checks; the operational start, SC-110 and SC-130 start on the ground. **B3-2:** a liftoff wind limit [P-SYS-580] = 75 kt (TBR); landing needs none. **B3-3:** a ground contact with the gear retracted or in transit, or any contact after fuel exhaustion, is a crash whatever the speed. **C3 Q01–Q08** are accepted as recommended (`work/C3/issues.md`): first-order command response; upward authority 60 kN; the combined authority box is guaranteed; force emitters only; the six-effector reference layout (TBR); effectors on/off in the effector commands, off at run start; EF computes the resultant once; +z authority kept at 190 kN. Applied as L0/L1 change requests with version bumps; C1 and C2 rework their sections for the G2 findings (D72) and D69 in parallel. |
 | D74 | C2 rework rulings (owner 2026-11-08) | **C2-Q7:** CR-C2-04 is approved: FU is added to the allocation of L1-AER-260 v3, L1-AER-270 and L1-AER-900 v2, with an inspection that the effectors and the ground contact model use the same fuel availability; FUNCTIONAL_ANALYSIS §6.2 ticks FU in the three rows. **N-C2-07:** the hover endurance is shown by analysis, not by a run to fuel exhaustion: the closed form with the margin [P-FU-100], confirmed by a simulated takeoff and hold over [P-DYN-270] (CR-C2-05, L1-AER-360 v3, L2-AER-FU-290 v3). |
+| D75 | Models for the remaining work (owner 2026-11-08) | Opus used the token budget too fast. Every task from C4 and C5 onward runs one model lower than first planned: Opus → Sonnet, Sonnet → Haiku; Haiku stays; efforts unchanged. Tasks already done (A, B, C1–C3, C6–C8, G0–G1, partial G2) keep the models they ran on. The tables of §6, §8 and §10 show the revised models. |
 
 ### Open questions
 
@@ -374,8 +375,8 @@ All open and deferred questions are tracked as GitHub issues labelled `questions
 | 1 | 3, then a gate | Opus ×3, Haiku, Opus (review) |
 | 2 | 1, then 1, then a gate | Opus (xhigh), Sonnet, Haiku, Opus (review) |
 | 3 | 8 | Opus ×8 (three at xhigh) |
-| 3b | 1, then a gate | Opus (xhigh), Haiku ×8, Opus ×2 (review) |
-| 4 | 1, then 5, then a gate | Opus (M0), then Opus ×3 (M3, M8, FC1) and Sonnet ×2 (M2, M5), Haiku, Opus (review) |
-| 5 | 4, then a gate | Sonnet ×4, Opus (review) |
+| 3b | 1, then a gate | Sonnet (xhigh), Haiku ×8, Sonnet ×2 (review) |
+| 4 | 1, then 5, then a gate | Sonnet (M0), then Sonnet ×3 (M3, M8, FC1) and Haiku ×2 (M2, M5), Haiku, Sonnet (review) |
+| 5 | 4, then a gate | Haiku ×4, Sonnet (review) |
 
 The critical path runs G0 → B1 → G1 → C5 → I1 → G2 → M0 → M3/M8 → G3 → G4. The largest time savings come from the parallel fan-outs in Phases 3, 4 and 5.
