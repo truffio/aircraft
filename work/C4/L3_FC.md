@@ -1,0 +1,837 @@
+## FC — Flight control
+
+The flight control sub-function requirements (task C4, L3). FC has three sub-functions, each a `###` section below: translational regulation (TR), rotational regulation (RO) and control allocation (AL). Their parents are the L2 records of `work/C4/L2_FC.md` that are allocated to them; the subject of each statement is the sub-function. The quantities, the frames and the reference content are those of the L2 section (DD-C4-01): the translational axes are the north, east and vertical axes of the vehicle-carried local frame V (altitude and vertical speed on the vertical axis), the rotational axes are roll, pitch and heading, and the six axis demands are a force along and a moment about each body axis.
+
+**Depth (D4).** Every record here is a leaf: the next layer would describe the control law (the loop structure, the gains, the estimator, the allocation algorithm), which is a design decision and is proposed as DD-C4-02 to DD-C4-07 (`work/C4/issues.md`). Task FC1 (plan §6, Phase 4) can deepen a sub-function if the review finds a record still above the implementation; the priority rule of the allocation is already here as a derived requirement (AL-020).
+
+**Terms.** *Reference step*: a change of an axis reference between two consecutive control frames that the reference acceleration of the first frame does not explain by more than the tracking tolerance of that axis, a change of the regulated quantity of the axis, or the first control frame whose references are not the off value. A ramp that autoflight shapes within its acceleration limit is not a step. *Tracking tolerance*: the largest departure of the regulated quantity from its reference that a record allows, by axis and regulated quantity ([P-FC-010], [P-FC-030] for position; [P-FC-040], [P-FC-050] for velocity; [P-FC-070], [P-FC-080] for heading and heading rate; [P-AF-180] for pitch and roll). The tolerances apply at the frames that do not lie within the settling time of a step. Both terms are proposed for the glossary (`work/C4/glossary_proposals.md`).
+
+**Verification.** Each record is a leaf and is verified directly by its own method; the L2 parents are verified by roll-up (D40). Procedure IDs follow the record: `IN-FC-TR-nnn`, `TP-FC-RO-nnn`, `AN-FC-AL-nnn`. The tests of TR and RO drive FC with scripted axis references from the test autoflight variant (IN-C4-30). The allocation analyses exercise the allocation offline with the vehicle parameter set of the run, and the tests record the axis demands and the effector commands at each control frame (IN-C4-31). Scenario values are set by the procedures (D32).
+
+**Coverage of the L2 parents.** Every L2 FC record allocated to a sub-function has at least one child, as the table shows.
+
+| L2 parent | What the sub-function gives, in the parent's terms | L3 children |
+| --- | --- | --- |
+| L2-AER-FC-010 | Three separate translational loops and three separate rotational loops | TR-010, RO-010 |
+| L2-AER-FC-100 | Velocity and position tracking on the horizontal and the vertical axes, and the settling time | TR-020, TR-030, TR-040, TR-050, TR-060 |
+| L2-AER-FC-110 | Heading, heading rate, pitch and roll tracking, the settling time, the inertia and the shorter turn | RO-020, RO-030, RO-040, RO-050, RO-060, RO-070 |
+| L2-AER-FC-130 | The acceleration demand limit, and the force that scales with the mass | TR-070, TR-090 |
+| L2-AER-FC-140 | The transient allowance in a gust and at the liftoff step | TR-080, TR-100 |
+| L2-AER-FC-150 | The effector commands that give the demanded force and moment inside the authority box | AL-010 |
+| L2-AER-FC-170 | A demand outside the box is limited component by component, and any demand gets commands | AL-020 (Derived), AL-030 |
+| L2-AER-FC-180 | Recovery from the limit without crossing the reference | TR-110, RO-080 |
+
+Records that are Derived: AL-020 (DD-C4-03).
+
+### TR — Translational regulation
+
+Function F-AER-05 for the three translational degrees of freedom. TR takes the three translational axis references, the vehicle state of the frame-start step and the vehicle mass, and gives the force demand along each body axis. It is the sub-function where the local frame V meets the body frame: the regulation acts in V, where the axes are uncoupled, and the force demand is resolved in the body frame with the attitude (DD-C4-02).
+
+### L3-AER-FC-TR-010
+
+```req
+ID:            L3-AER-FC-TR-010
+Level:         L3
+Type:          Constraint
+Statement:     The translational regulation shall compute the acceleration demand along each of the
+  north, east and vertical axes from the axis reference of that axis and the vehicle state along
+  that axis only.
+Rationale:     The vehicle has no coupling between its axes (D18), the axes have independent control
+  authority (L0-CON-020, N-240) and the project compares control laws axis by axis (L0-CON-200).
+  Three separate loops, each fed by its own reference and its own state elements (position,
+  velocity and the vehicle acceleration along the axis), keep a law from hiding a coupling that
+  the L1 tolerances would pass. The meeting of the axes is the force resolution of TR-090: the
+  force demand along a body axis combines the three acceleration demands through the attitude and
+  the mass, which is a change of frame, not a regulation (DD-C4-02). A wind is not an input:
+  the effect of the drag and of a gust reaches the loop through the measured acceleration and the
+  velocity of the axis (L1-AER-670).
+  Sufficiency (L2-AER-FC-010): this record gives the three translational loops of the L2 statement,
+  each on its own reference; RO-010 gives the three rotational ones.
+Parent(s):     L2-AER-FC-010
+Source:        N-240; D18; DD-C4-02
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — IN-FC-TR-010; success criteria: in the design description of DD-C4-02
+  and in the implementation, the acceleration demand along each translational axis is computed
+  from the reference value, rate and acceleration of that axis and from the position, velocity
+  and vehicle acceleration along that axis, and no element along another axis enters it.
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-020
+
+```req
+ID:            L3-AER-FC-TR-020
+Level:         L3
+Type:          Performance
+Statement:     While the horizontal axes regulate velocity and the vehicle is airborne with fuel
+  remaining in a wind within the wind envelope, the translational regulation shall keep the
+  horizontal velocity within [P-FC-040] of the reference rate of the horizontal axes at each
+  control frame that does not lie within [P-FC-060] of a reference step, for reference speeds up to
+  [P-SYS-230].
+Rationale:     The horizontal speed capability (L1-AER-310) and the horizontal speed at touchdown
+  (L1-AER-970): the velocity follows the reference that autoflight shapes within its acceleration
+  limit. [P-SYS-230] is a ground speed (D72), so the airspeed and the drag are largest with the
+  wind on the nose; the authority for them is EF's (L2-AER-EF-330). The tolerance holds in the wind
+  envelope, gusts included, because the touchdown speed in the strongest wind has to stay inside
+  the landing envelope ([P-SYS-510]) with the AF share (C5, P-AF-170). The tolerance is the
+  horizontal velocity difference (the magnitude of the vector difference in the local frame V).
+  Sufficiency (L2-AER-FC-100): this record, TR-030 (vertical velocity), TR-040 and TR-050 (horizontal
+  and vertical position) cover the four combinations of axis group and regulated quantity, and
+  TR-060 gives the settling after a step.
+Parent(s):     L2-AER-FC-100
+Source:        N-170; L1-AER-310; D51, D62, D72
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-020; success criteria: with horizontal velocity references that
+  ramp within the acceleration limit [P-AF-200] to speeds of a tenth, a half and the whole of
+  [P-SYS-230] and then hold, in the directions of several headings, in still air and in a steady
+  wind of [P-SYS-430] with gusts of [P-SYS-560] built up over [P-SYS-570], at full fuel and near dry
+  mass, the horizontal velocity difference is at most [P-FC-040] at each control frame outside the
+  intervals of [P-FC-060] that start at a reference step.
+Parameters:    P-FC-040, P-FC-060, P-SYS-230, P-AF-200, P-SYS-430, P-SYS-560, P-SYS-570, P-SYS-510
+TBD/TBR:       P-FC-040, P-FC-060 values TBR (TT-C4-1), P-SYS-430, P-SYS-560 values TBR (TT-030),
+  P-SYS-570 value TBR (TT-650), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-030
+
+```req
+ID:            L3-AER-FC-TR-030
+Level:         L3
+Type:          Performance
+Statement:     While the vertical axis regulates velocity and the vehicle is airborne with fuel
+  remaining in a wind within the wind envelope, the translational regulation shall keep the vertical
+  velocity within [P-FC-050] of the reference rate of the vertical axis at each control frame that
+  does not lie within [P-FC-060] of a reference step, for climb reference rates up to [P-SYS-240]
+  and descent reference rates up to [P-SYS-250] at each horizontal speed up to [P-SYS-230].
+Rationale:     The climb and descent capability (L1-AER-320, L1-AER-330) and the vertical speed of the
+  takeoff climb and the landing descent at [P-AF-240] (L1-AER-960, L1-AER-970). A climb at the
+  largest horizontal speed needs the most upward force (isotropic drag shares the airspeed
+  magnitude, D64), which is why L1-AER-320 names zero and maximum horizontal speed; the force is
+  EF's (L2-AER-EF-330). The vertical tolerance is tighter than the horizontal one because the
+  touchdown envelope on the vertical speed is [P-SYS-500] and the descent reference at the
+  touchdown is [P-AF-240]: the sum of the two is at most [P-SYS-500] (closure at I1).
+  Sufficiency (L2-AER-FC-100): see L3-AER-FC-TR-020.
+Parent(s):     L2-AER-FC-100
+Source:        N-170; L1-AER-320, L1-AER-330, L1-AER-970; D64
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-030; success criteria: with vertical velocity references that ramp within
+  the vertical acceleration [P-AF-230] to climb rates up to [P-SYS-240] and descent rates up to
+  [P-SYS-250], and to the descent rate [P-AF-240], at zero horizontal speed and at [P-SYS-230], in
+  still air and in a steady wind of [P-SYS-430] with gusts of [P-SYS-560], at full fuel and near dry
+  mass, the vertical velocity difference is at most [P-FC-050] at each control frame outside the
+  intervals of [P-FC-060] that start at a reference step.
+Parameters:    P-FC-050, P-FC-060, P-SYS-240, P-SYS-250, P-SYS-230, P-AF-230, P-AF-240, P-SYS-500,
+  P-SYS-430, P-SYS-560
+TBD/TBR:       P-FC-050, P-FC-060 values TBR (TT-C4-1), P-SYS-240, P-SYS-250 values TBR (TT-010),
+  P-SYS-430, P-SYS-560 values TBR (TT-030), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-040
+
+```req
+ID:            L3-AER-FC-TR-040
+Level:         L3
+Type:          Performance
+Statement:     While the horizontal axes regulate position and the vehicle is airborne with fuel
+  remaining in a wind within the wind envelope, the translational regulation shall keep the
+  horizontal distance between the vehicle position and the reference position within [P-FC-010] at
+  each control frame that does not lie within [P-FC-060] of a reference step.
+Rationale:     FC's share of the position error budget (L1-AER-460, FUNCTIONAL_ANALYSIS §7.4, D60):
+  the autoflight guidance share [P-AF-160] (reference position versus target) plus this share is
+  at most [P-SYS-450]. The wind envelope bounds the steady wind [P-SYS-430] and the gusts [P-SYS-560]
+  built up over at least [P-SYS-570] (D51, D62), so the gust response falls inside this share, as
+  the budget says: the drag changes at a bounded rate (MS-DYN §5.4) and the regulation compensates
+  it within the control-loop latency [P-SYS-480] and its own dynamics (TR-080 bounds the
+  acceleration it allows). The start of the position regulation counts as a reference step, so the
+  tolerance applies [P-FC-060] after a hold begins; the longer settling that the capture of a hold
+  takes (P-SYS-460) is autoflight's. The hold is of a horizontal position, in Stationary and in
+  Hover (D60).
+  Sufficiency (L2-AER-FC-100): see L3-AER-FC-TR-020.
+Parent(s):     L2-AER-FC-100
+Source:        N-130; D51, D60, D62; FUNCTIONAL_ANALYSIS §7.4
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-040; success criteria: with the horizontal axes regulating the position
+  of a reference position at which the vehicle starts, in still air and in a steady wind of
+  [P-SYS-430] with gusts of [P-SYS-560] built up over [P-SYS-570], from several directions, at full
+  fuel and near dry mass, the horizontal distance between the recorded position and the reference
+  position is at most [P-FC-010] at each output sample outside the interval of [P-FC-060] that
+  starts at the start of the regulation.
+Parameters:    P-FC-010, P-FC-060, P-AF-160, P-SYS-450, P-SYS-460, P-SYS-430, P-SYS-560, P-SYS-570,
+  P-SYS-480
+TBD/TBR:       P-FC-010 value TBR (TT-050), P-AF-160 value TBR (TT-050), P-FC-060 value TBR
+  (TT-C4-1), P-SYS-430, P-SYS-560 values TBR (TT-030), P-SYS-570 value TBR (TT-650), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-050
+
+```req
+ID:            L3-AER-FC-TR-050
+Level:         L3
+Type:          Performance
+Statement:     While the vertical axis regulates position and the vehicle is airborne with fuel
+  remaining in a wind within the wind envelope, the translational regulation shall keep the altitude
+  within [P-FC-030] of the reference altitude at each control frame that does not lie within
+  [P-FC-060] of a reference step.
+Rationale:     FC's share of the altitude-hold tolerance of AF ([P-AF-110]: the AF share plus this
+  share is at most [P-AF-110], closure at C5 and I1). The hover height is [P-AF-210] above the
+  ground, and with the gear extended the clearance of the gear above the ground at that height is
+  only [P-AF-210] minus [P-DYN-040] (IN-C1-44), so the vertical tolerance has to be small: a drop
+  by the clearance is a touch, which is a landing. The wind is horizontal only (D51), so the
+  vertical disturbance is the vertical drag that a horizontal air-relative velocity and a small
+  vertical speed cause, and the weight, which the mass property gives exactly.
+  Sufficiency (L2-AER-FC-100): see L3-AER-FC-TR-020.
+Parent(s):     L2-AER-FC-100
+Source:        N-130; IN-C1-44; D51
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-050; success criteria: with the vertical axis regulating the altitude of
+  a reference altitude at which the vehicle starts, in still air and in a steady wind of [P-SYS-430]
+  with gusts of [P-SYS-560], with the horizontal axes holding position and regulating a horizontal
+  speed of [P-SYS-230], at full fuel and near dry mass, the altitude difference is at most [P-FC-030]
+  at each output sample outside the interval of [P-FC-060] that starts at the start of the
+  regulation.
+Parameters:    P-FC-030, P-FC-060, P-AF-110, P-AF-210, P-DYN-040, P-SYS-230, P-SYS-430, P-SYS-560
+TBD/TBR:       P-FC-030, P-FC-060 values TBR (TT-C4-1), P-AF-110 value TBD (C5), P-SYS-430, P-SYS-560
+  values TBR (TT-030), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-060
+
+```req
+ID:            L3-AER-FC-TR-060
+Level:         L3
+Type:          Performance
+Statement:     When a step of the reference of a translational axis limits no axis demand, the
+  translational regulation shall bring that axis within its tracking tolerance within [P-FC-060] of
+  the step.
+Rationale:     The settling time that the L1-AER-370 children state as a parameter (C4). The tracking
+  tolerance is the one of the axis group and regulated quantity (TR-020 to TR-050). One time covers
+  the four cases: the loops are designed so that the slowest of them, the position loop, settles
+  within it (DD-C4-07), and autoflight shapes the references, so FC sees steps only at a mode
+  change or a new selection, and these are small. A step that the
+  limits touch is the nominal saturation of L2-AER-FC-170 and the recovery of TR-110. The time
+  after which TR-020 to TR-050 apply is this time.
+  Sufficiency (L2-AER-FC-100): TR-020 to TR-050 give the tolerances once settled and this record the
+  time to get there, so each translational axis settles on its reference, which is the L1-AER-370
+  test.
+Parent(s):     L2-AER-FC-100
+Source:        L1-AER-370; N-240
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-060; success criteria: for a step of the reference rate or the
+  reference value of each translational axis in turn (steps of one metre per second and of one
+  metre, from hover and from a horizontal speed of a tenth of [P-SYS-230]), small enough that no
+  axis demand is limited, at full fuel and near dry mass, in still air, the regulated quantity is
+  within its tracking tolerance at each control frame from [P-FC-060] after the step.
+Parameters:    P-FC-060, P-FC-010, P-FC-030, P-FC-040, P-FC-050, P-SYS-230
+TBD/TBR:       P-FC-060 value TBR (TT-C4-1), P-FC-010 value TBR (TT-050), P-FC-030, P-FC-040, P-FC-050
+  values TBR (TT-C4-1), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-070
+
+```req
+ID:            L3-AER-FC-TR-070
+Level:         L3
+Type:          Performance
+Statement:     While the vehicle is airborne with fuel remaining, the translational regulation shall
+  limit the magnitude of the vehicle acceleration demand, the vector of the three axis acceleration
+  demands, to [P-SYS-440], keeping the direction of the demand.
+Rationale:     The crew limit and the vehicle-acceleration limit (L1-AER-290, L1-AER-300, DD-C4-04):
+  however large a position or velocity error is, the regulation does not ask for more than
+  [P-SYS-440]. The three demands are scaled by one common factor when their vector exceeds the limit,
+  so the direction of the demanded acceleration is kept and a limited manoeuvre still goes the right
+  way; limiting each axis on its own would bend the path. This is the one place where the axes are
+  coupled in the regulation, and it acts only in saturation, where independence is not asked
+  (L2-AER-FC-120 is limited to steps that limit no demand). The limit is on the vehicle acceleration, not
+  on the control force: the drag and the weight are outside it.
+  Sufficiency (L2-AER-FC-130): this record is the limit of the L2 statement, and TR-090 converts the
+  limited acceleration to a force with the vehicle mass of the frame.
+Parent(s):     L2-AER-FC-130
+Source:        D38, D45; FUNCTIONAL_ANALYSIS §7.2; DD-C4-04
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-070; success criteria: in still air, for reference steps larger than
+  the limit allows (a velocity step of a half of [P-SYS-230] on one horizontal axis, a position step
+  of the order of a hundred metres, a combined horizontal and vertical step), at full fuel and near
+  dry mass, the recorded vehicle acceleration magnitude is at most [P-SYS-440], the recorded
+  sensed acceleration magnitude is at most [P-SYS-120] at each output sample; and for equal
+  steps on the north and east axes, the north and east components of the recorded vehicle
+  acceleration differ by at most [P-FC-040] divided by [P-FC-060] during the limited interval.
+Parameters:    P-SYS-440, P-SYS-120, P-SYS-230, P-FC-040, P-FC-060
+TBD/TBR:       P-SYS-440 value TBR (TT-040), P-FC-040, P-FC-060 values TBR (TT-C4-1), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-080
+
+```req
+ID:            L3-AER-FC-TR-080
+Level:         L3
+Type:          Performance
+Statement:     While the vehicle is airborne with fuel remaining and the magnitude of the reference
+  acceleration is at most [P-AF-200], when a gust within the wind envelope builds up, the
+  translational regulation shall keep the magnitude of the difference between the vehicle
+  acceleration and the reference acceleration at most [P-FC-020].
+Rationale:     The disturbance share of the flight-control transient allowance (FUNCTIONAL_ANALYSIS
+  §7.2, D62, IN-C1-34). A gust of at most [P-SYS-560] on a steady wind of at most [P-SYS-430] builds
+  up over at least [P-SYS-570] in a one-minus-cosine ramp, so the drag changes at a bounded rate:
+  the air-relative speed changes at most (pi/2) x [P-SYS-560] / [P-SYS-570] per second, and the drag
+  at the rate the airspeed and [P-DYN-100] give. The rate is largest at the largest airspeed
+  (the speed [P-SYS-230] into the wind) and at dry mass, where the same force is the largest
+  acceleration. The vehicle acceleration departs from the reference acceleration by the rate times
+  the time the regulation needs to compensate, which is the control-loop latency [P-SYS-480] plus
+  the dynamics of the compensation. With the current database the rate is of the order of 27 m/s^3
+  at dry mass, so the allowance holds if the effective delay of the compensation is at most about
+  0.18 s, of which the loop latency is 0.08 s to 0.10 s: the compensation has to be driven by the
+  measured vehicle acceleration, not only by the position error (DD-C4-07; budget check in
+  `work/C4/issues.md` §5).
+  Sufficiency (L2-AER-FC-140): the L2 statement is for a wind within the envelope; the gust of the
+  envelope is this record and the step of drag at the liftoff is TR-100, which are the two
+  disturbances the budget names. The regulation itself adds no other acceleration beyond the
+  reference, because TR-070 limits the demand.
+Parent(s):     L2-AER-FC-140
+Source:        D51, D62; FUNCTIONAL_ANALYSIS §7.2; IN-C1-33, IN-C1-34; MS-DYN §5.4, §5.5
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-080; success criteria: with the wind of the TST rising from a steady
+  wind of [P-SYS-430] by a gust of [P-SYS-560] over [P-SYS-570], from several directions, with the
+  vehicle holding position and with it flying at [P-SYS-230] into the wind and with the wind, at
+  near dry mass, the magnitude of the difference between the recorded vehicle acceleration and the
+  reference acceleration is at most [P-FC-020] at each output sample from the start of the gust to
+  [P-FC-060] after its end.
+Parameters:    P-FC-020, P-AF-200, P-SYS-560, P-SYS-430, P-SYS-570, P-SYS-230, P-SYS-480, P-DYN-100,
+  P-FC-060
+TBD/TBR:       P-FC-020 value TBR (TT-040), P-FC-060 value TBR (TT-C4-1), P-SYS-430, P-SYS-560 values
+  TBR (TT-030), P-SYS-570 value TBR (TT-650), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-090
+
+```req
+ID:            L3-AER-FC-TR-090
+Level:         L3
+Type:          Constraint
+Statement:     The translational regulation shall compute the control force demand along each body
+  axis from the vehicle acceleration demand with the vehicle mass of the first simulation step of
+  the control frame.
+Rationale:     D38: as fuel is used up and the mass falls, the resultant force that produces a given
+  acceleration falls with it, so the crew limit that TR-070 sets on the acceleration is kept at every
+  fuel state without a force limit of its own. The mass is the one that DYN integrates
+  (L2-AER-FU-140); within a control frame it falls by a negligible fraction (IN-C2-41), so the
+  frame-start value is enough. A mass fixed in the design would over-demand at low mass and break the
+  limit. The force demand also carries the weight and the resolution of the three acceleration
+  demands through the attitude, which are the change of frame of DD-C4-02.
+  Sufficiency (L2-AER-FC-130): TR-070 limits the acceleration and this record converts it to the force
+  that gives it, at the current mass, so the force FC commands follows the limit as the mass falls.
+Parent(s):     L2-AER-FC-130
+Source:        D38; IN-C2-41; L2-AER-FU-140
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — IN-FC-TR-090; success criteria: in the design description and the
+  implementation, the vehicle mass that converts the acceleration demand to the control force demand
+  is the vehicle mass given by FU at the first simulation step of the control frame, and no fixed
+  mass value is used; and TP-FC-TR-070 passes at full fuel and near dry mass.
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-100
+
+```req
+ID:            L3-AER-FC-TR-100
+Level:         L3
+Type:          Performance
+Statement:     When the vehicle lifts off in a wind of speed at most [P-SYS-580], the translational
+  regulation shall keep the magnitude of the difference between the vehicle acceleration and the
+  reference acceleration at most [P-FC-020] at each control frame of the interval of [P-FC-060]
+  that starts at the liftoff.
+Rationale:     At liftoff the drag of the wind acts at once, as a step, because on the ground the
+  ground reaction carried it and the flight software does not know the wind (L1-AER-960, D73
+  B3-Q2). The limit [P-SYS-580] is chosen so that the step is within the allowance: at dry mass and
+  sea-level density the drag of that wind divided by the dry mass is 4.56 m/s^2 against the
+  allowance 4.90 m/s^2 (budget check in `work/C4/issues.md` §5, TT-860), a margin of 7 %, which the
+  rounded database values do not make comfortable. The regulation has to start its compensation
+  in the frame that shows the acceleration, so the step is carried by the effectors within the
+  loop latency and the vehicle acceleration departs from the reference by the step only until then.
+  Sufficiency (L2-AER-FC-140): see L3-AER-FC-TR-080; the liftoff step is the second disturbance of the
+  allowance.
+Parent(s):     L2-AER-FC-140
+Source:        D73 (B3-Q2); FUNCTIONAL_ANALYSIS §7.2; TT-860
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-100; success criteria: from ground starts near dry mass, in a steady
+  wind of [P-SYS-580] from several directions, with a takeoff engaged, the magnitude of the
+  difference between the recorded vehicle acceleration and the reference acceleration is at most
+  [P-FC-020] at each output sample of the interval of [P-FC-060] that starts at the liftoff.
+Parameters:    P-SYS-580, P-FC-020, P-FC-060
+TBD/TBR:       P-SYS-580 value TBR (TT-860), P-FC-020 value TBR (TT-040), P-FC-060 value TBR (TT-C4-1),
+  Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-TR-110
+
+```req
+ID:            L3-AER-FC-TR-110
+Level:         L3
+Type:          Functional
+Statement:     When a limited translational axis demand returns within its limit, the translational
+  regulation shall bring that axis within its tracking tolerance, crossing its reference by at most
+  that tolerance, within [P-FC-060] of the return.
+Rationale:     The translational part of the recovery from saturation (L2-AER-FC-180): the
+  acceleration limit of TR-070 and the authority box (L2-AER-FC-170) limit the demand when a step
+  is larger than they allow, and the loops do not wind up while it is limited. The settling time
+  after the return is the same as after an unlimited step (TR-060). How the loops are made aware of the
+  limit is a design decision (DD-C4-07).
+  Sufficiency (L2-AER-FC-180): this record is the translational half of the L2 statement; RO-080
+  is the rotational half.
+Parent(s):     L2-AER-FC-180
+Source:        N-260; CONOPS §8.2
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-TR-110; success criteria: with reference steps that limit the demand (a
+  velocity step on a horizontal axis and a climb rate step of a half of the maximum, a position
+  step of the order of a hundred metres), in still air, at full fuel and near dry mass, the
+  regulated quantity of each axis is within its tracking tolerance at each control frame from
+  [P-FC-060] after the first frame at which the demand is within its limit again, and it has not
+  crossed the reference by more than its tracking tolerance between.
+Parameters:    P-FC-060, P-FC-010, P-FC-030, P-FC-040, P-FC-050
+TBD/TBR:       P-FC-060 value TBR (TT-C4-1), P-FC-010 value TBR (TT-050), P-FC-030, P-FC-040, P-FC-050
+  values TBR (TT-C4-1), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### RO — Rotational regulation
+
+Function F-AER-05 for the three rotational degrees of freedom. RO takes the three attitude references (roll, pitch, heading), the vehicle state of the frame-start step and the principal moments of inertia, and gives the moment demand about each body axis. With pitch and roll held at zero (D57) and the principal body axes (D61) the three loops are uncoupled in the vehicle; there is no aerodynamic moment (DD-050), so nothing disturbs the attitude and the moments only follow the references.
+
+### L3-AER-FC-RO-010
+
+```req
+ID:            L3-AER-FC-RO-010
+Level:         L3
+Type:          Constraint
+Statement:     The rotational regulation shall compute the angular acceleration demand about each of
+  the roll, pitch and yaw axes from the axis reference of that axis and the vehicle state about
+  that axis only.
+Rationale:     The same reasons as L3-AER-FC-TR-010: no coupling between axes (D18, D61), independent
+  authority (L0-CON-020, N-240) and a comparison of control laws axis by axis. The axis references
+  are the roll angle, the pitch angle and the heading with their rates (DD-C4-01); the vehicle state
+  about an axis is the angle of that axis and the body rate about it. At the level attitude that D57
+  keeps, the heading rate is the yaw rate and the Euler-angle rates equal the body rates (CV-290), so
+  the three loops do not share a quantity.
+  Sufficiency (L2-AER-FC-010): this record gives the three rotational loops of the L2 statement, each
+  on its own reference; TR-010 gives the three translational ones.
+Parent(s):     L2-AER-FC-010
+Source:        N-240; D18, D57, D61; DD-C4-02
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — IN-FC-RO-010; success criteria: in the design description of DD-C4-02
+  and in the implementation, the angular acceleration demand about each rotational axis is computed
+  from the reference angle, rate and acceleration of that axis and from the angle and the body rate
+  about that axis, and no element of another axis enters it.
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-020
+
+```req
+ID:            L3-AER-FC-RO-020
+Level:         L3
+Type:          Performance
+Statement:     While the heading is regulated and the vehicle is airborne with fuel remaining, the
+  rotational regulation shall keep the heading within [P-FC-070] of the reference heading at each
+  control frame that does not lie within [P-FC-090] of a reference step.
+Rationale:     FC's share of the heading tolerance of AF ([P-AF-130]: the AF share plus this share is at
+  most [P-AF-130], closure at C5 and I1), for a heading change in place and at speed (Heading mode,
+  D56). Heading is independent of track (CV-550), so the heading regulation does not depend on the
+  translation; there is no wind moment (DD-050). The error is the shorter turn of RO-070
+  (CV-930). The tolerance has to be below the heading selection resolution [P-AF-040], so that a
+  selected heading is held to the step the crew can select.
+  Sufficiency (L2-AER-FC-110): this record, RO-030 (heading rate), RO-040 (pitch and roll), RO-050
+  (settling), RO-060 (inertia) and RO-070 (shorter turn) cover the three rotational axes, their rates
+  and their settling.
+Parent(s):     L2-AER-FC-110
+Source:        N-170; D56, D57; CV-550
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-RO-020; success criteria: with heading references that ramp within the
+  heading rate [P-SYS-270] and then hold, at zero horizontal speed and at a tenth of [P-SYS-230], at
+  full fuel and near dry mass, the heading difference, wrapped as CV-930 states, is at most [P-FC-070]
+  at each control frame outside the intervals of [P-FC-090] that start at a reference step.
+Parameters:    P-FC-070, P-FC-090, P-AF-130, P-AF-040, P-SYS-270, P-SYS-230
+TBD/TBR:       P-FC-070, P-FC-090 values TBR (TT-C4-1), P-AF-130 value TBD (C5), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-030
+
+```req
+ID:            L3-AER-FC-RO-030
+Level:         L3
+Type:          Performance
+Statement:     While the heading is regulated and the vehicle is airborne with fuel remaining, the
+  rotational regulation shall keep the heading rate within [P-FC-080] of the reference rate at each
+  control frame that does not lie within [P-FC-090] of a reference step, for reference heading rates
+  of magnitude up to [P-SYS-270].
+Rationale:     The heading rate capability (L1-AER-350): the maximum rate follows from a lateral
+  acceleration of the order of a g at the maximum speed (D66, D67) and autoflight bounds the rate it
+  commands at speed (IN-C1-32). The moment authority is sized for the rate from rest in the onset
+  time of 0.5 s at maximum inertia ([P-SYS-420], L2-AER-EF-320, IN-C3-25); this record and RO-050
+  ask for no faster onset, so the sizing holds. The rate difference is the yaw rate about the body
+  axis at level attitude. The reference rate comes from autoflight's shaped heading.
+  Sufficiency (L2-AER-FC-110): see L3-AER-FC-RO-020.
+Parent(s):     L2-AER-FC-110
+Source:        N-170; D66, D67; IN-C3-25, IN-C1-32
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-RO-030; success criteria: with heading references whose rate ramps to
+  values of a tenth, a half and the whole of [P-SYS-270] and holds, at full fuel (the largest
+  moment of inertia about the vertical axis) and near dry mass, the body rate about the body z axis
+  differs from the reference rate by at most [P-FC-080] at each control frame outside the
+  intervals of [P-FC-090] that start at a reference step.
+Parameters:    P-FC-080, P-FC-090, P-SYS-270, P-SYS-420
+TBD/TBR:       P-FC-080, P-FC-090 values TBR (TT-C4-1), P-SYS-270 value TBR (TT-010), P-SYS-420 value
+  TBR (TT-020), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-040
+
+```req
+ID:            L3-AER-FC-RO-040
+Level:         L3
+Type:          Performance
+Statement:     While the vehicle is airborne with fuel remaining, the rotational regulation shall keep
+  the pitch angle and the roll angle within [P-AF-180] of their reference angles at each control
+  frame that does not lie within [P-FC-090] of a reference step.
+Rationale:     Pitch and roll are held at zero in every mode (D57, L1-AER-390): autoflight sends zero
+  reference angles and rates, and this record is the regulation that holds the vehicle there. The
+  tolerance is the one of L1-AER-390, [P-AF-180] (C5); FC takes it whole because autoflight's share
+  is only to set the references. With no disturbance moment (DD-050) and no coupling (D18, D61) the
+  attitude stays level unless a test start gives it an initial offset, which counts as a reference
+  step (the start of the regulation) and is removed within the settling time. The cross-axis
+  tolerance [P-SYS-550] of L2-AER-FC-120 covers the body rates about pitch and roll while another axis
+  moves.
+  Sufficiency (L2-AER-FC-110): see L3-AER-FC-RO-020; with AF's references this record gives
+  L1-AER-390.
+Parent(s):     L2-AER-FC-110
+Source:        D57; L1-AER-390
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-RO-040; success criteria: in each automated test run, while fuel remains,
+  the pitch and roll angles are within [P-AF-180] of their reference angles at each output sample
+  outside the intervals of [P-FC-090] that start at a reference step; and in a run that starts
+  airborne with a pitch and a roll offset of a few times [P-AF-180] and no body rates, the offsets
+  are within [P-AF-180] from [P-FC-090] after the start.
+Parameters:    P-AF-180, P-FC-090, P-SYS-550
+TBD/TBR:       P-AF-180 value TBR (TT-190), P-FC-090 value TBR (TT-C4-1), P-SYS-550 value TBR
+  (TT-100), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-050
+
+```req
+ID:            L3-AER-FC-RO-050
+Level:         L3
+Type:          Performance
+Statement:     When a step of the reference of a rotational axis limits no axis demand, the rotational
+  regulation shall bring that axis within its tracking tolerance within [P-FC-090] of the step.
+Rationale:     The settling time that the L1-AER-370 children state as a parameter (C4), for the three
+  rotational axes. The tolerance is the one of the axis: [P-FC-070] for the heading, [P-FC-080] for
+  the heading rate, [P-AF-180] for pitch and roll. The moment authority is small against the
+  inertia of the capsule (the angular acceleration at full fuel is of the order of 0.1 rad/s^2 at
+  [P-SYS-420]), so a step of heading is not limited only if it is small; the step sizes of the
+  test are set accordingly (D32). Autoflight shapes the heading reference within the heading rate
+  [P-SYS-270], so FC sees steps only at a new selection or a mode change.
+  Sufficiency (L2-AER-FC-110): RO-020, RO-030 and RO-040 give the tolerances once settled and this
+  record the time to get there.
+Parent(s):     L2-AER-FC-110
+Source:        L1-AER-370; N-240
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-RO-050; success criteria: for a step of the reference heading, of the
+  reference heading rate and of the pitch and roll angles in turn (steps of a twentieth of a radian
+  and of a hundredth of a radian per second), small enough that no moment demand is limited, at full
+  fuel and near dry mass, in still air, the regulated quantity is within its tracking tolerance at each
+  control frame from [P-FC-090] after the step.
+Parameters:    P-FC-090, P-FC-070, P-FC-080, P-AF-180, P-SYS-270, P-SYS-420
+TBD/TBR:       P-FC-090, P-FC-070, P-FC-080 values TBR (TT-C4-1), P-AF-180 value TBR (TT-190),
+  Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-060
+
+```req
+ID:            L3-AER-FC-RO-060
+Level:         L3
+Type:          Constraint
+Statement:     The rotational regulation shall compute the control moment demand about each body axis
+  from the angular acceleration demand with the principal moment of inertia about that axis of the
+  first simulation step of the control frame.
+Rationale:     The inertia changes with the fuel (L1-AER-220, D65: linearly, by uniform depletion), so a
+  moment demand that uses a fixed inertia would under-turn at full fuel and over-turn near dry mass.
+  The body axes are principal (D61), so the moment about an axis needs only the moment of inertia
+  about it and no product of inertia. The inertia is the one DYN integrates (L2-AER-FU-130, -140);
+  within a frame it falls by a negligible fraction. FC receives the inertia at the vehicle-model
+  boundary (L1-AER-430).
+  Sufficiency (L2-AER-FC-110): the tolerances and the settling of RO-020 to RO-050 hold at every fuel
+  state because the demand follows the inertia of the frame; with this record the heading rate
+  sizing of [P-SYS-420] at maximum inertia (RO-030) is the case that matters.
+Parent(s):     L2-AER-FC-110
+Source:        D61, D65; IN-C2-41; L1-AER-430
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Inspection — IN-FC-RO-060; success criteria: in the design description and the
+  implementation, the principal moment of inertia that converts the angular acceleration demand to
+  the moment demand about a body axis is the one given by FU at the first simulation step of the
+  control frame, and no fixed inertia value is used; and TP-FC-RO-030 and TP-FC-RO-050 pass at full
+  fuel and near dry mass.
+Parameters:    —
+TBD/TBR:       —
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-070
+
+```req
+ID:            L3-AER-FC-RO-070
+Level:         L3
+Type:          Functional
+Statement:     When the reference heading changes, the rotational regulation shall turn the vehicle
+  toward it through the smaller angle between the heading and the reference heading, as CV-930
+  defines it.
+Rationale:     CV-930: the difference between two direction angles is the shortest signed angle, so that
+  359 degrees and 1 degree differ by 2 degrees and not 358; a requirement that intends the long way
+  round states it. A heading regulation on the raw difference of two wrapped angles would turn the
+  long way across the wrap, a defect that the tolerance tests of RO-020 would not show. The
+  heading is in radians in the requirements and the model (D23). At a difference of exactly half a
+  turn either way is the shorter; the test avoids it.
+  Sufficiency (L2-AER-FC-110): RO-020 gives the tolerance of the heading and this record the sense of
+  the turn that reaches it, so a heading reference on the other side of the wrap is reached the short
+  way.
+Parent(s):     L2-AER-FC-110
+Source:        CV-910, CV-930; D23
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-RO-070; success criteria: for a heading reference that steps across the
+  wrap of the direction angle (a twentieth of a radian each side of north, in both senses), the
+  recorded heading change has the sign of the shorter turn and its magnitude never exceeds the
+  magnitude of the shorter angle by more than [P-FC-070] at each control frame, and the heading is
+  within [P-FC-070] of the reference from [P-FC-090] after the step.
+Parameters:    P-FC-070, P-FC-090
+TBD/TBR:       P-FC-070, P-FC-090 values TBR (TT-C4-1), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-RO-080
+
+```req
+ID:            L3-AER-FC-RO-080
+Level:         L3
+Type:          Functional
+Statement:     When a limited rotational axis demand returns within its limit, the rotational
+  regulation shall bring that axis within its tracking tolerance, crossing its reference by at most
+  that tolerance, within [P-FC-090] of the return.
+Rationale:     The rotational part of the recovery from saturation (L2-AER-FC-180). Because the moment
+  authority is small against the inertia ([P-SYS-420] over the largest inertia), a large heading
+  step does limit the moment demand for several seconds, and a regulation that keeps integrating the
+  error would overshoot long after: this is where the requirement matters most. How the loops are made
+  aware of the limit is a design decision (DD-C4-07).
+  Sufficiency (L2-AER-FC-180): this record is the rotational half of the L2 statement; TR-110 is the
+  translational half.
+Parent(s):     L2-AER-FC-180
+Source:        N-260; CONOPS §8.2
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-RO-080; success criteria: with a heading step that limits the moment demand
+  (steps of a tenth and of a quarter of a turn), in still
+  air, at full fuel and near dry mass, the heading is within [P-FC-070] of the reference at each
+  control frame from [P-FC-090] after the first frame at which the demand is within its limit again,
+  and it has not crossed the reference by more than [P-FC-070] between.
+Parameters:    P-FC-090, P-FC-070
+TBD/TBR:       P-FC-090, P-FC-070 values TBR (TT-C4-1), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### AL — Control allocation
+
+Function F-AER-06. AL takes the six axis demands (a force along and a moment about each body axis, from TR and RO) and gives one effector command for each effector, with the effector activation state set from the off value (L2-AER-FC-190, -200). It uses the control effectiveness of the vehicle parameter set (the directions and the points of application, L2-AER-FC-060), so it is layout-independent. The effector set guarantees the authority box (L2-AER-EF-330, DD-170); inside it AL allocates exactly, outside it AL limits each component on its own (AL-020).
+
+### L3-AER-FC-AL-010
+
+```req
+ID:            L3-AER-FC-AL-010
+Level:         L3
+Type:          Performance
+Statement:     While the effector activation state is on, the control allocation shall command effectors
+  whose resultant control force differs from the demanded force by at most [P-FC-100] along each body
+  axis and whose resultant control moment differs from the demanded moment by at most [P-FC-110]
+  about each body axis, for each set of axis demands within the authority box.
+Rationale:     The accuracy of the allocation (L2-AER-FC-150). The resultant of a set of effector
+  commands is the sum of each command along its direction of action, and the sum of its moment
+  about the centre of gravity through its point of application (the control effectiveness,
+  L2-AER-EF-120); the effector lag is EF's (L2-AER-EF-340). The authority box is the set that EF
+  guarantees together (DD-170), so for every demand in it commands exist within the output limits and
+  the allocation law finds them: with the reference layout a closed form, with another layout a
+  linear program (DD-C4-07). The two tolerances are those of the arithmetic of the allocation;
+  they are far below the regulation tolerances. The consumption relationship of MS-DYN is on the
+  magnitude of the resultant, so the choice among the redundant solutions changes no fuel (DD-110).
+  Sufficiency (L2-AER-FC-150): the pure upward force, the five other pure forces and the pure moments
+  are sets within the box (one component at its limit, the others zero), so this record gives the
+  authority of L1-AER-120 to -140 at the commands, which L2-AER-EF-300 to -320 make producible.
+Parent(s):     L2-AER-FC-150
+Source:        FUNCTIONAL_ANALYSIS F-AER-06, §7.1; DD-170; L2-AER-EF-330
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Analysis — AN-FC-AL-010; success criteria: with the control allocation exercised offline
+  with the vehicle parameter set of the reference layout and of a second layout that meets
+  L2-AER-EF-330, for each of the corners of the authority box defined by [P-SYS-400], [P-SYS-410] and
+  [P-SYS-420], for the six pure demands and for a set of random demands within the box, the
+  resultant that an independent computation gives from the commands through [P-EF-100] and
+  [P-EF-110] differs from the demand by at most [P-FC-100] in each force component and
+  [P-FC-110] in each moment component.
+Parameters:    P-FC-100, P-FC-110, P-SYS-400, P-SYS-410, P-SYS-420, P-EF-100, P-EF-110
+TBD/TBR:       P-FC-100, P-FC-110 values TBR (TT-C4-1), P-SYS-400, P-SYS-410, P-SYS-420 values TBR
+  (TT-020), P-EF-100, P-EF-110 values TBR (TT-930), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-AL-020
+
+```req
+ID:            L3-AER-FC-AL-020
+Level:         L3
+Type:          Functional
+Statement:     When an axis demand lies outside the authority box, the control allocation shall
+  allocate that axis demand limited to the limit of the authority box that it exceeds, with the
+  other axis demands unchanged.
+Rationale:     Derived requirement, from design decision DD-C4-03 (the priority rule of the
+  allocation, F-AER-06, L1-AER-110 rationale). When the demands cannot all be produced, some rule
+  decides which is given up. The rule chosen is no priority between axes: each of the six demand
+  components is limited on its own to its range in the authority box, and the other five are
+  allocated as demanded. Reasons: a limited set is always producible, because the box is
+  guaranteed together (DD-170); a saturated axis does not disturb any other, which keeps the
+  cross-axis behaviour of L1-AER-380 and the independence of L0-CON-020 in saturation too; the
+  rule depends on the six parameters of the box and not on the layout or the mass; and it is simple
+  to state, to test and to compare between control laws. Alternatives considered (DD-C4-03): scaling
+  the whole demand by one factor (every axis degrades together), a moment-first priority (the
+  attitude is kept and the translation gives way), a weight-first priority (the vehicle is held up
+  and everything else gives way), and the largest producible set, which can exceed the box and needs
+  the layout. The cost of the chosen rule is that it does not use authority beyond the box, which is
+  by design (DD-170). To be reviewed at the parent level (L2-AER-FC-170, L1-AER-110) as a derived
+  requirement (METHODOLOGY §7).
+  Sufficiency (L2-AER-FC-170): this record is the limiting rule of the L2 statement, with AL-030 (any
+  demand gets commands); L2-AER-FC-170 asks that the limited demand is allocated, and AL-010 allocates
+  it.
+Parent(s):     Derived (DD-C4-03)
+Source:        L1-AER-110 rationale; N-260; D4, D18; DD-170; DD-C4-03
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-AL-020; success criteria: with the control allocation exercised offline
+  with the vehicle parameter set of the reference layout and of a second layout that meets
+  L2-AER-EF-330, and in a closed-loop run whose scripted references demand more than the box on one
+  axis, for demands with one component beyond each of its twelve limits (the upward limit
+  [P-SYS-400], the five force limits [P-SYS-410] and the six moment limits [P-SYS-420]) and the other
+  five within the box, the resultant of the commands equals the demand with that component set to
+  the limit it exceeds, within [P-FC-100] in each force component and [P-FC-110] in each moment
+  component, and with several components beyond their limits at once each is set to its own limit.
+Parameters:    P-SYS-400, P-SYS-410, P-SYS-420, P-FC-100, P-FC-110
+TBD/TBR:       P-SYS-400, P-SYS-410, P-SYS-420 values TBR (TT-020), P-FC-100, P-FC-110 values TBR
+  (TT-C4-1), Martin, G2; priority rule DD-C4-03 (C4-Q04), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L3-AER-FC-AL-030
+
+```req
+ID:            L3-AER-FC-AL-030
+Level:         L3
+Type:          Functional
+Statement:     For each set of axis demands, including a set outside the authority box, the control
+  allocation shall produce one effector command for each effector in the control frame.
+Rationale:     Saturation is nominal behaviour (N-260): the allocation has no failure path for a demand it
+  cannot give. It returns commands for any demand, whatever the layout and the limits, in the frame
+  in which it is asked, with no iteration left open and no exception; a command set that is not
+  produced would leave the effectors on the commands of the previous frame, which is a hidden failure
+  state. The commands are within the output limits (L2-AER-FC-160) and, outside the box, those of the
+  limited demand (AL-020).
+  Sufficiency (L2-AER-FC-170): AL-020 gives the meaning of the limited demand and this record
+  guarantees that commands exist for it and for every other demand, so the saturated case is handled
+  as nominal behaviour with no gap.
+Parent(s):     L2-AER-FC-170
+Source:        N-260; L1-AER-110 rationale
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-FC-AL-030; success criteria: with the control allocation exercised offline
+  with the reference layout and a second layout, for a set of random demands that extends to many
+  times the limits of the authority box and includes each component at zero, at its limits and
+  beyond them, one command is produced for each effector in each case, within the output limits of
+  that effector, in the control frame in which the demands are given.
+Parameters:    P-SYS-400, P-SYS-410, P-SYS-420, P-EF-120, P-EF-130
+TBD/TBR:       P-SYS-400, P-SYS-410, P-SYS-420 values TBR (TT-020), P-EF-120, P-EF-130 values TBR
+  (TT-930), Martin, G2
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
