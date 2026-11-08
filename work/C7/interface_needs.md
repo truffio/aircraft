@@ -6,7 +6,7 @@ TM is an observer: every item below flows **into** TM, and TM gives the TST only
 
 ## 1. Signal catalogue (content for ICD-AER-TST)
 
-"Per step" means the value its source gives for the sample's step. "Per frame" means the value of the control frame that contains the sample's step, which is the frame starting at that step (DD-C7-01, DD-C7-02). The proposed class is from C7-Q01. It is not settled, and I1 enters it in a "proposed class" column only.
+"Per step" means the value its source gives for the sample's step. "Per frame" means the value of the control frame that contains the sample's step, which is the frame starting at that step (DD-470, DD-480). The proposed class is from C7-Q01. It is not settled, and I1 enters it in a "proposed class" column only.
 
 | ID | Signal | Unit or values | Source, record | Timing | TM record | Proposed class |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -49,7 +49,7 @@ TM is an observer: every item below flows **into** TM, and TM gives the TST only
 
 | ID | Need | Why | TM records |
 | --- | --- | --- | --- |
-| IN-C7-01 | With each ground-contact event (L2-AER-DYN-530, MS-DYN §9.8), also give the vertical speed magnitude and the horizontal speed of the propagated state of the contact step, the values the classification used (MS-DYN §9.4). This is an addition to the event content. | A landing reports the rest state, with zero velocity, at the contact step (L2-AER-DYN-560), so neither the reported state nor a sample shows the speeds that decided the classification (C7-Q07, DD-C7-03). | -610 |
+| IN-C7-01 | With each ground-contact event (L2-AER-DYN-530, MS-DYN §9.8), also give the vertical speed magnitude and the horizontal speed of the propagated state of the contact step, the values the classification used (MS-DYN §9.4). This is an addition to the event content. | A landing reports the rest state, with zero velocity, at the contact step (L2-AER-DYN-560), so neither the reported state nor a sample shows the speeds that decided the classification (C7-Q07, DD-490). | -610 |
 | IN-C7-02 | Confirm: L2-AER-DYN-350 gives the vehicle state (with the Euler angles of -070 and the vehicle acceleration of -310), the gear state and the sensed acceleration at each step, and the event of -530 carries the timestamp of the contact step. No change. | Sources of S-15, S-17, S-19, S-20. | -500, -520, -540, -600, -120 |
 | IN-C7-03 | Add the **landing gear command** to the per-step recording of IN-C1-26. | TP-DYN-270 and TP-TM-450 need the step at which the command changes; IN-C1-26 lists the control force and moment, mass, wind, ground reaction and gear state only (C7-Q05). | -450 |
 
@@ -63,7 +63,7 @@ TM is an observer: every item below flows **into** TM, and TM gives the TST only
 
 | ID | Need | Why | TM records |
 | --- | --- | --- | --- |
-| IN-C7-10 | For each crew selection received, give TM: the selection as received (mode engage command, or selector with its selected value and its crew unit), its crew-interface timestamp, and the SI target passed to autoflight across ICD-FCP, or the indication that none was passed (a mode engage command, or a selection outside the selectable range or not accepted). This is the FCP child of L1-AER-610. | L1-AER-610 is allocated to TM, AF and FCP; TM records what the panel received and passed (DD-C7-05). | -110, -200, -210 |
+| IN-C7-10 | For each crew selection received, give TM: the selection as received (mode engage command, or selector with its selected value and its crew unit), its crew-interface timestamp, and the SI target passed to autoflight across ICD-FCP, or the indication that none was passed (a mode engage command, or a selection outside the selectable range or not accepted). This is the FCP child of L1-AER-610. | L1-AER-610 is allocated to TM, AF and FCP; TM records what the panel received and passed (DD-510). | -110, -200, -210 |
 | IN-C7-11 | At each output sample, give TM the annunciations and (with CR-C7-01) the indications that the panel presents, as the same crew interface data items it outputs to the TST (I-42). This is the FCP child of L1-AER-620. | The recorded presentation must equal what the crew received. | -310, -330 |
 | IN-C7-12 | The annunciation labels of the fuel alerts (LOW FUEL, FUEL EXHAUSTED) are annunciations, not event records (C7-Q06). | Consistency with CR-C7-03. | -310 |
 
@@ -73,7 +73,7 @@ TM is an observer: every item below flows **into** TM, and TM gives the TST only
 | --- | --- | --- | --- |
 | IN-C7-30 | At each control frame, give TM: the mode state (armed and active mode of each mode group, autoflight engaged); with CR-C7-01, the target of each armed and active mode in SI; with CR-C7-02, the landing gear command. These are the AF children of L1-AER-620 and (with CR-C7-02) L1-AER-630. AF is also allocated to L1-AER-610: its child gives the target AF takes from each selection, the same value as IN-C7-10. | Sources of S-05, S-07, S-14. | -300, -320, -450 |
 | IN-C7-31 | Define the mode state in AF_MODE_LOGIC as a data item with a fixed set of values, the same for each autoflight implementation (D15). | L2-AER-TM-030: the signals must not change with the implementation. | -030, -300 |
-| IN-C7-32 | Confirm, with C4 and I1: the first control frame of a run starts at step zero (FUNCTIONAL_ANALYSIS §4.2), so each output sample step is a frame start (DD-C7-02). | L2-AER-TM-130, -150. | -130, -150 |
+| IN-C7-32 | Confirm, with C4 and I1: the first control frame of a run starts at step zero (FUNCTIONAL_ANALYSIS §4.2), so each output sample step is a frame start (DD-480). | L2-AER-TM-130, -150. | -130, -150 |
 
 ## 7. Needs on FC (C4)
 

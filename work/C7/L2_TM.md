@@ -1,16 +1,16 @@
 ## TM — Operational data output
 
-The operational data output requirements (task C7). The subject of each statement is the operational data output, the TM subsystem of the Aeronef (glossary proposal *Operational data output*, `work/C7/glossary_proposals.md`). TM implements function F-AER-11 (FUNCTIONAL_ANALYSIS §6.1). Its inputs are the signals that the other subsystems give it (I-30 to I-39, I-45: FUNCTIONAL_ANALYSIS §3.2) and the identity of the run's configuration (I-39, from F-AER-14). Its output is the operational data, given to the TST (I-40) as ICD-AER-TST defines it.
+The operational data output requirements (task C7). The subject of each statement is the operational data output, the TM subsystem of the Aeronef (glossary *Operational data output*). TM implements function F-AER-11 (FUNCTIONAL_ANALYSIS §6.1). Its inputs are the signals that the other subsystems give it (I-30 to I-39, I-45: FUNCTIONAL_ANALYSIS §3.2) and the identity of the run's configuration (I-39, from F-AER-14). Its output is the operational data, given to the TST (I-40) as ICD-AER-TST defines it.
 
-**What TM does, and what it does not do.** TM records; it computes no quantity of its own. Each signal is the value its source gives, defined once by the source's requirement: the dynamics model (L2-AER-DYN-350, -530), FU (L2-AER-FU-250, -260), the effector subsystem (L2-AER-EF-410), and the FC, AF, FCP and NAV children that C4, C5, C8 and C6 write (`work/C7/interface_needs.md`). TM observes and feeds nothing back (FUNCTIONAL_ANALYSIS §5.2 item 4; L2-AER-TM-810), so recording cannot change the run it records.
+**What TM does, and what it does not do.** TM records; it computes no quantity of its own. Each signal is the value its source gives, defined once by the source's requirement: the dynamics model (L2-AER-DYN-350, -530), FU (L2-AER-FU-250, -260), the effector subsystem (L2-AER-EF-410), and the FC, AF, FCP and NAV children that C4, C5, C8 and C6 write (`icd/ICD-AER-TST.md`). TM observes and feeds nothing back (FUNCTIONAL_ANALYSIS §5.2 item 4; L2-AER-TM-810), so recording cannot change the run it records.
 
-**Releasable or protected (#69, D44).** TM does not decide, and does not enforce, which signals reach the Reverse-Engineering Effort (RVS). The owner deleted L0-CON-220 at G0: the system itself protects nothing, and the owner chooses what is released when the reverse-engineering work starts. The classification of each signal is decided with the RVS, once the plan covers that branch (D44, TT-600). TM's share is to keep each signal a separate, named data item, so that a release can contain any subset of the signals without a change to the Aeronef (L2-AER-TM-020, derived, DD-C7-04). A proposed classification of each signal, with its reasons, is in `work/C7/issues.md` (C7-Q01, C7-Q02). It is a proposal for the owner, not a requirement, and nothing in this section depends on it.
+**Releasable or protected (#69, D44).** TM does not decide, and does not enforce, which signals reach the Reverse-Engineering Effort (RVS). The owner deleted L0-CON-220 at G0: the system itself protects nothing, and the owner chooses what is released when the reverse-engineering work starts. The classification of each signal is decided with the RVS, once the plan covers that branch (D44, TT-600). TM's share is to keep each signal a separate, named data item, so that a release can contain any subset of the signals without a change to the Aeronef (L2-AER-TM-020, derived, DD-500). A proposed classification of each signal is the "proposed class" column of `icd/ICD-AER-TST.md` (C7-Q01, C7-Q02, D76). It is a proposal for the owner, not a requirement, and nothing in this section depends on it.
 
 **Record kinds.** The operational data are four kinds of record (L2-AER-TM-010): the **output sample**, one every `[P-TM-010]`, which holds each sampled signal; the **crew selection record**, one per crew selection received; the **event record**, one per ground contact, a landing or a crash; and the **configuration record**, one per run. Crew selections and events keep their own step: they are not delayed to the next output sample.
 
-**Sampling (DD-C7-01, DD-C7-02).** Output samples start at step zero and fall on a fixed grid of the step index (L2-AER-TM-140). `[P-TM-010]` is an integer multiple of the control frame period `[P-SYS-310]` (L2-AER-TM-150, derived), and the first control frame starts at step zero (FUNCTIONAL_ANALYSIS §4.2), so each output sample is taken at the first step of a control frame. A sample of step k holds, for each signal, the value that its source gives for step k, and, for a flight software signal, the value of the control frame that starts at step k (L2-AER-TM-130). One output sample therefore relates a cause to its response on one record: the vehicle state at `t_k`, what the flight software decided from it in that frame, and what the effectors and the fuel did over the step from `t_k` (MS-DYN §3.4, §10.2).
+**Sampling (DD-470, DD-480).** Output samples start at step zero and fall on a fixed grid of the step index (L2-AER-TM-140). `[P-TM-010]` is an integer multiple of the control frame period `[P-SYS-310]` (L2-AER-TM-150, derived), and the first control frame starts at step zero (FUNCTIONAL_ANALYSIS §4.2), so each output sample is taken at the first step of a control frame. A sample of step k holds, for each signal, the value that its source gives for step k, and, for a flight software signal, the value of the control frame that starts at step k (L2-AER-TM-130). One output sample therefore relates a cause to its response on one record: the vehicle state at `t_k`, what the flight software decided from it in that frame, and what the effectors and the fuel did over the step from `t_k` (MS-DYN §3.4, §10.2).
 
-**Signals beyond the L1 closed lists.** Three TM records depend on change requests to L1 (`work/C7/issues.md` §3): the targets of the armed and active modes and the indications (L2-AER-TM-320, -330; CR-C7-01 against L1-AER-620, C7-Q04) and the landing gear command (L2-AER-TM-450; CR-C7-02 against L1-AER-630, C7-Q05). They are written for the recommended answers. If a change request is rejected, the record it supports is deleted.
+**Signals beyond the original L1 lists.** Three TM records rest on change requests that the owner approved (D76): the targets of the armed and active modes and the indications (L2-AER-TM-320, -330; CR-C7-01 against L1-AER-620) and the landing gear command (L2-AER-TM-450; CR-C7-02 against L1-AER-630).
 
 **Verification.** Each record is a leaf at L2 (`Allocated to: —`): the next layer would describe the implementation (the record format, buffering and encoding), which ICD-AER-TST and the design fix (D4). Each record is verified directly by its own method, and the L1 parents by roll-up (D40, D58). Procedure IDs follow the record number (IN-, AN-, TP-, DM-TM-nnn); Phase 5 (V4) writes the procedures. A test of a TM record compares the operational data with the source value. For the vehicle-model signals the source values come from the per-step recording of the vehicle-model interfaces that the TST makes for test runs (IN-C1-26, IN-C2-30, IN-C3-31). For the flight software signals they come from a recording of the flight software interfaces of the same kind (IN-C7-40), and for the crew interface from the crew interface output that the TST receives itself (I-42). The `Parameters` field of each record lists the parameters its statement and success criteria use.
 
@@ -23,13 +23,13 @@ The operational data output requirements (task C7). The subject of each statemen
 | L1-AER-590 | Output samples, crew selection records and event records are the timestamped record kinds; each carries the CV-840 timestamp of its step; every signal of a sample stands for the instant of that timestamp | -010, -100, -110, -120, -130 |
 | L1-AER-600 | One output sample at step zero and one every [P-TM-010] on the step grid, to the end of the run | -140 (with the Derived -150) |
 | L1-AER-610 | Each crew selection received gives one record, with its selected value in the crew-facing unit, its timestamp and the SI target passed to autoflight, or none | -110, -200, -210 |
-| L1-AER-620 | Each sample holds the mode state of its control frame and the annunciations presented; with CR-C7-01, also the targets of the armed and active modes and the indications | -300, -310, -320, -330 |
+| L1-AER-620 | Each sample holds the mode state of its control frame and the annunciations presented, the targets of the armed and active modes and the indications | -300, -310, -320, -330 |
 | L1-AER-630 | Each sample holds the axis references, axis demands and effector commands of its control frame, and the effector outputs and fuel mass flow of its step, each defined in ICD-AER-TST, the same for each design; with CR-C7-02, also the landing gear command | -030, -400, -410, -420, -430, -440, -450 |
 | L1-AER-640 | Each sample holds the vehicle state, navigation quantities, sensed acceleration, vehicle mass, remaining fuel mass and gear state of its step, each defined in ICD-AER-TST, the same for each design; each landing and crash is an event record | -030, -500, -510, -520, -530, -540, -600 |
 | L1-AER-650 | One configuration record per run names the vehicle parameter set, the flight-control-law design and the autoflight implementation, with their versions | -010, -700 |
 | L1-AER-690 | TM's records depend only on the run, and the run does not depend on TM | -800, -810 |
 
-Three records are Derived: L2-AER-TM-020 (DD-C7-04, each signal a separate data item), -150 (DD-C7-02, samples on control-frame starts) and -610 (DD-C7-03, the contact values in each event record). The design decisions are proposed in `work/C7/issues.md` §4.
+Three records are Derived: L2-AER-TM-020 (DD-500, each signal a separate data item), -150 (DD-480, samples on control-frame starts) and -610 (DD-490, the contact values in each event record). The design decisions are DD-470 to DD-510 of the register.
 
 ### L2-AER-TM-010
 
@@ -63,8 +63,7 @@ Verification:  Inspection — IN-TM-010; success criteria: ICD-AER-TST defines t
   crew selection record, the event record and the configuration record, and the TM implementation
   gives the TST no other kind of record.
 Parameters:    P-TM-010
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); P-TM-010 value TBR (TT-070),
-  Martin, G2 (I1)
+TBD/TBR:       P-TM-010 value TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -79,16 +78,16 @@ Type:          Constraint
 Statement:     The operational data output shall output each signal of its operational data as a
   separate data item, named in ICD-AER-TST, that can be read without any other signal of the same
   record.
-Rationale:     Derived from a design decision: DD-C7-04 (proposed). Whether each signal is releasable
-  or protected is decided with the RVS (#69, D44, TT-600). The system itself protects nothing
+Rationale:     Derived from a design decision: DD-500. Whether each signal is releasable or
+  protected is decided with the RVS (#69, D44, TT-600). The system itself protects nothing
   (L0-CON-220 deleted at the G0 owner review), so a release is assembled outside the Aeronef, from
   the operational data of a run (recommended answer to C7-Q02). For any classification to be
   applicable without a change to the Aeronef, a release must be a subset of the signals: no signal
   packs another into it, and no signal needs another to be read, for example a value whose unit,
   scale or frame is given by a second signal. The timestamp is a signal of each record, so a subset
   keeps the common time base (L1-AER-590). The proposed classification of each signal is in
-  `work/C7/issues.md` (C7-Q01); it is not settled and this record does not depend on it.
-Parent(s):     Derived (DD-C7-04)
+  `icd/ICD-AER-TST.md` (C7-Q01); it is not settled and this record does not depend on it.
+Parent(s):     Derived (DD-500)
 Source:        N-030, N-400; REVERSE_ENGINEERING.md §3C, §7; CONOPS SC-240; L0-CON-220 (deleted)
 Allocated to:  —
 Criticality:   Not assessed
@@ -98,9 +97,8 @@ Verification:  Demonstration — DM-TM-020; success criteria: ICD-AER-TST define
   the signals proposed releasable in C7-Q01 is read, by a reader written from ICD-AER-TST, with no
   error, and each kept signal has the value it has in the full operational data.
 Parameters:    —
-TBD/TBR:       DD-C7-04 proposed, Martin, G2; releasable or protected classification of each signal
-  (#69, TT-600), Martin, closes when the plan is extended to the RVS (D44); ICD-AER-TST not yet
-  written (TT-680), Martin, G2 (I1)
+TBD/TBR:       releasable or protected classification of each signal (#69, TT-600), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -140,8 +138,8 @@ Verification:  Demonstration — DM-TM-030; success criteria: two runs of SC-130
   the same signal names, units and sets of values, and each configuration record names the design
   of its run.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); test flight-control-law design
-  (IN-C3-33), Martin, when the plan is extended to the TST (D44)
+TBD/TBR:       test flight-control-law design (IN-C3-33), Martin, when the plan is extended to the
+  TST (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -199,7 +197,7 @@ Verification:  Test — TP-TM-110; success criteria: in a run with a selection s
   selection at a step that is not the first step of a control frame, each crew selection record
   carries the step index and the simulation time of its scripted selection.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -229,7 +227,7 @@ Verification:  Test — TP-TM-120; success criteria: in each contact test of L2-
   steps, each event record carries the step index and the simulation time of the contact step that
   the dynamics model gives.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -250,7 +248,7 @@ Rationale:     CV-840: a value timestamped k is the value at t_k. For quantities
   and the fuel mass flow of step k, held over the step from t_k to t_(k+1) (MS-DYN §10.2, DD-100); the
   masses of step k; and the flight software values, computed once per control frame and held over
   its steps (L1-AER-680). TM takes each value as its source defines it and does not interpolate,
-  filter or re-sample (DD-C7-01, proposed). With L2-AER-TM-150 the sample step is the first step of
+  filter or re-sample (DD-470). With L2-AER-TM-150 the sample step is the first step of
   its control frame, so a sample holds the state from which the flight software computed that
   frame's values, and the effector and fuel response to them over the step. The values of step k
   are complete when the TST commands the step from step k (IN-C1-38), which is when TM can output
@@ -269,8 +267,8 @@ Verification:  Test — TP-TM-130; success criteria: in a run of SC-130, at each
   its value for the control frame that contains that step in the recording of the flight software
   interfaces (IN-C7-40), with no difference other than floating-point representation.
 Parameters:    —
-TBD/TBR:       DD-C7-01 proposed, Martin, G2; TST recording of the vehicle-model and flight software
-  interfaces (IN-C1-26, IN-C7-40), Martin, when the plan is extended to the TST (D44)
+TBD/TBR:       TST recording of the vehicle-model and flight software interfaces (IN-C1-26,
+  IN-C7-40), Martin, when the plan is extended to the TST (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -286,16 +284,16 @@ Statement:     The operational data output shall produce one output sample for s
   later simulation step whose simulation time is a whole multiple of [P-TM-010], up to the last step
   from which the TST commands a step.
 Rationale:     L1-AER-600: one output sample every [P-TM-010] of simulation time. Counting from step
-  zero puts the samples on a fixed grid of the step index (CV-820): the step indices of the samples are the whole
-  multiples of [P-TM-010] divided by [P-SYS-300], a whole number because [P-TM-010] is a whole
-  multiple of [P-SYS-310] (L2-AER-TM-150) and [P-SYS-310] of [P-SYS-300] (L1-AER-680). Step zero is
-  a sample, so the first sample reports the initial condition (L1-AER-660, -950 children). A step's
-  values are complete when the TST commands the step from it (L2-AER-TM-130), so the last sample is
-  the last sample step from which the TST commanded a step. A crash ends the run, often between two
-  samples; its event record carries the contact values (L2-AER-TM-610), so no extra sample is
-  needed, and the spacing of L1-AER-600 holds.
-  Sufficiency (L1-AER-600): exactly one sample per [P-TM-010] on the step grid, from the start of the
-  run to its last commanded step, is the rate L1-AER-600 states.
+  zero puts the samples on a fixed grid of the step index (CV-820): the step indices of the samples
+  are the whole multiples of [P-TM-010] divided by [P-SYS-300], a whole number because [P-TM-010] is
+  a whole multiple of [P-SYS-310] (L2-AER-TM-150) and [P-SYS-310] of [P-SYS-300] (L1-AER-680). Step
+  zero is a sample, so the first sample reports the initial condition (L1-AER-660, -950 children). A
+  step's values are complete when the TST commands the step from it (L2-AER-TM-130), so the last
+  sample is the last sample step from which the TST commanded a step. A crash ends the run, often
+  between two samples; its event record carries the contact values (L2-AER-TM-610), so no extra
+  sample is needed, and the spacing of L1-AER-600 holds. Sufficiency (L1-AER-600): exactly one
+  sample per [P-TM-010] on the step grid, from the start of the run to its last commanded step, is
+  the rate L1-AER-600 states.
 Parent(s):     L1-AER-600
 Source:        N-340; CV-820, CV-830
 Allocated to:  —
@@ -305,7 +303,7 @@ Verification:  Test — TP-TM-140; success criteria: in a run of SC-110 and in a
   [P-TM-010] divided by [P-SYS-300], no step index appears in two samples, and the last sample is
   that of the last sample step from which the TST commanded a step.
 Parameters:    P-TM-010, P-SYS-300, P-SYS-310
-TBD/TBR:       P-TM-010, P-SYS-300, P-SYS-310 values TBR (TT-070, TT-590), Martin, G2 (I1)
+TBD/TBR:       P-TM-010, P-SYS-300, P-SYS-310 values TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -319,7 +317,7 @@ Level:         L2
 Type:          Constraint
 Statement:     The operational data output shall use an output sample period [P-TM-010] that is an
   integer multiple of the control frame period [P-SYS-310].
-Rationale:     Derived from a design decision: DD-C7-02 (proposed). The first control frame starts at
+Rationale:     Derived from a design decision: DD-480. The first control frame starts at
   step zero (FUNCTIONAL_ANALYSIS §4.2) and the frame period is a whole number of steps (L1-AER-680),
   so each sample step is then the first step of a control frame. The sample holds the state that the
   flight software used in that frame and the values it computed from it (L2-AER-TM-130). A period
@@ -330,7 +328,7 @@ Rationale:     Derived from a design decision: DD-C7-02 (proposed). The first co
   period, so that each control frame is recorded (C7-Q03); the per-step data that the analyses need
   come from the TST recording of the vehicle-model interfaces, not from the operational data
   (IN-C2-30, IN-C3-31).
-Parent(s):     Derived (DD-C7-02)
+Parent(s):     Derived (DD-480)
 Source:        FUNCTIONAL_ANALYSIS §4.2, §7.5; CV-830; L1-AER-680
 Allocated to:  —
 Criticality:   Not assessed
@@ -338,8 +336,7 @@ Verification:  Inspection — IN-TM-150; success criteria: in the parameter data
   by [P-SYS-310] is a whole number of at least one, and the step index of each output sample of a
   run of SC-130 is that of the first step of a control frame.
 Parameters:    P-TM-010, P-SYS-310
-TBD/TBR:       DD-C7-02 proposed, Martin, G2; P-TM-010, P-SYS-310 values TBR (TT-070, TT-590), Martin,
-  G2 (I1)
+TBD/TBR:       P-TM-010, P-SYS-310 values TBR (TT-070), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -376,7 +373,7 @@ Verification:  Test — TP-TM-200; success criteria: in a run whose selection sc
   and the selected value, in its crew-facing unit, as scripted.
 Parameters:    —
 TBD/TBR:       Releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
-  when the plan is extended to the RVS (D44); ICD-AER-TST not yet written (TT-680), Martin, G2 (I1)
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -394,7 +391,7 @@ Statement:     The operational data output shall record in each crew selection r
 Rationale:     L1-AER-610: each target that results from a crew selection. The target is the selected
   value converted by the exact CV-750 factor without rounding (CV-770), within the selectable range
   and resolution that C8 sets. What the panel passes across ICD-FCP is what autoflight flies, so TM
-  records the passed value, not a recomputation of it (DD-C7-05, proposed). "None" covers a mode
+  records the passed value, not a recomputation of it (DD-510). "None" covers a mode
   engage command, which carries no selected value, and a selection that the panel does not pass. The
   pair of the selected value (L2-AER-TM-200) and the target shows the conversion and the acceptance
   of each selection.
@@ -409,9 +406,67 @@ Verification:  Test — TP-TM-210; success criteria: in the run of TP-TM-200, ea
   panel does not pass, holds the indication that none was passed; each SI target equals the target
   that crosses ICD-FCP to autoflight in the recording of the flight software interfaces (IN-C7-40).
 Parameters:    —
-TBD/TBR:       DD-C7-05 proposed, Martin, G2; ICD-FCP not yet written (TT-680), Martin, G2 (I1);
-  releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes when the
-  plan is extended to the RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L2-AER-TM-220
+
+```req
+ID:            L2-AER-TM-220
+Level:         L2
+Type:          Functional
+Statement:     The operational data output shall record in each crew selection record of a mode
+  selection the decision, accepted or refused, that autoflight gives for it.
+Rationale:     L1-AER-610 and IN-C5-40: a refused mode selection and a selection of the mode that is
+  already active both leave the mode state unchanged, so the tests need the decision to tell them
+  apart (AF_MODE_LOGIC §6). Autoflight decides each mode selection in the control frame that takes
+  it (L2-AER-AF-120) and gives the decision to TM (L2-AER-AF-840). TM records the decision with the
+  selection, whose timestamp it keeps (L2-AER-TM-110, -200).
+  Sufficiency (L1-AER-610): see L2-AER-TM-200.
+Parent(s):     L1-AER-610
+Source:        N-060, N-390; IN-C5-40; AF_MODE_LOGIC §6
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-TM-220; success criteria: in a run that selects each of the eight modes in
+  a state that accepts it and in a state that refuses it, each crew selection record of a mode
+  selection holds the decision that autoflight gives, and each decision equals the one in the
+  recording of the flight software interfaces (IN-C7-40).
+Parameters:    —
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
+Owner:         Martin
+Status:        Draft
+Version:       1
+```
+
+### L2-AER-TM-230
+
+```req
+ID:            L2-AER-TM-230
+Level:         L2
+Type:          Functional
+Statement:     The operational data output shall record in each crew selection record of a selected
+  value the target, in SI, that autoflight takes from the selector, with the timestamp of the
+  control frame that takes it.
+Rationale:     L1-AER-610 and IN-C5-40: autoflight gives TM the target it takes from each selector
+  (L2-AER-AF-830). Recorded beside the target that the panel passes (L2-AER-TM-210), it shows the two
+  ends of ICD-FCP and the control frame at which a target reached the mode logic.
+  Sufficiency (L1-AER-610): see L2-AER-TM-200.
+Parent(s):     L1-AER-610
+Source:        N-390; IN-C5-40; D55; FUNCTIONAL_ANALYSIS §3.2 I-34
+Allocated to:  —
+Criticality:   Not assessed
+Verification:  Test — TP-TM-230; success criteria: in the run of TP-TM-200, each crew selection
+  record of a selected value holds the SI target that autoflight gives in the recording of the
+  flight software interfaces (IN-C7-40), equal to the target of L2-AER-TM-210, with the control
+  frame that takes it.
+Parameters:    —
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -448,9 +503,9 @@ Verification:  Test — TP-TM-300; success criteria: in the mode-transition test
   interfaces (IN-C7-40), and each change of mode state appears first at the sample of the control
   frame in which it occurs.
 Parameters:    P-TM-010, P-SYS-310
-TBD/TBR:       Mode state definition TBR and AF_MODE_LOGIC not yet written (TT-670), Martin, G2 (C5);
-  P-TM-010, P-SYS-310 values TBR (TT-070), Martin, G2 (I1); releasable or protected classification
-  (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS (D44)
+TBD/TBR:       P-TM-010, P-SYS-310 values TBR (TT-070), Martin, G2 (I1); releasable or protected
+  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS
+  (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -502,12 +557,10 @@ Statement:     The operational data output shall record in each output sample, i
 Rationale:     The TST assesses captures and holds against the target that autoflight flies, in SI:
   the altitude that Altitude hold captures, the position that Stationary and Hover hold (the
   reference position of L1-AER-460), the heading held. The annunciations show the selected targets
-  in crew-facing units at the display resolutions [P-TM-020] to [P-TM-050], too coarse for tolerances
-  such as [P-SYS-450], and a target that autoflight sets is not a crew selection, so L1-AER-610 does
-  not record it. CR-C7-01 adds the targets to L1-AER-620 (C7-Q04); this record is written for that
-  change and is deleted if it is rejected. Autoflight gives TM the targets of each frame (C5,
-  IN-C7-30).
-  Sufficiency (L1-AER-620): see L2-AER-TM-300.
+  in crew-facing units at the display resolutions [P-TM-020] to [P-TM-050], too coarse for
+  tolerances such as [P-SYS-450], and a target that autoflight sets is not a crew selection, so
+  L1-AER-610 does not record it. L1-AER-620 lists the targets since CR-C7-01 (D76). Autoflight gives
+  TM the targets of each frame (C5, IN-C7-30). Sufficiency (L1-AER-620): see L2-AER-TM-300.
 Parent(s):     L1-AER-620
 Source:        N-060, N-340; CONOPS §4.4; L1-AER-460; CR-C7-01
 Allocated to:  —
@@ -519,9 +572,9 @@ Verification:  Test — TP-TM-320; success criteria: in the mode-transition test
   engagement of Stationary and of Hover, the recorded target is the captured altitude or the held
   position.
 Parameters:    P-TM-020, P-TM-030, P-TM-040, P-TM-050, P-SYS-450
-TBD/TBR:       CR-C7-01 proposed (C7-Q04), Martin, G2; P-TM-020 to P-TM-050 values TBR (TT-210),
-  Martin, G2 (C8); P-SYS-450 value TBR (TT-050), Martin, G2; releasable or protected classification
-  (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS (D44)
+TBD/TBR:       P-TM-020 to P-TM-050 values TBR (TT-210), Martin, G2 (C8); P-SYS-450 value TBR
+  (TT-050), Martin, G2; releasable or protected classification (#69, TT-600; proposal C7-Q01),
+  Martin, closes when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -539,12 +592,11 @@ Statement:     The operational data output shall record in each output sample th
 Rationale:     The indications are the vehicle quantities the crew sees, in crew-facing units:
   altitude, vertical speed, horizontal speed, heading, track and remaining fuel (glossary
   *Indication*, L1-AER-490). CONOPS §4.6 lists the indications in the operational data, and
-  FUNCTIONAL_ANALYSIS I-38 carries the presentation to TM, but L1-AER-620 names the annunciations
-  only; CR-C7-01 adds the indications (C7-Q04), and this record is deleted if it is rejected. The SI
-  quantities are recorded already (L2-AER-TM-510, -530); the indications add what the crew actually
-  saw: the display rounding [P-TM-020] to [P-TM-050] and what the panel shows while a quantity is
-  not valid (CV-580). TM records them as presented (CV-760 group 4).
-  Sufficiency (L1-AER-620): see L2-AER-TM-300.
+  FUNCTIONAL_ANALYSIS I-38 carries the presentation to TM, and L1-AER-620 lists them since CR-C7-01
+  (D76). The SI quantities are recorded already (L2-AER-TM-510, -530); the indications add what the
+  crew actually saw: the display rounding [P-TM-020] to [P-TM-050] and what the panel shows while a
+  quantity is not valid (CV-580). TM records them as presented (CV-760 group 4). Sufficiency
+  (L1-AER-620): see L2-AER-TM-300.
 Parent(s):     L1-AER-620
 Source:        N-150, N-380, N-390; CONOPS §4.3, §4.6; CV-580, CV-760; CR-C7-01
 Allocated to:  —
@@ -553,9 +605,9 @@ Verification:  Test — TP-TM-330; success criteria: in a run of SC-130 and in a
   output sample, the recorded indications equal, item by item, the crew interface indications that
   the flight control panel outputs to the TST at the same sample (I-42).
 Parameters:    P-TM-020, P-TM-030, P-TM-040, P-TM-050
-TBD/TBR:       CR-C7-01 proposed (C7-Q04), Martin, G2; P-TM-020 to P-TM-050 values TBR (TT-210),
-  Martin, G2 (C8); releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin,
-  closes when the plan is extended to the RVS (D44)
+TBD/TBR:       P-TM-020 to P-TM-050 values TBR (TT-210), Martin, G2 (C8); releasable or protected
+  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS
+  (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -591,9 +643,8 @@ Verification:  Test — TP-TM-400; success criteria: in a run of SC-130 (start o
   control frame of that sample in the recording of the flight software interfaces (IN-C7-40), and
   holds the off value at each sample on the ground before the takeoff and after the landing.
 Parameters:    —
-TBD/TBR:       ICD-FC-AF and ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or
-  protected classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended
-  to the RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -623,9 +674,8 @@ Verification:  Test — TP-TM-410; success criteria: in a run of SC-130, each ou
   force demands in N and three moment demands in N·m equal to those of the control frame of that
   sample in the recording of the flight software interfaces (IN-C7-40).
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -657,9 +707,8 @@ Verification:  Test — TP-TM-420; success criteria: in a run of SC-130, each ou
   vehicle-model interfaces (IN-C3-31), with the activation state off at each sample on the ground
   before the takeoff.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1); releasable or
-  protected classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended
-  to the RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -688,9 +737,8 @@ Verification:  Test — TP-TM-430; success criteria: in a run of the reference m
   output sample holds one effector output in N per effector, equal to the output of the sample's
   step in the per-step recording of the vehicle-model interfaces (IN-C3-31).
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -718,9 +766,8 @@ Verification:  Test — TP-TM-440; success criteria: in a run of the reference m
   recording of the FU outputs (IN-C2-30), and zero at each sample on the ground with the effectors
   off.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -737,12 +784,11 @@ Statement:     The operational data output shall record in each output sample th
   step, as the vehicle-model boundary ICD defines it.
 Rationale:     The children of L1-AER-910 must show that after each change of the gear command in
   flight the gear state shows the gear in transit and then in the commanded position within
-  [P-DYN-050]. The gear state is recorded (L2-AER-TM-540), but the command is not in the closed lists
-  of L1-AER-620 to -640, so the operational data would show the effect without its cause. The
+  [P-DYN-050]. The gear state is recorded (L2-AER-TM-540), but the command is not in the closed
+  lists of L1-AER-620 to -640, so the operational data would show the effect without its cause. The
   command is control activity across the vehicle-model boundary (L1-AER-430, I-43), extend or
-  retract, once per control frame (L2-AER-DYN-360). CR-C7-02 adds it to L1-AER-630 and adds AF to
-  that record's allocation (C7-Q05); this record is deleted if it is rejected. Autoflight gives TM
-  the command of each frame (C5, IN-C7-30).
+  retract, once per control frame (L2-AER-DYN-360). L1-AER-630 lists it since CR-C7-02 (D76), which
+  also allocates that record to AF. Autoflight gives TM the command of each frame (C5, IN-C7-30).
   Sufficiency (L1-AER-630): see L2-AER-TM-400.
 Parent(s):     L1-AER-630
 Source:        N-450; D69; L1-AER-910; FUNCTIONAL_ANALYSIS §3.2 I-34, I-43; CR-C7-02
@@ -753,10 +799,8 @@ Verification:  Test — TP-TM-450; success criteria: in a run of SC-130, each ou
   recording of the vehicle-model interfaces (IN-C1-26), and the first sample with each new command
   is that of the control frame in which autoflight first issues it.
 Parameters:    P-DYN-050
-TBD/TBR:       CR-C7-02 proposed (C7-Q05), Martin, G2; P-DYN-050 value TBR (TT-850), Martin, G2 (C1);
-  vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       P-DYN-050 value TBR (TT-850), Martin, G2 (C1); releasable or protected classification
+  (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -794,9 +838,8 @@ Verification:  Test — TP-TM-500; success criteria: in a run of the reference m
   acceleration in m/s², each equal to that of the sample's step in the per-step recording of the
   vehicle-model interfaces (IN-C1-26).
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -829,9 +872,9 @@ Verification:  Test — TP-TM-510; success criteria: in a run of SC-130 and in a
   equal to those NAV gives for the control frame of that sample in the recording of the flight
   software interfaces (IN-C7-40), with the track not valid at each sample at zero horizontal speed.
 Parameters:    —
-TBD/TBR:       Navigation validity thresholds (TT-200), Martin, G2 (C6); ICD-AER-TST not yet written
-  (TT-680), Martin, G2 (I1); releasable or protected classification (#69, TT-600; proposal C7-Q01),
-  Martin, closes when the plan is extended to the RVS (D44)
+TBD/TBR:       Navigation validity thresholds (TT-200), Martin, G2 (C6); releasable or protected
+  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS
+  (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -860,9 +903,8 @@ Verification:  Test — TP-TM-520; success criteria: in a run of SC-130, each ou
   per-step recording of the vehicle-model interfaces (IN-C1-26), of magnitude [P-DYN-010] at each
   sample on the ground.
 Parameters:    P-DYN-010
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -891,9 +933,8 @@ Verification:  Test — TP-TM-530; success criteria: in a run of the reference m
   output sample holds the vehicle mass and the remaining fuel mass in kg, each equal to that of the
   sample's step in the per-step recording of the FU outputs (IN-C2-30).
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -922,9 +963,8 @@ Verification:  Test — TP-TM-540; success criteria: in a run of SC-130, each ou
   recording of the vehicle-model interfaces (IN-C1-26), with the gear in transit at the samples
   between the retraction command and the gear retracted.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -963,9 +1003,8 @@ Verification:  Test — TP-TM-600; success criteria: in each contact test of L2-
   takeoffs and landings, the operational data hold exactly one event record per contact, with the
   classification that the dynamics model gives, and no other event record.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -980,7 +1019,7 @@ Type:          Functional
 Statement:     The operational data output shall record in each event record the vertical speed and
   the horizontal speed by which the dynamics model classified the contact, and the vehicle state
   and the gear state that the dynamics model reports for the contact step.
-Rationale:     Derived from a design decision: DD-C7-03 (proposed). The contact step usually falls
+Rationale:     Derived from a design decision: DD-490. The contact step usually falls
   between two output samples, and a crash ends the run, often before the next sample
   (L2-AER-TM-140), so without these values the operational data would not show the contact itself.
   The speeds are those of the propagated state, by which the contact is classified against the
@@ -990,7 +1029,7 @@ Rationale:     Derived from a design decision: DD-C7-03 (proposed). The contact 
   the contact step would break the fixed spacing of L1-AER-600, so the values go in the event record
   instead. The dynamics model gives the classification speeds with the event (C1, IN-C7-01); the
   record kind is one closed list of the contact values (D30).
-Parent(s):     Derived (DD-C7-03)
+Parent(s):     Derived (DD-490)
 Source:        N-370, N-390; MS-DYN §9.4, §9.5, §9.8; L2-AER-DYN-530, -540, -560
 Allocated to:  —
 Criticality:   Not assessed
@@ -1000,10 +1039,9 @@ Verification:  Test — TP-TM-610; success criteria: in each contact test of L2-
   recording of the vehicle-model interfaces (IN-C1-26), and the vehicle state and gear state that
   the dynamics model reports for the contact step.
 Parameters:    P-SYS-500, P-SYS-510
-TBD/TBR:       DD-C7-03 proposed (C7-Q07), Martin, G2; classification speeds with the DYN event
-  (IN-C7-01), Martin, G2 (I1); P-SYS-500, P-SYS-510 values TBR (TT-090), Martin, G2; releasable or
-  protected classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended
-  to the RVS (D44)
+TBD/TBR:       P-SYS-500, P-SYS-510 values TBR (TT-090), Martin, G2; releasable or protected
+  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the RVS
+  (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1040,9 +1078,8 @@ Verification:  Test — TP-TM-700; success criteria: two runs started with diffe
   first output sample, whose identifiers and versions match those that the TST started that run
   with.
 Parameters:    —
-TBD/TBR:       ICD-AER-TST not yet written (TT-680), Martin, G2 (I1); releasable or protected
-  classification (#69, TT-600; proposal C7-Q01), Martin, closes when the plan is extended to the
-  RVS (D44)
+TBD/TBR:       releasable or protected classification (#69, TT-600; proposal C7-Q01), Martin, closes
+  when the plan is extended to the RVS (D44)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1105,7 +1142,7 @@ Verification:  Inspection — IN-TM-810; success criteria: in the interface defi
   vehicle-model boundary ICD, ICD-FC-AF, ICD-NAV-AF, ICD-FCP) and in the implementation, no function
   of the vehicle model or of the flight software reads an output of the operational data output.
 Parameters:    —
-TBD/TBR:       Interface control documents not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1

@@ -1,8 +1,8 @@
 ## FU — Fuel and mass properties
 
-The fuel and mass-properties requirements (task C2; reworked for the G2 findings and the landing gear, D69, D72, D73: `work/C2/rework_G2_D69.md`). The subject of each statement is the FU subsystem, the fuel and mass-properties subsystem of the Aeronef, one of the three subsystems of the vehicle model, with the dynamics model (DYN) and the effector subsystem (EF), behind the vehicle-model boundary (D55, L1-AER-430). FU runs at each simulation step `[P-SYS-300]`. Its inputs are the fuel mass of the initial condition, the vehicle parameter set and the control force and control moment that EF computes from its effector outputs at each step (DD-C3-05). Its outputs are the fuel mass flow, the remaining fuel mass, the mass properties (vehicle mass, centre-of-gravity position, inertia tensor), the fuel availability for the effectors and the dynamics model, and the fuel state. FU takes nothing from the landing gear: the gear has no mass and moves no mass property (L1-AER-900).
+The fuel and mass-properties requirements (task C2; reworked for the G2 findings and the landing gear, D69, D72, D73: `work/C2/rework_G2_D69.md`). The subject of each statement is the FU subsystem, the fuel and mass-properties subsystem of the Aeronef, one of the three subsystems of the vehicle model, with the dynamics model (DYN) and the effector subsystem (EF), behind the vehicle-model boundary (D55, L1-AER-430). FU runs at each simulation step `[P-SYS-300]`. Its inputs are the fuel mass of the initial condition, the vehicle parameter set and the control force and control moment that EF computes from its effector outputs at each step (DD-190). Its outputs are the fuel mass flow, the remaining fuel mass, the mass properties (vehicle mass, centre-of-gravity position, inertia tensor), the fuel availability for the effectors and the dynamics model, and the fuel state. FU takes nothing from the landing gear: the gear has no mass and moves no mass property (L1-AER-900).
 
-**What FU decides.** The consumption relationships are linear in the magnitude of the resultant control force and of the resultant control moment (DD-110, owner D65), so the fuel mass flow is zero whenever the effectors produce nothing: on the ground with the effectors off (L1-AER-930, -940), and after fuel exhaustion. The inertia tensor changes with the fuel: it runs linearly from the dry-mass tensor at fuel exhaustion to its full-capacity value, because the fuel depletes uniformly over a fixed volume centred on the centre of gravity (DD-120, D65), taken equal to the body shape (DD-C2-07, proposed). In the exhaustion step the flow is limited to the fuel left, and the remaining fuel mass is set to zero at the end of the step (DD-130, revised by DD-C2-06, proposed). The equations go in the MS-DYN mass-properties model and fuel model, which C1 merges; `work/C2/ms_dyn_s6_s7_fu.md` gives the text.
+**What FU decides.** The consumption relationships are linear in the magnitude of the resultant control force and of the resultant control moment (DD-110, owner D65), so the fuel mass flow is zero whenever the effectors produce nothing: on the ground with the effectors off (L1-AER-930, -940), and after fuel exhaustion. The inertia tensor changes with the fuel: it runs linearly from the dry-mass tensor at fuel exhaustion to its full-capacity value, because the fuel depletes uniformly over a fixed volume centred on the centre of gravity (DD-120, D65), taken equal to the body shape (DD-280). In the exhaustion step the flow is limited to the fuel left, and the remaining fuel mass is set to zero at the end of the step (DD-130, revised by DD-270). The equations go in the MS-DYN mass-properties model and fuel model, which C1 merges; `work/C2/ms_dyn_s6_s7_fu.md` gives the text.
 
 **Exhaustion is nominal.** Fuel exhaustion is nominal behaviour, not a failure (L0-ASM-070). FU then gives the dry-mass properties, zero fuel mass flow, a fuel availability of not available and the exhaustion indication, and it keeps doing so to the end of the run. In flight, the vehicle then falls, and its ground contact is a crash (D68, L1-AER-270); DYN classifies the contact with the fuel availability that FU gives it. A run that starts on the ground with no fuel stays on the ground.
 
@@ -120,8 +120,7 @@ Verification:  Test — TP-FU-030; success criteria: ground initial conditions w
   times [P-FU-010] each give one initial-condition error that names the fuel mass and its value,
   and FU produces no output for that run.
 Parameters:    P-FU-010
-TBD/TBR:       P-FU-010 value TBR (TT-120), Martin, G2 (I1); initial-condition error item in
-  ICD-AER-TST (IN-C2-31, TT-680), Martin, G2 (I1)
+TBD/TBR:       P-FU-010 value TBR (TT-120), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -143,7 +142,7 @@ Rationale:     Fuel is consumed to produce the control forces and control moment
   (accepted, D65) the translational term is [P-FU-040] times the magnitude of the resultant control
   force, and the rotational term is [P-FU-050] times the magnitude of the resultant control moment
   about the centre of gravity. EF computes the resultant once per step and gives the same value to
-  DYN and to FU (DD-C3-05, L2-AER-FU-070), so the fuel used and the motion come from one control
+  DYN and to FU (DD-190, L2-AER-FU-070), so the fuel used and the motion come from one control
   force and moment. Both terms are linear, so the hover endurance has the closed form of
   FUNCTIONAL_ANALYSIS §7.3 (L2-AER-FU-290). Both are zero when the control force and moment are
   zero, so no fuel is used with the effectors off on the ground, in free fall or in torque-free
@@ -161,7 +160,7 @@ Rationale:     Fuel is consumed to produce the control forces and control moment
   Sufficiency (L1-AER-940): see L2-AER-FU-300; this record gives the relationships whose value at
   zero control force and moment is zero, which the AN-FU-040 criteria check.
 Parent(s):     L1-AER-160, L1-AER-940
-Source:        N-280; AIRCRAFT_CHARACTERISTICS.md §4; CONOPS §4.5; DD-110; DD-C3-05
+Source:        N-280; AIRCRAFT_CHARACTERISTICS.md §4; CONOPS §4.5; DD-110; DD-190
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Analysis — AN-FU-040; success criteria: in the reference mission (SC-110), in a run
@@ -198,8 +197,8 @@ Rationale:     The effectors produce their output during a step whose remaining 
   rounding (G2-F10) and the remaining fuel stays at or above zero (L2-AER-FU-090). The exhaustion
   step is identified by comparing the fuel the step would use with the fuel left, the same product
   that the accounting subtracts in every other step, so no other step can end below zero
-  (MS-DYN fuel model, DD-C2-06). The control force and moment are one value per simulation step
-  (glossary *Effector output*, DD-C3-05), so the fuel consumed in a step is the flow times
+  (MS-DYN fuel model, DD-270). The control force and moment are one value per simulation step
+  (glossary *Effector output*, DD-190), so the fuel consumed in a step is the flow times
   [P-SYS-300] exactly (DD-130, IN-C2-12).
   Sufficiency (L1-AER-160): see L2-AER-FU-040.
   Sufficiency (L1-AER-190): with L2-AER-FU-080 (the accounting), L2-AER-FU-090 (at or above zero)
@@ -271,7 +270,7 @@ Statement:     The FU subsystem shall take, at each simulation step, the control
 Rationale:     Interface I-01 (FUNCTIONAL_ANALYSIS §3.2) is internal to the vehicle model, so it is
   defined in MS-DYN, not in an ICD. EF sums its effector outputs, once per step, into the resultant
   control force and the resultant control moment about the centre of gravity, through its control
-  effectiveness, and gives the same values to DYN and to FU (DD-C3-05, L2-AER-EF-140; answers
+  effectiveness, and gives the same values to DYN and to FU (DD-190, L2-AER-EF-140; answers
   IN-C2-11 and IN-C3-10). FU therefore makes no second computation from the effector outputs, and
   the fuel used and the motion come from one control force and moment. FU uses no per-effector
   output: the consumption is charged on the resultant (DD-110), which keeps FU independent of the
@@ -280,7 +279,7 @@ Rationale:     Interface I-01 (FUNCTIONAL_ANALYSIS §3.2) is internal to the veh
   Sufficiency (L1-AER-160): see L2-AER-FU-040; this record supplies the control force and control
   moment that the computation needs.
 Parent(s):     L1-AER-160
-Source:        FUNCTIONAL_ANALYSIS §3.2 I-01; DD-C3-05; IN-C3-10
+Source:        FUNCTIONAL_ANALYSIS §3.2 I-01; DD-190; IN-C3-10
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Inspection — IN-FU-070; success criteria: MS-DYN defines the interface from EF to
@@ -494,7 +493,7 @@ Verification:  Inspection — IN-FU-130; success criteria: each FU data item cro
   vehicle-model boundary ICD with its unit and frame, and no FU requirement takes an input from
   the flight software.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -561,7 +560,7 @@ Verification:  Inspection — IN-FU-150; success criteria: the MS-DYN mass-prope
   the centre of gravity at the body-frame origin with no dependence on the remaining fuel mass,
   and the vehicle-model boundary ICD defines the centre-of-gravity item as the body-frame origin.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD (TT-680, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       2
@@ -580,7 +579,7 @@ Rationale:     The centre of gravity stays fixed while fuel is consumed only if 
   depletes uniformly over a fixed fuel volume centred on the centre of gravity, so the centre of
   mass of the fuel stays at the origin at each fuel mass and its inertia scales with its mass
   (L2-AER-FU-170). C2 proposes that the fuel volume is the body shape itself, and the dry mass a
-  uniform solid of the same shape (DD-C2-07): both are then fixed by the body dimensions
+  uniform solid of the same shape (DD-280): both are then fixed by the body dimensions
   [P-DYN-020] and [P-DYN-030], and no fuel-volume parameter is needed (G2-F16). The MS-DYN
   mass-properties model states both distributions, as C2 writes them (`work/C2/ms_dyn_s6_s7_fu.md`).
   The landing gear has no mass (L1-AER-900), so it is in neither distribution.
@@ -619,7 +618,7 @@ Rationale:     L1-AER-220 leaves to C2 whether the inertia changes with the fuel
   proportional to the remaining fuel mass, so the tensor runs linearly from [P-FU-070] at fuel
   exhaustion to [P-FU-070] plus [P-FU-080] at full capacity. The maximum inertia, used by the
   moment authority budget (L1-AER-140, -350), is the full-capacity value. With the proposed
-  distributions (DD-C2-07) the values follow from the body dimensions and the masses (MS-DYN
+  distributions (DD-280) the values follow from the body dimensions and the masses (MS-DYN
   mass-properties model; `work/C2/param_proposals.md`). MS-DYN uses the inertia of each step with
   no rate-of-change term, because consumed fuel leaves with no moment (L0-ASM-090, IN-C2-14).
   Sufficiency (L1-AER-220): with L2-AER-FU-180 (diagonal), L2-AER-FU-190 (derived from the shape
@@ -854,28 +853,28 @@ Version:       2
 ID:            L2-AER-FU-240
 Level:         L2
 Type:          Interface
-Statement:     The FU subsystem shall give the fuel state to the flight control panel through
-  ICD-FCP, as the one fuel-state item that the vehicle-model boundary ICD defines.
+Statement:     The FU subsystem shall give the fuel state, as the one fuel-state item that the
+  vehicle-model boundary ICD defines, to the flight control panel through ICD-FCP and to autoflight.
 Rationale:     The flight control panel presents the fuel indication and the two alerts (D55), and
   L1-AER-880 closes the list of what crosses its boundary. The fuel state is defined once, at the
-  vehicle-model boundary, and ICD-FCP refers to that definition (L1-AER-880 rationale), so the
-  panel and autoflight read the same item. The fuel state is in SI; the crew-facing units stay in
-  the panel (CV-760).
-  Sufficiency (L1-AER-880): FU gives only the fuel state into the panel and takes nothing from it,
-  which is FU's share of the closed list.
-  Sufficiency (L1-AER-560, L1-AER-570, L1-AER-580): with L2-AER-FU-210, -220 and -230 (the
-  content), this record carries the fuel state to the panel that presents it, which is the FU
-  side of each of the three records.
-Parent(s):     L1-AER-880, L1-AER-560, L1-AER-570, L1-AER-580
+  vehicle-model boundary, and ICD-FCP refers to that definition (L1-AER-880 rationale), so the panel
+  and autoflight read the same item. Autoflight needs the fuel-exhaustion indication to disengage at
+  fuel exhaustion (DD-400, D68; FUNCTIONAL_ANALYSIS I-06), and FUNCTIONAL_ANALYSIS I-06 and §3.3
+  give the fuel state to AF as well as to the panel. The fuel state is in SI; the crew-facing units
+  stay in the panel (CV-760). Sufficiency (L1-AER-880): FU gives only the fuel state into the panel
+  and takes nothing from it, which is FU's share of the closed list. Sufficiency (L1-AER-560,
+  L1-AER-570, L1-AER-580): with L2-AER-FU-210, -220 and -230 (the content), this record carries the
+  fuel state to the panel that presents it, which is the FU side of each of the three records.
+Parent(s):     L1-AER-880, L1-AER-430, L1-AER-560, L1-AER-570, L1-AER-580
 Source:        D55; FUNCTIONAL_ANALYSIS §3.2 I-06, §5.1
 Allocated to:  —
 Criticality:   Not assessed
-Verification:  Inspection — IN-FU-240; success criteria: ICD-FCP lists the fuel state as the only
-  FU item crossing the panel boundary, by reference to its vehicle-model boundary definition (the
-  remaining fuel mass in kg, the low-fuel indication and the fuel-exhaustion indication), and no
-  FU requirement takes an input from the panel.
+Verification:  Inspection — IN-FU-240; success criteria: ICD-FCP lists the fuel state as the only FU
+  item crossing the panel boundary, ICD-VM-FS gives the same item to autoflight, by reference to its
+  vehicle-model boundary definition (the remaining fuel mass in kg, the low-fuel indication and the
+  fuel-exhaustion indication), and no FU requirement takes an input from the panel.
 Parameters:    —
-TBD/TBR:       ICD-FCP and the vehicle-model boundary ICD not yet written (TT-680), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -984,7 +983,7 @@ Rationale:     L1-AER-720 lists the fuel and mass-properties models in the close
   MS-DYN. C1 writes MS-DYN; C2 supplies the content of its mass-properties model and fuel model
   (`work/C2/ms_dyn_s6_s7_fu.md`), which has one subsection for each of the five listed models, so
   the MS-DYN slots and this record match (G2-F16). The fuel accounting includes the exhaustion
-  step (DD-130 as revised by DD-C2-06); the consumption relationships include their zero value at
+  step (DD-130 as revised by DD-270); the consumption relationships include their zero value at
   zero control force and moment (L1-AER-940). The list is closed.
   Sufficiency (L1-AER-720): this record gives MS-DYN its fuel and mass-properties sections; the
   DYN and EF children give the other sections, the landing gear and ground contact model included
@@ -1131,8 +1130,7 @@ Verification:  Inspection — IN-FU-310; success criteria: the MS-DYN mass-prope
   states that the landing gear has no mass; no FU requirement and no FU interface of MS-DYN takes
   the gear position, the gear state or the landing gear command as an input.
 Parameters:    —
-TBD/TBR:       MS-DYN mass-properties model content (TT-780), Martin, G2 (I1); FU allocation of
-  L1-AER-900 (CR-C2-04), Martin, G2 (I1)
+TBD/TBR:       MS-DYN mass-properties model content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1168,8 +1166,7 @@ Verification:  Inspection — IN-FU-320; success criteria: MS-DYN defines interf
   simulation step that both use, and the ground contact model classifies a contact with fuel not
   available as a crash.
 Parameters:    —
-TBD/TBR:       MS-DYN fuel model and ground contact model content (TT-780), Martin, G2 (I1); FU
-  allocation of L1-AER-260, -270 (CR-C2-04), Martin, G2 (I1)
+TBD/TBR:       MS-DYN fuel model and ground contact model content (TT-780), Martin, G2 (I1)
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1193,7 +1190,7 @@ Rationale:     G2-F17: the two inertia tensors are derived from the body dimensi
   checks the equality at the start of each run and rejects the set rather than correcting it, as
   it rejects an initial fuel out of range (DD-140): the run then uses only values that the
   parameter set states, and the parameter set named in the operational data (L1-AER-650) is what
-  the run used (DD-C2-05). The error item is the initial-condition error of ICD-AER-TST, extended
+  the run used (DD-260). The error item is the initial-condition error of ICD-AER-TST, extended
   to the vehicle parameter set (IN-C2-31, glossary change CR-C2-06). This is checking the run
   set-up, not failure handling (tailoring note).
   Sufficiency (L1-AER-220): see L2-AER-FU-170; this record makes the tensor of each run the one
@@ -1211,8 +1208,7 @@ Verification:  Test — TP-FU-330; success criteria: a run with the database par
 Parameters:    P-FU-070, P-FU-080, P-FU-090, P-DYN-020, P-DYN-030, P-FU-030, P-FU-010
 TBD/TBR:       P-FU-070, P-FU-080 values TBR (TT-770), P-FU-030 value TBR (TT-110), P-FU-010 value
   TBR (TT-120), Martin, G2 (I1); P-FU-090 value TBR (TT-790), Martin, G2; P-DYN-020, P-DYN-030
-  values TBR (TT-740), Martin, 2026-11-30; initial-condition error item in ICD-AER-TST (IN-C2-31,
-  TT-680), Martin, G2 (I1)
+  values TBR (TT-740), Martin, 2026-11-30
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -1235,7 +1231,7 @@ Rationale:     G2-F10: with the flow limited to the fuel left divided by [P-SYS-
   step makes exhaustion exact whatever the rounding. The difference from the summed flow is
   rounding only, inside [P-FU-060] (L2-AER-FU-080). In every other step the product of the
   consumption rate and the step is below the fuel left, and the accounting subtracts that same
-  product, so the result stays above zero (MS-DYN fuel model, DD-C2-06).
+  product, so the result stays above zero (MS-DYN fuel model, DD-270).
   Sufficiency (L1-AER-190): see L2-AER-FU-050; this record closes the exhaustion step of the
   accounting at exactly zero.
   Sufficiency (L1-AER-200): see L2-AER-FU-200; this record makes the first step with zero fuel the

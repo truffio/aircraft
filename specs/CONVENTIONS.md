@@ -1,6 +1,6 @@
 # Aeronef — Conventions
 
-**Status:** Fixed at Gate G0 (D43), 2026-10-27. CV-650 and CV-660, once deferred to L2 (#54), were deleted with the VOR (D56, CR-B1-05). Changes go through a change request (`registers/CHANGE_REQUESTS.md`); the latest is CR-B3-36 (2026-11-05).
+**Status:** Fixed at Gate G0 (D43), 2026-10-27. CV-650 and CV-660, once deferred to L2 (#54), were deleted with the VOR (D56, CR-B1-05). Changes go through a change request (`registers/CHANGE_REQUESTS.md`); the latest is CR-C7-04 (2026-11-08).
 **Date:** 2026-10-27
 **Owner:** Martin
 **Classification:** Protected design material. Not for release to the Reverse-Engineering Effort (RVS).
@@ -528,8 +528,8 @@ The vehicle model advances in fixed **simulation steps** of duration `Δt = P-SY
 - A **control frame** is one execution of the flight-control or autoflight functions. The control frame period is `P-SYS-310` (TBD).
 - An **output sample** is one record of operational data. The output sample period is `P-TM-010` (TBD).
 
-Whether these periods equal the simulation step or are integer multiples of it is an ICD-AER-TST matter.
-**Status:** Fixed (D43).
+Their relation to the simulation step is set by L1-AER-680 (control frame) and L2-AER-TM-150 (output sample).
+**Status:** Changed (D76, CR-C7-04, editorial).
 
 ### CV-840 — Timestamps
 

@@ -180,4 +180,4 @@ No new parameter is proposed. The C-2 release altitude (3 000 m) and checked ban
 | P-DYN-030, P-DYN-040 | Source, add "L2-AER-DYN-250, -450 (rest altitude P-DYN-030/2 + P-DYN-040)". | D69. |
 | P-DYN-050 | Source, add "L2-AER-DYN-270; MS-DYN §9.1". | D69. |
 
-TBD/TBR register: no new row. TT-760 keeps P-DYN-200 to -270; TT-830 (P-DYN-040) and TT-850 (P-DYN-050) are B3's. The proposals DD-C1-07 to -11 (`issues.md` §7) need no TT row: they are decided at the G2 delta inspection like DD-C1-01 to -06 were; L2-AER-DYN-540 carries the DD-070 revision in its TBD/TBR field.
+TBD/TBR register: no new row. TT-760 keeps P-DYN-200 to -270; TT-830 (P-DYN-040) and TT-850 (P-DYN-050) are B3's. The proposals DD-210 to -11 (`issues.md` §7) need no TT row: they are decided at the G2 delta inspection like DD-050 to -06 were; L2-AER-DYN-540 carries the DD-070 revision in its TBD/TBR field.

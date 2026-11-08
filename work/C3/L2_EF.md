@@ -178,7 +178,7 @@ Verification:  Inspection — IN-EF-040; success criteria: in the MS-DYN effecto
   effector activation state, the fuel availability and the EF parameters only, and no vehicle
   state element, wind value or other effector's command enters the computation.
 Parameters:    P-SYS-540, P-SYS-550
-TBD/TBR:       P-SYS-540, P-SYS-550 values TBD (TT-100), Martin, G2 (C4)
+TBD/TBR:       P-SYS-540, P-SYS-550 values TBR (TT-100), Martin, G2
 Owner:         Martin
 Status:        Draft
 Version:       1
@@ -482,8 +482,12 @@ Rationale:     D69: runs start on the ground with the effectors off, and after a
   Sufficiency (L1-AER-930): AF sets the off value of the axis references and FC sets the effector
   activation state off (C4, C5); this record makes each output, and so the control force and moment
   (L2-AER-EF-120), zero while the state is off, which is the EF share of L1-AER-930.
-Parent(s):     L1-AER-930
-Source:        D69, D73; DD-180; IN-C1-12; work/C3/issues.md C3-Q06
+  Sufficiency (L1-AER-970): a landing ends with the effectors off (L1-AER-930); this record makes
+  each output zero while the state is off, so that after the contact no control force acts and no
+  fuel is used.
+Parent(s):     L1-AER-930, L1-AER-970
+Source:        D69, D73; DD-180; IN-C1-12; work/C3/issues.md C3-Q06; B3 impact list (EF children of
+  L1-AER-970)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-EF-210; success criteria: in a run that starts with the effector activation
@@ -681,20 +685,23 @@ Rationale:     The EF share of the control-loop latency (L1-AER-710, DD-020): on
   [P-SYS-310] plus the effector command response time [P-EF-010] is at most [P-SYS-480]
   (FUNCTIONAL_ANALYSIS §7.5). "Reaching" the command, which the P-EF-010 description leaves to C3,
   is entering the band [P-EF-030] around it, measured as CV-860 states from the step at which the
-  new command applies. C3 proposes [P-EF-010] = 0.06 s and [P-EF-030] = 0.05, TBR. With the lag
-  time constant [P-EF-020] = 0.015 s and [P-SYS-300] = 0.01 s the model enters the band 0.04 s
-  after the change; 0.02 s plus 0.06 s is 0.08 s, inside the 0.1 s of [P-SYS-480]. The lag does not
-  overshoot, so the output stays in the band while the command is held. The clipped command is the
-  command within the output limits (L2-AER-EF-110).
-  Sufficiency (L1-AER-710): L2-AER-EF-150 makes the first change of output fall at the start of
-  the frame that carries the new command, at most [P-SYS-310] after the state it responds to, and
-  this record brings the output to the command within [P-EF-010] of that; with the model of
-  L2-AER-EF-100 and FC's share of the frame, both the first change and the reaching of the command
-  are within [P-SYS-480].
-  Sufficiency (L1-AER-460): the response time is the EF delay inside the latency that FC's
-  regulation share [P-FC-010] is designed against; this record bounds it.
-Parent(s):     L1-AER-710, L1-AER-460
-Source:        DD-020; FUNCTIONAL_ANALYSIS §7.5; CV-860
+  new command applies. C3 proposes [P-EF-010] = 0.06 s and [P-EF-030] = 0.05, TBR. With the lag time
+  constant [P-EF-020] = 0.015 s and [P-SYS-300] = 0.01 s the model enters the band 0.04 s after the
+  change; 0.02 s plus 0.06 s is 0.08 s, inside the 0.1 s of [P-SYS-480]. The lag does not overshoot,
+  so the output stays in the band while the command is held. The clipped command is the command
+  within the output limits (L2-AER-EF-110). Sufficiency (L1-AER-710): L2-AER-EF-150 makes the first
+  change of output fall at the start of the frame that carries the new command, at most [P-SYS-310]
+  after the state it responds to, and this record brings the output to the command within [P-EF-010]
+  of that; with the model of L2-AER-EF-100 and FC's share of the frame, both the first change and
+  the reaching of the command are within [P-SYS-480]. Sufficiency (L1-AER-460): the response time is
+  the EF delay inside the latency that FC's regulation share [P-FC-010] is designed against; this
+  record bounds it.
+  Sufficiency (L1-AER-960): a takeoff is a climb to the hover height under the commands of flight
+  control. The EF share is that each effector output follows its command within [P-EF-010] (this
+  record), starting from zero with the state off (L2-AER-EF-210), and that the upward authority
+  lifts the weight (L2-AER-EF-300); the climb and the handover are FC's and AF's.
+Parent(s):     L1-AER-710, L1-AER-460, L1-AER-960
+Source:        DD-020; FUNCTIONAL_ANALYSIS §7.5; CV-860; B3 impact list (EF children of L1-AER-960)
 Allocated to:  —
 Criticality:   Not assessed
 Verification:  Test — TP-EF-340; success criteria: for each effector, with scripted effector
@@ -739,7 +746,7 @@ Verification:  Inspection — IN-EF-400; success criteria: each EF data item cro
   vehicle-model boundary is an effector command or the effector activation state, defined in the
   vehicle-model boundary ICD with its unit, and no flight software function reads an EF output.
 Parameters:    —
-TBD/TBR:       Vehicle-model boundary ICD home (IN-B1-01, TT-720), Martin, G2 (I1)
+TBD/TBR:       —
 Owner:         Martin
 Status:        Draft
 Version:       1
